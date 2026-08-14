@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Living Reef</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#041824;}
+  canvas{display:block;width:100vw;height:100vh;}
+  #label{position:fixed;left:18px;bottom:14px;color:#bfe6ff;font:11px/1.4 monospace;
+    letter-spacing:.25em;opacity:0;pointer-events:none;transition:opacity 2.5s;}
+  #label.show{opacity:.55;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="label">REEF IN PROGRESS</div>
+<script>
+"use strict";
+/* ============================== SETUP ============================== */
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const TAU = Math.PI*2;
+const rand = (a,b)=>a+Math.random()*(b-a);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+
+let W=0,H=0,floorY=0;
+let bgCv, coralCv, cctx, floorCv, vigCv;
+let caustCv, caustCtx, caustImg, caustW=150, caustH=84;
+
+/* ============================== CORAL (space-colonization) ============================== */
+const SP = [ // species: hue, saturation, base width, px/sec growth, length range, branch probability
+  {hue:18,  sat:88, w:5.6, speed:4.6, lMin:130, lMax:270, br:0.026}, // fire coral (orange)
+  {hue:335, sat:62, w:4.6, speed:4.1, lMin:120, lMax:250, br:0.034}, // pink
+  {hue:272, sat:56, w:4.1, speed:3.6, lMin:110, lMax:230, br:0.030}, // violet
+  {hue:168, sat:64, w:3.6, speed:5.2, lMin:100, lMax:210, br:0.038}, // teal
+  {hue:45,  sat:82, w:4.2, speed:4.4, lMin:110, lMax:240, br:0.031}, // gold
+];
+const G=5, RADIUS=26, STEP=3;      // grid spacing, attraction radius, segment length
+let gW=0,gH=0,gOcc=null;
+let corals=[], tips=[], totalSegs=0, SEG_CAP=8000;
+
+function buildGrid(){
+  gW = Math.ceil(W/G);
+  gH = Math.ceil(Math.max(60, floorY-H*0.08)/G);
+  gOcc = new Uint8Array(gW*gH);
+}
+function cellAt(x,y){
+  const i = ((x/G)|0) + ((y/G)|0)*gW;
+  return (i>=0 && i<gOcc.length) ? i : -1;
+}
+function spawnTip(coral,x,y,ang,sp,maxAge){
+  const t = {coral, x, y, ang, sp, age:0, maxAge,
+             w:sp.w*rand(0.85,1.15), acc:rand(0,STEP), dead:false};
+  coral.tips.push(t); tips.push(t);
+}
+function seedPolyp(x){
+  const sp = SP[(Math.random()*SP.length)|0];
+  const y = floorY-2;
+  // sandy mound
+  cctx.fillStyle='rgba(110,90,58,0.85)';
+  cctx.beginPath(); cctx.ellipse(x,y+3,rand(13,20),6,0,0,TAU); cctx.fill();
+  cctx.fillStyle='rgba(70,58,38,0.7)';
+  cctx.beginPath(); cctx.ellipse(x,y+4,rand(8,12),4,0,0,TAU); cctx.fill();
+  const coral = {sp, segs:[], tips:[]};
+  corals.push(coral);
+  const n = 1+(Math.random()<0.5?1:0);
+  for(let i=0;i<n;i++)
+    spawnTip(coral, x+rand(-5,5), y, rand(-Math.PI*0.85,-Math.PI*0.15), sp, rand(sp.lMin,sp.lMax));
+}
+function stepTip(t){
+  const x0=t.x, y0=t.y;
+  let ta = t.ang;
+  // search for nearest free grid point inside the attraction radius (upward-biased)
+  let best=null, bd=1e9;
+  const gx0=Math.max(0,((x0-RADIUS)/G)|0), gx1=Math.min(gW-1,((x0+RADIUS)/G)|0);
+  const gy0=Math.max(0,((y0-RADIUS)/G)|0), gy1=Math.min(gH-1,((y0+RADIUS)/G)|0);
+  for(let gy=gy0;gy<=gy1;gy++){
+    for(let gx=gx0;gx<=gx1;gx++){
+      const i=gx+gy*gW; if(gOcc[i]) continue;
+      const dx=(gx+0.5)*G-x0, dy=(gy+0.5)*G-y0-RADIUS*0.5; // bias: pretend point is higher
+      const d=dx*dx+dy*dy;
+      if(d<bd){bd=d;best={dx,dy};}
+    }
+  }
+  if(best) ta = Math.atan2(best.dy,best.dx);
+  else ta += rand(-0.3,-0.05);            // no target: wander, drift up
+  // limit turning so branches curve smoothly
+  let dA = ta-t.ang;
+  dA = ((dA+Math.PI)%TAU+TAU)%TAU-Math.PI;
+  t.ang += clamp(dA,-0.4,0.4);
+  t.x += Math.cos(t.ang)*STEP;
+  t.y += Math.sin(t.ang)*STEP;
+  t.age += STEP;
+  const ci = cellAt(t.x,t.y);
+  if(ci>=0 && gOcc[ci]===0) gOcc[ci]=1;   // claim the space
+  // draw segment (trunk dark -> tips light, like real coral growth zones)
+  const f = t.age/t.maxAge;
+  const w = Math.max(1.1, t.w*(1-f*0.72));
+  const hue = (t.sp.hue + rand(-13,13) + f*14 + 360)%360;
+  const li  = 36 + f*18;
+  const style = `hsl(${hue.toFixed(0)},${t.sp.sat}%,${li.toFixed(0)}%)`;
+  cctx.strokeStyle=style; cctx.lineWidth=w; cctx.lineCap='round';
+  cctx.beginPath(); cctx.moveTo(x0,y0); cctx.lineTo(t.x,t.y); cctx.stroke();
+  t.coral.segs.push({x1:x0,y1:y0,x2:t.x,y2:t.y,w,style});
+  totalSegs++;
+  // bubble from a growing tip sometimes
+  if(Math.random()<0.0015 && bubbles.length<70)
+    bubbles.push({x:t.x,y:t.y,r:rand(0.8,2.2),vy:rand(0.5,1),ph:rand(0,TAU),amp:rand(2,6)});
+  // branching
+  if(t.age>45 && Math.random()<t.sp.br){
+    const dir = Math.random()<0.5?-1:1;
+    spawnTip(t.coral,t.x,t.y,t.ang+dir*rand(0.55,1.15),t.sp,Math.max(70,t.maxAge-rand(60,150)));
+  }
+  // stopping
+  if(t.age>=t.maxAge || t.y<H*0.07 || t.y>floorY-2 || t.x<8 || t.x>W-8 || Math.random()<0.003)
+    t.dead=true;
+}
+function growCoral(dt){
+  for(let i=tips.length-1;i>=0;i--){
+    const t=tips[i];
+    t.acc += dt*t.sp.speed;
+    while(t.acc>=STEP && !t.dead){ t.acc-=STEP; stepTip(t); }
+    if(t.dead){
+      tips.splice(i,1);
+      const cj=t.coral.tips.indexOf(t);
+      if(cj>=0) t.coral.tips.splice(cj,1);
+    }
+  }
+  // mature the reef: when capacity is reached, the oldest colony fades out and space reopens
+  if(totalSegs>SEG_CAP && corals.length>3){
+    const old=corals.shift();
+    tips = tips.filter(t=>t.coral!==old);
+    totalSegs -= old.segs.length;
+    old.segs.length=0;
+    renderCoralCanvas();
+  }
+}
+function renderCoralCanvas(){
+  cctx.clearRect(0,0,W,H);
+  cctx.lineCap='round';
+  for(const c of corals) for(const s of c.segs){
+    cctx.strokeStyle=s.style; cctx.lineWidth=s.w;
+    cctx.beginPath(); cctx.moveTo(s.x1,s.y1); cctx.lineTo(s.x2,s.y2); cctx.stroke();
+  }
+}
+
+/* ============================== FISH (boids) ============================== */
+const fish=[];
+function makeFish(accent){
+  const z=rand(0.55,1.3);
+  return {
+    x:rand(W*0.25,W*0.75), y:rand(H*0.15,floorY-90),
+    vx:rand(-1,1), vy:rand(-0.5,0.5),
+    z, size:accent?rand(5,7):rand(7,11),
+    phase:rand(0,TAU), wa:rand(0,TAU), fear:0,
+    hue: accent?rand(18,38):rand(195,215),
+    sat: accent?rand(80,95):rand(35,55),
+    lig: accent?rand(55,65):rand(55,72),
+  };
+}
+function initFish(){
+  for(let i=0;i<70;i++) fish.push(makeFish(false));
+  for(let i=0;i<7;i++)  fish.push(makeFish(true));
+  fish.sort((a,b)=>a.z-b.z); // draw far first
+}
+function updateFish(dt,k){
+  const p = state.pred;
+  for(const f of fish){
+    let sx=0,sy=0,ax=0,ay=0,cx=0,cy=0,n=0;
+    for(const o of fish){
+      if(o===f) continue;
+      const dx=o.x-f.x, dy=o.y-f.y, d2=dx*dx+dy*dy;
+      if(d2<3600){
+        n++; ax+=o.vx; ay+=o.vy; cx+=o.x; cy+=o.y;
+        if(d2<484){
+          const d=Math.sqrt(d2)||1;
+          const w=1-d/22;
+          sx-=dx/d*w; sy-=dy/d*w;
+        }
+      }
+    }
+    let fx=0, fy=0;
+    if(n){
+      fx += (cx/n-f.x)*0.0035;  fy += (cy/n-f.y)*0.0035;   // cohesion
+      fx += (ax/n-f.vx)*0.055;  fy += (ay/n-f.vy)*0.055;   // alignment
+      fx += sx*0.16;            fy += sy*0.16;             // separation
+    }
+    f.wa += rand(-0.25,0.25);                                   // wander
+    fx += Math.cos(f.wa)*0.028;  fy += Math.sin(f.wa)*0.028;
+    // soft walls
+    const m=70;
+    if(f.x<m)      fx += 0.14*(1-f.x/m);
+    if(f.x>W-m)    fx -= 0.14*(1-(W-f.x)/m);
+    if(f.y<m)      fy += 0.14*(1-f.y/m);
+    if(f.y>floorY-80) fy -= 0.14*(1-(floorY-f.y)/80);
+    // predator flee
+    if(p){
+      const dx=f.x-p.x, dy=f.y-p.y, d=Math.hypot(dx,dy);
+      if(d<190){
+        const s=(1-d/190)*1.6;
+        fx+=dx/d*s; fy+=dy/d*s;
+        f.fear=Math.min(1.6,f.fear+0.18);
+      }
+    }
+    f.fear = Math.max(0, f.fear-dt*0.55);
+    f.vx += fx*k; f.vy += fy*k;
+    const maxS = (2.1 + f.fear*3.6)*(0.75+0.35*f.z);
+    const sp = Math.hypot(f.vx,f.vy)||1e-6;
+    if(sp>maxS){ f.vx=f.vx/sp*maxS; f.vy=f.vy/sp*maxS; }
+    if(sp<0.55){ f.vx=f.vx/sp*0.55; f.vy=f.vy/sp*0.55; }
+    f.x += f.vx*k*(0.75+0.35*f.z);
+    f.y += f.vy*k*(0.75+0.35*f.z);
+    f.x = clamp(f.x,-30,W+30); f.y = clamp(f.y,20,floorY-15);
+    f.phase += k*(0.28+f.fear*0.35)*(0.6+f.z*0.4)*3;
+  }
+}
+function drawFish(f){
+  const s=f.size*f.z;
+  const a=clamp(0.45+0.5*f.z-0.2,0.3,1);
+  const b=Math.sin(f.phase)*0.4;
+  ctx.save();
+  ctx.translate(f.x,f.y);
+  ctx.rotate(Math.atan2(f.vy,f.vx));
+  ctx.globalAlpha=a;
+  ctx.fillStyle=`hsl(${f.hue|0},${f.sat|0}%,${f.lig|0}%)`;
+  ctx.beginPath();
+  ctx.moveTo(s*1.15,0);
+  ctx.quadraticCurveTo(s*0.3,-s*0.58,-s*0.8,-s*0.26+b*s*0.35);
+  ctx.lineTo(-s*1.55,-s*0.5+b*s*0.85);
+  ctx.lineTo(-s*1.25,b*s*0.25);
+  ctx.lineTo(-s*1.55, s*0.5+b*s*0.85);
+  ctx.lineTo(-s*0.8, s*0.26+b*s*0.35);
+  ctx.quadraticCurveTo(s*0.3,s*0.58,s*1.15,0);
+  ctx.fill();
+  // belly sheen
+  ctx.fillStyle=`hsla(${f.hue|0},20%,88%,0.35)`;
+  ctx.beginPath(); ctx.ellipse(s*0.15,s*0.16,s*0.62,s*0.2,0,0,TAU); ctx.fill();
+  // eye
+  if(f.z>0.7){
+    ctx.fillStyle='rgba(10,20,30,0.85)';
+    ctx.beginPath(); ctx.arc(s*0.72,-s*0.08,Math.max(0.7,s*0.09),0,TAU); ctx.fill();
+  }
+  ctx.restore();
+  ctx.globalAlpha=1;
+}
+
+/* ============================== PREDATOR ============================== */
+const state={nextPred:performance.now()+8000, pred:null};
+function spawnPred(){
+  const side=Math.random()<0.5?-1:1;
+  let cx=W/2, cy=H*0.4;
+  for(const f of fish){ cx+=f.x; cy+=f.y; }
+  cx/=fish.length+1; cy/=fish.length+1;
+  state.pred={x:side<0?-140:W+140, y:rand(H*0.18,floorY-150),
+              vx:(side<0?1:-1)*rand(2.7,3.5), t:rand(0,TAU), tx:cx, ty:cy, phase:0};
+}
+function updatePred(k,dt){
+  const p=state.pred;
+  if(!p){
+    if(performance.now()>state.nextPred) spawnPred();
+    return;
+  }
+  p.t += dt; p.phase += dt*9;
+  p.x += p.vx*k;
+  p.y += (Math.sin(p.t*1.4)*0.35 + (p.ty-p.y)*0.002)*k;
+  p.y = clamp(p.y, H*0.1, floorY-60);
+  if(p.x<-200||p.x>W+200){ state.pred=null; state.nextPred=performance.now()+rand(11000,20000); }
+}
+function drawPred(){
+  const p=state.pred; if(!p) return;
+  const s=58, dir=Math.sign(p.vx);
+  const b=Math.sin(p.phase)*0.35;
+  ctx.save();
+  ctx.translate(p.x,p.y); ctx.scale(dir,1);
+  // shadow glow to read as large + deep
+  ctx.globalAlpha=0.25;
+  ctx.fillStyle='#02121e';
+  ctx.beginPath(); ctx.ellipse(0,4,s*1.15,s*0.5,0,0,TAU); ctx.fill();
+  ctx.globalAlpha=1;
+  ctx.fillStyle='#132c3d';
+  ctx.beginPath();
+  ctx.moveTo(s*1.15,0);
+  ctx.quadraticCurveTo(s*0.4,-s*0.5,-s*0.7,-s*0.3+b*s*0.3);
+  ctx.lineTo(-s*1.5,-s*0.55+b*s*0.7);
+  ctx.lineTo(-s*1.15,b*s*0.2);
+  ctx.lineTo(-s*1.5, s*0.55+b*s*0.7);
+  ctx.lineTo(-s*0.7, s*0.3+b*s*0.3);
+  ctx.quadraticCurveTo(s*0.4,s*0.5,s*1.15,0);
+  ctx.fill();
+  // dorsal fin
+  ctx.beginPath();
+  ctx.moveTo(s*0.15,-s*0.4);
+  ctx.quadraticCurveTo(-s*0.15,-s*0.95,-s*0.5,-s*0.35);
+  ctx.closePath(); ctx.fill();
+  // pectoral
+  ctx.beginPath();
+  ctx.moveTo(s*0.25,s*0.15);
+  ctx.quadraticCurveTo(-s*0.15,s*0.7+ b*s*0.4,-s*0.4,s*0.2);
+  ctx.closePath(); ctx.fill();
+  // belly
+  ctx.fillStyle='rgba(150,190,210,0.25)';
+  ctx.beginPath(); ctx.ellipse(s*0.1,s*0.2,s*0.6,s*0.22,0,0,TAU); ctx.fill();
+  // eye
+  ctx.fillStyle='rgba(255,120,60,0.9)';
+  ctx.beginPath(); ctx.arc(s*0.72,-s*0.08,3,0,TAU); ctx.fill();
+  ctx.restore();
+}
+
+/* ============================== AMBIENCE: sand, background, rocks, weeds, motes, bubbles, caustics ============================== */
+let rocks=[], weeds=[], motesFar=[], motesNear=[], bubbles=[], farFish=[];
+function buildBackdrop(){
+  // water gradient
+  bgCv=document.createElement('canvas'); bgCv.width=W; bgCv.height=H;
+  const g=bgCv.getContext('2d');
+  const gr=g.createLinearGradient(0,0,0,H);
+  gr.addColorStop(0,'#1d6f96'); gr.addColorStop(0.45,'#0e4a6e');
+  gr.addColorStop(0.8,'#07304c'); gr.addColorStop(1,'#051f33');
+  g.fillStyle=gr; g.fillRect(0,0,W,H);
+  // distant rock silhouettes
+  rocks=[];
+  for(let i=0;i<8;i++)
+    rocks.push({x:rand(0,W), w:rand(90,260), h:rand(50,170), d:rand(0.2,1), ph:rand(0,TAU)});
+  // swaying weeds
+  weeds=[];
+  for(let i=0;i<9;i++)
+    weeds.push({x:rand(20,W-20), h:rand(35,95), ph:rand(0,TAU), w:rand(2,4), hue:rand(120,165), seg:5});
+  // drifting motes (two parallax layers)
+  motesFar=[]; motesNear=[];
+  for(let i=0;i<90;i++) motesFar.push({x:rand(0,W),y:rand(0,H),r:rand(0.5,1.2),spd:rand(0.04,0.12),ph:rand(0,TAU)});
+  for(let i=0;i<45;i++) motesNear.push({x:rand(0,W),y:rand(0,H),r:rand(1.2,2.6),spd:rand(0.1,0.28),ph:rand(0,TAU)});
+  // distant silhouette school (parallax)
+  farFish=[];
+  const fx0=rand(W*0.1,W*0.8), dir=Math.random()<0.5?1:-1;
+  for(let i=0;i<9;i++)
+    farFish.push({x:fx0+dir*i*18+rand(-8,8), y:H*0.28+rand(-22,22), ph:rand(0,TAU), dir});
+  // sand
+  floorCv=document.createElement('canvas');
+  floorCv.width=W; floorCv.height=H-floorY+2;
+  const f=floorCv.getContext('2d'), fh=floorCv.height;
+  const sg=f.createLinearGradient(0,0,0,fh);
+  sg.addColorStop(0,'#5d5a40'); sg.addColorStop(0.35,'#4b4633'); sg.addColorStop(1,'#241f15');
+  f.fillStyle=sg; f.fillRect(0,0,W,fh);
+  for(let i=0;i<900;i++){ // speckle
+    f.fillStyle=`hsla(${rand(35,50)|0},${rand(20,45)|0}%,${rand(25,60)|0}%,0.35)`;
+    f.fillRect(rand(0,W),rand(0,fh),rand(0.6,2.2),rand(0.6,1.8));
+  }
+  for(let i=0;i<7;i++){ // patches + rocks
+    f.fillStyle='rgba(20,26,18,0.3)';
+    f.beginPath(); f.ellipse(rand(0,W),rand(4,fh),rand(40,120),rand(6,16),0,0,TAU); f.fill();
+  }
+  for(let i=0;i<5;i++){
+    const rx=rand(20,W-20), ry=rand(6,fh-4), rw=rand(10,26);
+    f.fillStyle='#2b3540';
+    f.beginPath(); f.ellipse(rx,ry,rw,rw*0.6,rand(-0.3,0.3),0,TAU); f.fill();
+    f.fillStyle='rgba(160,200,215,0.18)';
+    f.beginPath(); f.ellipse(rx-rw*0.25,ry-rw*0.25,rw*0.5,rw*0.28,0,0,TAU); f.fill();
+  }
+  // vignette + bottom fog
+  vigCv=document.createElement('canvas'); vigCv.width=W; vigCv.height=H;
+  const v=vigCv.getContext('2d');
+  const rg=v.createRadialGradient(W/2,H*0.45,Math.min(W,H)*0.35,W/2,H*0.5,Math.max(W,H)*0.75);
+  rg.addColorStop(0,'rgba(0,0,0,0)'); rg.addColorStop(1,'rgba(1,8,16,0.6)');
+  v.fillStyle=rg; v.fillRect(0,0,W,H);
+  const fg=v.createLinearGradient(0,floorY-140,0,H);
+  fg.addColorStop(0,'rgba(3,20,32,0)'); fg.addColorStop(1,'rgba(3,14,24,0.55)');
+  v.fillStyle=fg; v.fillRect(0,floorY-140,W,140);
+  const tg=v.createLinearGradient(0,0,0,90);
+  tg.addColorStop(0,'rgba(140,220,255,0.10)'); tg.addColorStop(1,'rgba(140,220,255,0)');
+  v.fillStyle=tg; v.fillRect(0,0,W,90);
+}
+function buildCaustics(){
+  caustCv=document.createElement('canvas');
+  caustCv.width=caustW; caustCv.height=caustH;
+  caustCtx=caustCv.getContext('2d');
+  caustImg=caustCtx.createImageData(caustW,caustH);
+}
+function updateCaustics(t){
+  const d=caustImg.data; let p=0;
+  for(let y=0;y<caustH;y++){
+    for(let x=0;x<caustW;x++){
+      const u=x*0.12, v=y*0.12;
+      let a = Math.sin(u + t*1.1 + 2.0*Math.sin(v*0.9 - t*0.6));
+      a += Math.sin(v - t*0.8 + 2.0*Math.sin(u*0.7 + t*0.4));
+      a += Math.sin((u+v)*0.45 + t*0.9);
+      a += Math.sin((u-v)*0.62 - t*1.2);
+      let e = 1 - Math.min(1,Math.abs(a)/4);
+      e = e*e*(3-2*e);
+      const a2 = Math.pow(Math.max(0,(e-0.32)/0.68), 1.7);
+      d[p++]=150; d[p++]=215; d[p++]=255;
+      d[p++]=Math.min(255, a2*230)|0;
+    }
+  }
+  caustCtx.putImageData(caustImg,0,0);
+}
+
+/* ============================== UPDATE / DRAW ============================== */
+let seedTimer=2500, bubbleTimer=0;
+function updateAmbience(dt,k,t){
+  // keep seeding new polyps so the reef never stops evolving
+  seedTimer-=dt*1000;
+  if(seedTimer<=0){
+    seedTimer=rand(3500,9000);
+    if(tips.length<150 && corals.length<12){
+      let x, tries=0;
+      do{ x=rand(40,W-40); tries++; }
+      while(tries<8 && corals.some(c=>Math.abs(c.sp.x0!==undefined?0:x- (c.tips[0]?c.tips[0].coralBaseX:x))<0) );
+      seedPolyp(x);
+    }
+  }
+  // bubbles
+  bubbleTimer-=dt;
+  if(bubbleTimer<=0){
+    bubbleTimer=rand(0.3,1.1);
+    bubbles.push({x:rand(W*0.08,W*0.92), y:floorY+rand(-4,4), r:rand(0.8,3), vy:rand(0.5,1.1), ph:rand(0,TAU), amp:rand(2,7)});
+  }
+  for(let i=bubbles.length-1;i>=0;i--){
+    const b=bubbles[i];
+    b.y-=b.vy*k;
+    b.x+=Math.sin(t*2+b.ph)*b.amp*0.012*k - 0.05*k;
+    b.r+=0.002*k;
+    if(b.y<H*0.04) bubbles.splice(i,1);
+  }
+  // motes
+  const drift=t;
+  for(const m of motesFar){ m.x-=m.spd*k; m.y+=Math.sin(drift*0.6+m.ph)*0.06*k; if(m.x<-5){m.x=W+5;m.y=rand(0,H);} }
+  for(const m of motesNear){ m.x-=m.spd*k; m.y+=Math.sin(drift*0.6+m.ph)*0.09*k; if(m.x<-6){m.x=W+6;m.y=rand(0,H);} }
+  // far silhouette school
+  for(const f of farFish){
+    f.x+=f.dir*0.25*k; f.phase+=0.12*k;
+    f.y+=Math.sin(f.phase*0.5)*0.1*k;
+    if(f.dir>0&&f.x>W+40){f.x=-40;} if(f.dir<0&&f.x<-40){f.x=W+40;}
+  }
+}
+function drawAmbience(t,phase){
+  if(phase===0){
+    // rocks with slow parallax sway
+    for(const r of rocks){
+      const off=Math.sin(t*0.05+r.ph)*(3+r.d*6);
+      ctx.fillStyle=`rgba(8,34,54,${0.25+r.d*0.3})`;
+      ctx.beginPath();
+      ctx.ellipse(r.x+off, floorY+10, r.w, r.h, 0, Math.PI, 0);
+      ctx.fill();
+    }
+    // far silhouette fish
+    ctx.fillStyle='rgba(6,28,44,0.5)';
+    for(const f of farFish){
+      const s=4;
+      ctx.beginPath();
+      ctx.moveTo(f.x+5*s, f.y);
+      ctx.lineTo(f.x-4*s, f.y-2*s+Math.sin(f.phase)*2);
+      ctx.lineTo(f.x-4*s, f.y+2*s+Math.sin(f.phase)*2);
+      ctx.closePath(); ctx.fill();
+    }
+  } else if(phase===1){
+    // light shafts
+    ctx.save();
+    ctx.globalCompositeOperation='lighter';
+    for(let i=0;i<4;i++){
+      const bx=W*(0.12+0.26*i)+Math.sin(t*0.11+i*2.1)*90;
+      const gr=ctx.createLinearGradient(0,0,0,H*0.9);
+      gr.addColorStop(0,'rgba(170,225,255,0.07)');
+      gr.addColorStop(1,'rgba(170,225,255,0)');
+      ctx.fillStyle=gr;
+      ctx.beginPath();
+      ctx.moveTo(bx-35,0); ctx.lineTo(bx+35,0);
+      ctx.lineTo(bx+150+Math.sin(t*0.07+i)*40,H*0.9);
+      ctx.lineTo(bx-90+Math.sin(t*0.07+i)*40,H*0.9);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+    // far motes
+    const off1=Math.sin(t*0.07)*6;
+    ctx.fillStyle='rgba(190,230,250,0.14)';
+    for(const m of motesFar){ ctx.beginPath(); ctx.arc(m.x+off1,m.y,m.r,0,TAU); ctx.fill(); }
+    // caustics
+    ctx.globalCompositeOperation='screen';
+    ctx.globalAlpha=0.5;
+    ctx.drawImage(caustCv,0,0,W,H);
+    ctx.globalAlpha=0.22;
+    const cox=Math.sin(t*0.13)*24;
+    ctx.drawImage(caustCv,cox,-14,W*1.03,H*1.06);
+    ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
+  } else {
+    // swaying weeds
+    for(const wd of weeds){
+      ctx.strokeStyle=`hsla(${wd.hue|0},45%,32%,0.85)`;
+      ctx.lineWidth=wd.w; ctx.lineCap='round';
+      ctx.beginPath();
+      let px=wd.x, py=floorY+2;
+      ctx.moveTo(px,py);
+      for(let i=1;i<=wd.seg;i++){
+        const fr=i/wd.seg;
+        px=wd.x+Math.sin(t*1.3+wd.ph+fr*2.2)*fr*fr*14;
+        py=floorY+2-fr*wd.h;
+        ctx.lineTo(px,py);
+      }
+      ctx.stroke();
+      ctx.fillStyle=`hsla(${(wd.hue+15)|0},50%,40%,0.5)`;
+      ctx.beginPath(); ctx.arc(px,py,wd.w*0.8,0,TAU); ctx.fill();
+    }
+    // near motes
+    const off2=Math.sin(t*0.07)*14;
+    ctx.fillStyle='rgba(205,240,255,0.22)';
+    for(const m of motesNear){ ctx.beginPath(); ctx.arc(m.x+off2,m.y,m.r,0,TAU); ctx.fill(); }
+    // bubbles
+    for(const b of bubbles){
+      ctx.strokeStyle=`rgba(200,235,255,${0.3+0.08*Math.sin(t*3+b.ph)})`;
+      ctx.lineWidth=1;
+      ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,TAU); ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.5)';
+      ctx.beginPath(); ctx.arc(b.x-b.r*0.35,b.y-b.r*0.35,b.r*0.22,0,TAU); ctx.fill();
+    }
+    // vignette
+    ctx.drawImage(vigCv,0,0);
+  }
+}
+function drawCoralTips(t){
+  for(const tip of tips){
+    const f=tip.age/tip.maxAge;
+    const pulse=0.6+0.4*Math.sin(t*3+tip.x*0.13+tip.y*0.07);
+    const hue=(tip.sp.hue+20+360)%360;
+    ctx.fillStyle=`hsla(${hue|0},85%,72%,${0.35*pulse})`;
+    ctx.beginPath();
+    ctx.arc(tip.x,tip.y,Math.max(1.5,tip.w*0.9)+pulse,0,TAU);
+    ctx.fill();
+  }
+}
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now;
+  const t=now*0.001, k=Math.min(2.5,dt*60);
+
+  growCoral(dt);
+  updateFish(dt,k);
+  updatePred(k,dt);
+  updateAmbience(dt,k,t);
+  updateCaustics(t);
+
+  // ---- draw ----
+  ctx.drawImage(bgCv,0,0);
+  drawAmbience(t,0);            // rocks, far fish
+  drawAmbience(t,1);            // light shafts, far motes, caustics
+  ctx.drawImage(floorCv,0,floorY);
+  ctx.drawImage(coralCv,0,0);
+  drawCoralTips(t);
+  drawAmbience(t,2);            // weeds, near motes, bubbles (behind fish layer but in front of coral)
+  for(const f of fish) drawFish(f);
+  drawPred();
+  ctx.globalCompositeOperation='source-over';
+  ctx.drawImage(vigCv,0,0);     // vignette again over fish for depth
+
+  requestAnimationFrame(frame);
+}
+
+/* ============================== BOOT / RESIZE ============================== */
+function resize(){
+  W=innerWidth; H=innerHeight;
+  floorY=H-Math.max(56,H*0.09);
+  cv.width=W; cv.height=H;
+  coralCv=document.createElement('canvas'); coralCv.width=W; coralCv.height=H;
+  cctx=coralCv.getContext('2d');
+  buildGrid();
+  buildBackdrop();
+  buildCaustics();
+  renderCoralCanvas();
+}
+addEventListener('resize',resize);
+
+resize();
+initFish();
+// initial polyps
+const n0=3;
+for(let i=0;i<n0;i++) seedPolyp(W*rand(0.15,0.85));
+// label
+setTimeout(()=>document.getElementById('label').classList.add('show'),1200);
+setTimeout(()=>document.getElementById('label').classList.remove('show'),9000);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
