@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BENTO // 1-BIT</title>
+<style>
+  :root {
+    --bg: #0b0b0d;
+    --card: #101013;
+    --card-hover: #141418;
+    --ink: #f2f0ea;
+    --ink-dim: #9b988f;
+    --line: #2a2a30;
+    --line-hot: #f2f0ea;
+    --accent: #f2f0ea;
+    --dither: rgba(242, 240, 234, 0.16);
+    --dither-dense: rgba(242, 240, 234, 0.34);
+    --gap: 14px;
+    --radius: 18px;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: "Avenir Next", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: clamp(16px, 4vw, 48px);
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* faint full-page dither grain */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: conic-gradient(var(--ink) 25%, transparent 0 50%, var(--ink) 0 75%, transparent 0);
+    background-size: 4px 4px;
+    opacity: 0.025;
+    animation: grainShift 0.6s steps(2) infinite;
+  }
+  @keyframes grainShift {
+    0% { background-position: 0 0; }
+    50% { background-position: 2px 2px; }
+    100% { background-position: 0 0; }
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  /* ---------- header ---------- */
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: clamp(24px, 4vw, 40px);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    padding: 5px;
+    flex: none;
+  }
+  .brand-mark span { background: var(--ink); }
+  .brand-mark span:nth-child(1) { animation: flick 1.6s steps(1) infinite; }
+  .brand-mark span:nth-child(3) { animation: flick 1.6s steps(1) 0.8s infinite; }
+  .brand-mark span:nth-child(2), .brand-mark span:nth-child(4) { background: transparent; }
+  @keyframes flick { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0; } }
+
+  h1 {
+    font-size: clamp(22px, 3.4vw, 30px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h1 .thin { font-weight: 300; color: var(--ink-dim); }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .meta .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ink);
+    animation: blink 1.4s steps(2) infinite;
+  }
+  @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.15; } }
+
+  /* ---------- bento grid ---------- */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 120px;
+    gap: var(--gap);
+  }
+
+  .card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: default;
+    transition:
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.45s ease,
+      background-color 0.45s ease,
+      box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card::after {
+    /* dither wash that rises on hover */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: conic-gradient(var(--ink) 25%, transparent 0 50%, var(--ink) 0 75%, transparent 0);
+    background-size: 4px 4px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: var(--line-hot);
+    background: var(--card-hover);
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.9);
+  }
+  .card:hover::after {
+    opacity: 0.05;
+    transform: translateY(0);
+  }
+
+  .card > * { position: relative; z-index: 1; }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* ---- hero card ---- */
+  .hero {
+    grid-column: span 2;
+    grid-row: span 2;
+    padding: 0;
+  }
+  .hero canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+  }
+  .hero:hover canvas { opacity: 0.85; }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 26px;
+  }
+
+  .hero h2 {
+    font-size: clamp(28px, 4.2vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    max-width: 12ch;
+  }
+  .hero h2 .o { color: transparent; -webkit-text-stroke: 1px var(--ink); }
+
+  .hero p {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-dim);
+    max-width: 34ch;
+  }
+
+  .hero .rule {
+    width: 56px;
+    height: 2px;
+    background: var(--ink);
+    margin-bottom: 14px;
+    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hero:hover .rule { width: 110px; }
+
+  /* ---- stat cards ---- */
+  .stat .num {
+    font-family: var(--mono);
+    font-size: clamp(34px, 4.5vw, 46px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .num .unit { font-size: 0.42em; color: var(--ink-dim); margin-left: 3px; letter-spacing: 0; }
+  .stat .sub {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ink-dim);
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+
+  /* ---- chart card ---- */
+  .chart { grid-column: span 2; }
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 7px;
+    height: 62px;
+  }
+  .bars i {
+    flex: 1;
+    min-height: 6px;
+    background: var(--ink);
+    border-radius: 3px;
+    transform: scaleY(0.4);
+    transform-origin: bottom;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bars i:nth-child(odd) {
+    background-image: conic-gradient(var(--bg) 25%, transparent 0 50%, var(--bg) 0 75%, transparent 0);
+    background-size: 4px 4px;
+    background-color: var(--ink);
+  }
+  .card.in .bars i { transform: scaleY(1); }
+  .bars i:hover { filter: brightness(0.6); }
+
+  /* ---- clock card ---- */
+  .clock .time {
+    font-family: var(--mono);
+    font-size: clamp(30px, 3.6vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .clock .time .colon { animation: blink 1s steps(2) infinite; color: var(--ink-dim); }
+
+  /* ---- wide text card ---- */
+  .wide { grid-column: span 2; flex-direction: row; align-items: flex-end; gap: 18px; }
+  .wide p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    max-width: 52ch;
+  }
+  .wide p strong { color: var(--ink); font-weight: 600; }
+  .wide .tag { flex: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+  .wide:hover .tag { border-color: var(--ink); }
+
+  /* ---- small square card w/ spinner ---- */
+  .square { align-items: center; justify-content: center; text-align: center; }
+  .dither-box {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    margin-bottom: 14px;
+    display: grid;
+    place-items: center;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .card:hover .dither-box { transform: rotate(90deg) scale(1.06); }
+  .dither-box div {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background-color: var(--ink);
+    background-image: conic-gradient(var(--card) 25%, transparent 0 50%, var(--card) 0 75%, transparent 0);
+    background-size: 4px 4px;
+    animation: spin 3s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* staggered entrance */
+  .card { opacity: 0; transform: translateY(14px); }
+  .card.in { opacity: 1; transform: translateY(0); }
+  .card.in:hover { transform: translateY(-5px); }
+
+  footer {
+    margin-top: clamp(20px, 3vw, 32px);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  @media (max-width: 760px) {
+    .bento { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 112px; }
+    .hero { grid-column: span 2; }
+    .chart, .wide { grid-column: span 2; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .card { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <h1>Grid<span class="thin">.1bit</span></h1>
+    </div>
+    <div class="meta"><span class="dot"></span> dark mode · live</div>
+  </header>
+
+  <main class="bento" id="bento">
+
+    <section class="card hero">
+      <canvas id="noise" aria-hidden="true"></canvas>
+      <div class="hero-inner">
+        <span class="tag">01 / featured</span>
+        <div>
+          <div class="rule"></div>
+          <h2>Every card, <span class="o">two&nbsp;inks.</span></h2>
+        </div>
+        <p>A bento layout rendered in pure one-bit dither — grayscale from contrast alone, motion from intent.</p>
+      </div>
+    </section>
+
+    <section class="card stat">
+      <span class="tag">02 / signal</span>
+      <div>
+        <div class="num"><span id="counter">0</span><span class="unit">%</span></div>
+        <div class="sub">contrast ratio</div>
+      </div>
+    </section>
+
+    <section class="card stat">
+      <span class="tag">03 / pixels</span>
+      <div>
+        <div class="num">65K<span class="unit">px</span></div>
+        <div class="sub">canvas budget</div>
+      </div>
+    </section>
+
+    <section class="card chart">
+      <span class="tag">04 / activity</span>
+      <div class="bars" aria-hidden="true">
+        <i style="height:35%"></i><i style="height:60%"></i><i style="height:42%"></i>
+        <i style="height:85%"></i><i style="height:55%"></i><i style="height:72%"></i>
+        <i style="height:38%"></i><i style="height:95%"></i><i style="height:64%"></i><i style="height:80%"></i>
+      </div>
+    </section>
+
+    <section class="card clock">
+      <span class="tag">05 / time</span>
+      <div class="time" id="clock">--<span class="colon">:</span>--</div>
+    </section>
+
+    <section class="card square">
+      <div class="dither-box" aria-hidden="true"><div></div></div>
+      <span class="tag">06 / spin</span>
+    </section>
+
+    <section class="card wide">
+      <span class="tag">07 / notes</span>
+      <p><strong>Two tones, infinite texture.</strong> Dithering trades color depth for rhythm — hover any card and the pattern does the shading.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>© grid.1bit — no frameworks, no assets</span>
+    <span>html · css · js</span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---- staggered entrance ---- */
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  cards.forEach(function (card, i) {
+    setTimeout(function () { card.classList.add("in"); }, 90 * i + 120);
+  });
+
+  /* ---- live clock ---- */
+  var clock = document.getElementById("clock");
+  function tick() {
+    var d = new Date();
+    var h = String(d.getHours()).padStart(2, "0");
+    var m = String(d.getMinutes()).padStart(2, "0");
+    var s = String(d.getSeconds()).padStart(2, "0");
+    clock.innerHTML = h + '<span class="colon">:</span>' + m + '<span class="colon">:</span>' + s;
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ---- animated counter ---- */
+  var counter = document.getElementById("counter");
+  var target = 97, cur = 0;
+  var countTimer = setInterval(function () {
+    cur += Math.max(1, Math.ceil((target - cur) / 9));
+    if (cur >= target) { cur = target; clearInterval(countTimer); }
+    counter.textContent = cur;
+  }, 40);
+
+  /* ---- 1-bit noise canvas (bayer dither of a gradient wave) ---- */
+  var canvas = document.getElementById("noise");
+  var ctx = canvas.getContext("2d");
+  var cell = 6, cols = 0, rows = 0, buf = null, t = 0;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function resize() {
+    var r = canvas.parentElement.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.floor(r.width / cell));
+    canvas.height = Math.max(1, Math.floor(r.height / cell));
+    cols = canvas.width;
+    rows = canvas.height;
+    buf = ctx.createImageData(cols, rows);
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.imageRendering = "pixelated";
+  }
+
+  // classic 4x4 bayer matrix, thresholded
+  var bayer = [
+    [ 0,  8,  2, 10],
+    [12,  4, 14,  6],
+    [ 3, 11,  1,  9],
+    [15,  7, 13,  5]
+  ];
+
+  function draw() {
+    t += 0.012;
+    var d = buf.data;
+    var idx = 0;
+    for (var y = 0; y < rows; y++) {
+      for (var x = 0; x < cols; x++) {
+        // flowing luminance field
+        var v = 0.5
+          + 0.28 * Math.sin(x * 0.11 + t * 2.1)
+          + 0.22 * Math.sin(y * 0.14 - t * 1.4)
+          + 0.18 * Math.sin((x + y) * 0.07 + t);
+        var th = (bayer[y % 4][x % 4] + 0.5) / 16; // 0..1 threshold
+        var on = v > th ? 255 : 0;
+        d[idx] = d[idx + 1] = d[idx + 2] = 242;
+        d[idx + 3] = on;
+        idx += 4;
+      }
+    }
+    ctx.putImageData(buf, 0, 0);
+  }
+
+  function frame() {
+    draw();
+    requestAnimationFrame(frame);
+  }
+
+  resize();
+  window.addEventListener("resize", function () { resize(); if (reduce) draw(); });
+
+  if (reduce) { draw(); } else { requestAnimationFrame(frame); }
+
+  /* ---- randomize chart bars on hover ---- */
+  var bars = document.querySelector(".bars");
+  if (bars) {
+    bars.addEventListener("mouseenter", function () {
+      Array.prototype.forEach.call(bars.children, function (b) {
+        b.style.height = (18 + Math.random() * 82).toFixed(0) + "%";
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

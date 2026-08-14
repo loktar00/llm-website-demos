@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Paper Parlor — Stationery & Paper Goods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --paper:#FAF1E2; --paper-2:#F2E4CC; --paper-3:#EAD9BB;
+  --white:#FFFDF8;
+  --ink:#23233B; --ink-soft:#4A4A66;
+  --coral:#FF6B35; --butter:#FFD23F; --teal:#17A398;
+  --lilac:#9B8CFF; --blush:#FF7BAC; --green:#3E9B4F;
+  --shadow: 4px 4px 0 var(--ink);
+  --shadow-sm: 3px 3px 0 var(--ink);
+  --radius:14px;
+  --disp:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{
+  font-family:var(--body);color:var(--ink);background:var(--paper);
+  line-height:1.55;overflow-x:hidden;
+  /* paper grain via repeating gradients */
+  background-image:
+    radial-gradient(rgba(35,35,59,.045) 1px, transparent 1px);
+  background-size:22px 22px;
+}
+img,svg{display:block}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{width:min(1180px,92%);margin:0 auto}
+
+/* ============ STICKER UTILITIES ============ */
+.sticker{
+  display:inline-block;font-family:var(--disp);font-weight:800;
+  font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--butter);color:var(--ink);
+  border:2px solid var(--ink);border-radius:999px;
+  padding:.28em .8em;box-shadow:var(--shadow-sm);
+  transform:rotate(-4deg);
+}
+.sticker.teal{background:var(--teal);color:var(--white)}
+.sticker.coral{background:var(--coral);color:var(--white)}
+.sticker.blush{background:var(--blush);color:var(--white)}
+.sticker.lilac{background:var(--lilac)}
+.btn{
+  font-family:var(--disp);font-weight:700;font-size:1rem;
+  border:2.5px solid var(--ink);border-radius:12px;
+  padding:.7em 1.4em;background:var(--white);color:var(--ink);
+  box-shadow:var(--shadow-sm);
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  display:inline-flex;align-items:center;gap:.5em;
+}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn.primary{background:var(--coral);color:var(--white)}
+.btn.butter{background:var(--butter)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:var(--shadow-sm)}
+.btn[disabled]:hover{box-shadow:var(--shadow-sm);transform:none}
+.btn.sm{font-size:.82rem;padding:.5em 1em;border-width:2px;box-shadow:2px 2px 0 var(--ink)}
+
+/* ============ HEADER ============ */
+header{
+  position:sticky;top:0;z-index:60;
+  background:rgba(250,241,226,.92);backdrop-filter:blur(6px);
+  border-bottom:2.5px solid var(--ink);
+  transition:box-shadow .25s ease;
+}
+header.scrolled{box-shadow:0 6px 0 rgba(35,35,59,.12)}
+.nav{display:flex;align-items:center;gap:1rem;padding:.7rem 0}
+.logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;margin-right:auto}
+.logo svg{width:38px;height:38px}
+.logo b{font-family:var(--disp);font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+.logo b em{font-style:normal;color:var(--coral)}
+.nav-links{display:flex;gap:.25rem;list-style:none;flex-wrap:wrap}
+.nav-links a{
+  text-decoration:none;font-weight:600;font-size:.9rem;
+  padding:.45em .85em;border-radius:999px;border:2px solid transparent;
+  transition:background .15s,border-color .15s;
+}
+.nav-links a:hover{background:var(--white);border-color:var(--ink)}
+.tray-nav{
+  font-family:var(--disp);font-weight:700;font-size:.85rem;
+  border:2.5px solid var(--ink);border-radius:999px;background:var(--butter);
+  padding:.45em 1em;box-shadow:2px 2px 0 var(--ink);
+  transition:transform .15s;
+}
+.tray-nav:hover{transform:translate(-1px,-1px)}
+.tray-nav .dot{display:inline-block;width:.6em;height:.6em;border-radius:50%;background:var(--coral);border:1.5px solid var(--ink);margin-right:.4em;vertical-align:baseline}
+
+/* ============ HERO ============ */
+.hero{position:relative;padding:clamp(3rem,7vw,6rem) 0 clamp(3.5rem,7vw,6rem);overflow:hidden}
+.hero-layers{position:absolute;inset:0;pointer-events:none}
+.ppaper{position:absolute;border:2.5px solid var(--ink);border-radius:16px;opacity:.9}
+.pp1{width:180px;height:230px;background:var(--butter);left:4%;top:12%;transform:rotate(-12deg)}
+.pp2{width:150px;height:190px;background:var(--blush);right:6%;top:8%;transform:rotate(9deg)}
+.pp3{width:130px;height:160px;background:var(--teal);right:16%;bottom:6%;transform:rotate(-7deg)}
+.pp4{width:110px;height:140px;background:var(--lilac);left:12%;bottom:10%;transform:rotate(14deg)}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:2rem;align-items:center}
+.hero h1{
+  font-family:var(--disp);font-weight:800;
+  font-size:clamp(2.6rem,6.5vw,5.2rem);
+  line-height:.98;letter-spacing:-.03em;
+}
+.hero h1 .hl{
+  background:var(--coral);color:var(--white);padding:.02em .18em;
+  display:inline-block;transform:rotate(-1.5deg);border:3px solid var(--ink);
+  border-radius:10px;box-shadow:var(--shadow-sm);
+}
+.hero h1 .u{position:relative;white-space:nowrap}
+.hero h1 .u svg{position:absolute;left:0;right:0;bottom:-.28em;width:100%;height:.35em}
+.hero p.lede{margin:1.2rem 0 1.6rem;font-size:clamp(1rem,1.6vw,1.2rem);max-width:34ch;color:var(--ink-soft);font-weight:500}
+.hero-ctas{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center}
+.hero-note{font-size:.8rem;font-weight:600;margin-top:1rem;color:var(--ink-soft)}
+.hero-note b{color:var(--teal)}
+.hero-art{position:relative;display:flex;justify-content:center}
+.hero-card{
+  width:min(340px,100%);background:var(--white);border:3px solid var(--ink);
+  border-radius:20px;box-shadow:8px 8px 0 var(--ink);padding:1.2rem;
+  transform:rotate(2deg);position:relative;
+  animation:floaty 6s ease-in-out infinite;
+}
+.hero-card .art{background:var(--paper-2);border:2px solid var(--ink);border-radius:12px;padding:.6rem}
+.hero-card .art svg{width:100%;height:auto}
+.hero-card figcaption{margin-top:.8rem;font-family:var(--disp);font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.hero-card .price{background:var(--butter);border:2px solid var(--ink);border-radius:999px;padding:.15em .7em;font-size:.9rem}
+.stick1{position:absolute;top:-16px;right:-14px;background:var(--teal);color:var(--white)}
+.stick2{position:absolute;bottom:-14px;left:-16px}
+.float-star{position:absolute;animation:floaty 5s ease-in-out infinite reverse}
+.fs1{width:56px;top:6%;left:44%;animation-delay:.8s}
+.fs2{width:44px;bottom:12%;right:40%;animation-delay:1.6s}
+@keyframes floaty{0%,100%{translate:0 0}50%{translate:0 -10px}}
+
+/* ============ TICKER ============ */
+.ticker{
+  background:var(--ink);color:var(--paper);border-block:3px solid var(--ink);
+  overflow:hidden;padding:.55rem 0;position:relative;
+}
+.ticker-track{display:flex;gap:2.5rem;width:max-content;animation:tick 26s linear infinite;font-family:var(--disp);font-weight:700;font-size:.95rem;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.ticker-track span b{color:var(--butter)}
+.ticker-track span i{font-style:normal;color:var(--blush)}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ============ SECTION SHELL ============ */
+section.block{padding:clamp(3.2rem,6.5vw,5.5rem) 0;position:relative}
+.sec-head{display:flex;align-items:flex-end;gap:1.2rem;flex-wrap:wrap;margin-bottom:2.2rem}
+.sec-head h2{font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,4.2vw,3.1rem);letter-spacing:-.02em;line-height:1}
+.sec-head .kicker{font-family:var(--disp);font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--coral);display:block;margin-bottom:.5rem}
+.sec-head p{color:var(--ink-soft);max-width:46ch;font-weight:500}
+.sec-head .grow{flex:1;min-width:200px}
+
+/* ============ SEASONAL DESK ============ */
+#seasonal{background:var(--paper-2);border-block:3px solid var(--ink);
+  background-image:radial-gradient(rgba(35,35,59,.05) 1.5px,transparent 1.5px);background-size:26px 26px}
+.seasonal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.4rem}
+.season-card{
+  background:var(--white);border:2.5px solid var(--ink);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:1rem;display:flex;flex-direction:column;gap:.7rem;
+  position:relative;transition:transform .2s ease;
+}
+.season-card:hover{transform:translateY(-5px) rotate(-.4deg)}
+.season-card .art{
+  border:2px solid var(--ink);border-radius:10px;padding:.5rem;
+  background:color-mix(in srgb,var(--c) 20%,var(--white));
+}
+.season-card .art svg{width:100%;height:auto}
+.season-card h3{font-family:var(--disp);font-weight:700;font-size:1.05rem;line-height:1.2}
+.season-card .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+.price-tag{font-family:var(--disp);font-weight:800;font-size:1.1rem}
+.stock{font-size:.72rem;font-weight:700;display:inline-flex;align-items:center;gap:.35em;letter-spacing:.02em}
+.stock::before{content:"";width:.55em;height:.55em;border-radius:50%;border:1.5px solid var(--ink)}
+.stock.in::before{background:var(--green)}
+.stock.low{color:#B4540A}
+.stock.low::before{background:var(--butter)}
+.stock.out{color:#A33;text-decoration:line-through}
+.stock.out::before{background:#C0392B}
+.season-card .sticker{position:absolute;top:-12px;left:14px}
+
+/* ============ FILTERS + SHELF ============ */
+.filters{
+  display:flex;flex-direction:column;gap:.9rem;margin-bottom:1.8rem;
+  background:var(--white);border:2.5px solid var(--ink);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:1rem 1.1rem;
+}
+.filter-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.filter-label{font-family:var(--disp);font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;min-width:82px}
+.pill{
+  border:2px solid var(--ink);background:var(--paper);border-radius:999px;
+  font-weight:700;font-size:.84rem;padding:.4em 1em;
+  transition:background .15s,transform .12s;
+}
+.pill:hover{transform:translateY(-2px)}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.swatch{
+  width:30px;height:30px;border-radius:50%;border:2.5px solid var(--ink);
+  padding:0;transition:transform .15s;position:relative;
+}
+.swatch:hover{transform:scale(1.15)}
+.swatch[aria-pressed="true"]::after{
+  content:"✓";position:absolute;inset:0;display:grid;place-items:center;
+  color:var(--white);font-weight:900;font-size:.85rem;text-shadow:0 0 3px var(--ink);
+}
+.swatch[aria-pressed="true"].ink-sw::after{color:var(--paper);text-shadow:none}
+.clear-f{font-size:.78rem;font-weight:700;underline;text-decoration-thickness:2px;background:none;border:none;color:var(--ink)}
+
+.shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:1.3rem}
+.card{
+  background:var(--white);border:2.5px solid var(--ink);border-radius:var(--radius);
+  padding:.9rem;display:flex;flex-direction:column;gap:.6rem;
+  transition:transform .18s ease,box-shadow .18s ease;position:relative;
+}
+.card:hover{transform:translateY(-5px);box-shadow:6px 8px 0 var(--ink)}
+.card .art{border:2px solid var(--ink);border-radius:10px;background:color-mix(in srgb,var(--c) 22%,var(--white));padding:.45rem;overflow:hidden}
+.card .art svg{width:100%;height:auto;transition:transform .25s ease}
+.card:hover .art svg{transform:scale(1.06) rotate(-2deg)}
+.card .meta{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.card h3{font-family:var(--disp);font-weight:700;font-size:1rem;line-height:1.2}
+.card .cat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft)}
+.card .foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:.4rem;gap:.5rem}
+.card .tag{position:absolute;top:12px;left:12px;z-index:2}
+.card.out-card{opacity:.75}
+.card.out-card .art svg{filter:grayscale(.6)}
+.empty-note{grid-column:1/-1;text-align:center;padding:2.5rem 1rem;font-weight:600;color:var(--ink-soft)}
+.empty-note b{font-family:var(--disp)}
+
+/* ============ BUILD A SET ============ */
+#build{background:var(--ink);color:var(--paper);border-block:3px solid var(--ink);
+  background-image:radial-gradient(rgba(250,241,226,.06) 1.5px,transparent 1.5px);background-size:26px 26px}
+#build .sec-head h2{color:var(--paper)}
+#build .sec-head p{color:rgba(250,241,226,.75)}
+#build .kicker{color:var(--butter)}
+.build-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.tiers{display:flex;flex-direction:column;gap:1rem}
+.tier{
+  border:2.5px solid var(--paper);border-radius:var(--radius);
+  padding:1.1rem 1.2rem;display:flex;align-items:center;gap:1rem;
+  background:rgba(255,253,248,.05);transition:background .2s,transform .2s;position:relative;
+}
+.tier.active{background:var(--butter);color:var(--ink);border-color:var(--butter);transform:scale(1.03);box-shadow:6px 6px 0 rgba(0,0,0,.35)}
+.tier .big{font-family:var(--disp);font-weight:800;font-size:2.2rem;line-height:1;min-width:64px}
+.tier .desc b{font-family:var(--disp);display:block;font-size:1.05rem}
+.tier .desc span{font-size:.88rem;opacity:.85}
+.tier .save-badge{margin-left:auto;font-family:var(--disp);font-weight:800;background:var(--coral);color:var(--white);border:2px solid var(--ink);border-radius:999px;padding:.35em .9em;transform:rotate(3deg);box-shadow:2px 2px 0 var(--ink)}
+.tier.active .save-badge{background:var(--white)}
+.build-hint{
+  margin-top:1rem;border:2px dashed rgba(250,241,226,.4);border-radius:12px;
+  padding:.9rem 1rem;font-size:.9rem;color:rgba(250,241,226,.8);
+}
+.build-hint b{color:var(--butter)}
+.tray-preview{
+  background:var(--paper);color:var(--ink);border:3px solid var(--ink);
+  border-radius:18px;box-shadow:8px 8px 0 rgba(0,0,0,.4);padding:1.3rem;
+}
+.tray-preview h3{font-family:var(--disp);font-weight:800;font-size:1.3rem;margin-bottom:.3rem}
+.tp-count{font-size:.85rem;font-weight:600;color:var(--ink-soft);margin-bottom:.9rem}
+.tp-slots{display:flex;gap:.6rem;margin-bottom:1.1rem}
+.tp-slot{
+  width:46px;height:46px;border-radius:50%;border:2.5px dashed var(--ink);
+  background:var(--white);display:grid;place-items:center;
+  font-family:var(--disp);font-weight:800;color:var(--ink-soft);
+  transition:background .25s,border-style .25s;
+}
+.tp-slot.filled{border-style:solid;border-color:var(--ink)}
+.tp-items{display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.1rem;min-height:40px}
+.tp-item{
+  display:flex;align-items:center;gap:.6rem;background:var(--white);
+  border:2px solid var(--ink);border-radius:10px;padding:.4rem .6rem;font-size:.85rem;font-weight:600;
+  animation:pop .25s ease;
+}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.tp-item .chip{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);flex:none}
+.tp-item .rm{margin-left:auto;background:none;border:none;font-weight:800;font-size:1rem;color:var(--coral);padding:.1em .35em;border-radius:6px}
+.tp-item .rm:hover{background:var(--paper-2)}
+.tp-balance-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.tp-bar{display:flex;height:16px;border:2px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--paper-2)}
+.tp-bar i{display:block;height:100%;transition:width .45s cubic-bezier(.6,.05,.2,1)}
+.tp-legend{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin-top:.5rem;font-size:.72rem;font-weight:700}
+.tp-legend span{display:inline-flex;align-items:center;gap:.35em}
+.tp-legend em{width:.8em;height:.8em;border-radius:50%;border:1.5px solid var(--ink);font-style:normal}
+.tp-totals{margin-top:1rem;border-top:2px dashed var(--ink);padding-top:.8rem;display:grid;grid-template-columns:1fr 1fr;gap:.3rem 1rem;font-size:.9rem;font-weight:600}
+.tp-totals b{font-family:var(--disp)}
+.tp-totals .grand{grid-column:1/-1;font-size:1.15rem;display:flex;justify-content:space-between;align-items:center}
+.tp-totals .savings{color:var(--green)}
+.tp-empty{font-size:.88rem;color:var(--ink-soft);background:var(--paper-2);border-radius:10px;padding:.7rem .9rem;text-align:center;font-weight:600}
+
+/* ============ ARTISTS ============ */
+.artist-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.artist-card{
+  background:var(--white);border:2.5px solid var(--ink);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;transition:transform .2s ease;display:flex;flex-direction:column;
+}
+.artist-card:hover{transform:translateY(-6px) rotate(.4deg)}
+.artist-art{border-bottom:2.5px solid var(--ink);padding:1rem;background:var(--paper-2)}
+.artist-art svg{width:100%;height:auto;border:2px solid var(--ink);border-radius:10px}
+.artist-body{padding:1.2rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
+.artist-body h3{font-family:var(--disp);font-weight:800;font-size:1.25rem}
+.artist-body .series{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--coral)}
+.artist-body p{font-size:.9rem;color:var(--ink-soft);flex:1}
+.artist-body .foot{display:flex;justify-content:space-between;align-items:center;margin-top:.4rem}
+
+/* ============ SHIPPING ============ */
+#shipping{background:var(--paper-2);border-top:3px solid var(--ink);
+  background-image:radial-gradient(rgba(35,35,59,.05) 1.5px,transparent 1.5px);background-size:26px 26px}
+.ship-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.4rem}
+.ship-card{
+  background:var(--white);border:2.5px solid var(--ink);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:1.4rem;position:relative;
+}
+.ship-card h3{font-family:var(--disp);font-weight:800;font-size:1.25rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.6rem}
+.ship-card h3 svg{width:34px;height:34px;flex:none}
+.ship-card ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.ship-card li{display:flex;gap:.6rem;font-size:.92rem;font-weight:500;align-items:flex-start}
+.ship-card li::before{content:"✦";color:var(--coral);font-weight:800;flex:none}
+.ship-card li b{font-weight:700}
+.ship-card .sticker{position:absolute;top:-13px;right:16px}
+
+/* ============ FOOTER ============ */
+footer{background:var(--ink);color:var(--paper);padding:3.5rem 0 10rem;border-top:3px solid var(--ink)}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.4fr;gap:2.2rem}
+.foot-grid h4{font-family:var(--disp);font-weight:800;font-size:1rem;margin-bottom:.9rem;color:var(--butter);text-transform:uppercase;letter-spacing:.08em;font-size:.85rem}
+.foot-grid ul{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.foot-grid a{text-decoration:none;font-size:.92rem;opacity:.85;transition:opacity .15s}
+.foot-grid a:hover{opacity:1;text-decoration:underline;text-decoration-color:var(--coral);text-decoration-thickness:2px}
+.foot-brand p{font-size:.9rem;opacity:.8;max-width:28ch;margin-top:.7rem}
+.news{display:flex;gap:.5rem;margin-top:.6rem}
+.news input{
+  flex:1;border:2px solid var(--paper);background:transparent;color:var(--paper);
+  border-radius:10px;padding:.6em .9em;font-family:inherit;font-size:.9rem;min-width:0;
+}
+.news input::placeholder{color:rgba(250,241,226,.5)}
+.news input:focus{outline:3px solid var(--coral)}
+.foot-bottom{margin-top:2.5rem;padding-top:1.4rem;border-top:1px solid rgba(250,241,226,.25);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.8rem;opacity:.75}
+
+/* ============ BUNDLE TRAY (FIXED) ============ */
+.tray{
+  position:fixed;bottom:0;left:0;right:0;z-index:70;
+  background:var(--paper);border-top:3px solid var(--ink);
+  box-shadow:0 -8px 24px rgba(35,35,59,.15);
+  transform:translateY(calc(100% - 0px));
+}
+.tray-inner{
+  width:min(1180px,94%);margin:0 auto;padding:.8rem 0 .9rem;
+  display:grid;grid-template-columns:auto 1fr auto;gap:1.4rem;align-items:center;
+}
+.tray-title{font-family:var(--disp);font-weight:800;font-size:1.05rem;white-space:nowrap}
+.tray-title small{display:block;font-family:var(--body);font-weight:600;font-size:.72rem;color:var(--ink-soft)}
+.tray-slots{display:flex;gap:.45rem;margin-top:.45rem}
+.t-slot{
+  width:26px;height:26px;border-radius:50%;border:2px dashed var(--ink);
+  background:var(--white);transition:background .3s,border-style .3s,transform .3s;
+}
+.t-slot.filled{border-style:solid;transform:scale(1.1)}
+.tray-items{display:flex;gap:.5rem;flex-wrap:wrap;overflow:visible}
+.t-chip{
+  display:inline-flex;align-items:center;gap:.45rem;background:var(--white);
+  border:2px solid var(--ink);border-radius:999px;padding:.3em .4em .3em .7em;
+  font-size:.78rem;font-weight:700;animation:pop .25s ease;
+}
+.t-chip .dotc{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink)}
+.t-chip button{border:none;background:var(--coral);color:var(--white);width:20px;height:20px;border-radius:50%;font-weight:800;font-size:.85em;line-height:1;box-shadow:1px 1px 0 var(--ink)}
+.tray-empty{font-size:.85rem;font-weight:600;color:var(--ink-soft)}
+.tray-totals{display:flex;align-items:center;gap:1.1rem;white-space:nowrap}
+.tt-col{display:flex;flex-direction:column;gap:.1rem;font-size:.78rem;font-weight:600;color:var(--ink-soft)}
+.tt-col b{font-family:var(--disp);font-size:1.05rem;color:var(--ink)}
+.tt-col.savings b{color:var(--green)}
+.tt-col.grand b{font-size:1.4rem}
+.tray-bar-mini{display:flex;height:10px;border:2px solid var(--ink);border-radius:999px;overflow:hidden;width:130px;background:var(--paper-2)}
+.tray-bar-mini i{display:block;height:100%;transition:width .45s cubic-bezier(.6,.05,.2,1)}
+
+/* ============ TOAST ============ */
+.toast{
+  position:fixed;bottom:120px;left:50%;transform:translate(-50%,20px);
+  background:var(--ink);color:var(--paper);border:2px solid var(--paper);
+  border-radius:999px;padding:.6em 1.3em;font-weight:700;font-size:.9rem;
+  z-index:90;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);max-width:90%;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:960px){
+  .hero-grid{grid-template-columns:1fr;gap:3rem}
+  .hero-art{order:-1}
+  .hero-card{width:min(280px,100%)}
+  .build-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .pp1{width:120px;height:150px}
+  .pp2{width:100px;height:130px}
+}
+@media (max-width:720px){
+  .nav-links{display:none}
+  .tray-inner{grid-template-columns:1fr;gap:.8rem;padding-bottom:1rem}
+  .tray-items{order:2}
+  .tray-totals{justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+  .tray-bar-mini{width:100px}
+  footer{padding-bottom:14rem}
+  .toast{bottom:190px}
+  .seasonal-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .shelf-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.9rem}
+  .card{padding:.7rem}
+  .fs2{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001s !important;transition-duration:.001s !important}
+  .ticker-track{animation:none}
+  .hero-card,.float-star{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header id="siteHeader">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="The Paper Parlor home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="9" fill="#FFD23F" stroke="#23233B" stroke-width="2.5"/><g transform="rotate(-30 20 20)"><rect x="15" y="6" width="10" height="22" rx="3" fill="#FF6B35" stroke="#23233B" stroke-width="2"/><path d="M15 28 L20 36 L25 28 Z" fill="#23233B"/></g></svg>
+      <b>The Paper <em>Parlor</em></b>
+    </a>
+    <nav aria-label="Main">
+      <ul class="nav-links">
+        <li><a href="#seasonal">Seasonal Desk</a></li>
+        <li><a href="#shelf">Shop the Shelf</a></li>
+        <li><a href="#build">Build a Set</a></li>
+        <li><a href="#artists">Artists</a></li>
+        <li><a href="#shipping">Shipping</a></li>
+      </ul>
+    </nav>
+    <button class="tray-nav" id="trayNav"><span class="dot"></span>Tray · <span id="trayNavCount">0</span>/5</button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero" aria-label="Introduction">
+  <div class="hero-layers" aria-hidden="true">
+    <span class="ppaper pp1"></span><span class="ppaper pp2"></span>
+    <span class="ppaper pp3"></span><span class="ppaper pp4"></span>
+    <svg class="float-star fs1" viewBox="0 0 60 60" aria-hidden="true"><path d="M30 4 L37 22 L56 23 L41 35 L46 54 L30 43 L14 54 L19 35 L4 23 L23 22 Z" fill="#17A398" stroke="#23233B" stroke-width="3" stroke-linejoin="round"/></svg>
+    <svg class="float-star fs2" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="26" fill="#FF7BAC" stroke="#23233B" stroke-width="3"/><circle cx="21" cy="26" r="4" fill="#23233B"/><circle cx="39" cy="26" r="4" fill="#23233B"/><path d="M19 38 Q30 48 41 38" stroke="#23233B" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>
+  </div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="sticker coral">Independent since 2016</span>
+      <h1>Small papers,<br><span class="hl">big joy</span> —<br>find your <span class="u">next favorite<svg viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 Q 25 2 50 7 T 98 5" stroke="#FFD23F" stroke-width="6" fill="none" stroke-linecap="round"/></svg></span>.</h1>
+      <p class="lede">Notebooks, washi, inks & little paper goods from independent makers. Mix up to <b>five items</b> in your bundle tray and watch the set savings roll in.</p>
+      <div class="hero-ctas">
+        <a class="btn primary" href="#shelf">Shop the Shelf ↓</a>
+        <a class="btn butter" href="#build">Build a Set</a>
+      </div>
+      <p class="hero-note">✦ Bundle savings: <b>save 10% on 3, 15% on 5</b> — free shipping over $35.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <figure class="hero-card">
+        <span class="sticker teal stick1">Staff pick</span>
+        <span class="sticker stick2">Made in small runs</span>
+        <div class="art" id="heroArt"></div>
+        <figcaption><span>Dot-Grid Doodle Book</span><span class="price">$9</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TICKER ============ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- ============ SEASONAL DESK ============ -->
+<section class="block" id="seasonal">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">This month at the counter</span>
+        <h2>The Seasonal Desk</h2>
+      </div>
+      <p class="grow">Four picks from our autumn run — warm inks, harvest washi, and a pen cup glazed like a river stone. Tap “add to set” and start stacking savings.</p>
+      <span class="sticker blush">Autumn edition</span>
+    </div>
+    <div class="seasonal-grid" id="seasonalGrid"></div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT CATEGORIES ============ -->
+<section class="block" id="shelf">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">Browse the whole shelf</span>
+        <h2>Shop by Category &amp; Color</h2>
+      </div>
+      <p class="grow">Filter the full catalogue by what it is and what it looks like. Stock states update live — sold-out pieces come back in the next press run.</p>
+    </div>
+    <div class="filters" role="group" aria-label="Product filters">
+      <div class="filter-row" id="catRow">
+        <span class="filter-label">Category</span>
+      </div>
+      <div class="filter-row" id="colorRow">
+        <span class="filter-label">Color</span>
+        <button class="clear-f" id="clearFilters">Clear all</button>
+      </div>
+    </div>
+    <div class="shelf-grid" id="shelfGrid" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ BUILD A SET ============ -->
+<section class="block" id="build">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">Mix · match · save</span>
+        <h2>Build-a-Set</h2>
+      </div>
+      <p class="grow">Your bundle tray holds exactly <b>five items</b>. Add from the shelf above or the seasonal desk — the color balance bar and total update with every tap.</p>
+    </div>
+    <div class="build-grid">
+      <div>
+        <div class="tiers" id="tiers">
+          <div class="tier" data-tier="0"><div class="big">1–2</div><div class="desc"><b>Just browsing</b><span>Full price. No pressure.</span></div></div>
+          <div class="tier" data-tier="3"><div class="big">3</div><div class="desc"><b>Set savings begin</b><span>Ten percent off the whole bundle.</span></div><span class="save-badge">−10%</span></div>
+          <div class="tier" data-tier="5"><div class="big">5</div><div class="desc"><b>Full tray</b><span>Fifteen percent off. The good tier.</span></div><span class="save-badge">−15%</span></div>
+        </div>
+        <p class="build-hint">💡 <b>Tip:</b> a balanced tray looks great as a gift — one notebook, one tape, a pen, some cards and a sticker sheet is our house recipe.</p>
+      </div>
+      <div class="tray-preview" id="trayPreview" aria-live="polite">
+        <h3>Your Bundle Tray</h3>
+        <p class="tp-count"><span id="tpCount">0</span> of 5 slots filled</p>
+        <div class="tp-slots" id="tpSlots"></div>
+        <div class="tp-items" id="tpItems"></div>
+        <div class="tp-balance-wrap" id="tpBalanceWrap" hidden>
+          <p class="tp-balance-label">Color balance</p>
+          <div class="tp-bar" id="tpBar"></div>
+          <div class="tp-legend" id="tpLegend"></div>
+        </div>
+        <div class="tp-totals" id="tpTotals"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARTIST COLLABORATIONS ============ -->
+<section class="block" id="artists">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">Made with, not just for</span>
+        <h2>Artist Collaborations</h2>
+      </div>
+      <p class="grow">Every season we press-run paper goods with independent illustrators. 15% of each collaboration sale goes back to the artist.</p>
+      <span class="sticker lilac">15% to artists</span>
+    </div>
+    <div class="artist-grid" id="artistGrid"></div>
+  </div>
+</section>
+
+<!-- ============ SHIPPING & RETURNS ============ -->
+<section class="block" id="shipping">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">The boring bits, made pleasant</span>
+        <h2>Shipping &amp; Returns</h2>
+      </div>
+      <p class="grow">Flat rates, plain language, and a 30-day “it didn’t make you smile” guarantee.</p>
+    </div>
+    <div class="ship-grid">
+      <div class="ship-card">
+        <span class="sticker">Free over $35</span>
+        <h3><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="3" y="10" width="22" height="20" rx="3" fill="#17A398" stroke="#23233B" stroke-width="2.5"/><path d="M25 16 h8 l6 7 v7 h-14 Z" fill="#FFD23F" stroke="#23233B" stroke-width="2.5"/><circle cx="12" cy="31" r="4" fill="#23233B"/><circle cx="29" cy="31" r="4" fill="#23233B"/></svg>Shipping</h3>
+        <ul>
+          <li><span><b>Domestic flat rate $6</b> — free on bundles of $35 or more.</span></li>
+          <li><span><b>2–5 business days</b> standard, dispatched from our studio by 2pm.</span></li>
+          <li><span><b>International $14 flat</b> to 40+ countries, with tracking.</span></li>
+          <li><span>Everything ships in <b>recycled kraft</b> with zero single-use plastic.</span></li>
+        </ul>
+      </div>
+      <div class="ship-card">
+        <span class="sticker blush">30 days</span>
+        <h3><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 20 a13 13 0 1 1 4 9" fill="none" stroke="#FF6B35" stroke-width="5" stroke-linecap="round"/><path d="M8 20 L4 12 M8 20 L16 16" stroke="#23233B" stroke-width="3" stroke-linecap="round"/></svg>Returns</h3>
+        <ul>
+          <li><span><b>30 days, no quiz.</b> If it didn’t make you smile, send it back.</span></li>
+          <li><span><b>Unopened goods</b> for a full refund; opened for store credit.</span></li>
+          <li><span><b>Prepaid label</b> emailed within a day — just drop it in any mailbox.</span></li>
+          <li><span>Missing or damaged item? We <b>re-send it free</b>, first ask.</span></li>
+        </ul>
+      </div>
+      <div class="ship-card">
+        <span class="sticker teal">Good to know</span>
+        <h3><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="#9B8CFF" stroke="#23233B" stroke-width="2.5"/><path d="M20 12 v9 l6 5" stroke="#23233B" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>Gift Bundles</h3>
+        <ul>
+          <li><span>Any tray of 3+ can be <b>gift-wrapped free</b> — tick it at checkout.</span></li>
+          <li><span>Add a <b>handwritten card</b> and we’ll write it in real ink.</span></li>
+          <li><span>Gift receipts included; <b>recipient returns</b> accepted too.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="logo" href="#top" style="color:var(--paper)">
+          <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="9" fill="#FFD23F" stroke="#23233B" stroke-width="2.5"/><g transform="rotate(-30 20 20)"><rect x="15" y="6" width="10" height="22" rx="3" fill="#FF6B35" stroke="#23233B" stroke-width="2"/><path d="M15 28 L20 36 L25 28 Z" fill="#23233B"/></g></svg>
+          <b>The Paper <em>Parlor</em></b>
+        </a>
+        <p>A small stationery & paper-goods shop. 14 Pressworks Lane, Portland OR. Open Wed–Sun, 10–6.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="#seasonal">Seasonal Desk</a></li>
+          <li><a href="#shelf">All Products</a></li>
+          <li><a href="#build">Build a Set</a></li>
+          <li><a href="#artists">Artist Collabs</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#shipping">Shipping</a></li>
+          <li><a href="#shipping">Returns &amp; Exchanges</a></li>
+          <li><a href="#" data-demo>Gift Cards</a></li>
+          <li><a href="#" data-demo>FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get the dispatch</h4>
+        <p style="font-size:.9rem;opacity:.8">New press runs, artist drops & 20% off your first bundle.</p>
+        <form class="news" id="newsForm">
+          <input type="email" required placeholder="you@papermail.com" aria-label="Email address">
+          <button class="btn primary sm" type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2025 The Paper Parlor — printed with care.</span>
+      <span><a href="#" data-demo style="opacity:.9">Privacy</a> · <a href="#" data-demo style="opacity:.9">Terms</a> · <a href="mailto:hello@paperparlor.shop" style="opacity:.9">hello@paperparlor.shop</a></span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ FIXED BUNDLE TRAY ============ -->
+<div class="tray" role="region" aria-label="Bundle tray">
+  <div class="tray-inner">
+    <div>
+      <div class="tray-title">Bundle Tray <small id="traySlotsLabel">0 / 5 items</small></div>
+      <div class="tray-slots" id="traySlots" aria-hidden="true"></div>
+    </div>
+    <div class="tray-items" id="trayItems"></div>
+    <div class="tray-totals">
+      <div class="tray-bar-mini" id="trayBar" title="Color balance" aria-hidden="true"></div>
+      <div class="tt-col">Subtotal<b id="ttSub">$0</b></div>
+      <div class="tt-col savings">Savings<b id="ttSave">—</b></div>
+      <div class="tt-col grand">Total<b id="ttTotal">$0</b></div>
+      <button class="btn primary sm" id="checkoutBtn" disabled>Checkout</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ================= DATA ================= */
+const COLORS = {
+  coral:{hex:"#FF6B35",name:"Coral"},
+  butter:{hex:"#FFD23F",name:"Butter"},
+  teal:{hex:"#17A398",name:"Teal"},
+  lilac:{hex:"#9B8CFF",name:"Lilac"},
+  blush:{hex:"#FF7BAC",name:"Blush"},
+  ink:{hex:"#23233B",name:"Ink"}
+};
+const CATEGORIES = ["Notebooks","Washi & Tape","Pens & Ink","Paper","Stickers","Desk"];
+
+const PRODUCTS = [
+  {id:"dotgrid", name:"Dot-Grid Doodle Book", price:9,  cat:"Notebooks",     color:"ink",   stock:"in",  icon:"notebook", tag:null},
+  {id:"pocket",  name:"Travel Pocket Pad",     price:6,  cat:"Notebooks",     color:"butter",stock:"low", n:3, icon:"pad"},
+  {id:"field",   name:"Field Sketchbook",      price:12, cat:"Notebooks",     color:"teal",  stock:"in",  icon:"sketch", tag:"Seasonal"},
+  {id:"washi-sun",name:"Washi Roll — Daisies", price:5,  cat:"Washi & Tape",  color:"blush", stock:"in",  icon:"tape", tag:"Seasonal"},
+  {id:"masking", name:"Masking Tape Trio",     price:8,  cat:"Washi & Tape",  color:"lilac", stock:"in",  icon:"tape3"},
+  {id:"washi-dot",name:"Washi Roll — Dots",    price:5,  cat:"Washi & Tape",  color:"butter",stock:"out",icon:"tape"},
+  {id:"fountain",name:"Fountain Pen — Tide",   price:24, cat:"Pens & Ink",    color:"teal",  stock:"in",  icon:"pen",  tag:"Staff pick"},
+  {id:"gel",     name:"Gel Pen Four-Pack",     price:7,  cat:"Pens & Ink",    color:"coral", stock:"low", n:2, icon:"pens"},
+  {id:"inkb",    name:"Ink Bottle — Midnight", price:10, cat:"Pens & Ink",    color:"ink",   stock:"in",  icon:"bottle", tag:"Seasonal"},
+  {id:"env",     name:"Letterpress Envelopes", price:8,  cat:"Paper",         color:"blush", stock:"in",  icon:"envelope"},
+  {id:"cards",   name:"Greeting Cards, Six-Pack", price:9, cat:"Paper",       color:"butter",stock:"low", n:4, icon:"cards"},
+  {id:"bags",    name:"Paper Gift Bags",       price:11, cat:"Paper",         color:"lilac", stock:"in",  icon:"bag"},
+  {id:"stars",   name:"Sticker Sheet — Stars", price:4,  cat:"Stickers",      color:"butter",stock:"in",  icon:"starSticker", tag:"New"},
+  {id:"faces",   name:"Sticker Sheet — Faces", price:4,  cat:"Stickers",      color:"blush", stock:"in",  icon:"faceSticker"},
+  {id:"stickbook",name:"Sticker Book — Big",   price:12, cat:"Stickers",      color:"lilac", stock:"low", n:5, icon:"notebook"},
+  {id:"cup",     name:"Ceramic Pen Cup",       price:14, cat:"Desk",          color:"teal",  stock:"in",  icon:"cup", tag:"Seasonal"},
+  {id:"ruler",   name:"Brass Ruler",           price:6,  cat:"Desk",          color:"butter",stock:"in",  icon:"ruler"},
+  {id:"clips",   name:"Paper Clips, Mixed",    price:5,  cat:"Desk",          color:"coral", stock:"in",  icon:"clip"}
+];
+const SEASONAL = ["field","washi-sun","inkb","cup"];
+const byId = id => PRODUCTS.find(p=>p.id===id);
+
+/* ================= SVG ICONS (all generated in-page) ================= */
+function icon(key,c){
+  const W="#FFFDF8", I="#23233B";
+  const S = {
+    notebook:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><rect x="34" y="16" width="56" height="88" rx="8" fill="${c}"/><rect x="34" y="16" width="13" height="88" rx="6" fill="rgba(0,0,0,.18)"/><rect x="55" y="9" width="32" height="10" rx="4" fill="${I}"/><line x1="58" y1="45" x2="80" y2="45" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round"/><line x1="58" y1="60" x2="80" y2="60" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round"/><line x1="58" y1="75" x2="80" y2="75" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round"/></svg>`,
+    pad:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><rect x="28" y="20" width="64" height="84" rx="7" fill="${c}"/>${[38,50,62,74,86].map(x=>`<circle cx="${x}" cy="20" r="5" fill="${W}" stroke="${I}" stroke-width="2.5"/>`).join("")}<line x1="40" y1="48" x2="80" y2="48" stroke="rgba(35,35,59,.35)" stroke-width="3.5" stroke-linecap="round"/><line x1="40" y1="64" x2="80" y2="64" stroke="rgba(35,35,59,.35)" stroke-width="3.5" stroke-linecap="round"/><line x1="40" y1="80" x2="68" y2="80" stroke="rgba(35,35,59,.35)" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+    sketch:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><rect x="16" y="30" width="88" height="64" rx="8" fill="${c}"/><rect x="16" y="30" width="14" height="64" rx="6" fill="rgba(0,0,0,.18)"/><rect x="42" y="44" width="34" height="6" rx="3" fill="${I}"/><path d="M46 78 l10 -12 l8 9 l8 -14 l10 17 Z" fill="${W}" opacity=".85"/><circle cx="78" cy="55" r="6" fill="${W}" opacity=".85"/></svg>`,
+    tape:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><circle cx="56" cy="60" r="37" fill="${c}"/><circle cx="56" cy="60" r="15" fill="${W}"/><path d="M88 72 L112 84 L94 94 Z" fill="${c}" stroke="${I}" stroke-width="2"/><circle cx="42" cy="42" r="4" fill="${W}" opacity=".8"/><circle cx="72" cy="46" r="4" fill="${W}" opacity=".8"/><circle cx="62" cy="82" r="4" fill="${W}" opacity=".8"/><circle cx="38" cy="72" r="4" fill="${W}" opacity=".8"/></svg>`,
+    tape3:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><circle cx="36" cy="72" r="20" fill="${c}"/><circle cx="36" cy="72" r="8" fill="${W}"/><circle cx="72" cy="60" r="20" fill="${c}" opacity=".65"/><circle cx="72" cy="60" r="8" fill="${W}"/><circle cx="86" cy="86" r="15" fill="${c}" opacity=".85"/><circle cx="86" cy="86" r="6" fill="${W}"/></svg>`,
+    pen:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><g transform="rotate(38 60 60)"><rect x="51" y="10" width="18" height="72" rx="6" fill="${c}"/><rect x="51" y="10" width="18" height="16" rx="6" fill="rgba(0,0,0,.22)"/><path d="M51 82 L60 108 L69 82 Z" fill="${I}"/><rect x="55" y="98" width="10" height="7" fill="${W}" opacity=".5"/></g></svg>`,
+    pens:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true">${[[40,28,"-18"],[58,24,"-6"],[76,28,"6"],[90,40,"18"]].map(([x,y,r])=>`<g transform="rotate(${r} ${x} 62)"><rect x="${x-6}" y="26" width="12" height="52" rx="4" fill="${c}"/><path d="M${x-6} 78 L${x} 92 L${x+6} 78 Z" fill="${I}"/></g>`).join("")}</svg>`,
+    bottle:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><rect x="40" y="44" width="40" height="54" rx="9" fill="${c}"/><rect x="52" y="28" width="16" height="16" fill="${c}"/><rect x="48" y="18" width="24" height="11" rx="3" fill="${I}"/><rect x="47" y="60" width="26" height="22" rx="4" fill="${W}"/><circle cx="60" cy="71" r="6" fill="${c}" opacity=".55"/></svg>`,
+    envelope:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><rect x="22" y="34" width="76" height="54" rx="7" fill="${c}"/><path d="M24 40 L60 70 L96 40" fill="none" stroke="${W}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="60" cy="52" r="5" fill="${W}"/></svg>`,
+    cards:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><rect x="34" y="22" width="54" height="70" rx="6" fill="${c}" transform="rotate(-6 61 57)"/><rect x="38" y="28" width="52" height="68" rx="6" fill="${W}" stroke="${I}" stroke-width="2.5"/><path d="M64 48 c-8-10-24-2-24 10 c0 12 16 20 24 26 c8-6 24-14 24-26 c0-12-16-20-24-10 Z" fill="${c}"/></svg>`,
+    bag:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><path d="M34 46 L86 46 L93 100 L27 100 Z" fill="${c}"/><path d="M45 46 C45 24 75 24 75 46" fill="none" stroke="${I}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="72" r="10" fill="${W}" opacity=".85"/></svg>`,
+    starSticker:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><rect x="26" y="24" width="68" height="74" rx="8" fill="${W}" stroke="${I}" stroke-width="2.5"/><path d="M60 38 L66 54 L83 55 L70 66 L74 83 L60 73 L46 83 L50 66 L37 55 L54 54 Z" fill="${c}" stroke="${I}" stroke-width="2" stroke-linejoin="round"/></svg>`,
+    faceSticker:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><circle cx="60" cy="60" r="38" fill="${c}" stroke="${I}" stroke-width="2.5"/><circle cx="47" cy="54" r="5" fill="${I}"/><circle cx="73" cy="54" r="5" fill="${I}"/><path d="M45 72 Q60 86 75 72" stroke="${I}" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="40" cy="66" r="5" fill="${W}" opacity=".5"/><circle cx="80" cy="66" r="5" fill="${W}" opacity=".5"/></svg>`,
+    cup:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><rect x="58" y="14" width="10" height="42" rx="4" fill="${c}"/><path d="M58 14 L63 6 L68 14 Z" fill="${I}"/><path d="M34 50 L86 50 L79 100 L41 100 Z" fill="${c}"/><path d="M34 50 L86 50 L84 64 L36 64 Z" fill="rgba(0,0,0,.15)"/></svg>`,
+    ruler:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><g transform="rotate(-22 60 60)"><rect x="12" y="49" width="96" height="22" rx="5" fill="${c}"/><rect x="12" y="49" width="96" height="8" rx="4" fill="rgba(255,255,255,.35)"/>${[28,42,56,70,84,98].map(x=>`<line x1="${x}" y1="65" x2="${x}" y2="71" stroke="${I}" stroke-width="3"/>`).join("")}</g></svg>`,
+    clip:`<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><path d="M48 94 L48 42 a17 17 0 0 1 34 0 L82 80 a11 11 0 0 1 -22 0 L60 50" fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round"/><path d="M48 94 L48 42 a17 17 0 0 1 34 0 L82 80 a11 11 0 0 1 -22 0 L60 50" fill="none" stroke="${I}" stroke-width="2" opacity=".3"/></svg>`
+  };
+  return S[key]||S.notebook;
+}
+
+/* ================= HERO ART + TICKER ================= */
+document.getElementById("heroArt").innerHTML =
+  `<svg viewBox="0 0 200 160" role="img" aria-hidden="true">
+    <rect width="200" height="160" rx="8" fill="#F2E4CC"/>
+    <rect x="52" y="24" width="80" height="118" rx="10" fill="#23233B"/>
+    <rect x="52" y="24" width="18" height="118" rx="8" fill="rgba(255,255,255,.12)"/>
+    <circle cx="92" cy="52" r="3" fill="#FFD23F"/><circle cx="112" cy="52" r="3" fill="#FFD23F"/><circle cx="72" cy="52" r="3" fill="#FFD23F"/>
+    <circle cx="92" cy="72" r="3" fill="#FFD23F" opacity=".5"/><circle cx="112" cy="72" r="3" fill="#FFD23F" opacity=".5"/><circle cx="72" cy="72" r="3" fill="#FFD23F" opacity=".5"/>
+    <circle cx="92" cy="92" r="3" fill="#FFD23F" opacity=".25"/><circle cx="112" cy="92" r="3" fill="#FFD23F" opacity=".25"/><circle cx="72" cy="92" r="3" fill="#FFD23F" opacity=".25"/>
+    <rect x="118" y="12" width="42" height="14" rx="6" fill="#FF6B35" stroke="#23233B" stroke-width="2.5"/>
+    <g transform="rotate(24 168 120)"><rect x="162" y="92" width="13" height="46" rx="5" fill="#17A398"/><path d="M162 138 L168.5 152 L175 138 Z" fill="#23233B"/></g>
+    <path d="M20 130 l6 -14 l6 14 l-4 0 l-2 -5 l-2 5 Z" fill="#FFD23F" stroke="#23233B" stroke-width="2"/>
+    <circle cx="34" cy="102" r="8" fill="#FF7BAC" stroke="#23233B" stroke-width="2.5"/>
+  </svg>`;
+const tickerBits = "✦ Save 10% on bundles of 3 &nbsp;✦&nbsp; <i>Free shipping over $35</i> &nbsp;✦&nbsp; <b>15% off a full tray of 5</b> &nbsp;✦&nbsp; New autumn press run in &nbsp;✦&nbsp; <i>15% of collab sales to artists</i> &nbsp;✦&nbsp; 30-day happy returns &nbsp;✦&nbsp; ";
+document.getElementById("tickerTrack").innerHTML = `<span>${tickerBits}</span><span>${tickerBits}</span>`;
+
+/* ================= FILTERS ================= */
+let fCat="all", fColor="all";
+const catRow=document.getElementById("catRow");
+["all",...CATEGORIES].forEach(c=>{
+  const b=document.createElement("button");
+  b.className="pill"; b.textContent = c==="all"?"All":c;
+  b.setAttribute("aria-pressed", c==="all");
+  b.onclick=()=>{ fCat=c; syncPills(); renderShelf(); };
+  catRow.appendChild(b);
+});
+const colorRow=document.getElementById("colorRow");
+const allSw=document.createElement("button");
+allSw.className="swatch ink-sw"; allSw.style.background="conic-gradient(var(--coral),var(--butter),var(--teal),var(--lilac),var(--blush),var(--coral))";
+allSw.setAttribute("aria-pressed","true"); allSw.setAttribute("aria-label","All colors"); allSw.title="All colors";
+allSw.onclick=()=>{ fColor="all"; syncPills(); renderShelf(); };
+colorRow.insertBefore(allSw,colorRow.firstChild);
+Object.entries(COLORS).forEach(([k,v])=>{
+  const b=document.createElement("button");
+  b.className="swatch"; b.style.background=v.hex;
+  b.setAttribute("aria-pressed",false); b.setAttribute("aria-label",v.name); b.title=v.name;
+  b.onclick=()=>{ fColor=k; syncPills(); renderShelf(); };
+  colorRow.appendChild(b);
+});
+function syncPills(){
+  catRow.querySelectorAll(".pill").forEach(p=>p.setAttribute("aria-pressed", (p.textContent===(fCat==="all"?"All":fCat))));
+  allSw.setAttribute("aria-pressed", fColor==="all");
+  colorRow.querySelectorAll(".swatch:not(.ink-sw)").forEach(s=>s.setAttribute("aria-pressed", s.title===COLORS[fColor]?.name));
+}
+document.getElementById("clearFilters").onclick=()=>{ fCat="all"; fColor="all"; syncPills(); renderShelf(); toast("Filters cleared — full shelf restored."); };
+
+/* ================= STOCK BADGE ================= */
+function stockBadge(p){
+  if(p.stock==="out") return `<span class="stock out">Sold out</span>`;
+  if(p.stock==="low") return `<span class="stock low">Only ${p.n} left</span>`;
+  return `<span class="stock in">In stock</span>`;
+}
+function tagSticker(t){
+  const map={"New":"teal","Seasonal":"blush","Staff pick":"coral"};
+  return t?`<span class="sticker ${map[t]||""} tag">${t}</span>`:"";
+}
+
+/* ================= SHELF ================= */
+function renderShelf(){
+  const grid=document.getElementById("shelfGrid");
+  const items=PRODUCTS.filter(p=>(fCat==="all"||p.cat===fCat)&&(fColor==="all"||p.color===fColor));
+  grid.innerHTML = items.length? items.map(p=>`
+    <article class="card ${p.stock==="out"?"out-card":""}" style="--c:${COLORS[p.color].hex}">
+      ${tagSticker(p.tag)}
+      <div class="art">${icon(p.icon,COLORS[p.color].hex)}</div>
+      <div class="meta"><h3>${p.name}</h3><span class="price-tag">$${p.price}</span></div>
+      <span class="cat">${p.cat}</span>
+      <div class="foot">${stockBadge(p)}
+        <button class="btn sm ${p.stock==="out"?"":"butter"}" data-add="${p.id}" ${p.stock==="out"?"disabled":""}>${p.stock==="out"?"Waitlist":"+ Set"}</button>
+      </div>
+    </article>`).join("")
+  : `<div class="empty-note"><b>Nothing matches that combo.</b><br>Try clearing a filter — the shelf is deep.</div>`;
+}
+
+/* ================= SEASONAL ================= */
+document.getElementById("seasonalGrid").innerHTML = SEASONAL.map(id=>{
+  const p=byId(id);
+  return `<article class="season-card" style="--c:${COLORS[p.color].hex}">
+    <span class="sticker coral">Add &amp; save</span>
+    <div class="art">${icon(p.icon,COLORS[p.color].hex)}</div>
+    <h3>${p.name}</h3>
+    <span class="cat" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft)">${p.cat}</span>
+    <div class="row">
+      <div><span class="price-tag">$${p.price}</span><br>${stockBadge(p)}</div>
+      <button class="btn sm butter" data-add="${p.id}" ${p.stock==="out"?"disabled":""}>+ Set</button>
+    </div>
+  </article>`;
+}).join("");
+
+/* ================= ARTISTS ================= */
+const ARTISTS=[
+ {name:"Mara Voss",series:"River Ink Series",note:"Hand-etched river scenes on our midnight ink and teal washi. Runs of 300, numbered by hand.",
+  art:`<svg viewBox="0 0 300 160"><rect width="300" height="160" fill="#17A398"/><path d="M0 100 Q75 70 150 100 T300 100 V160 H0 Z" fill="#FFFDF8" opacity=".9"/><path d="M0 118 Q75 92 150 118 T300 118 V160 H0 Z" fill="#9B8CFF"/><circle cx="230" cy="46" r="22" fill="#FFD23F"/><circle cx="60" cy="40" r="8" fill="#FFFDF8"/><circle cx="90" cy="30" r="5" fill="#FFFDF8" opacity=".7"/></svg>`},
+ {name:"Tomi & June",series:"Little Faces Club",note:"Their sticker faces, now on cards, sheets and a very big sticker book. Sold out twice already.",
+  art:`<svg viewBox="0 0 300 160"><rect width="300" height="160" fill="#FF7BAC"/><circle cx="80" cy="70" r="34" fill="#FFD23F"/><circle cx="68" cy="62" r="5" fill="#23233B"/><circle cx="92" cy="62" r="5" fill="#23233B"/><path d="M66 82 Q80 94 94 82" stroke="#23233B" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="210" cy="90" r="40" fill="#FFFDF8"/><circle cx="194" cy="80" r="6" fill="#23233B"/><circle cx="226" cy="80" r="6" fill="#23233B"/><path d="M194 102 Q210 114 226 102" stroke="#23233B" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M270 30 l6 14 14 1 -11 10 3 15 -12 -8 -13 8 3 -15 -11 -10 14 -1 Z" fill="#FFD23F"/></svg>`},
+ {name:"Oskar Lind",series:"Field Notes No. 4",note:"Botanical silhouettes pressed from real leaves. The source sketchbook is in the shop window.",
+  art:`<svg viewBox="0 0 300 160"><rect width="300" height="160" fill="#F2E4CC"/><path d="M60 140 C60 60 100 40 100 40 C100 40 140 60 140 140" fill="none" stroke="#3E9B4F" stroke-width="7" stroke-linecap="round"/><path d="M100 140 V50 M100 90 L78 70 M100 74 L122 54" stroke="#3E9B4F" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M180 140 C180 70 240 55 240 55 C240 55 205 105 205 140" fill="#FF6B35"/><circle cx="255" cy="40" r="12" fill="#FFD23F" stroke="#23233B" stroke-width="3"/></svg>`}
+];
+document.getElementById("artistGrid").innerHTML = ARTISTS.map(a=>`
+  <article class="artist-card">
+    <div class="artist-art">${a.art}</div>
+    <div class="artist-body">
+      <span class="series">${a.series}</span>
+      <h3>with ${a.name}</h3>
+      <p>${a.note}</p>
+      <div class="foot"><span class="sticker">15% to artist</span>
+        <button class="btn sm butter" data-collab="${a.series}">View pieces</button></div>
+    </div>
+  </article>`).join("");
+
+/* ================= BUNDLE TRAY ================= */
+const tray=[];
+const MAX=5;
+const $=id=>document.getElementById(id);
+const money=n=>"$"+(Math.round(n*100)/100).toFixed(2).replace(/\.00$/,"");
+function discountPct(n){ return n>=5?0.15:n>=3?0.10:0; }
+
+function addToTray(id){
+  const p=byId(id);
+  if(!p) return;
+  if(p.stock==="out"){ toast(p.name+" is sold out — join the waitlist at the counter."); return; }
+  if(tray.includes(id)){ toast(p.name+" is already in your tray."); return; }
+  if(tray.length>=MAX){ toast("Your tray is full at five. Swap something out first!"); return; }
+  tray.push(id);
+  renderTray();
+  toast(`Added “${p.name}” — ${tray.length}/5 in your set.`);
+}
+function removeFromTray(id){
+  const i=tray.indexOf(id); if(i>-1){tray.splice(i,1);renderTray();}
+}
+
+function colorBalance(items){
+  const counts={};
+  items.forEach(id=>{const c=byId(id).color; counts[c]=(counts[c]||0)+1;});
+  return Object.entries(counts).map(([k,n])=>({k,n,hex:COLORS[k].hex,name:COLORS[k].name}));
+}
+
+function renderTray(){
+  const items=tray.map(byId);
+  const sub=items.reduce((s,p)=>s+p.price,0);
+  const pct=discountPct(tray.length);
+  const save=sub*pct, total=sub-save;
+
+  /* slots (fixed bar) */
+  $("traySlots").innerHTML = Array.from({length:MAX},(_,i)=>{
+    const p=items[i];
+    return `<span class="t-slot ${p?"filled":""}" style="${p?`background:${COLORS[p.color].hex};border-color:var(--ink)`:""}"></span>`;
+  }).join("");
+  $("traySlotsLabel").textContent = `${tray.length} / 5 items`;
+  $("trayNavCount").textContent = tray.length;
+
+  /* chips */
+  $("trayItems").innerHTML = items.length
+    ? items.map(p=>`<span class="t-chip"><span class="dotc" style="background:${COLORS[p.color].hex}"></span>${p.name.split("—")[0].trim()}
+        <button aria-label="Remove ${p.name}" data-rm="${p.id}">×</button></span>`).join("")
+    : `<span class="tray-empty">Tray empty — add up to 5 items from the shelf.</span>`;
+
+  /* mini balance bar */
+  $("trayBar").innerHTML = items.length
+    ? colorBalance(tray).map(b=>`<i style="width:${b.n/items.length*100}%;background:${b.hex}"></i>`).join("")
+    : "";
+
+  /* totals */
+  $("ttSub").textContent = money(sub);
+  $("ttSave").textContent = pct? "−"+money(save): "—";
+  $("ttTotal").textContent = money(total);
+  $("checkoutBtn").disabled = items.length<3;
+  $("checkoutBtn").textContent = items.length<3? "3+ to checkout" : "Checkout";
+
+  /* preview panel */
+  $("tpCount").textContent = tray.length;
+  $("tpSlots").innerHTML = Array.from({length:MAX},(_,i)=>{
+    const p=items[i];
+    return `<span class="tp-slot ${p?"filled":""}" style="${p?`background:${COLORS[p.color].hex};color:var(--white)`:""}" title="${p?p.name:"Empty slot"}">${p?"✓":i+1}</span>`;
+  }).join("");
+  $("tpItems").innerHTML = items.length
+    ? items.map(p=>`<span class="tp-item"><span class="chip" style="background:${COLORS[p.color].hex}"></span>${p.name}<span style="margin-left:auto;font-family:var(--disp);font-weight:800">$${p.price}</span><button class="rm" aria-label="Remove ${p.name}" data-rm="${p.id}">×</button></span>`).join("")
+    : `<span class="tp-empty">Nothing yet — tap “+ Set” anywhere on the page to start your bundle.</span>`;
+  const bal=colorBalance(tray);
+  $("tpBalanceWrap").hidden = items.length<2;
+  $("tpBar").innerHTML = items.length? bal.map(b=>`<i style="width:${b.n/items.length*100}%;background:${b.hex}"></i>`).join("") : "";
+  $("tpLegend").innerHTML = bal.map(b=>`<span><em style="background:${b.hex}"></em>${b.name} ×${b.n}</span>`).join("");
+  $("tpTotals").innerHTML = items.length? `
+      <span>Subtotal</span><b>${money(sub)}</b>
+      <span>Set savings (${pct*100}%)</span><b class="savings">${pct?"−"+money(save):"$0"}</b>
+      <span class="grand">Total ${pct?`<span class="sticker teal" style="font-size:.62rem">You save ${money(save)}</span>`:""}<b>${money(total)}</b></span>`
+    : `<span class="grand" style="justify-content:center;color:var(--ink-soft);font-weight:600">Add items to see your total</span>`;
+
+  /* tier highlight */
+  document.querySelectorAll(".tier").forEach(t=>{
+    const th=+t.dataset.tier;
+    const active = th===0? tray.length<3 : th===3? tray.length>=3&&tray.length<5 : tray.length>=5;
+    t.classList.toggle("active",active);
+  });
+}
+
+/* ================= GLOBAL CLICK DELEGATION ================= */
+document.addEventListener("click",e=>{
+  const add=e.target.closest("[data-add]");
+  if(add){ addToTray(add.dataset.add); return; }
+  const rm=e.target.closest("[data-rm]");
+  if(rm){ removeFromTray(rm.dataset.rm); return; }
+  const col=e.target.closest("[data-collab]");
+  if(col){ toast(`The ${col.dataset.collab} lives across the shelf — check stickers & paper.`); return; }
+  const demo=e.target.closest("[data-demo]");
+  if(demo){ e.preventDefault(); toast("That page is out of scope for this demo — hello@paperparlor.shop for anything."); return; }
+});
+document.getElementById("trayNav").onclick=()=>{
+  document.getElementById("build").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
+};
+document.getElementById("checkoutBtn").onclick=()=>{
+  toast("Demo checkout — your "+tray.length+"-item set is looking great. ✂️");
+};
+document.getElementById("newsForm").onsubmit=e=>{
+  e.preventDefault(); toast("You're on the list — first dispatch lands soon. 📬"); e.target.reset();
+};
+
+/* ================= TOAST ================= */
+let toastT;
+function toast(msg){
+  const t=$("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2600);
+}
+
+/* ================= SCROLL-AWARE HEADER ================= */
+const hdr=document.getElementById("siteHeader");
+addEventListener("scroll",()=>hdr.classList.toggle("scrolled",scrollY>12),{passive:true});
+
+/* ================= INIT ================= */
+renderShelf();
+renderTray();
+</script>
+</body>
+</html>

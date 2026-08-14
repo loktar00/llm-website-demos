@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONO BENTO — 1-BIT GRID</title>
+<style>
+  :root{
+    --bg:#0b0b0b;
+    --fg:#f1f1ee;
+    --dim:color-mix(in srgb, var(--fg) 45%, transparent);
+    --faint:color-mix(in srgb, var(--fg) 14%, transparent);
+    --dither:repeating-conic-gradient(var(--fg) 0 25%, transparent 0 50%);
+    --ease:cubic-bezier(.2,.9,.25,1);
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,"Courier New",monospace;
+  }
+  [data-theme="light"]{
+    --bg:#f1f1ee;
+    --fg:#0b0b0b;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--mono);
+    min-height:100vh;
+    transition:background .35s ease, color .35s ease;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--fg);color:var(--bg)}
+
+  .wrap{
+    max-width:1160px;
+    margin:0 auto;
+    padding:32px 24px 56px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding-bottom:22px;
+    margin-bottom:26px;
+    border-bottom:1px solid var(--fg);
+  }
+  .logo{
+    width:26px;height:26px;
+    background-image:var(--dither);
+    background-size:8px 8px;
+    border:1px solid var(--fg);
+    flex:none;
+    animation:logoShift 3s steps(4) infinite;
+  }
+  @keyframes logoShift{
+    0%{background-position:0 0}
+    100%{background-position:8px 8px}
+  }
+  .brand{
+    font-size:13px;
+    letter-spacing:.22em;
+    font-weight:700;
+  }
+  .brand small{
+    display:block;
+    font-size:10px;
+    font-weight:400;
+    letter-spacing:.18em;
+    color:var(--dim);
+    margin-top:2px;
+  }
+  .header-spacer{flex:1}
+  .invert-btn{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    background:transparent;
+    color:var(--fg);
+    border:1px solid var(--fg);
+    padding:9px 16px;
+    cursor:pointer;
+    transition:background .2s ease,color .2s ease,transform .2s var(--ease);
+  }
+  .invert-btn:hover{
+    background:var(--fg);
+    color:var(--bg);
+    transform:translate(-2px,-2px);
+    box-shadow:4px 4px 0 0 var(--dim);
+  }
+  .invert-btn:active{transform:translate(0,0);box-shadow:none}
+
+  /* ---------- bento grid ---------- */
+  .bento{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:14px;
+  }
+  .card{
+    position:relative;
+    border:1px solid var(--fg);
+    background:var(--bg);
+    padding:20px;
+    overflow:hidden;
+    opacity:0;
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), background .3s ease, color .3s ease;
+  }
+  .card.in{
+    opacity:1;
+    animation:rise .7s var(--ease) backwards;
+    animation-delay:var(--delay,0s);
+  }
+  @keyframes rise{
+    from{opacity:0;transform:translateY(18px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:var(--dither);
+    background-size:8px 8px;
+    opacity:0;
+    transition:opacity .4s ease, background-position 1.2s linear;
+    pointer-events:none;
+  }
+  .card > *{position:relative;z-index:1}
+  .card:hover{
+    transform:translate(-4px,-4px);
+    box-shadow:7px 7px 0 0 var(--fg);
+  }
+  .card:hover::before{
+    opacity:.05;
+    background-position:8px 8px;
+  }
+
+  .tag{
+    position:absolute;
+    top:12px;right:14px;
+    font-size:9px;
+    letter-spacing:.2em;
+    color:var(--dim);
+    z-index:2;
+  }
+  .label{
+    font-size:10px;
+    letter-spacing:.24em;
+    color:var(--dim);
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+
+  /* hero */
+  .hero{
+    grid-column:span 5;
+    grid-row:span 2;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:420px;
+    padding:26px;
+  }
+  .hero h1{
+    font-size:clamp(2.6rem,5.5vw,4.2rem);
+    line-height:.95;
+    letter-spacing:-.02em;
+    font-weight:700;
+    margin-top:34px;
+  }
+  .hero h1 .ghost{
+    -webkit-text-stroke:1px var(--fg);
+    color:transparent;
+  }
+  .hero p{
+    margin-top:14px;
+    font-size:12px;
+    line-height:1.7;
+    color:var(--dim);
+    max-width:34ch;
+  }
+  .hero .cursor{
+    display:inline-block;
+    width:.6em;height:1em;
+    background:var(--fg);
+    vertical-align:-.12em;
+    margin-left:4px;
+    animation:blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0}}
+  .dither-disc{
+    width:min(180px,60%);
+    align-self:center;
+    margin:24px 0;
+    flex:none;
+  }
+  .dither-disc svg{display:block;width:100%;height:auto;overflow:visible}
+  .dither-disc .ring{
+    transform-origin:100px 100px;
+    animation:spin 26s linear infinite;
+  }
+  .hero:hover .dither-disc .ring{animation-duration:8s}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hero .meta{
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    letter-spacing:.16em;
+    color:var(--dim);
+    border-top:1px dashed var(--faint);
+    padding-top:14px;
+  }
+
+  /* equalizer */
+  .pulse{grid-column:span 4;display:flex;flex-direction:column}
+  .eq{
+    display:flex;
+    align-items:flex-end;
+    gap:5px;
+    height:74px;
+    margin-top:auto;
+    padding-top:18px;
+  }
+  .eq i{
+    flex:1;
+    height:100%;
+    transform-origin:bottom;
+    background:
+      repeating-linear-gradient(0deg, var(--fg) 0 2px, transparent 2px 4px);
+    border-top:2px solid var(--fg);
+    animation:eq var(--t,1.3s) ease-in-out infinite alternate;
+    animation-delay:var(--dl,0s);
+  }
+  .pulse:hover .eq i{animation-duration:.45s}
+  @keyframes eq{
+    from{transform:scaleY(.15)}
+    to{transform:scaleY(var(--h,.7))}
+  }
+  .eq-note{
+    margin-top:16px;
+    font-size:10px;
+    letter-spacing:.16em;
+    color:var(--dim);
+  }
+
+  /* stats */
+  .stats{grid-column:span 3;display:flex;flex-direction:column;gap:20px}
+  .stat .num{
+    font-size:2.1rem;
+    font-weight:700;
+    letter-spacing:-.02em;
+    line-height:1;
+  }
+  .stat .num .suffix{font-size:1rem;color:var(--dim)}
+  .stat .cap{
+    font-size:9px;
+    letter-spacing:.2em;
+    color:var(--dim);
+    margin-top:6px;
+  }
+  .bar{
+    height:8px;
+    border:1px solid var(--fg);
+    margin-top:8px;
+    position:relative;
+    overflow:hidden;
+  }
+  .bar b{
+    position:absolute;inset:0;
+    background-image:var(--dither);
+    background-size:8px 8px;
+    width:0%;
+    transition:width 1.4s var(--ease) .4s;
+  }
+  .in .bar b{width:var(--w)}
+
+  /* quote */
+  .quote{grid-column:span 4;flex-direction:column;justify-content:center}
+  .quote blockquote{
+    font-size:1.05rem;
+    line-height:1.65;
+    font-weight:400;
+  }
+  .quote blockquote::before{content:"“";font-size:1.6em;vertical-align:-.1em;margin-right:.1em}
+  .quote cite{
+    margin-top:16px;
+    font-style:normal;
+    font-size:10px;
+    letter-spacing:.2em;
+    color:var(--dim);
+  }
+
+  /* pixels */
+  .pixels{grid-column:span 3;display:flex;flex-direction:column}
+  .pixel-grid{
+    display:grid;
+    grid-template-columns:repeat(9,1fr);
+    gap:3px;
+    margin-top:auto;
+    padding-top:18px;
+    aspect-ratio:1;
+    cursor:crosshair;
+  }
+  .px{
+    aspect-ratio:1;
+    background:var(--faint);
+    transition:background .18s ease, transform .18s ease;
+  }
+  .px.on{background:var(--fg);transform:scale(.82)}
+  .hint{
+    margin-top:14px;
+    font-size:9px;
+    letter-spacing:.18em;
+    color:var(--dim);
+  }
+
+  /* strip */
+  .strip{
+    grid-column:span 12;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:0 0 0 20px;
+  }
+  .marquee{
+    flex:1;
+    overflow:hidden;
+    white-space:nowrap;
+    mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  }
+  .marquee span{
+    display:inline-block;
+    font-size:11px;
+    letter-spacing:.3em;
+    color:var(--dim);
+    padding:12px 0;
+    animation:scroll 22s linear infinite;
+  }
+  .strip:hover .marquee span{animation-play-state:paused}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+  .strip .stamp{
+    flex:none;
+    font-size:10px;
+    letter-spacing:.18em;
+    border:1px solid var(--fg);
+    padding:10px 14px;
+    color:var(--fg);
+  }
+
+  /* footer */
+  footer{
+    margin-top:26px;
+    padding-top:18px;
+    border-top:1px solid var(--faint);
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    letter-spacing:.2em;
+    color:var(--dim);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:940px){
+    .hero{grid-column:span 12;grid-row:auto;min-height:360px}
+    .pulse,.quote,.pixels,.stats{grid-column:span 6}
+    .strip{grid-column:span 12}
+  }
+  @media (max-width:600px){
+    .wrap{padding:20px 14px 40px}
+    .hero,.pulse,.quote,.pixels,.stats{grid-column:span 12}
+    .card{padding:18px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .card{opacity:1}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo" aria-hidden="true"></div>
+    <div class="brand">MONO&nbsp;BENTO<small>1-BIT LAYOUT SYSTEM</small></div>
+    <div class="header-spacer"></div>
+    <button class="invert-btn" id="themeBtn" aria-label="Toggle color mode">◐ INVERT</button>
+  </header>
+
+  <main class="bento">
+
+    <!-- HERO -->
+    <article class="card hero" style="--delay:.05s">
+      <span class="tag">00 / HERO</span>
+      <div class="dither-disc" aria-hidden="true">
+        <svg viewBox="0 0 200 200" role="img" aria-label="Dithered disc">
+          <defs>
+            <pattern id="dt" width="8" height="8" patternUnits="userSpaceOnUse">
+              <path d="M0 0h4v4H0zM4 4h4v4H4z" fill="currentColor"/>
+            </pattern>
+          </defs>
+          <circle cx="100" cy="100" r="66" fill="currentColor"/>
+          <g class="ring">
+            <circle cx="100" cy="100" r="84" fill="none" stroke="url(#dt)" stroke-width="22"/>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <div class="label">GRID — A.SYMMETRIC</div>
+        <h1>TWO<br><span class="ghost">COLORS.</span><br>EVERYTHING<span class="cursor"></span></h1>
+        <p>A bento system rendered in pure black &amp; white. No grayscale. No gradients. Just dithering, discipline, and motion.</p>
+      </div>
+      <div class="meta">
+        <span>16 × 16 HALFTONE</span>
+        <span>EST. 2025</span>
+      </div>
+    </article>
+
+    <!-- EQUALIZER -->
+    <article class="card pulse" style="--delay:.15s">
+      <span class="tag">01 / PULSE</span>
+      <div class="label">SIGNAL</div>
+      <div class="eq" id="eq" aria-hidden="true"></div>
+      <div class="eq-note">HOVER TO OVERCLOCK ▲</div>
+    </article>
+
+    <!-- STATS -->
+    <article class="card stats" style="--delay:.25s">
+      <span class="tag">02 / DATA</span>
+      <div class="stat">
+        <div class="num"><span id="count">0</span><span class="suffix">px</span></div>
+        <div class="cap">PER 8×8 TILE</div>
+        <div class="bar"><b style="--w:100%"></b></div>
+      </div>
+      <div class="stat">
+        <div class="num">2<span class="suffix">c</span></div>
+        <div class="cap">COLORS USED</div>
+        <div class="bar"><b style="--w:8%"></b></div>
+      </div>
+    </article>
+
+    <!-- QUOTE -->
+    <article class="card quote" style="--delay:.35s">
+      <span class="tag">03 / NOTE</span>
+      <blockquote>Constrain the palette and the composition has to earn every single pixel.<span class="cursor" style="margin-left:2px"></span></blockquote>
+      <cite>— FIELD MANUAL, p.04</cite>
+    </article>
+
+    <!-- PIXELS -->
+    <article class="card pixels" style="--delay:.45s">
+      <span class="tag">04 / FIELD</span>
+      <div class="label">INTERACT</div>
+      <div class="pixel-grid" id="pixelGrid" aria-hidden="true"></div>
+      <div class="hint">MOVE POINTER ACROSS FIELD</div>
+    </article>
+
+    <!-- STRIP -->
+    <article class="card strip" style="--delay:.55s">
+      <div class="marquee" aria-hidden="true">
+        <span>MONOCHROME&nbsp;•&nbsp;HALFTONE&nbsp;•&nbsp;BAYER&nbsp;4×4&nbsp;•&nbsp;NO&nbsp;GRAYSCALE&nbsp;•&nbsp;HARD&nbsp;SHADOWS&nbsp;•&nbsp;STRICT&nbsp;RHYTHM&nbsp;•&nbsp;MONOCHROME&nbsp;•&nbsp;HALFTONE&nbsp;•&nbsp;BAYER&nbsp;4×4&nbsp;•&nbsp;NO&nbsp;GRAYSCALE&nbsp;•&nbsp;HARD&nbsp;SHADOWS&nbsp;•&nbsp;STRICT&nbsp;RHYTHM&nbsp;•&nbsp;</span>
+      </div>
+      <div class="stamp">SPEC&nbsp;v1.0</div>
+    </article>
+
+  </main>
+
+  <footer>
+    <span>© 2025 MONO BENTO</span>
+    <span>RENDERED IN 2 COLORS</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- staggered reveal ---- */
+  var cards = document.querySelectorAll(".card");
+  window.addEventListener("load", function(){
+    cards.forEach(function(c, i){
+      setTimeout(function(){ c.classList.add("in"); }, 60 * i);
+    });
+  });
+  // fallback if load already fired
+  setTimeout(function(){
+    cards.forEach(function(c){ c.classList.add("in"); });
+  }, 1500);
+
+  /* ---- theme toggle ---- */
+  var btn = document.getElementById("themeBtn");
+  btn.addEventListener("click", function(){
+    var root = document.documentElement;
+    var light = root.getAttribute("data-theme") === "light";
+    root.setAttribute("data-theme", light ? "dark" : "light");
+    btn.textContent = light ? "◐ INVERT" : "◑ INVERT";
+  });
+
+  /* ---- equalizer bars ---- */
+  var eq = document.getElementById("eq");
+  var heights = [0.55,0.8,0.4,1,0.65,0.9,0.35,0.75,0.5,0.95,0.6,0.85];
+  heights.forEach(function(h, i){
+    var bar = document.createElement("i");
+    bar.style.setProperty("--h", h);
+    bar.style.setProperty("--dl", (i * 0.09) + "s");
+    bar.style.setProperty("--t", (1 + (i % 5) * 0.18) + "s");
+    eq.appendChild(bar);
+  });
+
+  /* ---- count-up ---- */
+  var countEl = document.getElementById("count");
+  var counted = false;
+  function countUp(){
+    if (counted) return;
+    counted = true;
+    var start = null, dur = 1200, target = 256;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var e = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      countEl.textContent = Math.round(e * target);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  // trigger when stats card is revealed
+  var statsCard = document.querySelector(".stats");
+  if (statsCard){
+    statsCard.addEventListener("animationstart", function handler(){
+      statsCard.removeEventListener("animationstart", handler);
+      countUp();
+    });
+  }
+  setTimeout(countUp, 2500); // safety
+
+  /* ---- interactive pixel field ---- */
+  var grid = document.getElementById("pixelGrid");
+  var N = 9;
+  var cells = [];
+  for (var i = 0; i < N * N; i++){
+    var d = document.createElement("div");
+    d.className = "px";
+    grid.appendChild(d);
+    cells.push(d);
+  }
+  var ticking = false;
+  var lastEvt = null;
+  grid.addEventListener("pointermove", function(e){
+    lastEvt = e;
+    if (!ticking){
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  });
+  grid.addEventListener("pointerleave", function(){
+    cells.forEach(function(c){ c.classList.remove("on"); });
+  });
+  function update(){
+    ticking = false;
+    var r = grid.getBoundingClientRect();
+    if (r.width === 0) return;
+    var x = (lastEvt.clientX - r.left) / r.width * N;
+    var y = (lastEvt.clientY - r.top) / r.height * N;
+    for (var i = 0; i < cells.length; i++){
+      var cx = (i % N) + 0.5;
+      var cy = Math.floor(i / N) + 0.5;
+      var dist = Math.hypot(cx - x, cy - y);
+      cells[i].classList.toggle("on", dist < 2.4);
+    }
+  }
+})();
+</script>
+</body>
+</html>
