@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>The Outbreak — a sketch sim</title>
+<style>
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#efe8d8;}
+  #c{display:block;touch-action:none;-webkit-user-select:none;user-select:none;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function(){
+"use strict";
+var cv=document.getElementById('c'), ctx=cv.getContext('2d');
+var W=0,H=0,DPR=1;
+var bg=document.createElement('canvas'), bctx=bg.getContext('2d');
+
+function rnd(a,b){return a+Math.random()*(b-a);}
+function clamp(v,a,b){return v<a?a:(v>b?b:v);}
+function hash(n){var s=Math.sin(n*127.1+311.7)*43758.5453;return s-Math.floor(s);}
+var boil=0;                       // boiling-line step: re-jitters every ~140ms
+function jit(seed){return hash(seed+boil*13.373)*2-1;}      // time-boiling jitter
+function sjit(seed){return hash(seed*7.77)*2-1;}            // static jitter (background)
+
+/* ---------- wobbly sketch primitives ---------- */
+function wline(c,x1,y1,x2,y2,seed,amp){
+  amp=amp||1.6;
+  var dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy);
+  var n=Math.max(2,Math.round(len/9));
+  c.beginPath();
+  for(var i=0;i<=n;i++){
+    var t=i/n, f=(i>0&&i<n)?1:0.4;
+    var px=x1+dx*t+jit(seed+i*7.1)*amp*f;
+    var py=y1+dy*t+jit(seed+i*13.7+50)*amp*f;
+    if(i)c.lineTo(px,py);else c.moveTo(px,py);
+  }
+  c.stroke();
+}
+function wcirc(c,cx,cy,r,seed,amp){
+  amp=amp===undefined?r*0.15:amp;
+  var n=9;
+  c.beginPath();
+  for(var i=0;i<=n;i++){
+    var a=i/n*Math.PI*2, rr=r+jit(seed+i*3.3)*amp;
+    var px=cx+Math.cos(a)*rr, py=cy+Math.sin(a)*rr;
+    if(i)c.lineTo(px,py);else c.moveTo(px,py);
+  }
+  c.stroke();
+}
+function sketchRect(c,x,y,w,h){
+  c.lineWidth=1.6;
+  wline(c,x,y,x+w,y,1.1,2);
+  wline(c,x+w,y,x+w,y+h,2.7,2);
+  wline(c,x+w,y+h,x,y+h,4.2,2);
+  wline(c,x,y+h,x,y,5.9,2);
+}
+
+/* ---------- paper background (pre-rendered) ---------- */
+function buildBG(){
+  bg.width=Math.max(1,W*DPR); bg.height=Math.max(1,H*DPR);
+  bctx.setTransform(DPR,0,0,DPR,0,0);
+  bctx.fillStyle='#f3edde'; bctx.fillRect(0,0,W,H);
+  var i,x,y;
+  // paper speckle
+  for(i=0;i<W*H/350;i++){
+    bctx.fillStyle='rgba(90,80,60,'+(Math.random()*0.07).toFixed(3)+')';
+    bctx.fillRect(Math.random()*W,Math.random()*H,1.5,1.5);
+  }
+  // faint stains
+  for(i=0;i<6;i++){
+    x=Math.random()*W;y=Math.random()*H;
+    var g=bctx.createRadialGradient(x,y,4,x,y,rnd(40,120));
+    g.addColorStop(0,'rgba(120,105,70,0.045)');g.addColorStop(1,'rgba(120,105,70,0)');
+    bctx.fillStyle=g;bctx.fillRect(x-140,y-140,280,280);
+  }
+  // grass tufts / pebbles
+  bctx.strokeStyle='rgba(95,105,70,0.32)'; bctx.lineWidth=1;
+  for(i=0;i<W*H/8500;i++){
+    x=Math.random()*W; y=Math.random()*H;
+    bctx.beginPath();
+    for(var k=-1;k<=1;k++){
+      bctx.moveTo(x+k*2,y);
+      bctx.lineTo(x+k*3+(sjit(i*3+k)*2.5), y-5-Math.random()*7);
+    }
+    bctx.stroke();
+  }
+  bctx.strokeStyle='rgba(80,75,60,0.25)';
+  for(i=0;i<W*H/25000;i++){
+    x=Math.random()*W;y=Math.random()*H;
+    wcirc(bctx,x,y,rnd(1.5,3.5),i*11.3,0.5);
+  }
+  // hand-drawn page border
+  bctx.strokeStyle='rgba(60,50,40,0.55)';
+  sketchRect(bctx,7,7,W-14,H-14);
+  bctx.strokeStyle='rgba(60,50,40,0.3)';
+  sketchRect(bctx,12,12,W-24,H-24);
+}
+
+function resize(){
+  DPR=Math.min(2,window.devicePixelRatio||1);
+  W=window.innerWidth; H=window.innerHeight;
+  cv.width=Math.max(1,W*DPR); cv.height=Math.max(1,H*DPR);
+  cv.style.width=W+'px'; cv.style.height=H+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  buildBG();
+}
+window.addEventListener('resize',resize);
+
+/* ---------- simulation ---------- */
+var agents=[], wave=1, waveTimer=0, spawnTimer=6, timeNow=0;
+
+function baseCount(){return clamp(Math.floor(W*H/11000),36,110);}
+
+function makeAgent(x,y,st){
+  return {x:x,y:y,a:rnd(0,6.28),vx:0,vy:0,st:st,inf:0,tm:0,
+          seed:Math.random()*997,gait:rnd(0,6.28),flash:0,ph:rnd(0,6.28)};
+}
+
+function initWave(){
+  agents=[];
+  var n=baseCount(), i;
+  var zx=rnd(W*0.35,W*0.65), zy=rnd(H*0.35,H*0.65);
+  for(i=0;i<n;i++) agents.push(makeAgent(rnd(30,W-30),rnd(30,H-30),0));
+  agents.sort(function(p,q){
+    return (p.x-zx)*(p.x-zx)+(p.y-zy)*(p.y-zy)-((q.x-zx)*(q.x-zx)+(q.y-zy)*(q.y-zy));
+  });
+  var nz=Math.min(1+Math.floor(wave*0.7),6);
+  for(i=0;i<nz&&i<agents.length;i++) agents[i].st=2;
+}
+
+function spawnWanderers(k){
+  var i;
+  for(i=0;i<k;i++){
+    var side=(Math.random()*4)|0, x,y;
+    if(side===0){x=20;y=rnd(40,H-40);}
+    else if(side===1){x=W-20;y=rnd(40,H-40);}
+    else if(side===2){x=rnd(40,W-40);y=20;}
+    else {x=rnd(40,W-40);y=H-20;}
+    agents.push(makeAgent(x,y,0));
+  }
+}
+
+function update(dt,t){
+  if(!agents.length) return;
+  var surv=0,zomb=0,i,j,a,b;
+  for(i=0;i<agents.length;i++){if(agents[i].st<2)surv++;else zomb++;}
+  if(surv===0){
+    waveTimer+=dt;
+    if(waveTimer>3){wave++;waveTimer=0;spawnTimer=6;initWave();return;}
+  }
+  // reinforcements: the scene never dies out while a wave lives
+  if(surv>0){
+    spawnTimer-=dt;
+    if(spawnTimer<=0 && agents.length<baseCount()+8){
+      spawnWanderers(2); spawnTimer=rnd(7,13);
+    }
+  }
+  var k;
+  for(i=0;i<agents.length;i++){
+    a=agents[i];
+    a.flash=Math.max(0,a.flash-dt);
+    if(a.st===2){
+      // zombie: shamble-chase nearest living, infect on touch
+      var best=null,bd=1e18;
+      for(j=0;j<agents.length;j++){
+        b=agents[j]; if(b.st===2)continue;
+        var dx=b.x-a.x,dy=b.y-a.y,d=dx*dx+dy*dy;
+        if(d<bd){bd=d;best=b;}
+      }
+      var sp=90+Math.min(30,wave*4);
+      if(best){
+        var d2=Math.sqrt(bd)||1;
+        a.a=Math.atan2(best.y-a.y,best.x-a.x);
+        a.vx+=(Math.cos(a.a)*sp-a.vx)*dt*2.2;
+        a.vy+=(Math.sin(a.a)*sp-a.vy)*dt*2.2;
+        var wob=Math.sin(t*5+a.seed)*5;
+        a.vx+=Math.cos(a.a+1.5708)*wob*dt*8;
+        a.vy+=Math.sin(a.a+1.5708)*wob*dt*8;
+      }
+      for(j=0;j<agents.length;j++){
+        b=agents[j]; if(b.st!==0)continue;
+        var ddx=b.x-a.x,ddy=b.y-a.y;
+        if(ddx*ddx+ddy*ddy<19*19){
+          b.inf+=dt*(1.1+hash(a.seed*3+b.seed)*0.9);
+          if(b.inf>=1){b.st=1;b.tm=rnd(0.8,1.8);b.flash=0.5;}
+        }
+      }
+    } else if(a.st===1){
+      // infected: shivering, turning
+      a.tm-=dt;
+      a.a+=jit(a.seed)*dt*9;
+      a.vx+=Math.cos(a.a)*14*dt*3;
+      a.vy+=Math.sin(a.a)*14*dt*3;
+      if(a.tm<=0){a.st=2;a.flash=1;}
+    } else {
+      // survivor: flee nearest zombie, else wander
+      var bz=null,bd2=1e18;
+      for(j=0;j<agents.length;j++){
+        b=agents[j]; if(b.st!==2)continue;
+        var dx2=b.x-a.x,dy2=b.y-a.y,d3=dx2*dx2+dy2*dy2;
+        if(d3<bd2){bd2=d3;bz=b;}
+      }
+      var pr=150;
+      if(bz&&bd2<pr*pr){
+        var dd=Math.sqrt(bd2)||1;
+        var fa=Math.atan2(a.y-bz.y,a.x-bz.x);
+        var panic=1+0.5*Math.sin(t*14+a.ph);
+        a.a=fa;
+        a.vx+=(Math.cos(fa)*66*panic-a.vx)*dt*4.5;
+        a.vy+=(Math.sin(fa)*66*panic-a.vy)*dt*4.5;
+      } else {
+        a.a+=jit(a.seed+9)*dt*2.4;
+        a.vx+=(Math.cos(a.a)*22-a.vx)*dt*1.6;
+        a.vy+=(Math.sin(a.a)*22-a.vy)*dt*1.6;
+      }
+      a.inf=Math.max(0,a.inf-dt*0.6);
+    }
+    // gentle separation
+    for(j=0;j<agents.length;j++){
+      b=agents[j];
+      if(b===a||(b.st===2&&a.st===2))continue;
+      var sx=a.x-b.x,sy=a.y-b.y,sd2=sx*sx+sy*sy;
+      if(sd2<15*15&&sd2>0.01){
+        var sd=Math.sqrt(sd2),f=(15-sd)/15*42*dt;
+        a.vx+=sx/sd*f;a.vy+=sy/sd*f;
+      }
+    }
+    // soft walls
+    var m=26;
+    if(a.x<m)a.vx+=(m-a.x)*dt*8;
+    if(a.x>W-m)a.vx-=(a.x-(W-m))*dt*8;
+    if(a.y<m)a.vy+=(m-a.y)*dt*8;
+    if(a.y>H-m)a.vy-=(a.y-(H-m))*dt*8;
+    var v=Math.hypot(a.vx,a.vy);
+    var maxv=a.st===2?120:72;
+    if(v>maxv){a.vx*=maxv/v;a.vy*=maxv/v;}
+    a.x+=a.vx*dt;a.y+=a.vy*dt;
+    a.x=clamp(a.x,10,W-10);a.y=clamp(a.y,10,H-10);
+    a.gait+=dt*(2+Math.hypot(a.vx,a.vy)*0.13);
+  }
+}
+
+/* ---------- drawing ---------- */
+function lerpC(c1,c2,t){
+  return 'rgb('+Math.round(c1[0]+(c2[0]-c1[0])*t)+','+Math.round(c1[1]+(c2[1]-c1[1])*t)+','+Math.round(c1[2]+(c2[2]-c1[2])*t)+')';
+}
+var C_SURV=[46,44,40], C_INF=[146,66,42], C_ZOMB=[72,102,58];
+
+function drawAgent(a,t){
+  var col, i;
+  if(a.st===2) col='rgb(72,102,58)';
+  else if(a.st===1) col=lerpC(C_SURV,C_INF,0.55+0.45*Math.sin(t*10+a.ph));
+  else col=lerpC(C_SURV,C_INF,clamp(a.inf,0,1));
+
+  var s=a.seed;
+  var moving=Math.hypot(a.vx,a.vy);
+  var sway=Math.sin(t*3+s)*1.6*(a.st===2?0.5:1);
+  var hx=a.x+sway, hy=a.y-15;
+  var g=Math.sin(a.gait)*3.2*Math.min(1,moving/25+0.3);
+
+  // shadow scribble
+  ctx.strokeStyle='rgba(40,35,25,0.14)'; ctx.lineWidth=1.2;
+  wcirc(ctx,a.x,a.y+6.5,5.5,s+3,1.4);
+
+  // infection aura for zombies
+  if(a.st===2){
+    ctx.strokeStyle='rgba(150,40,30,'+(0.10+0.06*Math.sin(t*2+a.ph)).toFixed(3)+')';
+    ctx.lineWidth=1;
+    wcirc(ctx,a.x,a.y-4,17,s+9,2.5);
+  }
+
+  ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.lineCap='round';
+
+  // legs
+  wline(ctx,a.x,a.y-1,a.x+g+sjit(s)*0.5,a.y+6,s+11,1.2);
+  wline(ctx,a.x,a.y-1,a.x-g+sjit(s+1)*0.5,a.y+6,s+17,1.2);
+  // body
+  wline(ctx,hx,hy+4,a.x,a.y-1,s+23,1.1);
+  // head
+  wcirc(ctx,hx,hy,4.6,s+29,0.9);
+
+  // arms
+  var shx=hx, shy=hy+6;
+  if(a.st===2){
+    // arms outstretched toward prey
+    var reach=10+Math.sin(t*4+a.ph)*2;
+    wline(ctx,shx,shy,shx+Math.cos(a.a-0.5)*reach+sway,shy+Math.sin(a.a-0.5)*reach*0.4-3,s+31,1.3);
+    wline(ctx,shx,shy,shx+Math.cos(a.a+0.5)*reach+sway,shy+Math.sin(a.a+0.5)*reach*0.4-3,s+37,1.3);
+  } else {
+    wline(ctx,shx,shy,shx-3-g*0.8,shy+7,s+31,1.2);
+    wline(ctx,shx,shy,shx+3+g*0.8,shy+7,s+37,1.2);
+  }
+
+  // face
+  ctx.lineWidth=1.1;
+  if(a.st===2){
+    ctx.fillStyle='#8c2b1e';
+    var ex=Math.cos(a.a), ey=Math.sin(a.a)*0.5;
+    ctx.beginPath();ctx.arc(hx-1.7+ex,hy-0.5+ey,1,0,6.29);ctx.fill();
+    ctx.beginPath();ctx.arc(hx+1.7+ex,hy-0.5+ey,1,0,6.29);ctx.fill();
+    wline(ctx,hx-1.5,hy+2,hx+1.5,hy+2.5,s+41,0.5);
+  } else {
+    ctx.fillStyle=col;
+    ctx.beginPath();ctx.arc(hx-1.6,hy-0.6,0.7,0,6.29);ctx.fill();
+    ctx.beginPath();ctx.arc(hx+1.6,hy-0.6,0.7,0,6.29);ctx.fill();
+  }
+  // panic marks for fleeing survivors
+  if(a.st===0&&moving>40){
+    ctx.strokeStyle='rgba(60,55,45,0.5)';
+    wline(ctx,hx+Math.cos(a.a)*10,hy-3+jit(s)*1.5,hx+Math.cos(a.a)*15,hy-4+jit(s+1)*1.5,s+47,0.7);
+    wline(ctx,hx+Math.cos(a.a)*9,hy+1+jit(s+2)*1.5,hx+Math.cos(a.a)*14,hy+1+jit(s+3)*1.5,s+53,0.7);
+  }
+  // transformation flash scribble
+  if(a.flash>0){
+    ctx.strokeStyle='rgba(150,40,30,'+Math.min(0.8,a.flash).toFixed(2)+')';
+    ctx.lineWidth=1.3;
+    var r=8+(1-a.flash)*16;
+    for(i=0;i<7;i++){
+      var an=i/7*6.283+a.ph;
+      wline(ctx,a.x+Math.cos(an)*r*0.4,a.y-6+Math.sin(an)*r*0.4,
+            a.x+Math.cos(an)*r,a.y-6+Math.sin(an)*r,s+i*3,0.8);
+    }
+  }
+}
+
+function drawHUD(t){
+  var surv=0,zomb=0,i;
+  for(i=0;i<agents.length;i++){if(agents[i].st<2)surv++;else zomb++;}
+  var fs=Math.max(11,Math.min(15,W/42));
+  ctx.save();
+  ctx.translate(20,24);
+  ctx.rotate(-0.015);
+  ctx.fillStyle='rgba(46,44,40,0.85)';
+  ctx.font='italic '+fs+'px "Segoe Script","Bradley Hand","Comic Sans MS",cursive';
+  ctx.fillText('outbreak, wave '+wave,0,0);
+  ctx.font='italic '+fs*0.85+'px "Segoe Script","Bradley Hand","Comic Sans MS",cursive';
+  ctx.fillStyle='rgba(60,58,50,0.8)';
+  ctx.fillText('alive '+surv+'   turned '+zomb,0,fs*1.35);
+  // tiny legend
+  ctx.strokeStyle='rgba(60,58,50,0.7)';ctx.lineWidth=1.2;
+  wcirc(ctx,14,fs*2.6,3.5,5,0.6); wline(ctx,14,fs*2.6+3,14,fs*2.6+9,6,0.5);
+  ctx.strokeStyle='rgb(72,102,58)';
+  wcirc(ctx,14,fs*2.6+fs*1.35,3.5,7,0.6);
+  wline(ctx,14,fs*2.6+fs*1.35+3,14,fs*2.6+fs*1.35+9,8,0.5);
+  wline(ctx,14,fs*2.6+fs*1.35+3,20,fs*2.6+fs*1.35,9,0.5);
+  ctx.restore();
+
+  if(!surv){
+    ctx.save();
+    ctx.globalAlpha=0.6+0.3*Math.sin(t*3);
+    ctx.translate(W/2,H/2);ctx.rotate(-0.03);
+    ctx.textAlign='center';
+    ctx.fillStyle='rgba(90,40,30,0.85)';
+    ctx.font='italic '+Math.max(18,Math.min(34,W/18))+'px "Segoe Script","Bradley Hand","Comic Sans MS",cursive';
+    ctx.fillText('the town has fallen...',0,0);
+    ctx.font='italic 14px "Segoe Script","Bradley Hand","Comic Sans MS",cursive';
+    ctx.fillText('wave '+(wave+1)+' approaches',0,28);
+    ctx.restore();
+  }
+}
+
+/* ---------- touch: tap to seed a fresh outbreak ---------- */
+cv.addEventListener('pointerdown',function(e){
+  var i;
+  for(i=0;i<agents.length;i++){
+    if(agents[i].st===0){
+      agents[i].st=2; agents[i].x=e.clientX; agents[i].y=e.clientY;
+      agents[i].flash=1; break;
+    }
+  }
+});
+
+/* ---------- main loop ---------- */
+var last=performance.now();
+function loop(now){
+  var t=now/1000, dt=Math.min(0.05,(now-last)/1000);
+  last=now; timeNow=t;
+  boil=Math.floor(t/0.14);
+  ctx.clearRect(0,0,W,H);
+  ctx.drawImage(bg,0,0,W,H);
+  update(dt,t);
+  var sorted=agents.slice().sort(function(p,q){return p.y-q.y;});
+  for(var i=0;i<sorted.length;i++) drawAgent(sorted[i],t);
+  drawHUD(t);
+  requestAnimationFrame(loop);
+}
+
+resize();
+initWave();
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
