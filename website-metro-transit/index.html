@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian Metro — City Transit Authority</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --ink:#12151a;
+  --ink-soft:#3c4149;
+  --paper:#f5f4ef;
+  --panel:#ffffff;
+  --line-hair:#d8d5cb;
+  --l1:#e2001a; /* Crosstown  red    */
+  --l2:#0072ce; /* Central    blue   */
+  --l3:#009a44; /* Harbor     green  */
+  --l4:#f2b400; /* Airport    yellow */
+  --l5:#7a22a6; /* University purple */
+  --l6:#f46800; /* Northside  orange */
+  --good:#0a8f43;
+  --warn:#b97e00;
+  --del:#d6491f;
+  --dark:#14171c;
+  --dark2:#1c2027;
+  --grotesk:'Archivo',system-ui,sans-serif;
+  --sign:'Barlow Condensed',system-ui,sans-serif;
+  --shadow:0 10px 24px -12px rgba(18,21,26,.28);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--grotesk);
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+img,svg{display:block}
+a{color:inherit}
+h1,h2,h3{line-height:1.05}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* ============ HEADER ============ */
+.site-head{
+  position:sticky;top:0;z-index:60;
+  background:var(--paper);
+  border-bottom:3px solid var(--ink);
+}
+.head-in{display:flex;align-items:center;gap:20px;padding:12px 24px;max-width:1240px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand .roundel{width:44px;height:44px;flex:none}
+.brand-name{font-weight:900;font-size:19px;letter-spacing:.04em;line-height:1}
+.brand-sub{font-family:var(--sign);font-weight:600;font-size:12px;letter-spacing:.32em;color:var(--ink-soft);text-transform:uppercase}
+.main-nav{margin-left:auto;display:flex;gap:4px;align-items:center}
+.main-nav a{
+  font-family:var(--sign);font-weight:600;font-size:16px;letter-spacing:.12em;text-transform:uppercase;
+  text-decoration:none;padding:8px 12px;position:relative;
+}
+.main-nav a::after{
+  content:"";position:absolute;left:12px;right:12px;bottom:2px;height:4px;background:var(--ink);
+  transform:scaleX(0);transform-origin:left;transition:transform .22s cubic-bezier(.2,.9,.3,1);
+}
+.main-nav a:hover::after,.main-nav a:focus-visible::after{transform:scaleX(1)}
+.head-chip{
+  font-family:var(--sign);font-weight:600;font-size:14px;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--ink);color:#fff;padding:7px 14px;white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+}
+.head-chip .dot{width:9px;height:9px;background:var(--l4);border-radius:50%;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@media(max-width:900px){.main-nav{display:none}.head-chip{margin-left:auto}}
+
+/* ============ HERO ============ */
+.hero{padding:56px 0 40px;position:relative;overflow:hidden}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(#ddd9cd 1.1px,transparent 1.1px);
+  background-size:24px 24px;opacity:.6;
+}
+.hero .wrap{position:relative}
+.hero-grid{display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:end;margin-bottom:36px}
+.overline{
+  font-family:var(--sign);font-weight:600;font-size:15px;letter-spacing:.3em;text-transform:uppercase;
+  display:flex;align-items:center;gap:12px;color:var(--ink-soft);
+}
+.overline::before{content:"";width:34px;height:4px;background:var(--l1)}
+.hero h1{
+  font-weight:900;font-size:clamp(42px,6.4vw,84px);letter-spacing:-.02em;text-transform:uppercase;
+  margin:14px 0 18px;
+}
+.hero h1 .hl{
+  background:var(--ink);color:var(--paper);padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+}
+.hero p.lede{font-size:18px;font-weight:500;max-width:52ch;color:var(--ink-soft)}
+.hero-ctas{display:flex;gap:14px;margin-top:26px;flex-wrap:wrap}
+.btn{
+  font-family:var(--sign);font-weight:700;font-size:18px;letter-spacing:.12em;text-transform:uppercase;
+  padding:14px 26px;text-decoration:none;display:inline-flex;align-items:center;gap:12px;
+  border:3px solid var(--ink);transition:transform .18s ease,background .18s,color .18s,box-shadow .18s;
+}
+.btn .arr{transition:transform .18s ease}
+.btn:hover .arr{transform:translateX(5px)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:var(--l2);border-color:var(--l2);transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper);transform:translateY(-2px);box-shadow:var(--shadow)}
+.hero-stats{display:flex;flex-direction:column;gap:0;border:3px solid var(--ink);background:var(--panel);box-shadow:var(--shadow)}
+.hero-stats .stat{padding:16px 20px;border-bottom:3px solid var(--ink)}
+.hero-stats .stat:last-child{border-bottom:0}
+.stat b{font-weight:900;font-size:30px;letter-spacing:-.02em;display:block;line-height:1}
+.stat span{font-family:var(--sign);font-weight:600;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+.stat.s1 b{color:var(--l1)} .stat.s2 b{color:var(--l2)} .stat.s3 b{color:var(--l6)}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-stats{flex-direction:row;flex-wrap:wrap}
+.hero-stats .stat{flex:1 1 140px;border-bottom:0;border-right:3px solid var(--ink)}
+.hero-stats .stat:last-child{border-right:0}}
+
+/* ============ ALERT TICKER ============ */
+.ticker{
+  background:var(--l1);color:#fff;overflow:hidden;white-space:nowrap;
+  border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);
+  display:flex;align-items:stretch;
+}
+.ticker-label{
+  flex:none;background:var(--ink);color:#fff;font-family:var(--sign);font-weight:700;font-size:17px;
+  letter-spacing:.18em;text-transform:uppercase;padding:11px 18px;display:flex;align-items:center;gap:10px;z-index:2;
+  border-right:3px solid var(--ink);
+}
+.ticker-label .dot{width:10px;height:10px;background:#fff;border-radius:50%;animation:pulse 1.2s infinite}
+.ticker-clip{overflow:hidden;flex:1;display:flex;align-items:center}
+.ticker-track{display:inline-flex;animation:tick 46s linear infinite;will-change:transform}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{
+  font-family:var(--sign);font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;
+  padding:11px 0;display:inline-flex;align-items:center;
+}
+.ticker-item::after{content:"◆";margin:0 26px;font-size:11px;opacity:.75}
+
+/* ============ MAP PANEL ============ */
+.map-section{padding:44px 0 8px}
+.map-panel{
+  border:3px solid var(--ink);background:var(--panel);box-shadow:var(--shadow);
+}
+.map-head{
+  background:var(--dark);color:#fff;display:flex;align-items:center;gap:16px;padding:12px 20px;flex-wrap:wrap;
+  border-bottom:3px solid var(--ink);
+}
+.map-head h2{font-family:var(--sign);font-weight:700;font-size:22px;letter-spacing:.14em;text-transform:uppercase}
+.map-head .notoscale{font-family:var(--sign);font-weight:600;font-size:13px;letter-spacing:.26em;color:#9aa2ad;text-transform:uppercase;margin-left:auto}
+.map-stage{position:relative;background:#fbfaf6}
+.map-stage svg{width:100%;height:auto}
+.map-foot{
+  border-top:3px solid var(--ink);padding:12px 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  background:var(--panel);
+}
+.legend-chip{
+  display:inline-flex;align-items:center;gap:9px;border:2px solid var(--ink);background:var(--panel);
+  font-family:var(--sign);font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 12px 6px 8px;cursor:pointer;transition:transform .16s,box-shadow .16s;user-select:none;
+}
+.legend-chip:hover,.legend-chip:focus-visible{transform:translateY(-3px);box-shadow:var(--shadow);outline:none}
+.legend-chip .sq{width:26px;height:26px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px}
+.legend-chip .sq.b4{color:var(--ink)}
+.map-foot .map-note{margin-left:auto;font-family:var(--sign);font-weight:600;font-size:14px;letter-spacing:.2em;color:var(--ink-soft);text-transform:uppercase}
+
+/* ---- SVG map styling ---- */
+.mline{fill:none;stroke-width:14;stroke-linecap:round;stroke-linejoin:round;transition:opacity .25s}
+.mline.l1{stroke:var(--l1)} .mline.l2{stroke:var(--l2)} .mline.l3{stroke:var(--l3)}
+.mline.l4{stroke:var(--l4)} .mline.l5{stroke:var(--l5)} .mline.l6{stroke:var(--l6)}
+.stn{transition:opacity .25s}
+.stn circle{fill:#fff;stroke:var(--ink);stroke-width:3}
+.stn.x circle{stroke-width:4.5;r:12}
+.stn.big circle{stroke-width:5.5}
+.train{transition:opacity .25s}
+.maplabel{font-family:var(--sign);font-weight:600;font-size:16px;fill:var(--ink);letter-spacing:.03em;
+  paint-order:stroke;stroke:#fbfaf6;stroke-width:4;stroke-linejoin:round;transition:opacity .25s}
+.maplabel.xl{font-weight:700;font-size:18px}
+.maplabel.end{font-weight:500;font-size:14px;fill:var(--ink-soft)}
+.compass{font-family:var(--sign);font-weight:700;font-size:16px;fill:var(--ink)}
+/* line highlight logic */
+body[data-hl] .mline, body[data-hl] .stn, body[data-hl] .train, body[data-hl] .maplabel{opacity:.14}
+body[data-hl~="1"] .l1, body[data-hl~="2"] .l2, body[data-hl~="3"] .l3,
+body[data-hl~="4"] .l4, body[data-hl~="5"] .l5, body[data-hl~="6"] .l6{opacity:1}
+
+/* ============ SECTION HEADINGS ============ */
+section{padding:56px 0}
+.sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:30px;flex-wrap:wrap}
+.sec-num{
+  width:44px;height:44px;flex:none;transform:translateY(6px);display:grid;place-items:center;
+  font-family:var(--sign);font-weight:700;font-size:20px;color:#fff;background:var(--ink);
+}
+.sec-head h2{font-weight:900;font-size:clamp(30px,4vw,46px);text-transform:uppercase;letter-spacing:-.01em}
+.sec-head .sec-rule{flex:1;height:3px;background:var(--ink);min-width:60px;transform:translateY(-8px)}
+.sec-head .sec-kicker{font-family:var(--sign);font-weight:600;font-size:15px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* ============ LINE STATUS DASHBOARD ============ */
+.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:980px){.status-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.status-grid{grid-template-columns:1fr}}
+.line-card{
+  border:3px solid var(--ink);background:var(--panel);padding:0;position:relative;
+  transition:transform .18s ease,box-shadow .18s ease;cursor:pointer;
+}
+.line-card::before{content:"";position:absolute;top:-3px;left:-3px;right:-3px;height:10px;background:var(--lc)}
+.line-card:hover,.line-card:focus-visible{transform:translateY(-5px);box-shadow:var(--shadow);outline:none}
+.lc-in{padding:20px 20px 18px}
+.lc-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.lc-badge{
+  width:48px;height:48px;flex:none;display:grid;place-items:center;background:var(--lc);
+  color:#fff;font-weight:900;font-size:24px;
+}
+.lc-badge.dark-text{color:var(--ink)}
+.lc-name{font-family:var(--sign);font-weight:700;font-size:26px;letter-spacing:.06em;text-transform:uppercase;line-height:1}
+.lc-sub{font-family:var(--sign);font-weight:500;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.pill{
+  display:inline-flex;align-items:center;gap:9px;font-family:var(--sign);font-weight:700;font-size:15px;
+  letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border:2px solid var(--ink);
+}
+.pill .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.pill.ok{background:#e5f4ea;color:#0a6a31;border-color:#0a6a31}.pill.ok .dot{background:var(--good)}
+.pill.warn{background:#fdf3d7;color:#8a5c00;border-color:#a5740a}.pill.warn .dot{background:#e0a400}
+.pill.del{background:#fde7de;color:#a03008;border-color:#b53c12}.pill.del .dot{background:var(--del);animation:pulse 1.4s infinite}
+.lc-meta{display:flex;gap:22px;margin-top:14px;border-top:2px dashed var(--line-hair);padding-top:12px}
+.lc-meta div{display:flex;flex-direction:column}
+.lc-meta b{font-weight:900;font-size:19px;line-height:1.1}
+.lc-meta span{font-family:var(--sign);font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+.lc-note{margin-top:10px;font-size:13.5px;font-weight:600;color:var(--ink-soft)}
+
+/* ============ FARES ============ */
+.fares{background:var(--dark);color:var(--paper)}
+.fares .sec-head h2{color:#fff}
+.fares .sec-head .sec-rule{background:#4a515c}
+.fares .sec-head .sec-kicker{color:#9aa2ad}
+.fares .sec-num{background:var(--l4);color:var(--ink)}
+.fares-grid{display:grid;grid-template-columns:480px 1fr;gap:48px;align-items:center}
+@media(max-width:960px){.fares-grid{grid-template-columns:1fr;gap:36px}}
+/* transit card */
+.mcard{
+  aspect-ratio:1.586;max-width:480px;width:100%;background:var(--dark2);border:3px solid #000;
+  position:relative;overflow:hidden;color:#fff;
+  box-shadow:0 22px 44px -18px rgba(0,0,0,.7), 0 0 0 3px rgba(255,255,255,.14);
+  transform:rotate(-2deg);transition:transform .3s ease;
+}
+.mcard:hover{transform:rotate(0deg) translateY(-4px)}
+.mcard::before{ /* ring motif */
+  content:"";position:absolute;right:-70px;top:-90px;width:260px;height:260px;border-radius:50%;
+  border:26px solid rgba(255,255,255,.07);
+}
+.mcard::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:10px;
+  background:linear-gradient(90deg,var(--l1) 0 20%,var(--l4) 0 40%,var(--l2) 0 60%,var(--l5) 0 80%,var(--l6) 0 100%);
+}
+.mcard-in{position:absolute;inset:0;padding:26px 28px;display:flex;flex-direction:column}
+.mc-top{display:flex;align-items:center;justify-content:space-between}
+.mc-brand{display:flex;align-items:center;gap:10px;font-family:var(--sign);font-weight:700;font-size:17px;letter-spacing:.24em;text-transform:uppercase}
+.mc-brand svg{width:30px;height:30px}
+.mc-type{font-family:var(--sign);font-weight:600;font-size:12px;letter-spacing:.26em;color:#9aa2ad;text-transform:uppercase}
+.mc-chip{
+  width:52px;height:38px;margin-top:26px;position:relative;background:#d9b64a;
+  background-image:repeating-linear-gradient(0deg,transparent 0 9px,rgba(0,0,0,.28) 9px 10px),
+                   repeating-linear-gradient(90deg,transparent 0 14px,rgba(0,0,0,.28) 14px 15px);
+  border:2px solid rgba(0,0,0,.45);
+}
+.mc-num{margin-top:auto;font-family:var(--sign);font-weight:600;font-size:26px;letter-spacing:.22em}
+.mc-bottom{display:flex;justify-content:space-between;align-items:flex-end}
+.mc-holder span{display:block;font-family:var(--sign);font-weight:500;font-size:11px;letter-spacing:.28em;color:#9aa2ad;text-transform:uppercase}
+.mc-holder b{font-family:var(--sign);font-weight:700;font-size:17px;letter-spacing:.14em;text-transform:uppercase}
+.mc-bal span{display:block;font-family:var(--sign);font-weight:500;font-size:11px;letter-spacing:.28em;color:#9aa2ad;text-transform:uppercase;text-align:right}
+.mc-bal b{font-weight:900;font-size:26px;letter-spacing:.02em}
+.mc-balance{
+  position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
+  font-family:var(--sign);font-weight:600;font-size:12px;letter-spacing:.3em;color:#c8cfd8;text-transform:uppercase;
+}
+/* fares table */
+.fare-list{border-top:3px solid #4a515c}
+.fare-row{
+  display:grid;grid-template-columns:1fr auto auto;gap:18px;align-items:center;
+  padding:16px 6px;border-bottom:2px solid #2a2f38;
+  transition:background .16s,padding-left .16s;
+}
+.fare-row:hover{background:rgba(255,255,255,.05);padding-left:14px}
+.fare-row .fr-name{font-family:var(--sign);font-weight:700;font-size:21px;letter-spacing:.1em;text-transform:uppercase}
+.fare-row .fr-sub{font-size:13px;color:#9aa2ad;font-weight:500;margin-top:2px}
+.fare-row .fr-price{font-weight:900;font-size:24px;letter-spacing:-.01em;text-align:right}
+.fare-row .fr-tag{
+  font-family:var(--sign);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  color:#0b0d10;background:var(--l4);padding:4px 8px;justify-self:start;
+}
+.fare-row.pop{background:rgba(242,180,0,.08)}
+.fare-note{margin-top:18px;font-size:14px;color:#9aa2ad;font-weight:500}
+
+/* ============ STATIONS ============ */
+.stations-head{display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap}
+.searchbox{
+  margin-left:auto;display:flex;align-items:center;gap:10px;border:3px solid var(--ink);background:var(--panel);
+  padding:4px 6px 4px 14px;min-width:280px;
+}
+.searchbox svg{flex:none}
+.searchbox input{border:0;outline:0;font-family:var(--sign);font-weight:600;font-size:18px;letter-spacing:.06em;
+  text-transform:uppercase;padding:8px 4px;width:100%;background:transparent;color:var(--ink)}
+.searchbox input::placeholder{color:#9a9890}
+.station-list{border:3px solid var(--ink);background:var(--panel);box-shadow:var(--shadow)}
+.stn-row{
+  display:grid;grid-template-columns:1fr auto auto;gap:18px;align-items:center;
+  padding:14px 22px;border-bottom:2px solid var(--line-hair);position:relative;cursor:pointer;
+  transition:background .16s,padding-left .16s,opacity .25s;
+}
+.stn-row:last-child{border-bottom:0}
+.stn-row::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--rowc,transparent);
+  transform:scaleY(0);transform-origin:top;transition:transform .2s ease;
+}
+.stn-row:hover,.stn-row:focus-visible{background:#faf9f4;padding-left:34px;outline:none}
+.stn-row:hover::before,.stn-row:focus-visible::before{transform:scaleY(1)}
+.stn-row .sr-name{font-family:var(--sign);font-weight:700;font-size:22px;letter-spacing:.08em;text-transform:uppercase}
+.stn-row .sr-zone{font-size:12.5px;font-weight:700;color:var(--ink-soft);letter-spacing:.06em;margin-top:1px}
+.sr-badges{display:flex;gap:7px}
+.mini{
+  width:30px;height:30px;display:grid;place-items:center;font-weight:900;font-size:15px;color:#fff;
+  border:2px solid var(--ink);flex:none;
+}
+.mini.m4{color:var(--ink)}
+.stn-row .sr-go{
+  font-family:var(--sign);font-weight:700;font-size:24px;opacity:0;transform:translateX(-10px);
+  transition:opacity .18s,transform .18s;
+}
+.stn-row:hover .sr-go,.stn-row:focus-visible .sr-go{opacity:1;transform:translateX(0)}
+.stn-count{margin-top:14px;font-family:var(--sign);font-weight:600;font-size:14px;letter-spacing:.24em;color:var(--ink-soft);text-transform:uppercase}
+/* dim station rows when a line is hovered elsewhere */
+body[data-hl] .stn-row{opacity:.3}
+body[data-hl~="1"] .stn-row.dl1, body[data-hl~="2"] .stn-row.dl2, body[data-hl~="3"] .stn-row.dl3,
+body[data-hl~="4"] .stn-row.dl4, body[data-hl~="5"] .stn-row.dl5, body[data-hl~="6"] .stn-row.dl6{opacity:1}
+
+/* ============ ACCESSIBILITY ============ */
+.access{background:var(--panel);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+.acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:900px){.acc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.acc-grid{grid-template-columns:1fr}}
+.acc-tile{
+  border:3px solid var(--ink);padding:24px 22px;background:var(--paper);position:relative;
+  transition:transform .18s,box-shadow .18s;
+}
+.acc-tile:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.acc-tile svg{width:44px;height:44px;margin-bottom:16px}
+.acc-tile h3{font-family:var(--sign);font-weight:700;font-size:21px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.acc-tile p{font-size:14px;font-weight:500;color:var(--ink-soft)}
+.acc-tile .acc-corner{
+  position:absolute;top:14px;right:14px;width:12px;height:12px;background:var(--tc,var(--ink));
+}
+.acc-note{
+  margin-top:26px;display:flex;gap:16px;align-items:center;border:3px solid var(--ink);background:var(--paper);
+  padding:18px 22px;flex-wrap:wrap;
+}
+.acc-note .big{font-family:var(--sign);font-weight:700;font-size:19px;letter-spacing:.1em;text-transform:uppercase}
+.acc-note .call{
+  margin-left:auto;background:var(--ink);color:#fff;font-family:var(--sign);font-weight:700;font-size:19px;
+  letter-spacing:.14em;padding:10px 18px;text-decoration:none;white-space:nowrap;
+  transition:background .16s,transform .16s;
+}
+.acc-note .call:hover{background:var(--l2);transform:translateY(-2px)}
+
+/* ============ FOOTER / PLATFORM SIGNAGE ============ */
+.foot{background:var(--dark);color:#fff}
+.platform{border-bottom:2px solid #2a2f38}
+.plat-in{max-width:1240px;margin:0 auto;padding:44px 24px}
+.plat-strip{
+  display:flex;align-items:center;gap:16px;margin-bottom:18px;
+}
+.plat-badge{
+  width:64px;height:64px;display:grid;place-items:center;background:var(--l2);color:#fff;
+  font-weight:900;font-size:34px;border:3px solid #fff;flex:none;
+}
+.plat-name{font-family:var(--sign);font-weight:700;font-size:clamp(40px,7vw,86px);letter-spacing:.02em;text-transform:uppercase;line-height:.95}
+.plat-sub{font-family:var(--sign);font-weight:600;font-size:16px;letter-spacing:.3em;text-transform:uppercase;color:#9aa2ad;margin-top:8px}
+.plat-board{
+  margin-top:26px;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:2px;background:#2a2f38;border:2px solid #2a2f38;
+}
+@media(max-width:800px){.plat-board{grid-template-columns:1fr}}
+.plat-cell{background:var(--dark2);padding:18px 22px}
+.plat-cell .pc-k{font-family:var(--sign);font-weight:600;font-size:12.5px;letter-spacing:.28em;color:#9aa2ad;text-transform:uppercase}
+.plat-cell .pc-v{font-weight:900;font-size:clamp(24px,3vw,34px);letter-spacing:.02em;margin-top:4px}
+.plat-cell .pc-v small{font-size:.55em;font-weight:700;letter-spacing:.14em}
+.plat-cell.dest .pc-v{color:#7fd4ff}
+.plat-cell .pc-dots{display:flex;gap:6px;margin-top:8px}
+.plat-cell .pc-dots i{width:16px;height:16px;border:2px solid #000}
+.mind{
+  margin-top:22px;display:flex;align-items:center;gap:14px;
+  font-family:var(--sign);font-weight:600;font-size:15px;letter-spacing:.34em;text-transform:uppercase;color:#9aa2ad;
+}
+.mind::before{content:"";flex:0 0 46px;height:4px;background:var(--l4)}
+.foot-cols{max-width:1240px;margin:0 auto;padding:40px 24px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px}
+@media(max-width:800px){.foot-cols{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.foot-cols{grid-template-columns:1fr}}
+.foot-cols h4{font-family:var(--sign);font-weight:700;font-size:15px;letter-spacing:.26em;text-transform:uppercase;color:#9aa2ad;margin-bottom:14px}
+.foot-cols a{display:block;text-decoration:none;font-weight:600;font-size:15px;color:#e8eaee;padding:5px 0;transition:color .15s,padding-left .15s}
+.foot-cols a:hover{color:var(--l4);padding-left:8px}
+.foot-brand p{color:#9aa2ad;font-size:14px;font-weight:500;max-width:34ch;margin-top:14px}
+.foot-brand .brand{display:flex;align-items:center;gap:12px}
+.foot-legal{
+  border-top:2px solid #2a2f38;padding:18px 24px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;
+  max-width:1240px;margin:0 auto;
+  font-family:var(--sign);font-weight:600;font-size:13px;letter-spacing:.2em;color:#7d8590;text-transform:uppercase;
+}
+.foot-legal .spacer{margin-left:auto}
+.foot-lines{height:12px;background:linear-gradient(90deg,var(--l1) 0 20%,var(--l2) 0 40%,var(--l3) 0 60%,var(--l4) 0 80%,var(--l5) 0 100%)}
+
+/* ============ MOTION SAFETY ============ */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .ticker-track,.pill .dot,.head-chip .dot,.ticker-label .dot{animation:none !important}
+  .mcard,.mcard:hover{transform:none}
+  *{transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-head">
+  <div class="head-in">
+    <a class="brand" href="#top" aria-label="Meridian Metro home">
+      <svg class="roundel" viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="4" y="16" width="40" height="16" fill="var(--l2)"/>
+        <circle cx="24" cy="24" r="21" fill="none" stroke="var(--ink)" stroke-width="4"/>
+        <circle cx="24" cy="24" r="14" fill="none" stroke="#fff" stroke-width="3"/>
+      </svg>
+      <span>
+        <span class="brand-name">MERIDIAN METRO</span><br>
+        <span class="brand-sub">Transit Authority</span>
+      </span>
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="#map">Map</a>
+      <a href="#status">Status</a>
+      <a href="#fares">Fares</a>
+      <a href="#stations">Stations</a>
+      <a href="#access">Access</a>
+    </nav>
+    <div class="head-chip"><span class="dot"></span>2 advisories today</div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="overline">City of Meridian · Public Transit Authority</div>
+        <h1>Six lines.<br>One city.<br><span class="hl">Ride sharp.</span></h1>
+        <p class="lede">Meridian Metro moves 1.9 million passengers a day across 118 km of
+        rail and 64 stations — from Harborfront to East Terminal, Airport to Northgate.
+        Bold lines, clear signs, no guesswork.</p>
+        <div class="hero-ctas">
+          <a class="btn solid" href="#status">Check line status <span class="arr">→</span></a>
+          <a class="btn ghost" href="#stations">Find a station <span class="arr">→</span></a>
+        </div>
+      </div>
+      <div class="hero-stats" aria-label="Network figures">
+        <div class="stat s1"><b>6</b><span>Rail lines</span></div>
+        <div class="stat s2"><b>64</b><span>Stations</span></div>
+        <div class="stat s3"><b>118 km</b><span>Of track</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ALERT TICKER ================= -->
+<div class="ticker" role="region" aria-label="Service alerts">
+  <div class="ticker-label"><span class="dot"></span>Service alerts</div>
+  <div class="ticker-clip">
+    <div class="ticker-track">
+      <span class="ticker-item">Harbor Line — delays up to 15 min, signal works at Westgate</span>
+      <span class="ticker-item">Northside Line — Beacon Hill closed for platform works until 14 Jun</span>
+      <span class="ticker-item">Airport Line — no service after 22:00 during weekend works</span>
+      <span class="ticker-item">Crosstown — reduced speeds on the river viaduct in wet weather</span>
+      <span class="ticker-item">MeridianCard — contactless payments now accepted at all gates</span>
+      <span class="ticker-item">Harbor Line — delays up to 15 min, signal works at Westgate</span>
+      <span class="ticker-item">Northside Line — Beacon Hill closed for platform works until 14 Jun</span>
+      <span class="ticker-item">Airport Line — no service after 22:00 during weekend works</span>
+      <span class="ticker-item">Crosstown — reduced speeds on the river viaduct in wet weather</span>
+      <span class="ticker-item">MeridianCard — contactless payments now accepted at all gates</span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SYSTEM MAP ================= -->
+<section class="map-section" id="map">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num" style="background:var(--l3)">M</span>
+      <h2>The system map</h2>
+      <span class="sec-rule"></span>
+      <span class="sec-kicker">Hover a line to trace it</span>
+    </div>
+
+    <div class="map-panel">
+      <div class="map-head">
+        <h2>Meridian Metro — Schematic</h2>
+        <span class="notoscale">Not to scale · Rev. 2025-C</span>
+      </div>
+
+      <div class="map-stage">
+        <svg viewBox="0 0 1000 640" role="img" aria-label="Schematic map of the Meridian Metro system showing six lines, interchange stations and live train positions">
+          <!-- faint engineering grid -->
+          <g stroke="#e9e6dc" stroke-width="1">
+            <line x1="0" y1="160" x2="1000" y2="160"/><line x1="0" y1="320" x2="1000" y2="320"/><line x1="0" y1="480" x2="1000" y2="480"/>
+            <line x1="250" y1="0" x2="250" y2="640"/><line x1="500" y1="0" x2="500" y2="640"/><line x1="750" y1="0" x2="750" y2="640"/>
+          </g>
+
+          <!-- LINES (draw order = z order) -->
+          <path id="p3" class="mline l3" d="M120,580 L440,260 L440,100"/>
+          <path id="p5" class="mline l5" d="M680,580 L680,440 L360,120 L360,60"/>
+          <path id="p6" class="mline l6" d="M840,580 L840,380 L620,160 L620,60"/>
+          <path id="p4" class="mline l4" d="M60,150 L770,150 L920,300"/>
+          <path id="p1" class="mline l1" d="M40,330 L960,330"/>
+          <path id="p2" class="mline l2" d="M520,50 L520,580"/>
+
+          <!-- TRAINS -->
+          <g class="train l1">
+            <circle r="7.5" fill="var(--l1)" stroke="#fff" stroke-width="2.5">
+              <animateMotion dur="19s" repeatCount="indefinite" begin="-4s"><mpath href="#p1" xlink:href="#p1"/></animateMotion>
+            </circle>
+          </g>
+          <g class="train l2">
+            <circle r="7.5" fill="var(--l2)" stroke="#fff" stroke-width="2.5">
+              <animateMotion dur="23s" repeatCount="indefinite" begin="-11s"><mpath href="#p2" xlink:href="#p2"/></animateMotion>
+            </circle>
+          </g>
+          <g class="train l3">
+            <circle r="7" fill="var(--l3)" stroke="#fff" stroke-width="2.5">
+              <animateMotion dur="27s" repeatCount="indefinite" begin="-18s"><mpath href="#p3" xlink:href="#p3"/></animateMotion>
+            </circle>
+          </g>
+          <g class="train l4">
+            <circle r="7" fill="var(--l4)" stroke="#fff" stroke-width="2.5">
+              <animateMotion dur="25s" repeatCount="indefinite" begin="-7s"><mpath href="#p4" xlink:href="#p4"/></animateMotion>
+            </circle>
+          </g>
+          <g class="train l5">
+            <circle r="7" fill="var(--l5)" stroke="#fff" stroke-width="2.5">
+              <animateMotion dur="29s" repeatCount="indefinite" begin="-22s"><mpath href="#p5" xlink:href="#p5"/></animateMotion>
+            </circle>
+          </g>
+          <g class="train l6">
+            <circle r="7" fill="var(--l6)" stroke="#fff" stroke-width="2.5">
+              <animateMotion dur="21s" repeatCount="indefinite" begin="-2s"><mpath href="#p6" xlink:href="#p6"/></animateMotion>
+            </circle>
+          </g>
+
+          <!-- TERMINI (plain dots) -->
+          <g class="stn dl1" data-svgline="1"><circle cx="40"  cy="330" r="7"/></g>
+          <g class="stn dl2" data-svgline="2"><circle cx="520" cy="50"  r="7"/><circle cx="520" cy="580" r="7"/></g>
+          <g class="stn dl3" data-svgline="3"><circle cx="440" cy="100" r="7"/></g>
+          <g class="stn dl4" data-svgline="4"><circle cx="60"  cy="150" r="7"/><circle cx="920" cy="300" r="7"/></g>
+          <g class="stn dl5" data-svgline="5"><circle cx="680" cy="580" r="7"/></g>
+          <g class="stn dl6" data-svgline="6"><circle cx="620" cy="60"  r="7"/></g>
+
+          <!-- STATIONS (named) -->
+          <g class="stn dl1" data-svgline="1"><circle cx="200" cy="330" r="8"/></g>
+          <g class="stn dl1 dl3 x" data-svgline="1 3"><circle cx="370" cy="330" r="12"/></g>
+          <g class="stn dl1 dl2 big" data-svgline="1 2"><circle cx="520" cy="330" r="15"/></g>
+          <g class="stn dl1" data-svgline="1"><circle cx="700" cy="330" r="8"/><circle cx="960" cy="330" r="8"/></g>
+          <g class="stn dl2 dl4 x" data-svgline="2 4"><circle cx="520" cy="150" r="12"/></g>
+          <g class="stn dl2 dl5 x" data-svgline="2 5"><circle cx="520" cy="280" r="12"/></g>
+          <g class="stn dl3" data-svgline="3"><circle cx="120" cy="580" r="8"/></g>
+          <g class="stn dl4 dl5 x" data-svgline="4 5"><circle cx="390" cy="150" r="12"/></g>
+          <g class="stn dl4 dl6 x" data-svgline="4 6"><circle cx="620" cy="150" r="12"/></g>
+          <g class="stn dl6" data-svgline="6"><circle cx="840" cy="580" r="8"/></g>
+
+          <!-- LABELS -->
+          <g>
+            <text class="maplabel end" x="36"  y="314" text-anchor="end">West End</text>
+            <text class="maplabel" x="200" y="306" text-anchor="middle">Foundry</text>
+            <text class="maplabel" x="370" y="368" text-anchor="middle">Westgate</text>
+            <text class="maplabel xl" x="542" y="316">Meridian Central</text>
+            <text class="maplabel" x="700" y="306" text-anchor="middle">Riverside</text>
+            <text class="maplabel" x="964" y="312" text-anchor="end">East Terminal</text>
+            <text class="maplabel end" x="538" y="54">Summit</text>
+            <text class="maplabel" x="542" y="155">Old Market</text>
+            <text class="maplabel" x="542" y="276">St. Elmo</text>
+            <text class="maplabel end" x="520" y="608" text-anchor="middle">Southbank</text>
+            <text class="maplabel" x="120" y="612" text-anchor="middle">Harborfront</text>
+            <text class="maplabel end" x="458" y="104">Lakeside</text>
+            <text class="maplabel end" x="680" y="612" text-anchor="middle">Milltown</text>
+            <text class="maplabel end" x="344" y="64" text-anchor="end">Northgate</text>
+            <text class="maplabel" x="390" y="188" text-anchor="middle">Civic Plaza</text>
+            <text class="maplabel" x="620" y="188" text-anchor="middle">Beacon Hill</text>
+            <text class="maplabel end" x="638" y="64">Highpoint</text>
+            <text class="maplabel" x="840" y="612" text-anchor="middle">Southpoint</text>
+            <text class="maplabel end" x="64" y="132">West Airport</text>
+            <text class="maplabel end" x="910" y="292" text-anchor="end">Airport</text>
+          </g>
+
+          <!-- Compass + scale -->
+          <g>
+            <path d="M930,64 L938,88 L930,82 L922,88 Z" fill="var(--ink)"/>
+            <text class="compass" x="930" y="106" text-anchor="middle">N</text>
+            <rect x="36" y="616" width="80" height="6" fill="var(--ink)"/>
+            <rect x="76" y="616" width="40" height="6" fill="#fff" stroke="var(--ink)" stroke-width="1.5"/>
+            <text class="maplabel end" x="36" y="610">0</text>
+            <text class="maplabel end" x="116" y="610" text-anchor="end">2 km</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="map-foot" aria-label="Line legend">
+        <button class="legend-chip" data-lines="1"><span class="sq" style="background:var(--l1)">1</span>Crosstown</button>
+        <button class="legend-chip" data-lines="2"><span class="sq" style="background:var(--l2)">2</span>Central</button>
+        <button class="legend-chip" data-lines="3"><span class="sq" style="background:var(--l3)">3</span>Harbor</button>
+        <button class="legend-chip" data-lines="4"><span class="sq b4" style="background:var(--l4)">4</span>Airport</button>
+        <button class="legend-chip" data-lines="5"><span class="sq" style="background:var(--l5)">5</span>University</button>
+        <button class="legend-chip" data-lines="6"><span class="sq" style="background:var(--l6)">6</span>Northside</button>
+        <span class="map-note">● = live train position</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LINE STATUS ================= -->
+<section id="status">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num" style="background:var(--l1)">S</span>
+      <h2>Line status</h2>
+      <span class="sec-rule"></span>
+      <span class="sec-kicker">Updated 08:42 · Hover a line</span>
+    </div>
+
+    <div class="status-grid">
+      <article class="line-card" style="--lc:var(--l1)" data-lines="1" tabindex="0">
+        <div class="lc-in">
+          <div class="lc-top"><span class="lc-badge">1</span><div><div class="lc-name">Crosstown</div><div class="lc-sub">West End → East Terminal</div></div></div>
+          <span class="pill ok"><span class="dot"></span>Good service</span>
+          <div class="lc-meta">
+            <div><b>4 min</b><span>Frequency</span></div>
+            <div><b>2 min</b><span>Next train</span></div>
+            <div><b>24h</b><span>Weekend</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="line-card" style="--lc:var(--l2)" data-lines="2" tabindex="0">
+        <div class="lc-in">
+          <div class="lc-top"><span class="lc-badge">2</span><div><div class="lc-name">Central</div><div class="lc-sub">Summit → Southbank</div></div></div>
+          <span class="pill ok"><span class="dot"></span>Good service</span>
+          <div class="lc-meta">
+            <div><b>3 min</b><span>Frequency</span></div>
+            <div><b>1 min</b><span>Next train</span></div>
+            <div><b>24h</b><span>Weekend</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="line-card" style="--lc:var(--l3)" data-lines="3" tabindex="0">
+        <div class="lc-in">
+          <div class="lc-top"><span class="lc-badge">3</span><div><div class="lc-name">Harbor</div><div class="lc-sub">Harborfront → Lakeside</div></div></div>
+          <span class="pill del"><span class="dot"></span>Delays up to 15 min</span>
+          <div class="lc-meta">
+            <div><b>12 min</b><span>Frequency</span></div>
+            <div><b>6 min</b><span>Next train</span></div>
+            <div><b>Night</b><span>Weekend</span></div>
+          </div>
+          <p class="lc-note">Signal works at Westgate. Replacement buses at Lakeside.</p>
+        </div>
+      </article>
+
+      <article class="line-card" style="--lc:var(--l4)" data-lines="4" tabindex="0">
+        <div class="lc-in">
+          <div class="lc-top"><span class="lc-badge dark-text">4</span><div><div class="lc-name">Airport</div><div class="lc-sub">West Airport → Airport</div></div></div>
+          <span class="pill warn"><span class="dot"></span>Weekend works</span>
+          <div class="lc-meta">
+            <div><b>10 min</b><span>Frequency</span></div>
+            <div><b>8 min</b><span>Next train</span></div>
+            <div><b>22:00</b><span>Last (wknd)</span></div>
+          </div>
+          <p class="lc-note">No weekend service after 22:00. FlyBus 40 runs every 15 min.</p>
+        </div>
+      </article>
+
+      <article class="line-card" style="--lc:var(--l5)" data-lines="5" tabindex="0">
+        <div class="lc-in">
+          <div class="lc-top"><span class="lc-badge">5</span><div><div class="lc-name">University</div><div class="lc-sub">Milltown → Northgate</div></div></div>
+          <span class="pill ok"><span class="dot"></span>Good service</span>
+          <div class="lc-meta">
+            <div><b>8 min</b><span>Frequency</span></div>
+            <div><b>4 min</b><span>Next train</span></div>
+            <div><b>Night</b><span>Weekend</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="line-card" style="--lc:var(--l6)" data-lines="6" tabindex="0">
+        <div class="lc-in">
+          <div class="lc-top"><span class="lc-badge">6</span><div><div class="lc-name">Northside</div><div class="lc-sub">Southpoint → Highpoint</div></div></div>
+          <span class="pill warn"><span class="dot"></span>Planned works</span>
+          <div class="lc-meta">
+            <div><b>12 min</b><span>Frequency</span></div>
+            <div><b>9 min</b><span>Next train</span></div>
+            <div><b>Night</b><span>Weekend</span></div>
+          </div>
+          <p class="lc-note">Beacon Hill closed until 14 Jun. Alight at Old Market.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FARES ================= -->
+<section class="fares" id="fares">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">F</span>
+      <h2>Fares &amp; ticketing</h2>
+      <span class="sec-rule"></span>
+      <span class="sec-kicker">Tap in · Tap out · No fumbling</span>
+    </div>
+
+    <div class="fares-grid">
+      <div class="mcard" role="img" aria-label="MeridianCard travel card showing a balance of $18.40">
+        <div class="mcard-in">
+          <div class="mc-top">
+            <span class="mc-brand">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <rect x="4" y="16" width="40" height="16" fill="var(--l4)"/>
+                <circle cx="24" cy="24" r="21" fill="none" stroke="#fff" stroke-width="4"/>
+              </svg>
+              MeridianCard
+            </span>
+            <span class="mc-type">Adult · Open</span>
+          </div>
+          <div class="mc-chip" aria-hidden="true"></div>
+          <div class="mc-num">8802&nbsp;&nbsp;••••&nbsp;&nbsp;••••&nbsp;&nbsp;4417</div>
+          <div class="mc-bottom">
+            <div class="mc-holder"><span>Holder</span><b>Passenger</b></div>
+            <div class="mc-bal"><span>Balance</span><b>$18.40</b></div>
+          </div>
+          <span class="mc-balance">Valid all zones</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="fare-list">
+          <div class="fare-row">
+            <div><div class="fr-name">Single Ride</div><div class="fr-sub">Tap in and out on any line, any zone</div></div>
+            <div class="fr-price">$3.10</div>
+            <span></span>
+          </div>
+          <div class="fare-row pop">
+            <div><div class="fr-name">10-Ride Ticket</div><div class="fr-sub">Saves $3.10 vs. ten singles</div></div>
+            <div class="fr-price">$27.90</div>
+            <span class="fr-tag">Most popular</span>
+          </div>
+          <div class="fare-row">
+            <div><div class="fr-name">Day Pass</div><div class="fr-sub">Unlimited travel, all zones, one day</div></div>
+            <div class="fr-price">$8.50</div>
+            <span></span>
+          </div>
+          <div class="fare-row">
+            <div><div class="fr-name">Monthly Pass</div><div class="fr-sub">Unlimited travel, 28 days from first tap</div></div>
+            <div class="fr-price">$119</div>
+            <span></span>
+          </div>
+          <div class="fare-row">
+            <div><div class="fr-name">Youth &amp; Senior</div><div class="fr-sub">50% off all fares, all zones, all lines</div></div>
+            <div class="fr-price">−50%</div>
+            <span></span>
+          </div>
+        </div>
+        <p class="fare-note">Ride free under 6 with an adult. Contactless cards and phones accepted everywhere MeridianCard is — same fares, no top-up needed. Children 6–15 ride half price on a YouthCard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATIONS ================= -->
+<section id="stations">
+  <div class="wrap">
+    <div class="sec-head stations-head">
+      <span class="sec-num" style="background:var(--l2)">ST</span>
+      <h2>Station index</h2>
+      <span class="sec-rule"></span>
+      <label class="searchbox">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="3"><circle cx="10.5" cy="10.5" r="7"/><line x1="16" y1="16" x2="22" y2="22"/></svg>
+        <input type="search" id="stnSearch" placeholder="Search a station…" aria-label="Search stations">
+      </label>
+    </div>
+
+    <div class="station-list" id="stnList">
+      <div class="stn-row dl4 dl6" data-lines="4 6" data-name="Beacon Hill" tabindex="0" style="--rowc:var(--l4)">
+        <div><div class="sr-name">Beacon Hill</div><div class="sr-zone">ZONE 1 · PLATFORMS 1–4</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l4)">4</span><span class="mini" style="background:var(--l6)">6</span></div>
+        <span class="sr-go" style="color:var(--l4)">→</span>
+      </div>
+      <div class="stn-row dl4 dl5" data-lines="4 5" data-name="Civic Plaza" tabindex="0" style="--rowc:var(--l4)">
+        <div><div class="sr-name">Civic Plaza</div><div class="sr-zone">ZONE 2 · PLATFORMS 1–6</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l4)">4</span><span class="mini" style="background:var(--l5)">5</span></div>
+        <span class="sr-go" style="color:var(--l4)">→</span>
+      </div>
+      <div class="stn-row dl1" data-lines="1" data-name="East Terminal" tabindex="0" style="--rowc:var(--l1)">
+        <div><div class="sr-name">East Terminal</div><div class="sr-zone">ZONE 2 · TERMINUS</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l1)">1</span></div>
+        <span class="sr-go" style="color:var(--l1)">→</span>
+      </div>
+      <div class="stn-row dl1" data-lines="1" data-name="Foundry" tabindex="0" style="--rowc:var(--l1)">
+        <div><div class="sr-name">Foundry</div><div class="sr-zone">ZONE 2 · PLATFORMS 1–2</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l1)">1</span></div>
+        <span class="sr-go" style="color:var(--l1)">→</span>
+      </div>
+      <div class="stn-row dl3" data-lines="3" data-name="Harborfront" tabindex="0" style="--rowc:var(--l3)">
+        <div><div class="sr-name">Harborfront</div><div class="sr-zone">ZONE 1 · TERMINUS · WATERFRONT</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l3)">3</span></div>
+        <span class="sr-go" style="color:var(--l3)">→</span>
+      </div>
+      <div class="stn-row dl1 dl2" data-lines="1 2" data-name="Meridian Central" tabindex="0" style="--rowc:var(--l2)">
+        <div><div class="sr-name">Meridian Central</div><div class="sr-zone">ZONE 1 · MAIN CONCORSE · HUB</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l1)">1</span><span class="mini" style="background:var(--l2)">2</span></div>
+        <span class="sr-go" style="color:var(--l2)">→</span>
+      </div>
+      <div class="stn-row dl5" data-lines="5" data-name="Northgate" tabindex="0" style="--rowc:var(--l5)">
+        <div><div class="sr-name">Northgate</div><div class="sr-zone">ZONE 3 · TERMINUS</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l5)">5</span></div>
+        <span class="sr-go" style="color:var(--l5)">→</span>
+      </div>
+      <div class="stn-row dl2 dl4" data-lines="2 4" data-name="Old Market" tabindex="0" style="--rowc:var(--l2)">
+        <div><div class="sr-name">Old Market</div><div class="sr-zone">ZONE 1 · PLATFORMS 1–4</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l2)">2</span><span class="mini" style="background:var(--l4)">4</span></div>
+        <span class="sr-go" style="color:var(--l2)">→</span>
+      </div>
+      <div class="stn-row dl1" data-lines="1" data-name="Riverside" tabindex="0" style="--rowc:var(--l1)">
+        <div><div class="sr-name">Riverside</div><div class="sr-zone">ZONE 1 · PLATFORMS 1–2</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l1)">1</span></div>
+        <span class="sr-go" style="color:var(--l1)">→</span>
+      </div>
+      <div class="stn-row dl6" data-lines="6" data-name="Southpoint" tabindex="0" style="--rowc:var(--l6)">
+        <div><div class="sr-name">Southpoint</div><div class="sr-zone">ZONE 2 · TERMINUS</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l6)">6</span></div>
+        <span class="sr-go" style="color:var(--l6)">→</span>
+      </div>
+      <div class="stn-row dl2 dl5" data-lines="2 5" data-name="St. Elmo" tabindex="0" style="--rowc:var(--l2)">
+        <div><div class="sr-name">St. Elmo</div><div class="sr-zone">ZONE 2 · PLATFORMS 1–4</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l2)">2</span><span class="mini" style="background:var(--l5)">5</span></div>
+        <span class="sr-go" style="color:var(--l2)">→</span>
+      </div>
+      <div class="stn-row dl1 dl3" data-lines="1 3" data-name="Westgate" tabindex="0" style="--rowc:var(--l1)">
+        <div><div class="sr-name">Westgate</div><div class="sr-zone">ZONE 1 · PLATFORMS 1–4 · SIGNAL WORKS AHEAD</div></div>
+        <div class="sr-badges"><span class="mini" style="background:var(--l1)">1</span><span class="mini" style="background:var(--l3)">3</span></div>
+        <span class="sr-go" style="color:var(--l1)">→</span>
+      </div>
+      <p class="stn-count" id="stnCount" style="padding:14px 22px;border:0">12 stations shown</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ACCESSIBILITY ================= -->
+<section class="access" id="access">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num" style="background:var(--l5)">A</span>
+      <h2>Access for every rider</h2>
+      <span class="sec-rule"></span>
+      <span class="sec-kicker">Step-free at 58 of 64 stations</span>
+    </div>
+
+    <div class="acc-grid">
+      <div class="acc-tile" style="--tc:var(--l2)">
+        <span class="acc-corner"></span>
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="8" y="6" width="32" height="36"/>
+          <line x1="24" y1="6" x2="24" y2="42"/>
+          <path d="M14 22 l5 -6 l5 6 M14 32 l5 6 l5 -6"/>
+          <path d="M31 16 l5 6 l5 -6 M31 32 l5 -6 l5 6" stroke="var(--l2)"/>
+        </svg>
+        <h3>Lifts at every hub</h3>
+        <p>Platform-to-concourse lifts at all 14 interchange stations and 44 other stops. Lift status is live on station boards and this site.</p>
+      </div>
+
+      <div class="acc-tile" style="--tc:var(--l3)">
+        <span class="acc-corner"></span>
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 40 h8 v-6 h8 v-6 h8 v-6 h8 v-6 h6"/>
+          <line x1="8" y1="8" x2="42" y2="42" stroke="var(--l3)" stroke-width="4"/>
+        </svg>
+        <h3>Step-free routes</h3>
+        <p>Route-finder shows step-free journeys only when you ask. Six stations are ramp-only; all others offer a lift or assisted path.</p>
+      </div>
+
+      <div class="acc-tile" style="--tc:var(--l1)">
+        <span class="acc-corner"></span>
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 19 h8 l10 -9 v28 l-10 -9 h-8 z" fill="var(--paper)"/>
+          <path d="M33 16 a10 10 0 0 1 0 16 M37 11 a17 17 0 0 1 0 26" stroke="var(--l1)"/>
+        </svg>
+        <h3>Audio &amp; tactile guidance</h3>
+        <p>Every platform has tactile paving, audio announcements on both tracks, and a tactile map board at the fare gate.</p>
+      </div>
+
+      <div class="acc-tile" style="--tc:var(--l6)">
+        <span class="acc-corner"></span>
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="21" cy="10" r="5"/>
+          <path d="M21 16 v12 h10 l5 10"/>
+          <circle cx="18" cy="34" r="9" stroke="var(--l6)" stroke-width="4"/>
+        </svg>
+        <h3>Assisted boarding</h3>
+        <p>Reserve assistance up to 24 h ahead or walk in up to 10 min before your train. Our team meets you at the lift, not the gate.</p>
+      </div>
+
+      <div class="acc-tile" style="--tc:var(--l4)">
+        <span class="acc-corner"></span>
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--ink)" stroke-width="3">
+          <circle cx="12" cy="12" r="3.5"/><circle cx="24" cy="12" r="3.5"/><circle cx="36" cy="12" r="3.5"/>
+          <circle cx="12" cy="24" r="3.5" stroke="var(--l4)"/><circle cx="24" cy="24" r="3.5" stroke="var(--l4)"/><circle cx="36" cy="24" r="3.5" stroke="var(--l4)"/>
+          <circle cx="12" cy="36" r="3.5"/><circle cx="24" cy="36" r="3.5"/><circle cx="36" cy="36" r="3.5"/>
+        </svg>
+        <h3>Clear wayfinding</h3>
+        <p>Bold high-contrast signage, braille on every board, and pictograms first — words second — across the network.</p>
+      </div>
+
+      <div class="acc-tile" style="--tc:var(--l5)">
+        <span class="acc-corner"></span>
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="24" cy="24" r="18" stroke="var(--l5)" stroke-width="4"/>
+          <circle cx="24" cy="15" r="2.6" fill="var(--ink)"/>
+          <line x1="24" y1="22" x2="24" y2="34"/>
+        </svg>
+        <h3>Real-time information</h3>
+        <p>Low platforms at 12 stations; gap-filler boards on every train. All displays include audio and large-text modes.</p>
+      </div>
+    </div>
+
+    <div class="acc-note">
+      <span class="big">Need a hand? The Access line is open 24/7.</span>
+      <a class="call" href="tel:1123">☎ 1-123 — ACCESS</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER / PLATFORM SIGNAGE ================= -->
+<footer class="foot">
+  <div class="platform">
+    <div class="plat-in">
+      <div class="plat-strip">
+        <span class="plat-badge">2</span>
+        <div>
+          <div class="plat-name">Meridian Central</div>
+          <div class="plat-sub">Main Concourse · Level +1 · You are here</div>
+        </div>
+      </div>
+      <div class="plat-board">
+        <div class="plat-cell dest">
+          <div class="pc-k">Inbound · toward Summit</div>
+          <div class="pc-v">NEXT TRAIN <small>IN</small> <span id="nextTrain">2</span> <small>MIN</small></div>
+        </div>
+        <div class="plat-cell">
+          <div class="pc-k">Also stopping here</div>
+          <div class="pc-v" style="font-size:22px">1 · CROSSTOWN</div>
+          <div class="pc-dots">
+            <i style="background:var(--l1)"></i><i style="background:var(--l2)"></i>
+          </div>
+        </div>
+        <div class="plat-cell">
+          <div class="pc-k">Platform notes</div>
+          <div class="pc-v" style="font-size:22px">DOORS OPEN RIGHT</div>
+          <div class="pc-dots" style="margin-top:10px">
+            <span style="font-family:var(--sign);font-weight:600;font-size:13px;letter-spacing:.24em;color:#9aa2ad">MIND THE GAP</span>
+          </div>
+        </div>
+      </div>
+      <div class="mind">Service hours: 04:30 – 01:30 daily · 24 h Fri–Sat on lines 1 &amp; 2</div>
+    </div>
+  </div>
+
+  <div class="foot-cols">
+    <div class="foot-brand">
+      <a class="brand" href="#top">
+        <svg class="roundel" viewBox="0 0 48 48" width="40" height="40" aria-hidden="true">
+          <rect x="4" y="16" width="40" height="16" fill="var(--l4)"/>
+          <circle cx="24" cy="24" r="21" fill="none" stroke="#fff" stroke-width="4"/>
+        </svg>
+        <span><span class="brand-name" style="color:#fff">MERIDIAN METRO</span><br>
+        <span class="brand-sub" style="color:#9aa2ad">Transit Authority</span></span>
+      </a>
+      <p>Publicly owned, publicly accountable. One fare system, one map, six lines — the whole way across the city.</p>
+    </div>
+    <div>
+      <h4>Ride</h4>
+      <a href="#map">System map</a>
+      <a href="#status">Line status</a>
+      <a href="#stations">Station index</a>
+      <a href="#access">Accessibility</a>
+    </div>
+    <div>
+      <h4>Tickets</h4>
+      <a href="#fares">MeridianCard</a>
+      <a href="#fares">Day &amp; monthly passes</a>
+      <a href="#fares">Youth &amp; senior fares</a>
+      <a href="#fares">Lost card</a>
+    </div>
+    <div>
+      <h4>Authority</h4>
+      <a href="#top">About MMTA</a>
+      <a href="#top">Works &amp; projects</a>
+      <a href="#top">Careers</a>
+      <a href="#top">Contact</a>
+    </div>
+  </div>
+
+  <div class="foot-legal">
+    <span>© 2025 Meridian Metro Transit Authority</span>
+    <span class="spacer">A fictional network · Built in-house</span>
+  </div>
+  <div class="foot-lines"></div>
+</footer>
+
+<script>
+/* ---------- Line highlight (map <-> dashboard <-> station list) ---------- */
+(function(){
+  var body = document.body;
+  function on(el){
+    var lines = el.getAttribute('data-lines');
+    if(!lines) return;
+    body.setAttribute('data-hl', lines.trim().split(/\s+/).join(' '));
+  }
+  function off(){ body.removeAttribute('data-hl'); }
+  document.querySelectorAll('[data-lines]').forEach(function(el){
+    el.addEventListener('mouseenter', function(){ on(el); });
+    el.addEventListener('mouseleave', off);
+    el.addEventListener('focus', function(){ on(el); });
+    el.addEventListener('blur', off);
+    /* touch: tap toggles highlight */
+    el.addEventListener('click', function(e){
+      if(el.closest('a')) return;
+      if(body.getAttribute('data-hl') === el.getAttribute('data-lines')) off();
+      else on(el);
+      if (e && el.classList.contains('legend-chip')) e.preventDefault();
+    });
+  });
+})();
+
+/* ---------- Station finder filter ---------- */
+(function(){
+  var input = document.getElementById('stnSearch');
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.stn-row'));
+  var count = document.getElementById('stnCount');
+  input.addEventListener('input', function(){
+    var q = input.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function(r){
+      var hit = !q || r.getAttribute('data-name').toLowerCase().indexOf(q) !== -1;
+      r.style.display = hit ? '' : 'none';
+      if(hit) shown++;
+    });
+    count.textContent = shown + (shown === 1 ? ' station shown' : ' stations shown');
+  });
+})();
+
+/* ---------- Platform countdown (footer) ---------- */
+(function(){
+  var el = document.getElementById('nextTrain');
+  var t = 2;
+  setInterval(function(){
+    t = t <= 0 ? 5 : t - 1;
+    el.textContent = t;
+  }, 1000);
+})();
+
+/* ---------- Respect reduced motion: freeze SMIL trains ---------- */
+(function(){
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelectorAll('svg').forEach(function(s){
+      if (s.pauseAnimations) { try { s.pauseAnimations(); } catch(e){} }
+    });
+  }
+})();
+</script>
+</body>
+</html>

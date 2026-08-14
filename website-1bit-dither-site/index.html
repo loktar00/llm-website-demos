@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAYER &amp; SONS PRINT WORKS — Est. 1874</title>
+<meta name="description" content="Fourth-generation letterpress. Black ink, white paper, 1-bit dither.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+
+<script>
+/* ---- DITHER FACTORY : builds 4x4 Bayer-matrix patterns as CSS vars + SVG <defs> ---- */
+(function(){
+  var B=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+  function cells(n,cell){
+    var s='';
+    for(var y=0;y<4;y++)for(var x=0;x<4;x++)
+      if(B[y][x]<n) s+='<rect x="'+(x*cell)+'" y="'+(y*cell)+'" width="'+cell+'" height="'+cell+'" fill="#000"/>';
+    return s;
+  }
+  var root=document.documentElement.style;
+  function uri(n){
+    var sz=4;
+    var svg="<svg xmlns='http://www.w3.org/2000/svg' width='"+sz+"' height='"+sz+"' viewBox='0 0 4 4' shape-rendering='crispEdges'><rect width='4' height='4' fill='#fff'/><g fill='#000'>"+
+      (function(){var s='';for(var y=0;y<4;y++)for(var x=0;x<4;x++)if(B[y][x]<n)s+='<rect x="'+x+'" y="'+y+'" width="1" height="1"/>';return s;})()+
+    '</g></svg>';
+    return "url(\"data:image/svg+xml,"+encodeURIComponent(svg)+"\")";
+  }
+  for(var n=1;n<16;n++) root.setProperty('--d'+n, uri(n));
+
+  var defs='<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><defs>';
+  for(n=1;n<16;n++){
+    defs+='<pattern id="p'+n+'" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#fff"/>'+cells(n,1)+'</pattern>';
+    defs+='<pattern id="q'+n+'" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#fff"/>'+cells(n,2)+'</pattern>';
+  }
+  defs+='<pattern id="chk" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#fff"/><g fill="#000"><rect x="0" y="0" width="1" height="1"/><rect x="2" y="0" width="1" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="3" y="1" width="1" height="1"/><rect x="0" y="2" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="1" y="3" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/></g></pattern>';
+  defs+='<pattern id="dot" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#fff"/><circle cx="3" cy="3" r="0.9" fill="#000"/></pattern>';
+  defs+='</defs></svg>';
+  document.addEventListener('DOMContentLoaded',function(){document.body.insertAdjacentHTML('afterbegin',defs);});
+})();
+</script>
+
+<style>
+/* ================= 1-BIT FOUNDATION ================= */
+:root{ --black:#000; --white:#fff; }
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ background:var(--white); color:var(--black); }
+body{
+  font-family:"VT323","Courier New",monospace;
+  font-size:21px; line-height:1.35;
+  background:var(--white); color:var(--black);
+  padding-top:8px;
+  image-rendering:pixelated;
+}
+svg{ shape-rendering:crispEdges; display:block; }
+svg text{ font-family:"Silkscreen",monospace; }
+a{ color:var(--black); }
+::selection{ background:var(--black); color:var(--white); }
+::-webkit-scrollbar{ width:14px; }
+::-webkit-scrollbar-track{ background:var(--white); border-left:3px solid var(--black); }
+::-webkit-scrollbar-thumb{ background:var(--black); }
+
+.px{ font-family:"Silkscreen",monospace; letter-spacing:1px; }
+.wrap{ max-width:1060px; margin:0 auto; padding:0 18px; }
+
+/* hard 1-bit offset "shadow" via outline trick-free solid */
+.panel{ border:3px solid var(--black); background:var(--white); }
+.hard{ box-shadow:6px 6px 0 0 var(--black); }
+
+/* checkerboard (pure CSS, 1-bit) */
+.checker{ background:conic-gradient(var(--black) 25%, var(--white) 0 50%, var(--black) 0 75%, var(--white) 0); background-size:8px 8px; }
+
+/* scroll-reactive checker bands (position shifted in JS, hard steps only) */
+.band{ height:18px; border-top:3px solid var(--black); border-bottom:3px solid var(--black);
+  background:conic-gradient(var(--black) 25%, var(--white) 0 50%, var(--black) 0 75%, var(--white) 0);
+  background-size:8px 8px; }
+
+/* ================= BOOT INTRO ================= */
+#boot{ position:fixed; inset:0; z-index:9999; background:var(--black); color:var(--white);
+  display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+  padding:8vw 10vw; cursor:pointer; font-size:20px; }
+#boot.white{ background:var(--white); }
+#boot.white #boottext, #boot.white #bootbar, #boot.white #bootskip{ display:none; }
+#boot.off{ display:none; }
+#boottext{ white-space:pre-wrap; font-family:"VT323",monospace; line-height:1.5; }
+#bootbar{ margin-top:18px; width:min(420px,70vw); height:22px; border:2px solid var(--white); }
+#bootfill{ height:100%; width:0%; background:var(--white); }
+#bootskip{ margin-top:14px; font-family:"Silkscreen",monospace; font-size:10px; }
+
+/* ================= SCROLL PROGRESS STRIP ================= */
+#strip{ position:fixed; top:0; left:0; right:0; height:8px; z-index:900;
+  background:conic-gradient(var(--black) 25%, var(--white) 0 50%, var(--black) 0 75%, var(--white) 0);
+  background-size:8px 8px; border-bottom:0; }
+#progfill{ height:100%; width:0%; background:var(--black); }
+
+/* ================= WINDOW CHROME HEADER ================= */
+header{ position:sticky; top:8px; z-index:500; background:var(--white); border:3px solid var(--black); }
+.titlebar{ display:flex; justify-content:space-between; align-items:center; padding:6px 10px;
+  border-bottom:3px solid var(--black);
+  background:var(--d4); background-size:12px 12px; }
+.titlebar .ttl{ font-family:"Silkscreen",monospace; font-size:12px; letter-spacing:1px;
+  background:var(--white); padding:2px 8px; border:2px solid var(--black); }
+.winbtns{ display:flex; gap:6px; }
+.winbtns span{ width:16px; height:16px; border:2px solid var(--black); background:var(--white);
+  font-size:10px; line-height:12px; text-align:center; font-family:"VT323",monospace; }
+.winbtns span:hover{ background:var(--black); color:var(--white); }
+.menubar{ display:flex; align-items:center; flex-wrap:wrap; gap:0; padding:0 6px; border-bottom:3px solid var(--black); }
+.menubar a, .menubar .brand{ font-family:"Silkscreen",monospace; font-size:11px; text-decoration:none;
+  padding:8px 12px; display:inline-block; }
+.menubar .brand{ font-weight:700; border-right:2px solid var(--black); }
+.menubar a:hover{ background:var(--d8); background-size:12px 12px; color:var(--white); text-shadow:1px 1px 0 var(--black); }
+
+/* ticker — hard stepped scroll, period energy */
+.ticker{ overflow:hidden; white-space:nowrap; border-bottom:3px solid var(--black); background:var(--white); }
+.ticker .tk{ display:inline-block; padding:5px 0; font-family:"Silkscreen",monospace; font-size:11px;
+  animation:tick 26s steps(64) infinite; }
+@keyframes tick{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+/* ================= HERO ================= */
+.hero{ display:grid; grid-template-columns:1.05fr 1fr; gap:28px; align-items:center; padding:44px 18px 54px; position:relative; }
+.marks{ position:relative; }
+.marks .mk{ position:absolute; width:16px; height:16px; pointer-events:none; }
+.marks .mk::before,.marks .mk::after{ content:""; position:absolute; background:var(--black); }
+.marks .mk::before{ width:16px; height:2px; }
+.marks .mk::after{ width:2px; height:16px; }
+.marks .mk.tl{ top:14px; left:14px; }
+.marks .mk.br{ bottom:14px; right:14px; transform:rotate(180deg); }
+.kicker{ font-family:"Silkscreen",monospace; font-size:11px; letter-spacing:2px;
+  display:inline-block; border:2px solid var(--black); padding:3px 8px; background:var(--d2); background-size:10px 10px; }
+.hero h1{ font-family:"Silkscreen",monospace; font-weight:700; font-size:clamp(26px,4.6vw,44px); line-height:1.18; margin:16px 0 14px; }
+.hero p.lead{ max-width:46ch; }
+.btnrow{ display:flex; gap:16px; flex-wrap:wrap; margin:22px 0 14px; }
+.btn{ font-family:"Silkscreen",monospace; font-size:12px; letter-spacing:1px; text-decoration:none;
+  display:inline-block; padding:12px 18px; border:3px solid var(--black); background:var(--white);
+  color:var(--black); box-shadow:5px 5px 0 0 var(--black); cursor:pointer; }
+.btn:hover{ background:var(--black); color:var(--white); }
+.btn:active{ box-shadow:0 0 0 0 var(--black); transform:translate(5px,5px); }
+.btn.ghost{ background:var(--d4); background-size:12px 12px; }
+.btn.ghost:hover{ background:var(--black); color:var(--white); }
+.spec{ font-family:"Silkscreen",monospace; font-size:10px; letter-spacing:1px; opacity:1; }
+.hero-art{ border:3px solid var(--black); background:var(--white); box-shadow:8px 8px 0 0 var(--black); }
+.hero-art svg{ width:100%; height:auto; }
+
+/* ================= SECTION HEADS ================= */
+section{ padding:44px 0; }
+h2{ font-family:"Silkscreen",monospace; font-weight:700; font-size:clamp(18px,2.6vw,26px); margin-bottom:6px; }
+h2 .no{ display:inline-block; background:var(--black); color:var(--white); padding:2px 8px; margin-right:10px; font-size:0.7em; vertical-align:middle; }
+.h2rule{ height:10px; width:100%; max-width:420px; background:var(--d8); background-size:16px 16px; margin:8px 0 26px; border-bottom:2px solid var(--black); }
+
+/* hard-cut dither "develop" reveal */
+.reveal{ position:relative; overflow:hidden; }
+.reveal::after{ content:""; position:absolute; inset:0; background:var(--d15); background-size:20px 20px; pointer-events:none; }
+.reveal.on::after{ display:none; }
+
+/* ================= ABOUT ================= */
+.about{ display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start; }
+.about p + p{ margin-top:12px; }
+.about .photo{ border:3px solid var(--black); box-shadow:8px 8px 0 0 var(--black); background:var(--white); }
+.about .photo svg{ width:100%; height:auto; }
+.timeline{ list-style:none; margin-top:22px; border-top:3px solid var(--black); }
+.timeline li{ display:flex; gap:14px; align-items:baseline; border-bottom:2px dotted var(--black); padding:8px 0; }
+.timeline .yr{ font-family:"Silkscreen",monospace; font-size:12px; min-width:64px; background:var(--d6); background-size:12px 12px; padding:1px 6px; }
+blockquote{ border:3px solid var(--black); border-left-width:10px; padding:14px 16px; margin-top:22px; background:var(--d2); background-size:12px 12px; }
+blockquote .sig{ font-family:"Silkscreen",monospace; font-size:10px; display:block; margin-top:8px; }
+
+/* ================= GALLERY ================= */
+.gallery{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.prod{ border:3px solid var(--black); background:var(--white); position:relative; cursor:crosshair; box-shadow:5px 5px 0 0 var(--black); }
+.prod .frame{ border-bottom:3px solid var(--black); background:var(--white); }
+.prod svg{ width:100%; height:auto; }
+.prod figcaption{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; padding:10px 12px; }
+.prod .nm{ font-family:"Silkscreen",monospace; font-size:11px; }
+.prod .pr{ font-family:"Silkscreen",monospace; font-size:11px; background:var(--black); color:var(--white); padding:1px 7px; white-space:nowrap; }
+.prod:hover{ box-shadow:2px 2px 0 0 var(--black); transform:translate(3px,3px); }
+.prod .tag{ position:absolute; top:8px; left:8px; font-family:"Silkscreen",monospace; font-size:9px;
+  background:var(--white); border:2px solid var(--black); padding:1px 6px; }
+
+/* hover: shift the Bayer density (hard cut, no transition) */
+.prod:hover .d2, .hero-art:hover .d2{ fill:url(#p6); }
+.prod:hover .d4{ fill:url(#p8); }
+.prod:hover .d5{ fill:url(#p9); }
+.prod:hover .d6, .hero-art:hover .d6{ fill:url(#p10); }
+.prod:hover .d7{ fill:url(#p11); }
+.prod:hover .d8, .hero-art:hover .d8{ fill:url(#p12); }
+.prod:hover .d10{ fill:url(#p14); }
+.prod:hover .d11{ fill:url(#p15); }
+.prod:hover .d13, .prod:hover .d14, .prod:hover .d15{ fill:url(#p15); }
+.prod:hover .q8{ fill:url(#q12); }
+.prod:hover .q12{ fill:url(#q15); }
+
+/* dither fills (p = 1u cells, q = 2u cells) */
+.d1{fill:url(#p1)}.d2{fill:url(#p2)}.d3{fill:url(#p3)}.d4{fill:url(#p4)}.d5{fill:url(#p5)}
+.d6{fill:url(#p6)}.d7{fill:url(#p7)}.d8{fill:url(#p8)}.d9{fill:url(#p9)}.d10{fill:url(#p10)}
+.d11{fill:url(#p11)}.d12{fill:url(#p12)}.d13{fill:url(#p13)}.d14{fill:url(#p14)}.d15{fill:url(#p15)}
+.q1{fill:url(#q1)}.q2{fill:url(#q2)}.q3{fill:url(#q3)}.q4{fill:url(#q4)}.q5{fill:url(#q5)}
+.q6{fill:url(#q6)}.q7{fill:url(#q7)}.q8{fill:url(#q8)}.q9{fill:url(#q9)}.q10{fill:url(#q10)}
+.q11{fill:url(#q11)}.q12{fill:url(#q12)}.q13{fill:url(#q13)}.q14{fill:url(#q14)}.q15{fill:url(#q15)}
+.chk{fill:url(#chk)} .dot{fill:url(#dot)}
+
+/* ================= PRICE SHEET ================= */
+.sheet{ border:3px solid var(--black); box-shadow:8px 8px 0 0 var(--black); }
+.sheet .sheet-head{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:12px 16px; border-bottom:3px solid var(--black); background:var(--d6); background-size:12px 12px; }
+.sheet .sheet-head h3{ font-family:"Silkscreen",monospace; font-size:14px; background:var(--white); padding:3px 8px; border:2px solid var(--black); }
+.sheet .sheet-head .dt{ font-family:"Silkscreen",monospace; font-size:10px; }
+.tablewrap{ overflow-x:auto; }
+table{ width:100%; border-collapse:collapse; min-width:520px; }
+thead th{ background:var(--black); color:var(--white); font-family:"Silkscreen",monospace; font-size:11px;
+  padding:10px 14px; text-align:left; letter-spacing:1px; }
+td{ padding:12px 14px; border-top:2px solid var(--black); font-size:20px; }
+td .lead{ display:inline-block; width:100%; border-bottom:2px dotted var(--black); height:0.9em; vertical-align:bottom; }
+td .amt{ font-family:"Silkscreen",monospace; font-size:13px; white-space:nowrap; }
+tbody tr{ background:var(--white); }
+tbody tr:hover{ background:var(--d6); background-size:12px 12px; }
+.sheet .fn{ padding:12px 16px; border-top:3px solid var(--black); font-size:17px; background:var(--d2); background-size:10px 10px; }
+.sheet .fn b{ font-family:"Silkscreen",monospace; font-size:10px; }
+
+/* ================= ORDER / CONTACT ================= */
+.order{ display:grid; grid-template-columns:1.15fr 1fr; gap:32px; align-items:start; }
+form .row{ margin-bottom:16px; }
+label{ display:block; font-family:"Silkscreen",monospace; font-size:11px; letter-spacing:1px; margin-bottom:6px; }
+input[type=text],input[type=email],input[type=number],textarea{
+  width:100%; font-family:"VT323",monospace; font-size:20px; padding:10px 12px;
+  border:3px solid var(--black); background:var(--white); color:var(--black); border-radius:0; }
+input:focus,textarea:focus{ outline:none; background:var(--black); color:var(--white); }
+textarea{ min-height:110px; resize:vertical; }
+.checkrow{ display:flex; flex-wrap:wrap; gap:10px 22px; }
+.check{ display:flex; align-items:center; gap:8px; font-size:19px; border:2px solid var(--black); padding:6px 10px; cursor:pointer; background:var(--white); }
+.check:hover{ background:var(--d8); background-size:12px 12px; }
+.check input{ appearance:none; width:16px; height:16px; border:3px solid var(--black); background:var(--white); position:relative; cursor:pointer; }
+.check input:checked{ background:var(--black); }
+.check input:checked::after{ content:""; position:absolute; inset:2px; background:var(--white); width:4px; height:8px;
+  clip-path:polygon(0 40%,40% 100%,100% 0,80% 0,40% 60%,20% 100%); }
+.contactbox{ border:3px solid var(--black); background:var(--white); box-shadow:6px 6px 0 0 var(--black); }
+.contactbox .ch{ font-family:"Silkscreen",monospace; font-size:12px; padding:8px 12px; border-bottom:3px solid var(--black); background:var(--black); color:var(--white); }
+.contactbox .cb{ padding:14px 16px; }
+.contactbox dl{ display:grid; grid-template-columns:auto 1fr; gap:6px 14px; font-size:19px; }
+.contactbox dt{ font-family:"Silkscreen",monospace; font-size:10px; align-self:center; }
+.contactbox .stamp{ margin-top:14px; border:3px solid var(--black); padding:10px; background:var(--d4); background-size:10px 10px; font-family:"Silkscreen",monospace; font-size:10px; }
+
+/* ================= COLOPHON FOOTER ================= */
+footer{ background:var(--black); color:var(--white); padding:40px 18px 46px; margin-top:20px; }
+.colophon{ max-width:760px; margin:0 auto; text-align:center; font-size:17px; line-height:1.7; }
+.colophon .orn{ font-size:20px; letter-spacing:14px; margin:18px 0; }
+.colophon .big{ font-family:"Silkscreen",monospace; font-size:12px; letter-spacing:3px; }
+.colophon .small{ font-size:15px; opacity:1; }
+.colophon .top{ font-family:"Silkscreen",monospace; font-size:10px; margin-top:20px; }
+.colophon a{ color:var(--white); }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width:860px){
+  .hero{ grid-template-columns:1fr; }
+  .about,.order{ grid-template-columns:1fr; }
+  .gallery{ grid-template-columns:repeat(2,1fr); }
+  body{ font-size:19px; }
+}
+@media (max-width:540px){
+  .gallery{ grid-template-columns:1fr; }
+  .menubar .brand{ width:100%; text-align:center; border-right:0; border-bottom:2px solid var(--black); }
+  .hero{ padding-top:26px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .ticker .tk{ animation:none; }
+  #boot{ display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ BOOT ============ -->
+<div id="boot" aria-hidden="true" title="Press any key to skip">
+  <pre id="boottext"></pre>
+  <div id="bootbar"><div id="bootfill"></div></div>
+  <p id="bootskip">— PRESS ANY KEY TO SKIP —</p>
+</div>
+
+<!-- ============ SCROLL PROGRESS ============ -->
+<div id="strip" aria-hidden="true"><div id="progfill"></div></div>
+
+<!-- ============ HEADER / WINDOW CHROME ============ -->
+<header>
+  <div class="titlebar">
+    <span class="ttl">BAYER &amp; SONS PRINT WORKS — THE WEB SHEET v1874.2</span>
+    <span class="winbtns" aria-hidden="true"><span>×</span><span>□</span><span>▬</span></span>
+  </div>
+  <nav class="menubar" aria-label="Primary">
+    <span class="brand">B&amp;S</span>
+    <a href="#history">HISTORY</a>
+    <a href="#goods">GOODS</a>
+    <a href="#prices">PRICE SHEET</a>
+    <a href="#order">ORDER</a>
+    <a href="#colophon">COLOPHON</a>
+  </nav>
+  <div class="ticker" aria-hidden="true">
+    <span class="tk">FRESH INK ◆ HAND RULING ◆ DIE CUTTING ◆ BLIND IMPRESSION ◆ NO COLOR, EVER ◆ EST. 1874 ◆ FOURTH GENERATION ◆ FRESH INK ◆ HAND RULING ◆ DIE CUTTING ◆ BLIND IMPRESSION ◆ NO COLOR, EVER ◆ EST. 1874 ◆ FOURTH GENERATION&nbsp;</span>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<div class="marks">
+<span class="mk tl" aria-hidden="true"></span>
+<span class="mk br" aria-hidden="true"></span>
+<section class="hero wrap">
+  <div class="hero-copy">
+    <p class="kicker">EST. 1874 · LITTLE INK STREET · OLD QUARTER</p>
+    <h1>BLACK INK.<br>WHITE PAPER.<br>NO COMPROMISE.</h1>
+    <p class="lead">Four generations of letterpress, one rule of the house: we print in
+    black and white, and we make the white work. Every sheet leaves this shop
+    dithered, ruled and registered by hand. If it needs color, it's in the wrong trade.</p>
+    <div class="btnrow">
+      <a class="btn" href="#goods">SEE THE GOODS</a>
+      <a class="btn ghost" href="#order">ORDER A PRINT</a>
+    </div>
+    <p class="spec">4 × 4 BAYER MATRIX · 1-BIT · REGISTRATION MARKS IN ALL FOUR CORNERS</p>
+  </div>
+
+  <figure class="hero-art hard" aria-label="The shop press">
+    <svg viewBox="0 0 340 288" role="img" aria-labelledby="hpress">
+      <title id="hpress">Illustration of the shop's letterpress carrying the family B</title>
+      <!-- 16-band dithered fade, top light to bottom heavy -->
+      <rect x="0" y="0"    width="340" height="18" class="d1"  fill="url(#p1)"/>
+      <rect x="0" y="18"   width="340" height="18" class="d2"  fill="url(#p2)"/>
+      <rect x="0" y="36"   width="340" height="18" class="d3"  fill="url(#p3)"/>
+      <rect x="0" y="54"   width="340" height="18" class="d4"  fill="url(#p4)"/>
+      <rect x="0" y="72"   width="340" height="18" class="d5"  fill="url(#p5)"/>
+      <rect x="0" y="90"   width="340" height="18" class="d6"  fill="url(#p6)"/>
+      <rect x="0" y="108"  width="340" height="18" class="d7"  fill="url(#p7)"/>
+      <rect x="0" y="126"  width="340" height="18" class="d8"  fill="url(#p8)"/>
+      <rect x="0" y="144"  width="340" height="18" class="d10" fill="url(#p10)"/>
+      <rect x="0" y="162"  width="340" height="18" class="d11" fill="url(#p11)"/>
+      <rect x="0" y="180"  width="340" height="18" class="d12" fill="url(#p12)"/>
+      <rect x="0" y="198"  width="340" height="18" class="d13" fill="url(#p13)"/>
+      <rect x="0" y="216"  width="340" height="18" class="d14" fill="url(#p14)"/>
+      <rect x="0" y="234"  width="340" height="18" class="d14" fill="url(#p14)"/>
+      <rect x="0" y="252"  width="340" height="18" class="d15" fill="url(#p15)"/>
+      <rect x="0" y="270"  width="340" height="18" class="d15" fill="url(#p15)"/>
+      <!-- press -->
+      <rect x="40" y="48" width="260" height="28" fill="#000"/>
+      <text x="170" y="68" text-anchor="middle" font-size="13" fill="#fff">BAYER &amp; SONS · EST 1874</text>
+      <rect x="88" y="76" width="164" height="14" fill="#000"/>
+      <rect x="52" y="76" width="16" height="156" fill="#000"/>
+      <rect x="272" y="76" width="16" height="156" fill="#000"/>
+      <circle cx="170" cy="152" r="54" fill="#fff" stroke="#000" stroke-width="6"/>
+      <circle cx="170" cy="152" r="36" class="dn d8" fill="url(#p8)" stroke="#000" stroke-width="2"/>
+      <text x="170" y="172" text-anchor="middle" font-size="46" fill="#000" font-weight="bold">B</text>
+      <!-- hand wheel -->
+      <circle cx="300" cy="140" r="18" fill="#fff" stroke="#000" stroke-width="5"/>
+      <line x1="300" y1="124" x2="300" y2="156" stroke="#000" stroke-width="3"/>
+      <line x1="284" y1="140" x2="316" y2="140" stroke="#000" stroke-width="3"/>
+      <circle cx="300" cy="140" r="4" fill="#000"/>
+      <!-- base + ground -->
+      <rect x="48" y="220" width="244" height="12" fill="#fff" stroke="#000" stroke-width="3"/>
+      <rect x="36" y="232" width="268" height="20" fill="#000"/>
+      <rect x="0" y="252" width="340" height="36" class="chk" fill="url(#chk)"/>
+    </svg>
+  </figure>
+</section>
+</div>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ HISTORY ============ -->
+<section id="history" class="wrap">
+  <div class="reveal">
+    <h2><span class="no">§1</span>HISTORY OF THE HOUSE</h2>
+    <div class="h2rule" aria-hidden="true"></div>
+    <div class="about">
+      <div>
+        <p><strong>Adalbert Bayer</strong> bought a secondhand platen off a railway
+        stationmaster in 1874 and set up in a stable with a leaking roof. The roof
+        leaked; the press did not. By the first winter the shop was drier inside
+        than out, and the neighborhood caught on.</p>
+        <p>What followed were three generations of printers who argued about ink
+        density the way other families argued about religion — loudly, at the
+        table, with the linotype running. The rule has never changed: black ink,
+        white paper, and the 4 × 4 Bayer matrix, which this house regards as a
+        moral instrument as much as a technical one.</p>
+        <blockquote>“Shade is just light and dark arguing. Our job is to make
+        the argument legible.”
+        <span class="sig">— E. BAYER, MASTER PRINTER, 1931</span></blockquote>
+        <ul class="timeline">
+          <li><span class="yr">1874</span><span>Founding. One press, one leak, one rule.</span></li>
+          <li><span class="yr">1902</span><span>Second press arrives; the stable gains a floor.</span></li>
+          <li><span class="yr">1938</span><span>The house adopts the 4 × 4 Bayer matrix as standard.</span></li>
+          <li><span class="yr">1969</span><span>Poster run of 40,000 sold out before the ink dried.</span></li>
+          <li><span class="yr">2012</span><span>Fourth generation takes the keys. The rule survives.</span></li>
+          <li><span class="yr">NOW</span><span>We still print in black and white. Ask us how.</span></li>
+        </ul>
+      </div>
+      <figure class="photo hard" aria-label="The shop front, dithered">
+        <svg viewBox="0 0 240 200" role="img" aria-labelledby="hfront">
+          <title id="hfront">Dithered illustration of the print shop frontage</title>
+          <rect x="0" y="176" width="240" height="24" class="chk" fill="url(#chk)"/>
+          <rect x="24" y="44" width="192" height="132" fill="#fff" stroke="#000" stroke-width="4"/>
+          <rect x="16" y="32" width="208" height="12" fill="#000"/>
+          <rect x="24" y="52" width="192" height="24" fill="#000"/>
+          <text x="120" y="69" text-anchor="middle" font-size="12" fill="#fff">BAYER &amp; SONS PRINT WORKS</text>
+          <rect x="24" y="76" width="192" height="12" class="chk" fill="url(#chk)"/>
+          <text x="120" y="99" text-anchor="middle" font-size="8" fill="#000">— EST. 1874 —</text>
+          <rect x="38"  y="106" width="46" height="34" class="dn d8" fill="url(#p8)" stroke="#000" stroke-width="3"/>
+          <rect x="97"  y="106" width="46" height="34" class="dn d8" fill="url(#p8)" stroke="#000" stroke-width="3"/>
+          <rect x="156" y="106" width="46" height="34" class="dn d8" fill="url(#p8)" stroke="#000" stroke-width="3"/>
+          <rect x="98" y="140" width="44" height="36" fill="#000"/>
+          <circle cx="134" cy="159" r="2.5" fill="#fff"/>
+          <rect x="30" y="150" width="60" height="24" class="dot" fill="url(#dot)"/>
+          <rect x="150" y="150" width="60" height="24" class="dot" fill="url(#dot)"/>
+        </svg>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ GALLERY ============ -->
+<section id="goods" class="wrap">
+  <div class="reveal">
+    <h2><span class="no">§2</span>THE GOODS — SIX SPECIMENS</h2>
+    <div class="h2rule" aria-hidden="true"></div>
+    <div class="gallery">
+
+      <!-- 1 · BUSINESS CARDS -->
+      <figure class="prod">
+        <span class="tag">SPEC 01</span>
+        <div class="frame">
+          <svg viewBox="0 0 200 150" role="img" aria-labelledby="g1">
+            <title id="g1">Business cards, dithered band</title>
+            <rect width="200" height="150" fill="#fff"/>
+            <rect x="46" y="34" width="130" height="82" fill="#000"/>
+            <rect x="38" y="26" width="130" height="82" fill="#fff" stroke="#000" stroke-width="3"/>
+            <text x="103" y="56" text-anchor="middle" font-size="12" fill="#000">BAYER &amp; SONS</text>
+            <line x1="52" y1="63" x2="154" y2="63" stroke="#000" stroke-width="2"/>
+            <text x="103" y="79" text-anchor="middle" font-size="7" fill="#000">LETTERPRESS PRINTERS · EST. 1874</text>
+            <rect x="41" y="92" width="124" height="13" class="dn d6" fill="url(#p6)"/>
+          </svg>
+        </div>
+        <figcaption><span class="nm">BUSINESS CARDS, 100</span><span class="pr">38</span></figcaption>
+      </figure>
+
+      <!-- 2 · POSTER -->
+      <figure class="prod">
+        <span class="tag">SPEC 02</span>
+        <div class="frame">
+          <svg viewBox="0 0 200 150" role="img" aria-labelledby="g2">
+            <title id="g2">Type sale poster with concentric dither sun</title>
+            <rect width="200" height="150" fill="#fff"/>
+            <rect x="6" y="6" width="188" height="138" fill="#fff" stroke="#000" stroke-width="3"/>
+            <circle cx="100" cy="58" r="36" class="dn d4" fill="url(#p4)"/>
+            <circle cx="100" cy="58" r="26" class="dn d10" fill="url(#p10)"/>
+            <circle cx="100" cy="58" r="15" fill="#000"/>
+            <text x="100" y="52" text-anchor="middle" font-size="8" fill="#fff">TYPE</text>
+            <text x="100" y="62" text-anchor="middle" font-size="8" fill="#fff">SALE</text>
+            <line x1="24" y1="102" x2="176" y2="102" stroke="#000" stroke-width="2"/>
+            <text x="100" y="120" text-anchor="middle" font-size="11" fill="#000">50% OFF SECONDHAND METAL</text>
+            <text x="100" y="133" text-anchor="middle" font-size="7" fill="#000">ONE DAY ONLY · LITTLE INK STREET</text>
+          </svg>
+        </div>
+        <figcaption><span class="nm">A2 POSTER, 25</span><span class="pr">72</span></figcaption>
+      </figure>
+
+      <!-- 3 · LETTERHEAD -->
+      <figure class="prod">
+        <span class="tag">SPEC 03</span>
+        <div class="frame">
+          <svg viewBox="0 0 200 150" role="img" aria-labelledby="g3">
+            <title id="g3">Letterhead with ruled type lines</title>
+            <rect width="200" height="150" fill="#fff"/>
+            <rect x="35" y="12" width="130" height="126" fill="#fff" stroke="#000" stroke-width="3"/>
+            <text x="100" y="30" text-anchor="middle" font-size="8" fill="#000">BAYER &amp; SONS PRINT WORKS</text>
+            <line x1="47" y1="37" x2="153" y2="37" stroke="#000" stroke-width="2"/>
+            <line x1="47" y1="41" x2="153" y2="41" stroke="#000" stroke-width="1"/>
+            <text x="100" y="52" text-anchor="middle" font-size="6" fill="#000">12 LITTLE INK STREET · OLD QUARTER</text>
+            <g fill="#000">
+              <rect x="47" y="62"  width="106" height="3"/>
+              <rect x="47" y="72"  width="106" height="3"/>
+              <rect x="47" y="82"  width="96"  height="3"/>
+              <rect x="47" y="92"  width="106" height="3"/>
+              <rect x="47" y="102" width="70"  height="3"/>
+            </g>
+            <path d="M50 126 q8 -10 16 0 t16 0 t16 0" fill="none" stroke="#000" stroke-width="2"/>
+            <line x1="47" y1="131" x2="120" y2="131" stroke="#000" stroke-width="1.5"/>
+            <rect x="128" y="118" width="26" height="16" class="dn d8" fill="url(#p8)" stroke="#000" stroke-width="1"/>
+          </svg>
+        </div>
+        <figcaption><span class="nm">LETTERHEAD, 250</span><span class="pr">54</span></figcaption>
+      </figure>
+
+      <!-- 4 · INVITATION -->
+      <figure class="prod">
+        <span class="tag">SPEC 04</span>
+        <div class="frame">
+          <svg viewBox="0 0 200 150" role="img" aria-labelledby="g4">
+            <title id="g4">Wedding invitation with corner fleurons</title>
+            <rect width="200" height="150" fill="#fff"/>
+            <rect x="30" y="18" width="140" height="114" fill="#fff" stroke="#000" stroke-width="3"/>
+            <rect x="38" y="26" width="124" height="98" fill="none" stroke="#000" stroke-width="1"/>
+            <rect x="38" y="26" width="124" height="10" class="dn d8" fill="url(#p8)"/>
+            <path d="M46 40 l6 -6 6 6 -6 6 z" fill="#000"/>
+            <path d="M142 40 l6 -6 6 6 -6 6 z" fill="#000"/>
+            <path d="M46 108 l6 -6 6 6 -6 6 z" fill="#000"/>
+            <path d="M142 108 l6 -6 6 6 -6 6 z" fill="#000"/>
+            <text x="100" y="84" text-anchor="middle" font-size="26" fill="#000" font-weight="bold">A &amp; E</text>
+            <text x="100" y="102" text-anchor="middle" font-size="7" fill="#000">WEDDING INVITATION</text>
+            <text x="100" y="116" text-anchor="middle" font-size="6" fill="#000">BY INVITATION · SIXTH HOUR</text>
+          </svg>
+        </div>
+        <figcaption><span class="nm">INVITATION SUITE, 25</span><span class="pr">96</span></figcaption>
+      </figure>
+
+      <!-- 5 · BOOK COVER -->
+      <figure class="prod">
+        <span class="tag">SPEC 05</span>
+        <div class="frame">
+          <svg viewBox="0 0 200 150" role="img" aria-labelledby="g5">
+            <title id="g5">Book cover with vertical dither gradient</title>
+            <rect width="200" height="150" fill="#fff"/>
+            <rect x="50" y="14" width="100" height="122" fill="#fff" stroke="#000" stroke-width="3"/>
+            <rect x="50" y="14" width="14" height="122" fill="#000"/>
+            <rect x="64"  y="17" width="8" height="116" class="dn d2"  fill="url(#p2)"/>
+            <rect x="72"  y="17" width="8" height="116" class="dn d4"  fill="url(#p4)"/>
+            <rect x="80"  y="17" width="8" height="116" class="dn d5"  fill="url(#p5)"/>
+            <rect x="88"  y="17" width="8" height="116" class="dn d7"  fill="url(#p7)"/>
+            <rect x="96"  y="17" width="8" height="116" class="dn d8"  fill="url(#p8)"/>
+            <rect x="104" y="17" width="8" height="116" class="dn d10" fill="url(#p10)"/>
+            <rect x="112" y="17" width="8" height="116" class="dn d11" fill="url(#p11)"/>
+            <rect x="120" y="17" width="8" height="116" class="dn d13" fill="url(#p13)"/>
+            <rect x="128" y="17" width="8" height="116" class="dn d14" fill="url(#p14)"/>
+            <rect x="136" y="17" width="8" height="116" class="dn d15" fill="url(#p15)"/>
+            <rect x="64" y="42" width="80" height="34" fill="#fff" stroke="#000" stroke-width="2"/>
+            <text x="104" y="57" text-anchor="middle" font-size="8" fill="#000">THE PRINTER'S</text>
+            <text x="104" y="69" text-anchor="middle" font-size="8" fill="#000">ALMANAC</text>
+            <text x="72" y="126" font-size="7" fill="#000">B. BAYER</text>
+          </svg>
+        </div>
+        <figcaption><span class="nm">BOOK COVER, 25</span><span class="pr">41</span></figcaption>
+      </figure>
+
+      <!-- 6 · DINNER CARD -->
+      <figure class="prod">
+        <span class="tag">SPEC 06</span>
+        <div class="frame">
+          <svg viewBox="0 0 200 150" role="img" aria-labelledby="g6">
+            <title id="g6">Dinner card with dithered plate and prices</title>
+            <rect width="200" height="150" fill="#fff"/>
+            <rect x="30" y="12" width="140" height="126" fill="#fff" stroke="#000" stroke-width="3"/>
+            <rect x="30" y="12" width="140" height="24" fill="#000"/>
+            <text x="100" y="29" text-anchor="middle" font-size="10" fill="#fff">TODAY'S SHEET</text>
+            <circle cx="100" cy="72" r="26" class="dn d8" fill="url(#p8)" stroke="#000" stroke-width="2"/>
+            <text x="100" y="79" text-anchor="middle" font-size="16" fill="#000" font-weight="bold">EAT</text>
+            <line x1="44" y1="108" x2="156" y2="108" stroke="#000" stroke-width="2"/>
+            <text x="44" y="124" font-size="8" fill="#000">MEAT ........ 6p</text>
+            <text x="112" y="124" font-size="8" fill="#000">VEAL ........ 4p</text>
+          </svg>
+        </div>
+        <figcaption><span class="nm">DINNER CARD, 200</span><span class="pr">27</span></figcaption>
+      </figure>
+
+    </div>
+  </div>
+</section>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ PRICE SHEET ============ -->
+<section id="prices" class="wrap">
+  <div class="reveal">
+    <h2><span class="no">§3</span>PRICE SHEET</h2>
+    <div class="h2rule" aria-hidden="true"></div>
+    <div class="sheet hard">
+      <div class="sheet-head">
+        <h3>FORM 12-A · SHEET PRICES</h3>
+        <span class="dt">GOOD FOR 30 DAYS FROM THE DATE OF PRINTING</span>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th style="width:42%">ARTICLE</th><th style="width:30%">SPECIFICATION</th><th>PRICE</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Business cards<span class="lead"></span></td><td>100, one side, die-cut</td><td><span class="amt">38</span></td></tr>
+            <tr><td>Letterheads<span class="lead"></span></td><td>250, ruled, letterpress</td><td><span class="amt">54</span></td></tr>
+            <tr><td>Posters, A2<span class="lead"></span></td><td>25, heavy stock, dithered</td><td><span class="amt">72</span></td></tr>
+            <tr><td>Invitation suites<span class="lead"></span></td><td>25, four cards, blind border</td><td><span class="amt">96</span></td></tr>
+            <tr><td>Book covers<span class="lead"></span></td><td>25, cloth, hand-bound</td><td><span class="amt">41</span></td></tr>
+            <tr><td>Dinner cards<span class="lead"></span></td><td>200, one side, price list set</td><td><span class="amt">27</span></td></tr>
+            <tr><td>Die &amp; blind impression<span class="lead"></span></td><td>per design, plates kept</td><td><span class="amt">FROM 20</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fn"><b>FOOTNOTES OF THE HOUSE:</b> All prices in ink. Rush work +25%.
+      Hand ruling +8 per sheet. We do not print in color; if you need color,
+      we shall not discuss it further.</p>
+    </div>
+  </div>
+</section>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ ORDER / CONTACT ============ -->
+<section id="order" class="wrap">
+  <div class="reveal">
+    <h2><span class="no">§4</span>PLACE AN ORDER</h2>
+    <div class="h2rule" aria-hidden="true"></div>
+    <div class="order">
+      <form class="panel hard" onsubmit="return false;" aria-label="Order slip">
+        <div style="padding:20px;">
+          <p class="px" style="font-size:11px; margin-bottom:18px;">ORDER SLIP · FILL IN INK, ANY COLOR OF INK, WHICH IS TO SAY, NONE</p>
+          <div class="row"><label for="of">YOUR NAME</label>
+            <input type="text" id="of" name="of" autocomplete="name" placeholder="THE CLIENT"></div>
+          <div class="row"><label for="oa">STREET &amp; TOWN</label>
+            <input type="text" id="oa" name="oa" autocomplete="street-address" placeholder="WHERE THE SHEETS GO"></div>
+          <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div><label for="oq">QUANTITY</label>
+              <input type="number" id="oq" name="oq" min="1" placeholder="25"></div>
+            <div><label for="ok">ARTICLE</label>
+              <input type="text" id="ok" name="ok" placeholder="CARS / POSTER / ETC."></div>
+          </div>
+          <div class="row"><label>CRAFT ADDED</label>
+            <div class="checkrow">
+              <label class="check"><input type="checkbox">RUSH (24 HRS)</label>
+              <label class="check"><input type="checkbox">DIE-CUT</label>
+              <label class="check"><input type="checkbox">BLIND IMPRESSION</label>
+              <label class="check"><input type="checkbox">HAND RULING</label>
+            </div>
+          </div>
+          <div class="row"><label for="om">YOUR TEXT, SET AS YOU WISH</label>
+            <textarea id="om" name="om" placeholder="TELL US WHAT GOES ON THE SHEET…"></textarea></div>
+          <button class="btn" type="submit">STAMP &amp; SEND →</button>
+        </div>
+      </form>
+      <div class="contactbox hard">
+        <div class="ch">THE SHOP ITSELF</div>
+        <div class="cb">
+          <dl>
+            <dt>ADDRESS</dt><dd>12 Little Ink Street,<br>Old Quarter</dd>
+            <dt>HOURS</dt><dd>MON–SAT · 08:00–17:00<br>SUN: THE PRESS RESTS</dd>
+            <dt>TELEGRAPH</dt><dd>BAYERPRNT</dd>
+            <dt>LETTER</dt><dd>hello@bayerandsons.example</dd>
+          </dl>
+          <p class="stamp">WE ANSWER EVERY SLIP IN INK, WHICH IS TO SAY:
+          WITHIN THREE BUSINESS DAYS, BY HAND, IN BLACK AND WHITE.
+          WALK-INS WELCOME. SMELL OF INK IS NOT A DEFECT.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ COLOPHON ============ -->
+<footer id="colophon">
+  <div class="colophon">
+    <p class="big">A NOTE BY WAYS OF COLOPHON</p>
+    <p class="orn" aria-hidden="true">◆ ◆ ◆</p>
+    <p>This sheet was set in bitmap monospace, ruled by hand, and dithered
+    throughout with the 4 × 4 Bayer matrix — sixteen thresholds, two inks,
+    zero color, and no mercy for the middle gray. There is no photograph on
+    this page; every tone you see is an argument between light and dark,
+    settled at the cell level.</p>
+    <p>Printed to your screen at whatever resolution you have chosen, and
+    registered in all four corners. Should you find any spot of shade that is
+    not a pattern, it is not ours.</p>
+    <p class="orn" aria-hidden="true">✳</p>
+    <p class="small">© MCMXXIV–MMXXV · BAYER &amp; SONS PRINT WORKS · FOURTH GENERATION ·
+    BLACK AND WHITE ONLY, BY HOUSE RULE AND BY NATURE</p>
+    <p class="top"><a href="#top" onclick="scrollTo(0,0);return false;">↑ BACK TO THE TOP OF THE SHEET</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- BOOT SEQUENCE ---------- */
+  var boot = document.getElementById('boot'),
+      txt  = document.getElementById('boottext'),
+      barf = document.getElementById('bootfill'),
+      done = false;
+
+  var lines = [
+    "BAYER & SONS PRINT WORKS",
+    "EST. 1874 — THE FOURTH GENERATION",
+    "",
+    "LOADING INK .............. OK",
+    "RULING GRIDS ............. OK",
+    "BAYER 4x4 MATRIX ......... SET",
+    "REGISTRATION MARKS ....... OK",
+    "INKING THE PLATEN ........ OK",
+    "",
+    "PRESSING PAGE ..."
+  ];
+
+  function finish(){
+    if(done) return; done = true;
+    boot.classList.add('white');
+    setTimeout(function(){ boot.classList.add('off'); }, reduced ? 60 : 220);
+  }
+  function skip(){ finish(); }
+
+  if(reduced){ finish(); }
+  else {
+    var li = 0;
+    (function nextLine(){
+      if(done) return;
+      if(li >= lines.length){
+        var p = 0;
+        var iv = setInterval(function(){
+          p += 5;
+          barf.style.width = p + '%';
+          if(p >= 100){ clearInterval(iv); setTimeout(finish, 260); }
+        }, 55);
+        return;
+      }
+      txt.textContent += lines[li++] + "\n";
+      setTimeout(nextLine, lines[li-1] === "" ? 90 : 240);
+    })();
+    document.addEventListener('click', skip, { once:true });
+    document.addEventListener('keydown', skip, { once:true });
+    setTimeout(skip, 9000); /* hard guarantee */
+  }
+
+  /* ---------- SCROLL: progress strip + checker band drift (hard, quantized) ---------- */
+  var fill = document.getElementById('progfill');
+  var bands = Array.prototype.slice.call(document.querySelectorAll('.band'));
+  var ticking = false;
+
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      ticking = false;
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+      fill.style.width = p.toFixed(1) + '%';
+      if(!reduced){
+        var off = (Math.floor(h.scrollTop / 4) * 8) % 8; /* quantized = hard steps */
+        for(var i=0;i<bands.length;i++){
+          bands[i].style.backgroundPosition = '0px ' + off + 'px';
+        }
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  /* ---------- HARD-CUT DITHER REVEAL ---------- */
+  var reveals = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && !reduced){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(function(r){ io.observe(r); });
+  } else {
+    reveals.forEach(function(r){ r.classList.add('on'); });
+  }
+})();
+</script>
+</body>
+</html>
