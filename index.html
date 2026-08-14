@@ -1,116 +1,725 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Qwen3.8-27B Demos</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qwen3.8-27B - Release Day Demos</title>
 <style>
   :root {
-    --bg: #0f1115;
-    --card: #171a21;
-    --border: #262b36;
-    --text: #e8eaed;
-    --muted: #9aa3b2;
-    --accent: #7dd3fc;
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --ink: #16181d;
+    --ink-soft: #4b5261;
+    --ink-faint: #8a93a3;
+    --line: #e6e9ee;
+    --line-strong: #d8dce3;
+    --accent: #2563eb;
+    --accent-soft: #eff4ff;
+    --shadow-rest: 0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 12px rgba(16, 24, 40, 0.05);
+    --shadow-lift: 0 2px 4px rgba(16, 24, 40, 0.05), 0 12px 28px rgba(16, 24, 40, 0.10);
+    --radius: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f7f7f8;
-      --card: #ffffff;
-      --border: #e2e4e9;
-      --text: #16181d;
-      --muted: #5b6270;
-      --accent: #0369a1;
-    }
-  }
-  * { box-sizing: border-box; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
   body {
-    margin: 0;
-    padding: 3rem 1.5rem 4rem;
+    font-family: var(--font);
     background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
-  .wrap {
-    max-width: 780px;
+
+  /* ---------- Header ---------- */
+  .site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .header-inner {
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
   }
-  h1 {
-    font-size: 1.75rem;
-    margin: 0 0 0.5rem;
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
   }
-  p.lede {
-    color: var(--muted);
-    margin: 0 0 2.5rem;
+
+  .brand img {
+    height: 34px;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .brand-text { min-width: 0; }
+
+  .brand-title {
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .brand-sub {
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-nav {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-link {
+    font-size: 13.5px;
+    font-weight: 550;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 8px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    background: var(--surface);
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  /* ---------- Page head ---------- */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 56px 32px 72px;
+  }
+
+  .page-head {
+    max-width: 720px;
+    margin-bottom: 44px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 650;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid #dbe6ff;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+
+  .eyebrow .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.75); }
+  }
+
+  .page-head h1 {
+    font-size: clamp(28px, 4.4vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+
+  .page-head p {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 560px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .meta-chip {
+    font-size: 12px;
+    font-weight: 550;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+  }
+
+  /* ---------- Grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .page { padding: 40px 20px 56px; }
+    .header-inner { padding: 14px 20px; }
+  }
+
+  /* ---------- Card ---------- */
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-rest);
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: transform 0.22s cubic-bezier(0.22, 0.8, 0.36, 1),
+                box-shadow 0.22s cubic-bezier(0.22, 0.8, 0.36, 1),
+                border-color 0.22s ease;
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 0.8, 0.36, 1),
+                box-shadow 0.22s cubic-bezier(0.22, 0.8, 0.36, 1),
+                border-color 0.22s ease;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: var(--line-strong);
+  }
+
+  .card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Compact header strip, like production video chrome */
+  .card-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #fdfdfe 0%, #f7f9fb 100%);
+  }
+
+  .card-name {
+    font-size: 11.5px;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-index {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+  }
+
+  /* Screen area */
+  .card-screen {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #f2f4f7;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-screen .glyph {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.22, 0.8, 0.36, 1);
+  }
+
+  .card:hover .card-screen .glyph {
+    transform: scale(1.08) rotate(-3deg);
+  }
+
+  .card-screen .glyph svg {
+    width: 24px;
+    height: 24px;
+    color: var(--ink-faint);
+  }
+
+  /* Subtle scanline texture on the screen area */
+  .card-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(22, 24, 29, 0.014) 0px,
+      rgba(22, 24, 29, 0.014) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+  }
+
+  /* Play affordance */
+  .card-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 4px 14px rgba(16, 24, 40, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 0.8, 0.36, 1);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .card-play svg {
+    width: 14px;
+    height: 14px;
+    color: var(--ink);
+    margin-left: 2px;
+  }
+
+  .card:hover .card-play,
+  .card:focus-visible .card-play {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .card:hover .card-screen .glyph {
+    opacity: 0;
+  }
+
+  .card-screen .glyph {
+    transition: transform 0.3s cubic-bezier(0.22, 0.8, 0.36, 1), opacity 0.22s ease;
+  }
+
+  /* Card body */
+  .card-body {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .card-body h3 {
+    font-size: 15.5px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .card-body p {
+    font-size: 13.5px;
+    color: var(--ink-soft);
     line-height: 1.5;
   }
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0.75rem;
+
+  .card-footer {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
-  li a {
-    display: block;
-    padding: 1rem 1.25rem;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--card);
-    color: var(--text);
-    text-decoration: none;
-    transition: border-color 0.15s ease, transform 0.15s ease;
-  }
-  li a:hover {
-    border-color: var(--accent);
-    transform: translateY(-1px);
-  }
-  .name {
+
+  .card-cta {
+    font-size: 12.5px;
     font-weight: 600;
-    font-size: 1.05rem;
-  }
-  .desc {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
-  }
-  footer {
-    margin-top: 3rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
-  footer a {
     color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    opacity: 0.85;
+    transition: gap 0.2s ease, opacity 0.2s ease;
+  }
+
+  .card:hover .card-cta {
+    gap: 9px;
+    opacity: 1;
+  }
+
+  .card-cta svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* ---------- Footer / credit ---------- */
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    margin-top: 24px;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .credit-mark {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    border: 1px solid #dbe6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .credit-mark svg {
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+  }
+
+  .credit-text {
+    font-size: 13px;
+    color: var(--ink-soft);
+    max-width: 720px;
+  }
+
+  .credit-text strong {
+    font-weight: 650;
+    color: var(--ink);
+  }
+
+  @media (max-width: 600px) {
+    .footer-inner { padding: 28px 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .card { opacity: 1; transform: none; transition: none; }
+    .card:hover, .card:focus-visible { transform: none; }
+    .eyebrow .dot { animation: none; }
+    .card-screen .glyph, .card-play { transition: none; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Qwen3.8-27B Demos</h1>
-  <p class="lede">Single-file HTML pages generated by Qwen3.8-27B on release day. No framework, no build step, just open and go.</p>
-  <ul>
-    <li><a href="pagoda-voxel/"><div class="name">Voxel Pagoda Garden</div><div class="desc">A colorful voxel art pagoda scene in a blossoming garden</div></a></li>
-    <li><a href="bento-grid-1bit-dither/"><div class="name">Dithered Bento Grid</div><div class="desc">A dark bento grid layout with a 1-bit dithered look and hover motion</div></a></li>
-    <li><a href="stationery-retail-catalogue/"><div class="name">Stationery Retail Catalogue</div><div class="desc">A playful full-page catalogue for an independent stationery and paper goods shop</div></a></li>
-    <li><a href="virtual-boy-website/"><div class="name">Virtual Boy Microsite</div><div class="desc">A retro red and black microsite for the Nintendo Virtual Boy with a Three.js hero</div></a></li>
-    <li><a href="website-hand-drawn/"><div class="name">The Moss Notebook</div><div class="desc">A hand drawn naturalist's field journal covering a year in the woods</div></a></li>
-    <li><a href="fbm-color-breathing-terrain/"><div class="name">Breathing Terrain</div><div class="desc">An animated fbm heightmap shader that slowly rises and falls like breathing</div></a></li>
-    <li><a href="shader-molten-metaballs/"><div class="name">Molten Metaballs</div><div class="desc">A WebGL2 raymarched shader of glowing liquid metal blobs merging in a dark chamber</div></a></li>
-    <li><a href="organic-iridescent-blob/"><div class="name">Iridescent Blob</div><div class="desc">A colorful raymarched organic blob shader with a shifting iridescent palette</div></a></li>
-    <li><a href="zombie-car-apocalypse/"><div class="name">Zombie Wasteland Patrol</div><div class="desc">An autonomous top-down car survival screensaver racing through a zombie-infested wasteland</div></a></li>
-    <li><a href="website-brutalist/"><div class="name">Concrete Index</div><div class="desc">A raw brutalist archive site for fictional civic architecture and public infrastructure</div></a></li>
-    <li><a href="website-risograph/"><div class="name">Ink Weather</div><div class="desc">A tactile risograph-styled site for a fictional print fair and studio festival</div></a></li>
-    <li><a href="website-swiss/"><div class="name">Helvetica Transit Archive</div><div class="desc">A minimalist Swiss-style museum archive of transit maps, signs, and clocks</div></a></li>
-    <li><a href="saas-pricing-terminal/"><div class="name">Terminal Pricing Console</div><div class="desc">A disciplined monochrome terminal-style SaaS pricing component</div></a></li>
-    <li><a href="zombie-wasteland-driver/"><div class="name">Wasteland Driver</div><div class="desc">A zoomed-out 1-bit dithered post-apocalyptic car combat arena with autonomous AI driving and battle damage</div></a></li>
-    <li><a href="forest-fire/"><div class="name">Forest Fire Simulation</div><div class="desc">A self-running hand-drawn cellular-automaton wildfire that spreads and regrows forever</div></a></li>
-    <li><a href="website-terminal-zine/"><div class="name">/dev/null ZINE</div><div class="desc">An underground hacker culture zine delivered as a green-phosphor CRT terminal</div></a></li>
-    <li><a href="website-metro-transit/"><div class="name">Meridian Metro</div><div class="desc">A bold transit authority site built around a stylized animated metro map</div></a></li>
-    <li><a href="website-1bit-dither-site/"><div class="name">Bayer &amp; Sons Print Works</div><div class="desc">A true 1-bit letterpress shop site rendered entirely in Bayer matrix dithering, with classic Macintosh and HyperCard energy</div></a></li>
-  </ul>
-  <footer>
-    Source on <a href="https://github.com/loktar00/qwen3-8-27b-demos">GitHub</a>. Read the <a href="prompts/">prompts</a> behind some of the website demos.
-  </footer>
-</div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <img src="qwen-logo.png" alt="Qwen">
+      <div class="brand-text">
+        <div class="brand-title">Qwen3.8-27B - Release Day Demos</div>
+        <div class="brand-sub">Eighteen demos, shipped on day one</div>
+      </div>
+    </div>
+    <nav class="header-nav" aria-label="Site">
+      <a class="nav-link" href="prompts/">Prompts</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <div class="page-head">
+    <span class="eyebrow"><span class="dot"></span>Release Day Collection</span>
+    <h1>Qwen3.8-27B - Release Day Demos</h1>
+    <p>A curated gallery of demo pages generated by Qwen3.8-27B on the day the model shipped. Each card links to a self-contained demo.</p>
+    <div class="meta-row">
+      <span class="meta-chip">18 demos</span>
+      <span class="meta-chip">Generated in a single sitting</span>
+      <span class="meta-chip">Qwen3.8-27B</span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid">
+
+    <a class="card" href="pagoda-voxel/">
+      <div class="card-strip"><span class="card-name">pagoda-voxel</span><span class="card-index">01</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 8h16L12 3zM6 8v4M18 8v4M12 12v5M4 17h16M4 21h16"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Voxel Pagoda Garden</h3>
+        <p>A layered voxel garden where pagodas rise from tiled courtyards.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="bento-grid-1bit-dither/">
+      <div class="card-strip"><span class="card-name">bento-grid-1bit-dither</span><span class="card-index">02</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Dithered Bento Grid</h3>
+        <p>A bento layout rendered entirely in one-bit dithered textures.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="stationery-retail-catalogue/">
+      <div class="card-strip"><span class="card-name">stationery-retail-catalogue</span><span class="card-index">03</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Stationery Retail Catalogue</h3>
+        <p>A crisp retail catalogue for pens, paper, and desk goods.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="virtual-boy-website/">
+      <div class="card-strip"><span class="card-name">virtual-boy-website</span><span class="card-index">04</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="11" rx="2.5"/><circle cx="8.5" cy="12.5" r="1.6"/><circle cx="15.5" cy="12.5" r="1.6"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Virtual Boy Microsite</h3>
+        <p>A monochrome homage to the Virtual Boy, straight off the assembly line of 1995.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="website-hand-drawn/">
+      <div class="card-strip"><span class="card-name">website-hand-drawn</span><span class="card-index">05</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h11l3 3v13H5V4z"/><path d="M8 9c1.5 1 3 1 4.5 0S15.5 8 17 9M8 13c1.5 1 3 1 4.5 0s3-1 4.5 0"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>The Moss Notebook</h3>
+        <p>A quiet, hand-drawn notebook site that feels sketched in pencil.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="fbm-color-breathing-terrain/">
+      <div class="card-strip"><span class="card-name">fbm-color-breathing-terrain</span><span class="card-index">06</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18l5-8 4 6 3-4 6 6H3z"/><circle cx="17" cy="6" r="2"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Breathing Terrain</h3>
+        <p>Fractional Brownian motion terrain that inhales and exhales through color.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="shader-molten-metaballs/">
+      <div class="card-strip"><span class="card-name">shader-molten-metaballs</span><span class="card-index">07</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="10" r="4.5"/><circle cx="15" cy="14" r="3.5"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Molten Metaballs</h3>
+        <p>A fragment shader demo of liquid metal blobs flowing into each other.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="organic-iridescent-blob/">
+      <div class="card-strip"><span class="card-name">organic-iridescent-blob</span><span class="card-index">08</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3c4 0 7 3 7 7 0 5-3 11-7 11S5 15 5 10c0-4 3-7 7-7z"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Iridescent Blob</h3>
+        <p>An organic, oil-slick blob that shifts color as it drifts.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="zombie-car-apocalypse/">
+      <div class="card-strip"><span class="card-name">zombie-car-apocalypse</span><span class="card-index">09</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 16v-4l2-5h12l2 5v4"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/><path d="M6 12h12"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Zombie Car Apocalypse</h3>
+        <p>Steer through a horde of undead drivers in a top-down arcade rush.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="zombie-wasteland-driver/">
+      <div class="card-strip"><span class="card-name">zombie-wasteland-driver</span><span class="card-index">10</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 17l4-6h8l4 6M6 21v-4M18 21v-4"/><circle cx="9" cy="17" r="1.5"/><circle cx="15" cy="17" r="1.5"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Wasteland Driver</h3>
+        <p>A dusty post-collapse road, endless and unrelenting.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="forest-fire/">
+      <div class="card-strip"><span class="card-name">forest-fire</span><span class="card-index">11</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3c1 3-2 4-2 7 0 1.5 1 2.5 1 2.5S10 9 12 3zM12 21c-4 0-6-2.5-6-6 0-3 2-5 3-6 0 2 1 3 2 3 0-2 1-4 3-5-1 4 4 5 4 9 0 3.5-2 5-6 5z"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Forest Fire Simulation</h3>
+        <p>A cellular automaton fire sweeping through a pixel pine forest.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="website-brutalist/">
+      <div class="card-strip"><span class="card-name">website-brutalist</span><span class="card-index">12</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16"/><path d="M4 10h16M10 4v16"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Brutalist</h3>
+        <p>Raw concrete, hard edges, and typography set in shouting sizes.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="website-risograph/">
+      <div class="card-strip"><span class="card-name">website-risograph</span><span class="card-index">13</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Risograph</h3>
+        <p>A print-inspired site built from layered riso inks and visible grain.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="website-swiss/">
+      <div class="card-strip"><span class="card-name">website-swiss</span><span class="card-index">14</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16"/><path d="M4 12h16M12 4v16"/><circle cx="8" cy="8" r="1.4"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Swiss</h3>
+        <p>International Style: strict grids, neutral palette, and honest type.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="saas-pricing-terminal/">
+      <div class="card-strip"><span class="card-name">saas-pricing-terminal</span><span class="card-index">15</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10l3 2-3 2M12 15h5"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Pricing Terminal</h3>
+        <p>SaaS pricing plans rendered as a live, typewriter-driven terminal.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="website-terminal-zine/">
+      <div class="card-strip"><span class="card-name">website-terminal-zine</span><span class="card-index">16</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M7 8h6M7 12h10M7 16h8"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>/dev/null ZINE</h3>
+        <p>An ASCII zine about dead ends, exit codes, and everything discarded.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="website-metro-transit/">
+      <div class="card-strip"><span class="card-name">website-metro-transit</span><span class="card-index">17</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z"/><circle cx="8.5" cy="12" r="1.4"/><circle cx="15.5" cy="12" r="1.4"/><path d="M8 17l-2 4M16 17l2 4"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Meridian Metro</h3>
+        <p>A transit authority site with live maps, fares, and departure boards.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+    <a class="card" href="website-1bit-dither-site/">
+      <div class="card-strip"><span class="card-name">website-1bit-dither-site</span><span class="card-index">18</span></div>
+      <div class="card-screen"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 8h18M3 13h18M8 3v18M13 3v18" stroke-width="1"/></svg></div><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
+      <div class="card-body">
+        <h3>Bayer and Sons Print Works</h3>
+        <p>A fictional print works cataloguing dither matrices, one bit at a time.</p>
+        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="credit-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"/></svg>
+    </span>
+    <p class="credit-text"><strong>Every page here is a first attempt.</strong> This gallery and all eighteen demos linked from it were generated by Qwen3.8-27B on release day.</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+
+    if (!('IntersectionObserver' in window)) {
+      cards.forEach(function (c) { c.classList.add('visible'); });
+      return;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          var idx = cards.indexOf(el);
+          setTimeout(function () { el.classList.add('visible'); }, Math.min(idx, 8) * 45);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -24px 0px' });
+
+    cards.forEach(function (c) { io.observe(c); });
+  })();
+</script>
+
 </body>
 </html>
