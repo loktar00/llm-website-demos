@@ -1,113 +1,471 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Qwen3.8-27B Demos</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qwen3.8-27B - Release Day Demos</title>
 <style>
   :root {
-    --bg: #0f1115;
-    --card: #171a21;
-    --border: #262b36;
-    --text: #e8eaed;
-    --muted: #9aa3b2;
-    --accent: #7dd3fc;
+    --bg: #0b0b0e;
+    --card: #101015;
+    --card-hover: #14141a;
+    --line: #26262e;
+    --text: #e8e6e1;
+    --muted: #8b8a93;
+    --accent: #d8ffd8;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f7f7f8;
-      --card: #ffffff;
-      --border: #e2e4e9;
-      --text: #16181d;
-      --muted: #5b6270;
-      --accent: #0369a1;
-    }
-  }
-  * { box-sizing: border-box; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
   body {
-    margin: 0;
-    padding: 3rem 1.5rem 4rem;
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
+
+  /* fine 1-bit dither texture over everything, very subtle */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    background: repeating-conic-gradient(#ffffff 0% 25%, transparent 0% 50%);
+    background-size: 4px 4px;
+    opacity: 0.028;
+  }
+
   .wrap {
-    max-width: 780px;
+    max-width: 1180px;
     margin: 0 auto;
+    padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 40px) 0;
   }
-  h1 {
-    font-size: 1.75rem;
-    margin: 0 0 0.5rem;
+
+  /* ---------- header ---------- */
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: clamp(24px, 4vw, 44px);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: clamp(24px, 4vw, 44px);
   }
-  p.lede {
-    color: var(--muted);
-    margin: 0 0 2.5rem;
-    line-height: 1.5;
-  }
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0.75rem;
-  }
-  li a {
-    display: block;
-    padding: 1rem 1.25rem;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--card);
-    color: var(--text);
-    text-decoration: none;
-    transition: border-color 0.15s ease, transform 0.15s ease;
-  }
-  li a:hover {
-    border-color: var(--accent);
-    transform: translateY(-1px);
-  }
-  .name {
-    font-weight: 600;
-    font-size: 1.05rem;
-  }
-  .desc {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
-  }
-  footer {
-    margin-top: 3rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
-  footer a {
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
     color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    display: inline-block;
+    animation: blink 1.6s steps(2, end) infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0.15; } }
+
+  h1 {
+    font-size: clamp(30px, 5.4vw, 58px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+
+  h1 .model {
+    display: block;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 0.42em;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .header-note {
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 280px;
+    text-align: left;
+  }
+
+  .header-note b { color: var(--text); font-weight: 600; }
+
+  /* ---------- bento grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    grid-auto-rows: 120px;
+    grid-auto-flow: dense;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--text);
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.35s ease,
+                background 0.35s ease;
+  }
+
+  .card:hover, .card:focus-visible {
+    transform: translateY(-5px);
+    background: var(--card-hover);
+    border-color: hsl(var(--h) 70% 45% / 0.55);
+  }
+
+  .card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* 1-bit two-tone dithered thumbnail */
+  .thumb {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    border-bottom: 1px solid var(--line);
+    background: repeating-conic-gradient(var(--a) 0% 25%, var(--b) 0% 50%);
+    background-size: 10px 10px;
+    background-position: 0 0;
+  }
+
+  .card:hover .thumb, .card:focus-visible .thumb {
+    animation: dither 0.55s linear infinite;
+  }
+
+  @keyframes dither { to { background-position: 20px 20px; } }
+
+  .idx {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--a);
+    background: var(--b);
+    padding: 2px 7px;
+    transition: transform 0.35s ease;
+  }
+
+  .go {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--a);
+    opacity: 0;
+    transform: translate(-6px, 6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .card:hover .go, .card:focus-visible .go {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  .meta {
+    padding: 13px 14px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: linear-gradient(180deg, transparent, #00000033);
+  }
+
+  .meta h2 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  .meta p {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card.tall .meta h2 { font-size: 19px; }
+  .card.tall .meta p {
+    -webkit-line-clamp: 3;
+    font-size: 12px;
+  }
+
+  /* per-card two-tone dither palettes (1-bit: exactly two colors) */
+  .c1  { --h: 145; --a: hsl(145 80% 52%);  --b: hsl(145 60% 10%); }
+  .c2  { --h: 48;  --a: hsl(48 90% 58%);   --b: hsl(48 70% 10%); }
+  .c3  { --h: 205; --a: hsl(205 75% 60%);  --b: hsl(205 55% 10%); }
+  .c4  { --h: 0;   --a: hsl(0 90% 52%);    --b: hsl(0 60% 8%); }
+  .c5  { --h: 95;  --a: hsl(95 55% 55%);   --b: hsl(95 40% 9%); }
+  .c6  { --h: 190; --a: hsl(190 80% 55%);  --b: hsl(190 60% 9%); }
+  .c7  { --h: 25;  --a: hsl(25 95% 55%);   --b: hsl(25 70% 9%); }
+  .c8  { --h: 300; --a: hsl(300 85% 58%);  --b: hsl(300 60% 9%); }
+  .c9  { --h: 340; --a: hsl(340 85% 55%);  --b: hsl(340 60% 8%); }
+  .c10 { --h: 30;  --a: hsl(30 85% 55%);   --b: hsl(30 60% 9%); }
+  .c11 { --h: 20;  --a: hsl(20 90% 55%);   --b: hsl(20 70% 8%); }
+  .c12 { --h: 220; --a: hsl(220 15% 70%);  --b: hsl(220 15% 10%); }
+  .c13 { --h: 350; --a: hsl(350 70% 62%);  --b: hsl(350 45% 10%); }
+  .c14 { --h: 215; --a: hsl(215 80% 62%);  --b: hsl(215 55% 10%); }
+  .c15 { --h: 135; --a: hsl(135 85% 55%);  --b: hsl(135 65% 8%); }
+
+  /* spans, desktop */
+  .s3x2 { grid-column: span 3; grid-row: span 2; }
+  .s3x1 { grid-column: span 3; }
+  .s4x1 { grid-column: span 4; }
+  .s2x1 { grid-column: span 2; }
+  .s1x1 { grid-column: span 1; }
+
+  /* ---------- footer / credit ---------- */
+  footer {
+    margin-top: clamp(28px, 5vw, 52px);
+    border-top: 1px solid var(--line);
+    padding: 26px 0 48px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    justify-content: space-between;
+  }
+
+  .credit {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 520px;
+  }
+
+  .credit strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .credit .sig {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  .stamp {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .grid { grid-auto-rows: 110px; }
+    .s3x2 { grid-column: span 6; grid-row: span 2; }
+    .s3x1, .s4x1 { grid-column: span 3; }
+    .s2x1, .s1x1 { grid-column: span 3; }
+  }
+
+  @media (max-width: 620px) {
+    .grid { gap: 10px; grid-auto-rows: 105px; }
+    .s3x2 { grid-column: span 6; grid-row: span 3; }
+    .s3x1, .s4x1, .s2x1, .s1x1 { grid-column: span 6; }
+    .header-note { max-width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card .thumb, .card .go, .idx { transition: none; animation: none !important; }
+    .dot { animation: none; }
+    html { scroll-behavior: auto; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Qwen3.8-27B Demos</h1>
-  <p class="lede">Single-file HTML pages generated by Qwen3.8-27B on release day. No framework, no build step, just open and go.</p>
-  <ul>
-    <li><a href="pagoda-voxel/"><div class="name">Voxel Pagoda Garden</div><div class="desc">A colorful voxel art pagoda scene in a blossoming garden</div></a></li>
-    <li><a href="bento-grid-1bit-dither/"><div class="name">Dithered Bento Grid</div><div class="desc">A dark bento grid layout with a 1-bit dithered look and hover motion</div></a></li>
-    <li><a href="stationery-retail-catalogue/"><div class="name">Stationery Retail Catalogue</div><div class="desc">A playful full-page catalogue for an independent stationery and paper goods shop</div></a></li>
-    <li><a href="virtual-boy-website/"><div class="name">Virtual Boy Microsite</div><div class="desc">A retro red and black microsite for the Nintendo Virtual Boy with a Three.js hero</div></a></li>
-    <li><a href="website-hand-drawn/"><div class="name">The Moss Notebook</div><div class="desc">A hand drawn naturalist's field journal covering a year in the woods</div></a></li>
-    <li><a href="fbm-color-breathing-terrain/"><div class="name">Breathing Terrain</div><div class="desc">An animated fbm heightmap shader that slowly rises and falls like breathing</div></a></li>
-    <li><a href="shader-molten-metaballs/"><div class="name">Molten Metaballs</div><div class="desc">A WebGL2 raymarched shader of glowing liquid metal blobs merging in a dark chamber</div></a></li>
-    <li><a href="organic-iridescent-blob/"><div class="name">Iridescent Blob</div><div class="desc">A colorful raymarched organic blob shader with a shifting iridescent palette</div></a></li>
-    <li><a href="zombie-car-apocalypse/"><div class="name">Zombie Wasteland Patrol</div><div class="desc">An autonomous top-down car survival screensaver racing through a zombie-infested wasteland</div></a></li>
-    <li><a href="website-brutalist/"><div class="name">Concrete Index</div><div class="desc">A raw brutalist archive site for fictional civic architecture and public infrastructure</div></a></li>
-    <li><a href="website-risograph/"><div class="name">Ink Weather</div><div class="desc">A tactile risograph-styled site for a fictional print fair and studio festival</div></a></li>
-    <li><a href="website-swiss/"><div class="name">Helvetica Transit Archive</div><div class="desc">A minimalist Swiss-style museum archive of transit maps, signs, and clocks</div></a></li>
-    <li><a href="saas-pricing-terminal/"><div class="name">Terminal Pricing Console</div><div class="desc">A disciplined monochrome terminal-style SaaS pricing component</div></a></li>
-    <li><a href="zombie-wasteland-driver/"><div class="name">Wasteland Driver</div><div class="desc">A zoomed-out 1-bit dithered post-apocalyptic car combat arena with autonomous AI driving and battle damage</div></a></li>
-    <li><a href="forest-fire/"><div class="name">Forest Fire Simulation</div><div class="desc">A self-running hand-drawn cellular-automaton wildfire that spreads and regrows forever</div></a></li>
-  </ul>
+
+  <header>
+    <div>
+      <div class="kicker"><span class="dot" aria-hidden="true"></span> release day, 15 demos</div>
+      <h1>
+        <span class="model">QWEN3.8-27B</span>
+        Release Day Demos
+      </h1>
+    </div>
+    <p class="header-note">
+      <b>Fifteen single-file pages</b> generated on launch day. Hover any card to watch its dither breathe, then step inside.
+    </p>
+  </header>
+
+  <main class="grid">
+
+    <a class="card c1 s3x2 tall" href="pagoda-voxel/">
+      <div class="thumb"><span class="idx">01</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Voxel Pagoda Garden</h2>
+        <p>A blocky courtyard of stacked voxel pagodas, built from pure CSS cubes and light.</p>
+      </div>
+    </a>
+
+    <a class="card c2 s3x1" href="bento-grid-1bit-dither/">
+      <div class="thumb"><span class="idx">02</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Dithered Bento Grid</h2>
+        <p>The same 1-bit aesthetic, applied to a smaller bento of its own.</p>
+      </div>
+    </a>
+
+    <a class="card c3 s3x1" href="stationery-retail-catalogue/">
+      <div class="thumb"><span class="idx">03</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Stationery Retail Catalogue</h2>
+        <p>A print-inspired shop for paper, ink, and quiet desk goods.</p>
+      </div>
+    </a>
+
+    <a class="card c4 s2x1" href="virtual-boy-website/">
+      <div class="thumb"><span class="idx">04</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Virtual Boy Microsite</h2>
+        <p>Deep red glow and CRT haze, straight out of 1995.</p>
+      </div>
+    </a>
+
+    <a class="card c5 s2x1" href="website-hand-drawn/">
+      <div class="thumb"><span class="idx">05</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>The Moss Notebook</h2>
+        <p>A hand-drawn field guide with wobbly ink lines and soft green margins.</p>
+      </div>
+    </a>
+
+    <a class="card c6 s2x1" href="fbm-color-breathing-terrain/">
+      <div class="thumb"><span class="idx">06</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Breathing Terrain</h2>
+        <p>Fractal terrain that expands and contracts with the light.</p>
+      </div>
+    </a>
+
+    <a class="card c7 s3x1" href="shader-molten-metaballs/">
+      <div class="thumb"><span class="idx">07</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Molten Metaballs</h2>
+        <p>Liquid metal blobs that merge, split, and drip in the shader.</p>
+      </div>
+    </a>
+
+    <a class="card c8 s3x1" href="organic-iridescent-blob/">
+      <div class="thumb"><span class="idx">08</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Iridescent Blob</h2>
+        <p>An oil-slick shape that drifts and shifts hue as it breathes.</p>
+      </div>
+    </a>
+
+    <a class="card c9 s4x1" href="zombie-car-apocalypse/">
+      <div class="thumb"><span class="idx">09</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Zombie Car Apocalypse</h2>
+        <p>A canvas arcade chase through a highway gone very, very wrong.</p>
+      </div>
+    </a>
+
+    <a class="card c10 s2x1" href="zombie-wasteland-driver/">
+      <div class="thumb"><span class="idx">10</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Wasteland Driver</h2>
+        <p>An endless dusk drive through dead cities and rusted signs.</p>
+      </div>
+    </a>
+
+    <a class="card c11 s3x1" href="forest-fire/">
+      <div class="thumb"><span class="idx">11</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Forest Fire Simulation</h2>
+        <p>A particle wildfire racing across a field of procedural trees.</p>
+      </div>
+    </a>
+
+    <a class="card c12 s1x1" href="website-brutalist/">
+      <div class="thumb"><span class="idx">12</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Brutalist</h2>
+        <p>Raw concrete, stark type, zero apologies.</p>
+      </div>
+    </a>
+
+    <a class="card c13 s2x1" href="website-risograph/">
+      <div class="thumb"><span class="idx">13</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Risograph</h2>
+        <p>Two offset inks, printed a little out of register on purpose.</p>
+      </div>
+    </a>
+
+    <a class="card c14 s2x1" href="website-swiss/">
+      <div class="thumb"><span class="idx">14</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Swiss</h2>
+        <p>Grid discipline, neutral type, and maximum calm.</p>
+      </div>
+    </a>
+
+    <a class="card c15 s4x1" href="saas-pricing-terminal/">
+      <div class="thumb"><span class="idx">15</span><span class="go" aria-hidden="true">&#8599;</span></div>
+      <div class="meta">
+        <h2>Pricing Terminal</h2>
+        <p>SaaS plans served cold from a monospaged console, boot lines and all.</p>
+      </div>
+    </a>
+
+  </main>
+
   <footer>
-    Source on <a href="https://github.com/loktar00/qwen3-8-27b-demos">GitHub</a>. Read the <a href="prompts/">prompts</a> behind some of the website demos.
+    <p class="credit">
+      <strong>One model, one day, fifteen pages.</strong>
+      This gallery and every demo linked from it were generated by Qwen3.8-27B on release day, no edits between prompt and page.
+      <span class="sig">Qwen3.8-27B / single file / 0 dependencies</span>
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span class="stamp">1-bit dither / dark / 15/15 shipped</span>
+      <a class="stamp" href="prompts/" style="text-decoration:none;color:var(--muted)">Prompts</a>
+    </div>
   </footer>
+
 </div>
 </body>
 </html>
