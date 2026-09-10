@@ -1,0 +1,14 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/claude-fable-5-1/api/website-hand-drawn/index.html",
+  "pass": true,
+  "notes": [],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": null,
+  "canvas_count": 0,
+  "canvas_kinds": [],
+  "served_by": "base",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 15421,
+  "scroll_height": 12450
+}

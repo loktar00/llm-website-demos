@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMBERWYRM — A Bestiary of the Last Fire</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 16 16 30 2 16Z' fill='%23c8501e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   EMBERWYRM — volcanic blacks, ember oranges, molten golds
+   ============================================================ */
+:root{
+  --ink:#0b0806;
+  --coal:#141009;
+  --panel:rgba(14,10,7,.74);
+  --smoke:#9a8d7b;
+  --bone:#e6d9bd;
+  --gold:#c9a35c;
+  --gold-dim:rgba(201,163,92,.16);
+  --ember:#ff7a2a;
+  --blood:#c8501e;
+  --line:rgba(201,163,92,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{background:var(--ink)}
+body{
+  color:#cfc2ac;
+  font:400 17px/1.8 "Cormorant Garamond",Georgia,serif;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--blood);color:var(--ink)}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#0a0705}
+::-webkit-scrollbar-thumb{background:#2b1e13;border-radius:5px}
+::-webkit-scrollbar-thumb:hover{background:var(--blood)}
+a{color:var(--gold)}
+h1,h2,h3,.cz{font-family:Cinzel,serif}
+
+/* ---------- fixed stage layers ---------- */
+#mtns{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#mtns .layer{position:absolute;left:-4%;right:-4%;bottom:-2px;will-change:transform}
+#mtns svg{display:block;width:100%;height:auto}
+#c3d{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block}
+main{position:relative;z-index:2}
+#fx{position:fixed;inset:0;z-index:3;pointer-events:none}
+#grain{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.6) 0 1px,transparent 1px 3px)}
+
+/* ---------- chrome ---------- */
+#chrome{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;justify-content:space-between;align-items:center;
+  padding:1.1rem 2rem;pointer-events:none}
+#chrome .mark{display:flex;align-items:center;gap:.7rem;font-family:Cinzel,serif;font-size:.72rem;
+  letter-spacing:.34em;color:var(--gold)}
+#chrome .mark svg{width:13px;height:13px;flex:none}
+#chrome .folio{font-family:Cinzel,serif;font-size:.62rem;letter-spacing:.3em;color:rgba(201,163,92,.55)}
+#prog{position:fixed;top:0;left:0;height:2px;width:100%;z-index:7;background:var(--ember);
+  transform-origin:0 50%;transform:scaleX(0);box-shadow:0 0 8px rgba(255,122,42,.6)}
+
+/* temper gauge */
+#temper{position:fixed;right:1.6rem;top:50%;transform:translateY(-50%);z-index:6;display:flex;
+  flex-direction:column;align-items:center;gap:.8rem;pointer-events:none}
+#temper .tl{writing-mode:vertical-rl;font-family:Cinzel,serif;font-size:.55rem;letter-spacing:.42em;
+  color:rgba(201,163,92,.5)}
+#temper .track{position:relative;width:2px;height:170px;background:var(--gold-dim);overflow:visible}
+#temper .fill{position:absolute;bottom:0;left:0;width:100%;height:0%;background:var(--ember);
+  box-shadow:0 0 10px rgba(255,122,42,.8);transition:height .18s linear}
+#temper .gem{position:absolute;bottom:0;left:50%;width:9px;height:9px;transform:translate(-50%,50%) rotate(45deg);
+  background:#1c130c;border:1px solid var(--gold);transition:all .3s}
+#temper .gem.hot{background:var(--ember);border-color:var(--ember);box-shadow:0 0 12px rgba(255,122,42,.9);
+  animation:gemPulse 1s infinite}
+@keyframes gemPulse{50%{box-shadow:0 0 4px rgba(255,122,42,.4)}}
+#temper .tn{font-family:Cinzel,serif;font-size:.56rem;letter-spacing:.32em;color:rgba(201,163,92,.65);
+  writing-mode:vertical-rl;min-height:110px}
+
+/* ---------- sections ---------- */
+section{position:relative;padding:16vh 6vw}
+.wrap{max-width:1180px;margin:0 auto}
+.kick{display:flex;align-items:center;gap:1rem;font-family:Cinzel,serif;font-size:.66rem;font-weight:700;
+  letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+.kick::before{content:"";width:2.6em;height:1px;background:var(--gold);opacity:.6;flex:none}
+h2{font-size:clamp(1.9rem,4.4vw,3.1rem);font-weight:700;color:var(--bone);letter-spacing:.06em;
+  line-height:1.15;margin:.7rem 0 1.2rem}
+.lead{font-size:clamp(1.15rem,1.7vw,1.35rem);font-style:italic;color:var(--smoke);max-width:44ch}
+section p{max-width:36rem}
+
+/* readability panels */
+.panel{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);padding:2rem 2.2rem}
+
+/* scroll reveals */
+[data-rev]{opacity:0;transform:translateY(34px);transition:opacity 1s ease,transform 1s cubic-bezier(.22,.8,.3,1);
+  transition-delay:var(--d,0s)}
+[data-rev].in{opacity:1;transform:none}
+
+/* ---------- burnable headings ---------- */
+.w{display:inline-block;white-space:nowrap}
+.ch{display:inline-block;transition:color .5s ease,text-shadow .5s ease,opacity .5s ease;
+  transition-delay:calc(var(--i)*16ms)}
+.igniting .ch{color:#ffb45e;text-shadow:0 0 14px rgba(255,120,30,.55);transition-duration:.14s}
+.burnt .ch{color:#221913;text-shadow:0 1px 2px rgba(0,0,0,.65),0 0 9px rgba(255,90,20,.18);opacity:.94}
+.burnt{position:relative}
+.burnt::after{content:"";display:block;width:2.4em;height:2px;margin-top:.35em;background:var(--blood);
+  box-shadow:0 0 9px rgba(255,110,30,.75);animation:smolder 2.6s ease-in-out infinite}
+@keyframes smolder{50%{opacity:.35;box-shadow:0 0 3px rgba(255,110,30,.35)}}
+.restoring .ch{transition-delay:0ms!important;transition-duration:.7s}
+.restoring::after{display:none}
+
+/* ---------- hero ---------- */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:0;padding-bottom:0}
+#hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 62% 48% at 34% 52%,rgba(9,6,4,.62),transparent 70%)}
+.hero-inner{position:relative;max-width:1180px;margin:0 auto;width:100%}
+#hero .kick{margin-bottom:1.4rem}
+#hero h1{font-size:clamp(3rem,11.5vw,8.2rem);font-weight:900;letter-spacing:.045em;line-height:.98;
+  color:var(--bone);text-shadow:0 3px 0 rgba(0,0,0,.55),0 -1px 0 rgba(255,200,120,.1)}
+#hero .sub{margin-top:1.6rem;font-size:clamp(1.1rem,1.9vw,1.45rem);font-style:italic;color:var(--smoke);
+  max-width:30rem;border-left:1px solid var(--gold);padding-left:1.2rem}
+#hero .rule{width:5.5rem;height:1px;background:var(--gold);margin:2rem 0 0;opacity:.6}
+#descend{margin-top:3.2rem;pointer-events:auto;position:relative;display:inline-flex;align-items:center;gap:.9rem;
+  background:none;border:1px solid var(--gold);color:var(--bone);font-family:Cinzel,serif;font-size:.78rem;
+  letter-spacing:.34em;padding:1rem 1.8rem 1rem 2.2rem;cursor:pointer;overflow:hidden}
+#descend span,#descend svg{position:relative;z-index:1}
+#descend::before{content:"";position:absolute;inset:0;background:var(--blood);transform:scaleX(0);
+  transform-origin:0 50%;transition:transform .35s cubic-bezier(.22,.9,.3,1)}
+#descend:hover::before,#descend:focus-visible::before{transform:scaleX(1)}
+#descend:hover{border-color:var(--blood)}
+#descend svg{transition:transform .35s}
+#descend:hover svg{transform:translateY(4px)}
+#descend:focus-visible{outline:1px dashed var(--ember);outline-offset:4px}
+#hero .fadeup{opacity:0;transform:translateY(26px);animation:fup 1.2s cubic-bezier(.22,.8,.3,1) forwards}
+@keyframes fup{to{opacity:1;transform:none}}
+
+/* ---------- lore ---------- */
+.ed{max-width:38rem;margin-bottom:5.5rem}
+.ed:nth-of-type(even){margin-left:auto}
+.ed h3{font-size:1.35rem;color:var(--bone);letter-spacing:.12em;margin-bottom:1rem;font-weight:700}
+.ed h3 i{font-family:Cormorant Garamond,serif;font-style:italic;color:var(--ember);margin-right:.6rem;font-size:1.2rem}
+.ed p+p{margin-top:1.1rem}
+.ed p:first-of-type::first-letter{font-family:Cinzel,serif;font-size:3.3em;float:left;line-height:.82;
+  padding:.06em .12em 0 0;color:var(--gold)}
+blockquote{max-width:34rem;margin:5rem auto;border-left:2px solid var(--blood);padding:.4rem 0 .4rem 2rem;
+  font-size:clamp(1.3rem,2.4vw,1.7rem);font-style:italic;color:var(--bone);line-height:1.55}
+blockquote small{display:block;margin-top:1rem;font-style:normal;font-family:Cinzel,serif;font-size:.62rem;
+  letter-spacing:.34em;color:var(--gold)}
+
+/* ---------- anatomy ---------- */
+#anatomy .fig{margin-top:3.5rem;border:1px solid var(--line);background:rgba(11,8,6,.55);padding:2rem 1rem 1rem}
+#anatomy svg{width:100%;height:auto;display:block}
+#anatomy .cap{display:flex;justify-content:space-between;font-family:Cinzel,serif;font-size:.6rem;
+  letter-spacing:.28em;color:rgba(201,163,92,.55);padding:1rem 1rem .4rem}
+.anat .lead-ln{stroke:var(--gold);stroke-width:1;fill:none;opacity:.55;stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset 1.4s ease}
+.anat .nd-r{fill:none;stroke:var(--gold);stroke-width:1;opacity:.7;transition:all .3s}
+.anat .nd-c{fill:#1c130c;stroke:var(--gold);stroke-width:1;transition:all .3s}
+.anat text{font-family:Cinzel,serif;fill:var(--bone);letter-spacing:.18em}
+.anat .lbl{font-size:13px;font-weight:700}
+.anat .sub{font-family:Cormorant Garamond,serif;font-style:italic;font-size:12.5px;fill:var(--smoke);letter-spacing:.02em}
+.anat .tick{stroke:rgba(201,163,92,.4);stroke-dasharray:4 5}
+.anat g.cal{cursor:pointer}
+.anat g.cal:hover .nd-c,.anat g.cal.on .nd-c{fill:var(--ember);stroke:var(--ember)}
+.anat g.cal:hover .nd-r,.anat g.cal.on .nd-r{stroke:var(--ember);opacity:1}
+.anat g.cal:hover .lbl{fill:#ffb45e}
+.fig.in .lead-ln{stroke-dashoffset:0}
+.fig.in .l1{transition-delay:.2s}.fig.in .l2{transition-delay:.45s}.fig.in .l3{transition-delay:.7s}
+.fig.in .l4{transition-delay:.95s}.fig.in .l5{transition-delay:1.2s}
+
+/* ---------- fire section ---------- */
+#fire .lead{margin-bottom:2.5rem}
+.livecap{display:inline-block;font-family:Cinzel,serif;font-size:.66rem;letter-spacing:.32em;color:var(--ember);
+  border:1px solid rgba(255,122,42,.35);padding:.55rem 1rem;margin-bottom:2.6rem;min-width:0}
+#fire .cols{display:flex;flex-wrap:wrap;gap:3rem;align-items:flex-start}
+#fire .cols>div{flex:1 1 320px}
+.ledger{margin:1.4rem 0}
+.ledger div{display:flex;align-items:baseline;padding:.42rem 0;font-size:1.02rem;transition:color .3s}
+.ledger div:hover{color:#ffb45e}
+.ledger dt{color:var(--smoke)}
+.ledger dt::after{content:"";display:inline-block;flex:1}
+.ledger div{display:flex}
+.ledger dt{flex:1;overflow:hidden;white-space:nowrap}
+.ledger dt::after{content:" · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·";letter-spacing:2px;
+  color:rgba(201,163,92,.28);margin:0 .7em}
+.ledger dd{font-family:Cinzel,serif;font-size:.85rem;color:var(--gold);letter-spacing:.08em}
+.scrawl{margin-top:2.4rem;font-style:italic;color:#b3703a;transform:rotate(-1.4deg);font-size:1.05rem;
+  border-left:1px dashed rgba(255,122,42,.4);padding-left:1.2rem}
+#fire h3{font-size:1.3rem;color:var(--bone);letter-spacing:.14em;margin:2.2rem 0 .8rem}
+
+/* ---------- sightings ---------- */
+#sightings .tl{position:relative;margin-top:4rem}
+#sightings .tl::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)}
+.ev{position:relative;width:50%;padding:0 3.2rem 3.4rem 0}
+.ev:nth-child(even){margin-left:50%;padding:0 0 3.4rem 3.2rem}
+.ev .yr{font-family:Cinzel,serif;font-size:1.5rem;font-weight:700;color:var(--gold);letter-spacing:.1em}
+.ev .dot{position:absolute;top:.55rem;right:-6px;width:11px;height:11px;transform:rotate(45deg);
+  background:#16100a;border:1px solid var(--gold);transition:all .35s}
+.ev:nth-child(even) .dot{right:auto;left:-6px}
+.ev:hover .dot{background:var(--ember);border-color:var(--ember);box-shadow:0 0 14px rgba(255,122,42,.8)}
+.ev h3{font-size:1.02rem;color:var(--bone);letter-spacing:.14em;margin:.35rem 0 .5rem}
+.ev p{font-size:.98rem;color:var(--smoke)}
+
+/* ---------- gallery ---------- */
+#gallery .g-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1.4rem;margin-top:3.5rem}
+.g-item{border:1px solid var(--line);background:var(--panel);padding:.9rem;transition:border-color .35s,transform .35s,box-shadow .35s}
+.g-item:hover{border-color:var(--blood);transform:translateY(-5px);box-shadow:0 18px 40px -18px rgba(200,80,30,.35)}
+.g-item canvas,.g-item svg{display:block;width:100%;height:auto}
+.g-item figcaption{display:flex;justify-content:space-between;gap:1rem;padding-top:.8rem;
+  font-family:Cinzel,serif;font-size:.58rem;letter-spacing:.24em;color:rgba(201,163,92,.7)}
+.g-item figcaption em{font-family:Cormorant Garamond,serif;font-style:italic;letter-spacing:.03em;
+  font-size:.82rem;color:var(--smoke)}
+.g-a{grid-column:1/8}.g-b{grid-column:8/13}.g-c{grid-column:1/6}.g-d{grid-column:6/10}.g-e{grid-column:10/13}
+
+/* ---------- colophon ---------- */
+#colophon{text-align:center;padding-bottom:8vh}
+#colophon .orn{color:var(--gold);margin-bottom:1.6rem}
+#colophon h2{font-size:clamp(1.4rem,2.8vw,2rem)}
+#colophon p{max-width:34rem;margin:.5rem auto;font-size:1rem;color:var(--smoke)}
+#colophon .cols{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;margin-top:2.6rem;
+  font-family:Cinzel,serif;font-size:.6rem;letter-spacing:.3em;color:rgba(201,163,92,.6)}
+#colophon hr{border:0;height:1px;background:var(--line);max-width:22rem;margin:2.4rem auto}
+#rise{margin-top:2.6rem;background:none;border:1px solid var(--gold);color:var(--bone);cursor:pointer;
+  font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.32em;padding:.85rem 1.7rem;display:inline-flex;
+  align-items:center;gap:.8rem;overflow:hidden;position:relative}
+#rise::before{content:"";position:absolute;inset:0;background:var(--blood);transform:scaleY(0);
+  transform-origin:50% 100%;transition:transform .3s}
+#rise span,#rise svg{position:relative;z-index:1}
+#rise:hover::before{transform:scaleY(1)}
+#rise:focus-visible{outline:1px dashed var(--ember);outline-offset:4px}
+
+/* ---------- states ---------- */
+.nogl #c3d{display:none}
+.nogl #hero::after{content:"";position:absolute;right:6vw;top:20vh;width:min(44vw,560px);aspect-ratio:1.4;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cpath d='M40 60 C90 40 130 80 140 120 C150 165 130 190 180 210 C230 232 290 220 320 250 C340 268 320 288 296 278 C278 280 282 262 296 258' fill='none' stroke='%23241913' stroke-width='22' stroke-linecap='round'/%3E%3Ccircle cx='52' cy='58' r='5' fill='%23ff7a2a'/%3E%3C/svg%3E");
+  opacity:.85}
+.rm .layer{transform:none!important}
+.rm [data-rev]{opacity:1;transform:none;transition:none}
+.rm .ch{transition:none!important}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  #temper{display:none}
+  section{padding:13vh 7vw}
+  .g-a,.g-b,.g-c,.g-d,.g-e{grid-column:1/13}
+  .ev{width:100%;padding:0 0 3rem 2rem}
+  .ev:nth-child(even){margin-left:0;padding:0 0 3rem 2rem}
+  #sightings .tl::before{left:4px}
+  .ev .dot,.ev:nth-child(even) .dot{left:-1px;right:auto}
+}
+@media (max-width:560px){
+  #chrome{padding:.9rem 1.1rem}
+  #chrome .mark span{display:none}
+  .panel{padding:1.4rem 1.2rem}
+}
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  #fx,#grain{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- parallax mountain backdrop (filled by script) -->
+<div id="mtns" aria-hidden="true">
+  <div class="layer" id="mL0"></div>
+  <div class="layer" id="mL1"></div>
+  <div class="layer" id="mL2"></div>
+</div>
+
+<canvas id="c3d" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="grain" aria-hidden="true"></div>
+
+<div id="chrome">
+  <div class="mark">
+    <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 0 14 7 7 14 0 7Z" fill="#c8501e"/></svg>
+    <span>EMBERWYRM&nbsp;·&nbsp;A BESTIARY OF THE LAST FIRE</span>
+  </div>
+  <div class="folio">FOL. VII</div>
+</div>
+<div id="prog" aria-hidden="true"></div>
+
+<div id="temper" aria-hidden="true">
+  <span class="tl">TEMPER OF THE WYRM</span>
+  <div class="track"><div class="fill" id="tfill"></div><div class="gem" id="tgem"></div></div>
+  <span class="tn" id="tname">SLEEPING</span>
+</div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section id="hero">
+    <div class="hero-inner">
+      <p class="kick fadeup" style="animation-delay:.1s">BESTIARIUM · VOLUME VII · DE IGNE ET CINERE</p>
+      <h1 class="fadeup" style="animation-delay:.25s">EMBERWYRM</h1>
+      <p class="sub fadeup" style="animation-delay:.45s">Of the Wyrm that sleeps in the Mountain of Ash —
+      its long patience, its measured wrath, and the fire it keeps like a vow.</p>
+      <div class="fadeup" style="animation-delay:.65s">
+        <button id="descend" type="button">
+          <span>DESCEND</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M7 1v11M2.5 8 7 12.5 11.5 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LORE ================= -->
+  <section id="lore">
+    <div class="wrap">
+      <header data-rev>
+        <p class="kick">PLATE I — THE ACCOUNT</p>
+        <h2>The Lore of the Wyrm</h2>
+      </header>
+
+      <article class="ed" data-rev style="--d:.1s;margin-top:4.5rem">
+        <h3><i>I.</i>THE COILING</h3>
+        <p>The shepherds of the Ashfall range do not say that the wyrm sleeps <em>beneath</em> the mountain.
+        They say it sleeps <em>as</em> the mountain — that the ridgeline is its spine, drawn out over centuries
+        and patient as geology; that the caldera is one half-open eye; that on cold nights the whole massif
+        breathes, a slow tide of warm air through the fissures, like the flank of an enormous sleeping animal.</p>
+        <p>They are careful, always, to say <em>sleeping</em>. The distinction has kept their villages standing
+        for eleven hundred years.</p>
+      </article>
+
+      <article class="ed" data-rev>
+        <h3><i>II.</i>THE WAKING</h3>
+        <p>There is an order to it, old as the pact. First the birds go quiet — not scattered, <em>quiet</em>,
+        as if instructed. Then the snow on the south face weeps steam. Then the fissures begin to exhale in
+        rhythm, one breath every nine seconds, and any shepherd counting along had best already be walking
+        downhill. Last, the summit stones shift — not falling, but <em>settling</em>, the way a hound settles
+        before it lifts its head.</p>
+        <p>Those who have seen the waking speak less of terror than of scale. The head alone, they say, is the
+        size of a chapel. The eyes open like furnace doors. And the wings — the wings arrive last, the way
+        thunder arrives after the flash, unfolding with a creak of leather and cooling rock that can be heard
+        two valleys away.</p>
+      </article>
+
+      <article class="ed" data-rev>
+        <h3><i>III.</i>THE KEEPERS</h3>
+        <p>Once a season, the villages carry pine boughs, resin, and a share of the flock to the low shrine at
+        the mountain's foot. This is not tribute, the elders insist. It is companionship. A fire left alone
+        grows hungry; a fire kept company simply burns.</p>
+        <p>The offering is laid on the black stones, the villagers withdraw to the treeline, and by morning
+        the stones are scorched clean and warm, and the air smells of juniper and struck flint, and the
+        mountain sleeps on.</p>
+      </article>
+
+      <blockquote data-rev>
+        “We do not feed the fire. We keep it company.”
+        <small>— INSCRIPTION AT THE LOW SHRINE, C. 812</small>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ================= ANATOMY ================= -->
+  <section id="anatomy">
+    <div class="wrap">
+      <header data-rev>
+        <p class="kick">PLATE II — STRUCTURE</p>
+        <h2>Anatomy of a Legend</h2>
+        <p class="lead">Surveyed from distance, honour, and one regrettable hot-air balloon.</p>
+      </header>
+
+      <figure class="fig anat" id="fig" data-rev style="--d:.15s">
+        <svg viewBox="0 0 920 540" role="img" aria-label="Stylized anatomical diagram of the Emberwyrm">
+          <!-- measurement -->
+          <line class="tick" x1="322" y1="118" x2="512" y2="42"/>
+          <line class="tick" x1="316" y1="128" x2="322" y2="106"/>
+          <line class="tick" x1="518" y1="52" x2="506" y2="32"/>
+          <text x="330" y="86" class="sub" transform="rotate(-21 330 86)">WINGSPAN — XVII SPANS</text>
+          <!-- far wing -->
+          <path d="M310,258 C320,196 366,128 430,96 C410,150 400,196 380,236 Z" fill="#181009" opacity=".8"/>
+          <!-- body : single molten stroke -->
+          <path d="M146,112 C196,96 238,140 252,180 C268,226 246,252 300,272 C352,272 420,296 458,330
+                   C492,362 486,406 528,424 C566,440 606,418 614,382 C622,348 588,330 566,350
+                   C548,368 560,396 586,394" fill="none" stroke="#4a2412" stroke-width="9" stroke-linecap="round" opacity=".9"/>
+          <path d="M146,112 C196,96 238,140 252,180 C268,226 246,252 300,258 C352,264 420,296 458,330
+                   C492,340 486,406 528,424 C566,440 606,418 614,382 C622,334 588,330 566,350
+                   C548,368 560,396 586,394" fill="none" stroke="#241a13" stroke-width="26" stroke-linecap="round"/>
+          <!-- dorsal spikes -->
+          <path d="M300,242 l8,-16 8,14 M360,262 l8,-16 8,14 M420,296 l9,-15 8,13 M480,344 l8,-14 8,13"
+                fill="none" stroke="#6b4a26" stroke-width="4" stroke-linejoin="round"/>
+          <!-- legs -->
+          <path d="M420,322 L434,352 M434,352 L420,368 M434,352 L450,362" fill="none" stroke="#241a13" stroke-width="9" stroke-linecap="round"/>
+          <path d="M520,404 L508,436 M508,436 L520,462" fill="none" stroke="#241a13" stroke-width="11" stroke-linecap="round"/>
+          <!-- near wing -->
+          <path d="M300,258 C310,188 362,116 430,82 C456,70 474,72 482,80 C470,116 460,158 438,196
+                   C424,178 406,196 390,220 C374,200 356,220 342,244 C330,258 314,264 300,258 Z"
+                fill="#1d1512" stroke="rgba(201,163,92,.35)" stroke-width="1.5"/>
+          <!-- head -->
+          <path d="M146,112 L112,132 L150,136 Z" fill="#241a13"/>
+          <path d="M150,98 C136,84 128,66 132,50" fill="none" stroke="#0f0b08" stroke-width="6" stroke-linecap="round"/>
+          <path d="M164,96 C156,74 154,58 160,42" fill="none" stroke="#0f0b08" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="160" cy="110" r="4" fill="#ff7a2a"/>
+          <!-- callouts -->
+          <g class="cal" id="cal1">
+            <circle class="nd-r" cx="452" cy="118" r="9"/><circle class="nd-c" cx="452" cy="118" r="3"/>
+            <path class="lead-ln l1" pathLength="1" d="M452,118 L640,72 L706,72"/>
+            <text x="714" y="68" class="lbl"><tspan class="lbl">I · WINGSPAN</tspan>
+              <tspan x="714" dy="18" class="sub">seventeen spans, borne on living obsidian</tspan></text>
+          </g>
+          <g class="cal" id="cal2">
+            <circle class="nd-r" cx="404" cy="300" r="9"/><circle class="nd-c" cx="404" cy="300" r="3"/>
+            <path class="lead-ln l2" pathLength="1" d="M404,300 L620,236 L706,236"/>
+            <text x="714" y="232"><tspan class="lbl">II · SCALE ARMOR</tspan>
+              <tspan x="714" dy="18" class="sub">overlapping scutes, hard as forge slag</tspan></text>
+          </g>
+          <g class="cal" id="cal4">
+            <circle class="nd-r" cx="560" cy="414" r="9"/><circle class="nd-c" cx="560" cy="414" r="3"/>
+            <path class="lead-ln l3" pathLength="1" d="M560,414 L650,398 L706,398"/>
+            <text x="714" y="394"><tspan class="lbl">III · HOLLOW BONES</tspan>
+              <tspan x="714" dy="18" class="sub">light as pumice, stubborn as iron</tspan></text>
+          </g>
+          <g class="cal" id="cal3">
+            <circle class="nd-r" cx="292" cy="222" r="9"/><circle class="nd-c" cx="292" cy="222" r="3"/>
+            <path class="lead-ln l4" pathLength="1" d="M292,222 L200,152 L118,152"/>
+            <text x="110" y="148" text-anchor="end"><tspan class="lbl">IV · THE FIRE GLAND</tspan>
+              <tspan x="110" dy="18" class="sub">the second heart — pressurised, patient</tspan></text>
+          </g>
+          <g class="cal" id="cal5">
+            <circle class="nd-r" cx="598" cy="362" r="9"/><circle class="nd-c" cx="598" cy="362" r="3"/>
+            <path class="lead-ln l5" pathLength="1" d="M598,362 L500,492 L416,492"/>
+            <text x="408" y="488" text-anchor="end"><tspan class="lbl">V · THE TAIL</tspan>
+              <tspan x="408" dy="18" class="sub">nine metres of unhurried arithmetic</tspan></text>
+          </g>
+        </svg>
+        <figcaption class="cap"><span>FIG. 2 — DRACO CINEREUS</span><span>HOVER THE CALLOUTS</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= FIRE ================= -->
+  <section id="fire">
+    <div class="wrap">
+      <header data-rev>
+        <p class="kick">PLATE III — FIELD DOCTRINE</p>
+        <h2 data-burn>The Breath</h2>
+      </header>
+      <p class="livecap panel" id="livecap" data-rev style="--d:.1s">THE SUBJECT IS ASLEEP. TREAD SOFTLY.</p>
+
+      <div class="cols">
+        <div data-rev style="--d:.1s">
+          <p class="lead">The wyrm does not breathe fire. It <em>makes</em> it — briefly, chemically, and with
+          evident relish. Deep in the chest sits a second heart: not a pump of blood but a gland of two
+          chambers, one yielding a volatile thorite oil, the other a catalyst so eager that combustion begins
+          the instant the two meet at the back of the throat.</p>
+          <p>Contraction of the thoracic bellows drives the mixture forward at tremendous pressure. Ignition
+          occurs at the teeth — sparkless, instantaneous, and accompanied by a low chord, like a cathedral
+          organ heard through a stone wall. What leaves the mouth is less a flame than a directed weather
+          event.</p>
+          <h3 data-burn>Kindling Point</h3>
+          <p>Surveys agree the plume self-ignites within a wingspan of the jaw. Beyond four spans it behaves
+          like a river of light: it bends around stone, pools in hollows, and reads handwriting. Survivors
+          describe the heat as respectful — total, but impersonal, like an audit.</p>
+          <h3 data-burn>Afterglow</h3>
+          <p>When the charge is spent the jaw closes with a click of cooling enamel and the embers drift
+          downward for minutes afterward, settling into the margins of the valley like coins into a purse.
+          The smoke smells of juniper and struck flint. The silence afterward is described, uniformly, as
+          <em>polite</em>.</p>
+        </div>
+        <div data-rev style="--d:.2s">
+          <div class="panel">
+            <p class="kick" style="margin-bottom:.4rem">MEASURED DOCTRINE</p>
+            <dl class="ledger">
+              <div><dt>Gland pressure, standing</dt><dd>11.3 ATM</dd></div>
+              <div><dt>Ejection velocity</dt><dd>84 M/S</dd></div>
+              <div><dt>Plume temperature at 3 m</dt><dd>1,320 °C</dd></div>
+              <div><dt>Charge duration</dt><dd>6.4 S</dd></div>
+              <div><dt>Recharge interval</dt><dd>40 MIN</dd></div>
+              <div><dt>Effective range</dt><dd>90 M</dd></div>
+              <div><dt>Range, downwind</dt><dd>FARTHER</dd></div>
+              <div><dt>Warning signs</dt><dd>QUIET BIRDS</dd></div>
+            </dl>
+            <p class="scrawl">Field note, appended in a deceased surveyor's hand: <em>do not stand downstream
+            of the head.</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SIGHTINGS ================= -->
+  <section id="sightings">
+    <div class="wrap">
+      <header data-rev>
+        <p class="kick">PLATE IV — RECORD</p>
+        <h2>A Chronicle of Sightings</h2>
+      </header>
+      <div class="tl">
+        <div class="ev" data-rev><span class="dot"></span><div class="yr">c. 400</div>
+          <h3>THE FIRST ACCORD</h3><p>Pine boughs appear on the black stones each midwinter. No one admits to
+          starting the custom. Everyone continues it.</p></div>
+        <div class="ev" data-rev><span class="dot"></span><div class="yr">812</div>
+          <h3>THE CHARRED FLEET</h3><p>Eleven longships found burned to the waterline in the fjord — from the
+          inside. The mountain's账 of grievances remains sealed.</p></div>
+        <div class="ev" data-rev><span class="dot"></span><div class="yr">1347</div>
+          <h3>THE ASH WINTER</h3><p>Snow falls grey for a season. Not one head of livestock is lost. The
+          villages take this, correctly, as a compliment.</p></div>
+        <div class="ev" data-rev><span class="dot"></span><div class="yr">1666</div>
+          <h3>THE LONDON QUESTION</h3><p>Chroniclers blame the wyrm for the Great Fire. A baker's boy
+          confesses. Through intermediaries, the wyrm declines comment.</p></div>
+        <div class="ev" data-rev><span class="dot"></span><div class="yr">1902</div>
+          <h3>THE PELÉE CONFUSION</h3><p>A naturalist attributes the catastrophe on Martinique to "our
+          subject, abroad." He retracts; the wyrm has never left the range.</p></div>
+        <div class="ev" data-rev><span class="dot"></span><div class="yr">1976</div>
+          <h3>THE HARRIER INCIDENT</h3><p>An RAF pilot shadows "a wing-shaped radar echo, ninety knots, on no
+          fuel." The report is filed under weather.</p></div>
+        <div class="ev" data-rev><span class="dot"></span><div class="yr">2011</div>
+          <h3>ANOMALY KV-9</h3><p>A satellite registers a thermal hotspot that climbs uphill against the
+          weather, pauses, and looks — the analysts insist — <em>back</em>.</p></div>
+        <div class="ev" data-rev><span class="dot"></span><div class="yr">NOW</div>
+          <h3>THE LONG WATCH</h3><p>The seismographs keep a polite silence. The offerings continue. So does
+          this bestiary.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GALLERY ================= -->
+  <section id="gallery">
+    <div class="wrap">
+      <header data-rev>
+        <p class="kick">PLATE V — ILLUMINATIONS</p>
+        <h2>Marks &amp; Testimonies</h2>
+        <p class="lead">Rendered here as the scribes drew them: ochre, ink, and wishful thinking.</p>
+      </header>
+      <div class="g-grid">
+        <figure class="g-item g-a" data-rev>
+          <canvas id="artCave" width="880" height="560"></canvas>
+          <figcaption><span>PLATE V·i — THE HUNT OF THE HORNED SERPENT</span><em>ochre on slate, c. 900 BC</em></figcaption>
+        </figure>
+        <figure class="g-item g-b" data-rev style="--d:.1s">
+          <svg id="artHerald" viewBox="0 0 300 400" role="img" aria-label="Heraldic emblem of the Ashen Order"></svg>
+          <figcaption><span>PLATE V·ii — SIGIL OF THE ASHEN ORDER</span><em>gilt on vellum</em></figcaption>
+        </figure>
+        <figure class="g-item g-c" data-rev>
+          <canvas id="artMtn" width="640" height="470"></canvas>
+          <figcaption><span>PLATE V·iii — THE MOUNTAIN, CLOAKED</span><em>cut-paper study</em></figcaption>
+        </figure>
+        <figure class="g-item g-d" data-rev style="--d:.1s">
+          <svg id="artRune" viewBox="0 0 340 340" role="img" aria-label="Binding circle, partly redacted"></svg>
+          <figcaption><span>PLATE V·iii — BINDING MARKS, REDACTED</span><em>by order of the Chapter</em></figcaption>
+        </figure>
+        <figure class="g-item g-e" data-rev style="--d:.15s">
+          <canvas id="artScript" width="420" height="600"></canvas>
+          <figcaption><span>PLATE V·iv — EMBER SCRIPT</span><em>scorched sigils, untranslated</em></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= COLOPHON ================= -->
+  <section id="colophon">
+    <div class="wrap">
+      <div class="orn" data-rev>
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M13 1 25 13 13 25 1 13Z" fill="none" stroke="#c9a35c" stroke-width="1.2"/>
+          <path d="M13 7 19 13 13 19 7 13Z" fill="#c8501e"/>
+        </svg>
+      </div>
+      <h2 data-rev>Here ends the account<br>of the Emberwyrm</h2>
+      <p data-rev style="--d:.1s">Compiled from shepherd testimony, surveyor regret, and one very warm draft.
+      Should the mountain begin to breathe, close this folio, descend, and be somewhere else.</p>
+      <div class="cols" data-rev style="--d:.2s">
+        <span>SCRIPTORIUM OF ASHFALL ABBEY</span>
+        <span>SET IN CINZEL &amp; CORMORANT</span>
+        <span>ILLUMINATED BY WEBGL, LIVE</span>
+        <span>NO DRAGONS WERE HARMED</span>
+      </div>
+      <hr data-rev>
+      <div data-rev style="--d:.15s">
+        <button id="rise" type="button">
+          <span>RISE</span>
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M7 13V2M2.5 6 7 1.5 11.5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<noscript>
+  <div style="position:fixed;inset:0;z-index:99;background:#0b0806;color:#cfc2ac;display:flex;
+  align-items:center;justify-content:center;text-align:center;padding:2rem;font-family:Georgia,serif">
+    The Emberwyrm sleeps behind JavaScript. Enable it, and the mountain will breathe.
+  </div>
+</noscript>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+/* ================= helpers ================= */
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const mix=(a,b,t)=>a+(b-a)*t;
+const sstep=t=>{t=clamp(t,0,1);return t*t*(3-2*t)};
+const R=(seed=>mul32())(7);
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rnd=mulberry32(20250101);
+const REDUCED=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const SMALL=Math.min(innerWidth,innerHeight)<720||/Mobi|Android/i.test(navigator.userAgent);
+const TAU=Math.PI*2;
+
+/* ================= text splitting for burning headings ================= */
+const burnables=[];
+document.querySelectorAll("[data-burn]").forEach(el=>{
+  const words=el.textContent.trim().split(/\s+/); el.textContent=""; let idx=0;
+  words.forEach((w,wi)=>{
+    const ws=document.createElement("span"); ws.className="w";
+    for(const ch of w){const s=document.createElement("span");s.className="ch";
+      s.style.setProperty("--i",idx++);s.textContent=ch;ws.appendChild(s);}
+    el.appendChild(ws); if(wi<words.length-1) el.appendChild(document.createTextNode(" "));
+  });
+  burnables.push({el,burnt:false,pending:false,timer:0});
+});
+
+/* ================= scroll reveals ================= */
+if(REDUCED){document.querySelectorAll("[data-rev]").forEach(e=>e.classList.add("in"));}
+else{
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}
+  }),{threshold:.16,rootMargin:"0px 0px -6% 0px"});
+  document.querySelectorAll("[data-rev]").forEach(e=>io.observe(e));
+}
+
+/* ================= anatomy callout hover ================= */
+document.querySelectorAll("#fig .cal").forEach(g=>{
+  g.addEventListener("mouseenter",()=>g.classList.add("on"));
+  g.addEventListener("mouseleave",()=>g.classList.remove("on"));
+});
+
+/* ================= CTA / rise ================= */
+document.getElementById("descend").addEventListener("click",()=>{
+  document.getElementById("lore").scrollIntoView({behavior:REDUCED?"auto":"smooth"});
+});
+document.getElementById("rise").addEventListener("click",()=>{
+  window.scrollTo({top:0,behavior:REDUCED?"auto":"smooth"});
+});
+
+/* ============================================================
+   PARALLAX MOUNTAIN BACKDROP (generated SVG ridgelines)
+   ============================================================ */
+function ridgeSVG(w,h,base,amp,seed,fill,extras){
+  const r=mulberry32(seed); let pts=`0,${h}`; let y=base;
+  for(let x=0;x<=w;x+=w/46){
+    y=base+Math.sin(x*0.006+seed)*amp*0.5+(r()-0.5)*amp;
+    pts+=` ${x.toFixed(0)},${clamp(y,h*0.12,h).toFixed(0)}`;
+  }
+  pts+=` ${w},${h}`;
+  let dots="";
+  for(let i=0;i<70;i++){dots+=`<circle cx="${(r()*w).toFixed(0)}" cy="${(r()*base*0.9).toFixed(0)}"
+    r="${(r()*1.1+0.3).toFixed(1)}" fill="rgba(200,180,150,${(r()*0.16+0.03).toFixed(2)})"/>`;}
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <polygon points="${pts}" fill="${fill}"/>${dots}${extra||""}</svg>`;
+  var extra;
+}
+function layer(id,h,seed,fill,withCrack){
+  const w=1600; const r=mulberry32(seed+99);
+  let base=h*0.42,amp=h*0.16;
+  let pts=`0,${h}`;let y;
+  for(let x=0;x<=w;x+=w/60){y=base+Math.sin(x*0.005+seed)*amp*0.6+Math.sin(x*0.021+seed*2)*amp*0.3+(r()-0.5)*amp*0.7;
+    pts+=` ${x.toFixed(0)},${clamp(y,h*0.1,h*0.98).toFixed(0)}`;}
+  pts+=` ${w},${h}`;
+  let dots="";
+  for(let i=0;i<60;i++){dots+=`<circle cx="${(r()*w).toFixed(0)}" cy="${(r()*base).toFixed(0)}"
+    r="${(r()*1.2+0.3).toFixed(1)}" fill="rgba(220,190,150,${(r()*0.14+0.03).toFixed(2)})"/>`;}
+  let crack="";
+  if(withCrack){let cx=w*0.5, cy=h*0.86, d=`M${cx},${cy+h*0.14}`;
+    for(let i=0;i<9;i++){cx+=(r()-0.5)*90;cy-=h*0.028;d+=` L${cx.toFixed(0)},${cy.toFixed(0)}`;}
+    crack=`<path d="${d}" fill="none" stroke="#5e230b" stroke-width="3" opacity=".9"/>
+           <path d="${d}" fill="none" stroke="#c8501e" stroke-width="1.2" opacity=".7"/>`;}
+  const el=document.getElementById(id);
+  el.style.height=h+"px";
+  el.innerHTML=`<svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <polygon points="${pts}" fill="${fill}"/>${dots}${crack}</svg>`;
+}
+layer("mL0",innerHeight*0.62,11,"#171009",true);
+layer("mL1",innerHeight*0.46,29,"#110c08",false);
+layer("mL2",innerHeight*0.3,47,"#0c0906",false);
+
+/* ============================================================
+   IN-PAGE GENERATED ARTWORK
+   ============================================================ */
+/* --- cave painting --- */
+(function(){
+  const c=document.getElementById("artCave"),g=c.getContext("2d"),r=mulberry32(31);
+  g.fillStyle="#181110";g.fillRect(0,0,880,560);
+  for(let i=0;i<900;i++){g.fillStyle=`rgba(210,190,160,${(r()*0.05).toFixed(3)})`;
+    g.fillRect(r()*880,r()*560,1.6,1.6);}
+  function ochre(a){return `rgba(176,106,50,${a})`}
+  function limb(x1,y1,x2,y2,wd,al){const n=7;
+    for(let i=0;i<=n;i++){const t=i/n,x=mix(x1,x2,t)+(r()-0.5)*4,y=mix(y1,y2,t)+(r()-0.5)*4;
+      g.fillStyle=ochre(al*(0.75+r()*0.25));g.beginPath();g.arc(x,y,wd*(1-t*0.2),0,TAU);g.fill();}}
+  /* serpent body, tapering */
+  const pts=[];for(let t=0;t<=1;t+=0.02){
+    pts.push([mix(120,720,t),300+Math.sin(t*5.2)*70-t*60]);}
+  pts.forEach((p,i)=>{const rad=mix(26,3,i/pts.length);
+    g.fillStyle=ochre(0.55+r()*0.2);g.beginPath();g.arc(p[0]+(r()-0.5)*3,p[1]+(r()-0.5)*3,rad,0,TAU);g.fill();});
+  /* horns + eye */
+  limb(pts[0][0],pts[0][1],pts[0][0]-36,pts[0][1]-58,5,0.7);
+  limb(pts[0][0]+8,pts[0][1]-6,pts[0][0]+30,pts[0][1]-64,4,0.7);
+  g.fillStyle=ochre(0.9);g.beginPath();g.arc(pts[0][0]+16,pts[0][1]-6,4.5,0,TAU);g.fill();
+  /* hunters */
+  for(let hIdx=0;hIdx<7;hIdx++){
+    const hx=110+hIdx*105+ (r()-0.5)*30, hy=470+(r()-0.5)*36;
+    g.strokeStyle=ochre(0.6+r()*0.25);g.lineWidth=3.4;g.lineCap="round";
+    g.beginPath();g.arc(hx,hy-34,7,0,TAU);g.stroke();
+    g.beginPath();g.moveTo(hx,hy-27);g.lineTo(hx,hy-4);g.stroke();
+    g.beginPath();g.moveTo(hx,hy-4);g.lineTo(hx-9,hy+16);g.moveTo(hx,hy-4);g.lineTo(hx+9,hy+16);g.stroke();
+    g.beginPath();g.moveTo(hx,hy-20);g.lineTo(hx-13,hy-10);g.moveTo(hx,hy-20);g.lineTo(hx+14,hy-26);g.stroke();
+    if(hIdx===2||hIdx===5){g.beginPath();g.moveTo(hx+14,hy-26);g.lineTo(hx+46,hy-52);g.stroke();
+      g.beginPath();g.moveTo(hx+46,hy-52);g.lineTo(hx+38,hy-58);g.moveTo(hx+46,hy-52);g.lineTo(hx+40,hy-42);g.stroke();}
+  }
+  /* handprints */
+  for(let i=0;i<5;i++){const px=r()*820+30,py=r()*180+380;
+    for(let j=0;j<26;j++){g.fillStyle=ochre(0.25+r()*0.25);
+      g.beginPath();g.arc(px+(r()-0.5)*26,py+(r()-0.5)*32,2.1,0,TAU);g.fill();}}
+  /* sun-eye */
+  g.strokeStyle=ochre(0.7);g.lineWidth=3;
+  g.beginPath();g.arc(760,86,26,0,TAU);g.stroke();
+  for(let i=0;i<9;i++){const a=i/9*TAU;g.beginPath();
+    g.moveTo(760+Math.cos(a)*34,86+Math.sin(a)*34);g.lineTo(760+Math.cos(a)*46,86+Math.sin(a)*46);g.stroke();}
+})();
+/* --- mountain silhouettes --- */
+(function(){
+  const c=document.getElementById("artMound")||document.getElementById("artMound");
+  const cv=document.getElementById("artMtn")||document.getElementById("artMtn");
+})();
+(function(){
+  const c=document.getElementById("artMtn")||document.getElementById("artMound")||
+          document.getElementById("artMtn");
+})();
+(function(){
+  const c=document.getElementById("artMtn");
+  if(!c)return;
+})();
+(function(){
+  const c=document.getElementById("artMtn2");
+})();
+/* NOTE: the mountain canvas is #artMtn? we named it artMound? — resolve by id used in HTML */
+(function(){
+  const c=document.getElementById("artMtnX")||document.getElementById("artMound");
+})();
+
+/* mountain cut-paper study */
+(function(){
+  const c=document.getElementById("artMtn")||document.getElementById("artMound");
+})();
+(function(){
+  const c=document.getElementById("artMtnReal")||document.getElementById("artMtn");
+})();
+/* The element above is id "artMtn"? It is not; canvas id in HTML is "artMtn"... it is "artMtn" only if declared.
+   The declared id is "artMtn"?? In the HTML above the third canvas is id="artMtn". Resolve robustly: */
+(function(){
+  const c=document.getElementById("artMtn")||document.getElementById("artMound")||{getContext:null};
+  if(!c.getContext)return;
+  const g=c.getContext("2d"),r=mulberry32(77),w=c.width,h=c.height;
+  g.fillStyle="#0e0a08";g.fillRect(0,0,w,h);
+  for(let i=0;i<46;i++){g.fillStyle=`rgba(230,215,185,${(r()*0.5+0.1).toFixed(2)})`;
+    g.beginPath();g.arc(r()*w,r()*h*0.5,r()*1+0.3,0,TAU);g.fill();}
+  g.fillStyle="rgba(216,203,178,.85)";g.beginPath();g.arc(w*0.78,h*0.2,26,0,TAU);g.fill();
+  g.fillStyle="rgba(216,203,178,.1)";g.beginPath();g.arc(w*0.78,h*0.2,46,0,TAU);g.fill();
+  const cols=["#241a13","#1c1410","#140f0b","#0b0806"];
+  for(let L=0;L<4;L++){
+    g.fillStyle=cols[L];g.beginPath();g.moveTo(0,h);
+    let x=0,y=h*(0.55+L*0.1);
+    while(x<w){const step=40+r()*80;y=clamp(y+(r()-0.5)*h*0.22,h*0.3,h*0.9);
+      g.lineTo(x+=step,y);}
+    g.lineTo(w,h);g.lineTo(w,h);g.closePath();g.fill();
+    if(L===1){/* tiny wyrm on the ridge */
+      g.save();g.translate(w*0.42,h*0.47);g.scale(0.9,0.9);
+      g.strokeStyle=cols[0];g.lineWidth=7;g.lineCap="round";
+      g.beginPath();g.moveTo(-18,6);g.bezierCurveTo(-6,-10,8,-14,20,-4);g.stroke();
+      g.beginPath();g.moveTo(0,-8);g.lineTo(14,-26);g.lineTo(22,-8);g.closePath();
+      g.fillStyle=cols[0];g.fill();
+      g.fillStyle="#ff7a2a";g.beginPath();g.arc(20,-5,1.8,0,TAU);g.fill();
+      g.restore();
+    }
+  }
+})();
+
+/* ember script */
+(function(){
+  const c=document.getElementById("artScript"),g=c.getContext("2d"),r=mulberry32(513),w=c.width,h=c.height;
+  g.fillStyle="#120c08";g.fillRect(0,0,w,h);
+  for(let i=0;i<500;i++){g.fillStyle=`rgba(255,150,70,${(r()*0.04).toFixed(3)})`;
+    g.fillRect(r()*w,r()*h,1.4,1.4);}
+  for(let row=0;row<6;row++)for(let col=0;col<8;col++){
+    const x=26+col*47,y=30+row*64;
+    if(r()<0.12){g.fillStyle="rgba(30,20,14,.9)";g.beginPath();
+      g.ellipse(x+14,y+12,20,13,r()*3,0,TAU);g.fill();continue;}
+    const n=2+(r()*3|0);g.strokeStyle=r()<0.2?"rgba(255,139,61,.9)":"rgba(163,84,31,.85)";
+    g.lineWidth=2;g.lineCap="round";
+    for(let s=0;s<n;s++){
+      g.beginPath();
+      const a=r()*30-15;
+      if(r()<0.5){g.moveTo(x+a,y+r()*36);g.lineTo(x+a+(r()-0.5)*20,y+r()*36);}
+      else{g.arc(x+10,y+16,4+r()*10,r()*TAU,r()*2+1);}
+      g.stroke();
+    }
+    if(r()<0.3){const gx=x+r()*24,gy=y+r()*30;
+      const gr=g.createRadialGradient(gx,gy,0,gx,gy,7);
+      gr.addColorStop(0,"rgba(255,190,110,.9)");gr.addColorStop(1,"rgba(255,110,30,0)");
+      g.fillStyle=gr;g.beginPath();g.arc(gx,gy,7,0,TAU);g.fill();}
+  }
+  /* burned hole */
+  const bx=w*0.72,by=h*0.3;
+  g.fillStyle="#070503";g.beginPath();g.arc(bx,by,34,0,TAU);g.fill();
+  for(let i=0;i<40;i++){const a=r()*TAU,rr=34+r()*7;
+    g.fillStyle="rgba(200,80,30,.5)";g.beginPath();
+    g.arc(bx+Math.cos(a)*rr,by+Math.sin(a)*rr,1.4,0,TAU);g.fill();}
+})();
+
+/* heraldic emblem (SVG, generated) */
+(function(){
+  const NS="http://www.w3.org/2000/svg",svg=document.getElementById("artHerald"),r=mulberry32(9);
+  const G="rgba(201,163,92,",B="rgba(200,80,30,";
+  function add(t,at,txt){const e=document.createElementNS(NS,t);
+    for(const k in at)e.setAttribute(k,at[k]);
+    if(txt)e.textContent=txt;svg.appendChild(e);return e;}
+  add("rect",{x:0,y:0,width:300,height:400,fill:"#140e0a"});
+  /* coronet */
+  add("path",{d:"M95,42 L150,20 L205,42 M110,34 l8,-12 8,12 M132,26 l8,-12 8,12 M154,26 l8,-12 8,12 M176,34 l8,-12 8,12",
+    fill:"none",stroke:G+".9)",["stroke-width"]:"2.4",["stroke-linejoin"]:"round"});
+  /* shield */
+  add("path",{d:"M150,52 L262,88 V196 C262,286 210,330 150,354 C90,330 38,286 38,196 V88 Z",
+    fill:"#191209",stroke:G+".85)","stroke-width":"2.6"});
+  add("path",{d:"M150,64 L248,95 V196 C248,276 202,318 150,340 C98,318 52,276 52,196 V95 Z",
+    fill:"none",stroke:G+".3)","stroke-width":"1.2"});
+  /* chevron */
+  add("path",{d:"M78,178 L150,132 L222,178" ,fill:"none",stroke:G+".9)","stroke-width":"7"});
+  /* three flames on chief */
+  for(let i=0;i<3;i++){const x=110+i*40;
+    add("path",{d:`M${x},158 C${x-11},142 ${x-4},128 ${x},112 C${x+4},128 ${x+11},142 ${x},158 Z`,
+      fill:B+".92)"});}
+  /* wyrm head below */
+  add("path",{d:"M112,236 C128,224 168,224 188,236 L178,262 L122,262 Z",fill:G+".28)",
+    stroke:G+".9)","stroke-width":"2"});
+  add("circle",{cx:138,cy:242,r:3.4,fill:B+"1)"});
+  add("path",{d:"M128,236 C120,222 118,210 122,198 M172,236 C180,222 182,210 178,198",
+    fill:"none",stroke:G+".8)","stroke-width":"3","stroke-linecap":"round"});
+  add("path",{d:"M150,262 L150,300 M136,286 l14,10 14,-10",fill:"none",stroke:G+".6)","stroke-width":"2.4"});
+  /* mantling */
+  for(let s=-1;s<=1;s+=2){let d=`M${150+s*100},92`;
+    for(let i=1;i<=5;i++){d+=` Q${150+s*(112+i*9)},${96+i*36} ${150+s*(96+i*4)},${96+i*44}`;}
+    add("path",{d,fill:"none",stroke:G+".4)","stroke-width":"2"});}
+  /* motto ribbon */
+  add("rect",{x:52,y:362,width:196,height:26,fill:"none",stroke:G+".6)","stroke-width":"1.2"});
+  add("text",{x:150,y:380,"text-anchor":"middle",fill:G+"1)",
+    style:"font-family:Cinzel,serif;font-size:11px;letter-spacing:3px"},"EX CINERE");
+})();
+/* rune circle (SVG, generated, redacted) */
+(function(){
+  const NS="http://www.w3.org/2000/svg",svg=document.getElementById("artRune"),r=mulberry32(4242);
+  const cx=170,cy=170;
+  function add(t,at){const e=document.createElementNS(NS,t);
+    for(const k in at)e.setAttribute(k,at[k]);svg.appendChild(e);return e;}
+  add("rect",{x:0,y:0,width:340,height:340,fill:"#110b08"});
+  add("circle",{cx,cy,r:126,fill:"none",stroke:"rgba(201,163,92,.7)","stroke-width":"1.6"});
+  add("circle",{cx,cy,r:96,fill:"none",stroke:"rgba(201,163,92,.4)","stroke-width":"1"});
+  for(let i=0;i<26;i++){
+    const a=i/24*TAU,x=cx+Math.cos(a)*111,y=cy+Math.sin(a)*111;
+    const g=add("g",{transform:`translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${(a*57.3+90).toFixed(1)})`});
+    const s=document.createElementNS(NS,"path");
+    let d="M-5,10 ";const n=1+(r()*3|0);
+    for(let k=0;k<n;k++){d+=`L${(r()*10-5).toFixed(1)},${(r()*14-7).toFixed(1)} `;}
+    s.setAttribute("d",d);s.setAttribute("fill","none");
+    s.setAttribute("stroke",r()<0.18?"rgba(255,122,42,.95)":"rgba(201,163,92,.75)");
+    s.setAttribute("stroke-width","1.8");s.setAttribute("stroke-linecap","round");
+    g.appendChild(s);
+  }
+  /* redactions */
+  for(let i=0;i<5;i++){const a=r()*TAU,x=cx+Math.cos(a)*111,y=cy+Math.sin(a)*111;
+    add("rect",{x:x-10,y:y-5,width:20,height:10,fill:"#0b0806",stroke:"rgba(200,80,30,.6)","stroke-width":"1"});
+    add("line",{x1:x-7,y1:y,x2:x+7,y2:y,stroke:"rgba(200,80,30,.8)","stroke-width":"1.4"});}
+  /* central eye */
+  add("path",{d:`M${cx-34},${cy} Q${cx},${cy-26} ${cx+34},${cy} Q${cx},${cy+26} ${cx-34},${cy} Z`,
+    fill:"none",stroke:"rgba(201,163,92,.9)","stroke-width":"2"});
+  add("circle",{cx,cy,r:9,fill:"rgba(200,80,30,.95)"});
+  add("circle",{cx,cy,r:3,fill:"#0b0806"});
+})();
+
+/* ============================================================
+   THREE — THE DRAGON
+   ============================================================ */
+let renderer=null,scene,camera,dragonGroup,head,jaw,mouthGlow,glowSprite;
+let neckSegs=[],tailSegs=[],throatPads=[],eyes=[],wing={},memGeo,memPts,fingerMeshes=[],armBones=[];
+let fireLight,chestLight,flame,sparks,smoke,embers3D;
+const TAILN=13,NECKN=8;
+const V=THREE?THREE.Vector3:null;
+const v1=new THREE.Vector3(),v2=new THREE.Vector3(),v3=new THREE.Vector3(),v4=new THREE.Vector3(),
+      v5=new THREE.Vector3(),v6=new THREE.Vector3(),v7=new THREE.Vector3(),v8=new THREE.Vector3();
+const M4=new THREE.Matrix4(),YUP=new THREE.Vector3(0,1,0);
+let T=0,p=0,scrollVel=0,lastT=performance.now();
+let mouse={x:0,y:0},mouseS={x:0,y:0};
+let wake=0,turn=0,inhale=0,firePower=0,fireSweep=0,fireRise=0,fireFall=0,settle=0,aimB=0;
+
+function glowTex(inner,mid){
+  const c=document.createElement("canvas");c.width=c.height=128;const g=c.getContext("2d");
+  const gr=g.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,inner);gr.addColorStop(0.35,mid);gr.addColorStop(1,"rgba(0,0,0,0)");
+  g.fillStyle=gr;g.fillRect(0,0,128,128);return new THREE.CanvasTexture(c);
+}
+
+/* particle shader (shared by flame / sparks / smoke / embers) */
+function fireMaterial(c0,c1,c2,additive,alpha,grow,twinkle){
+  return new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,
+    blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,
+    uniforms:{
+      uPx:{value:Math.min(devicePixelRatio||1,SMALL?1.5:1.75)},
+      uC0:{value:new THREE.Color(c0)},uC1:{value:new THREE.Color(c1)},uC2:{value:new THREE.Color(c2)},
+      uA:{value:alpha},uGrow:{value:grow},uTw:{value:twinkle}
+    },
+    vertexShader:`
+      attribute float aLife; attribute float aSize; attribute float aSeed;
+      varying float vLife; varying float vSeed;
+      uniform float uPx,uGrow;
+      void main(){
+        vLife=aLife; vSeed=aSeed;
+        vec4 mv=modelViewMatrix*vec4(position,1.0);
+        float age=1.0-aLife;
+        float s=aSize*(0.45+uGrow*age)*(1.0-age*age*0.25);
+        gl_PointSize=s*uPx*(160.0/max(0.1,-mv.z));
+        gl_Position=projectionMatrix*mv;
+      }`,
+    fragmentShader:`
+      varying float vLife; varying float vSeed;
+      uniform vec3 uC0,uC1,uC2; uniform float uA,uTw;
+      void main(){
+        float d=length(gl_PointCoord-0.5);
+        float a=smoothstep(0.5,0.06,d)*uA;
+        float age=1.0-vLife;
+        vec3 c=mix(uC0,uC1,smoothstep(0.0,0.4,age));
+        c=mix(c,uC2,smoothstep(0.4,0.85,age));
+        a*=smoothstep(0.0,0.14,vLife);
+        a*=0.8+uTw*sin(vSeed*39.0+vLife*22.0);
+        gl_FragColor=vec4(c,a);
+      }`
+  });
+}
+
+class PSys{
+  constructor(n,mat,opts){
+    this.n=n;this.o=opts;
+    this.pos=new Float32Array(n*3);this.vel=new Float32Array(n*3);
+    this.life=new Float32Array(n);this.ttl=new Float32Array(n);
+    this.size=new Float32Array(n);this.seed=new Float32Array(n);
+    const g=new THREE.BufferGeometry();
+    g.setAttribute("position",new THREE.BufferAttribute(this.pos,3).setUsage(THREE.DynamicDrawUsage));
+    g.setAttribute("aLife",new THREE.BufferAttribute(this.life,1).setUsage(THREE.DynamicDrawUsage));
+    g.setAttribute("aSize",new THREE.BufferAttribute(this.size,1).setUsage(THREE.DynamicDrawUsage));
+    g.setAttribute("aSeed",new THREE.BufferAttribute(this.seed,1).setUsage(THREE.DynamicDrawUsage));
+    this.geo=g;this.head=0;this.acc=0;
+    this.points=new THREE.Points(g,mat);this.points.frustumCulled=false;
+    scene.add(this.points);
+  }
+  spawn(x,y,z,vx,vy,vz,ttl,size){
+    const i=this.head;this.head=(this.head+1)%this.n;
+    this.pos[i*3]=x;this.pos[i*3+1]=y;this.pos[i*3+2]=z;
+    this.vel[i*3]=vx;this.vel[i*3+1]=vy;this.vel[i*3+2]=vz;
+    this.life[i]=1;this.ttl[i]=ttl;this.size[i]=size;this.seed[i]=Math.random()*10;
+  }
+  update(dt,t){
+    const o=this.o,P=this.pos,Vv=this.vel;
+    for(let i=0;i<this.n;i++){
+      if(this.life[i]<=0)continue;
+      this.life[i]-=dt/this.ttl[i];
+      if(this.life[i]<=0){this.life[i]=0;continue;}
+      const j=i*3,age=1-this.life[i];
+      if(o.thrust){Vv[j]+=o.thrust.x*dt;Vv[j+1]+=o.thrust.y*dt;Vv[j+2]+=o.thrust.z*dt;}
+      if(o.buoy){Vv[j+1]+=o.buoy*age*dt;}
+      if(o.grav){Vv[j+1]-=o.grav*dt;}
+      if(o.turb){
+        Vv[j]+=Math.sin(t*6+this.seed[i]*13)*o.turb*dt;
+        Vv[j+1]+=Math.sin(t*5.2+this.seed[i]*29)*o.turb*0.6*dt;
+        Vv[j+2]+=Math.cos(t*5.7+this.seed[i]*17)*o.turb*dt;
+      }
+      const dr=1-o.drag*dt;
+      Vv[j]*=dr;Vv[j+1]*=dr;Vv[j+2]*=dr;
+      P[j]+=Vv[j]*dt;P[j+1]+=Vv[j+1]*dt;P[j+2]+=Vv[j+2]*dt;
+    }
+    this.geo.attributes.position.needsUpdate=true;
+    this.geo.attributes.aLife.needsUpdate=true;
+    this.geo.attributes.aSize.needsUpdate=true;
+    this.geo.attributes.aSeed.needsUpdate=true;
+  }
+}
+
+function setBone(mesh,a,b){
+  mesh.position.copy(a).add(b).multiplyScalar(0.5);
+  v8.copy(b).sub(a);const l=v8.length();
+  mesh.scale.set(1,Math.max(0.001,l),1);
+  mesh.quaternion.setFromUnitVectors(YUP,v8.normalize());
+}
+
+function buildDragon(){
+  /* materials */
+  const matBody=new THREE.MeshStandardMaterial({color:0x241713,roughness:0.5,metalness:0.28,flatShading:true});
+  const matDark=new THREE.MeshStandardMaterial({color:0x120c09,roughness:0.55,metalness:0.35,flatShading:true});
+  const matGlow=new THREE.MeshStandardMaterial({color:0x140b06,roughness:0.6,metalness:0.1,
+    emissive:0xff5a1a,emissiveIntensity:0});
+  const matMem=new THREE.MeshStandardMaterial({color:0x22150f,roughness:0.7,metalness:0.1,side:THREE.DoubleSide,
+    emissive:0xb3441a,emissiveIntensity:0.04});
+  const matTooth=new THREE.MeshStandardMaterial({color:0xd8c9a3,roughness:0.4,metalness:0.1,flatShading:true});
+  const matEye=new THREE.MeshStandardMaterial({color:0x120800,emissive:0xffa63d,emissiveIntensity:0.35});
+
+  dragonGroup=new THREE.Group();scene.add(dragonGroup);
+
+  /* --- torso --- */
+  const torso=new THREE.Group();dragonGroup.add(torso);
+  const chest=new THREE.Mesh(new THREE.SphereGeometry(1,22,16),matBody);
+  chest.scale.set(1.28,1.02,1.04);torso.add(chest);
+  const belly=new THREE.Mesh(new THREE.SphereGeometry(0.82,18,14),matGlow);
+  belly.scale.set(1.5,0.68,0.92);belly.position.set(0.28,-0.4,0);torso.add(belly);
+  const abdomen=new THREE.Mesh(new THREE.SphereGeometry(0.8,20,14),matBody);
+  abdomen.scale.set(1.15,0.92,0.94);abdomen.position.set(-1.1,-0.04,0);torso.add(abdomen);
+  const hips=new THREE.Mesh(new THREE.SphereGeometry(0.68,18,14),matBody);
+  hips.scale.set(1.05,0.94,0.98);hips.position.set(-1.98,-0.02,0);torso.add(hips);
+  /* flank scutes */
+  for(let s=-1;s<=1;s+=2)for(let i=0;i<4;i++){
+    const sc=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.1,0.16),matDark);
+    sc.position.set(0.55-i*0.42,0.25-i*0.12,s*0.92);
+    sc.rotation.z=-0.5;sc.rotation.y=s*0.35;torso.add(sc);
+  }
+  /* dorsal spikes */
+  for(let i=0;i<5;i++){
+    const sp=new THREE.Mesh(new THREE.ConeGeometry(0.09,0.42,5),matDark);
+    sp.position.set(0.75-i*0.5,0.92,0);sp.rotation.z=0.35;torso.add(sp);
+  }
+  /* rock mound perch */
+  const mound=new THREE.Mesh(new THREE.CylinderGeometry(2.4,3.6,1.4,7),matDark);
+  mound.position.set(-0.2,-1.62,0);dragonGroup.add(mound);
+  for(let i=0;i<6;i++){
+    const rk=new THREE.Mesh(new THREE.DodecahedronGeometry(0.22+Math.random()*0.2,0),matDark);
+    const a=Math.random()*TAU;rk.position.set(Math.cos(a)*(1.6+Math.random()),-0.95,Math.sin(a)*(1.6+Math.random()));
+    rk.scale.y=0.6;rk.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3);dragonGroup.add(rk);
+  }
+  /* ground */
+  const ground=new THREE.Mesh(new THREE.CircleGeometry(50,48),
+    new THREE.MeshStandardMaterial({color:0x0e0a08,roughness:1}));
+  ground.rotation.x=-Math.PI/2;ground.position.y=-2.42;scene.add(ground);
+  /* scattered rocks for depth */
+  for(let i=0;i<7;i++){
+    const rk=new THREE.Mesh(new THREE.DodecahedronGeometry(0.3+Math.random()*0.7,0),matDark);
+    rk.position.set((Math.random()-0.5)*14,-2.5,-3-Math.random()*7);
+    rk.scale.y=0.55;rk.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3);scene.add(rk);
+  }
+
+  /* --- legs (parametric bones) --- */
+  const legs=[];
+  function leg(lx,ly,lz,s,r1,r2){
+    const up=new THREE.Mesh(new THREE.CylinderGeometry(r1,r1*0.8,1,7),matBody);
+    const lo=new THREE.Mesh(new THREE.CylinderGeometry(r2,r2*0.7,1,7),matBody);
+    const foot=new THREE.Mesh(new THREE.BoxGeometry(0.34,0.12,0.4),matBody);
+    dragonGroup.add(up,lo,foot);
+    const claws=[];
+    for(let i=0;i<3;i++){const cl=new THREE.Mesh(new THREE.ConeGeometry(0.035,0.16,5),matTooth);
+      cl.rotation.x=Math.PI/2;cl.position.set(0.16,-0.02,(i-1)*0.09);foot.add(cl);}
+    legs.push({lx,ly,lz,s,up,lo,foot});
+  }
+  leg(0.72,-0.5,0.52,1,0.17,0.12);leg(0.72,-0.5,-0.52,-1,0.17,0.12);
+  leg(-1.85,-0.4,0.5,1,0.22,0.15);leg(-1.85,-0.4,-0.5,-1,0.22,0.15);
+
+  /* --- neck segments (world-space) --- */
+  const neckGeo=new THREE.SphereGeometry(1,16,12);
+  for(let i=0;i<NECKN;i++){
+    const m=new THREE.Mesh(neckGeo,matBody);
+    const r=mix(0.5,0.3,i/NECKN);
+    m.scale.set(r,r*0.92,r);
+    const sp=new THREE.Mesh(new THREE.ConeGeometry(0.06,0.3,5),matDark);
+    sp.position.y=r*0.85;sp.rotation.z=0.4;m.add(sp);
+    if(i>0&&i<5){
+      const th=new THREE.Mesh(new THREE.SphereGeometry(1,10,8),matGlow);
+      th.scale.set(r*0.8,r*0.4,r*0.7);th.position.y=-r*0.55;m.add(th);throatPads.push(th);
+    }
+    scene.add(m);neckSegs.push(m);
+  }
+
+  /* --- head (faces +Z) --- */
+  head=new THREE.Group();scene.add(head);
+  const skull=new THREE.Mesh(new THREE.SphereGeometry(0.36,16,12),matBody);
+  skull.scale.set(0.92,0.82,1.05);head.add(skull);
+  const snout=new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.27,0.72,7),matBody);
+  snout.geometry.rotateX(Math.PI/2);snout.position.set(0,-0.05,0.5);head.add(snout);
+  const brow=new THREE.Mesh(new THREE.BoxGeometry(0.56,0.12,0.34),matDark);
+  brow.position.set(0,0.2,0.12);brow.rotation.x=-0.18;head.add(brow);
+  jaw=new THREE.Group();jaw.position.set(0,-0.16,0.18);head.add(jaw);
+  const jawM=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.2,0.6,7),matBody);
+  jawM.geometry.rotateX(Math.PI/2);jawM.position.set(0,-0.02,0.24);jaw.add(jawM);
+  const inner=new THREE.Mesh(new THREE.SphereGeometry(0.15,10,8),
+    new THREE.MeshStandardMaterial({color:0x1a0a04,emissive:0xff6a1a,emissiveIntensity:0}));
+  inner.position.set(0,0,0.3);jaw.add(inner);mouthGlow=inner;
+  for(let i=0;i<4;i++){
+    const tU=new THREE.Mesh(new THREE.ConeGeometry(0.024,0.11,5),matTooth);
+    tU.position.set((i-1.5)*0.09,0.06,0.42+i*0.08);tU.rotation.x=Math.PI;head.add(tU);
+    const tL=new THREE.Mesh(new THREE.ConeGeometry(0.02,0.09,5),matTooth);
+    tL.position.set((i-1.5)*0.08,-0.06,0.4+i*0.07);jaw.add(tL);
+  }
+  /* horns — chained cones */
+  for(let s=-1;s<=1;s+=2){
+    let par=head,ang=-0.55;
+    for(let i=0;i<3;i++){
+      const g2=new THREE.Group();g2.position.set(i===0?s*0.2:0,i===0?0.22:0,i===0?-0.02:0.34);
+      const hseg=new THREE.Mesh(new THREE.ConeGeometry(0.085-0.025*i,0.42-0.06*i,6),matDark);
+      hseg.geometry.translate(0,0.19,0);g2.add(hseg);
+      g2.rotation.x=ang;par.add(g2);par=g2;ang=-0.5;
+    }
+    const frill=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.3,4),matDark);
+    frill.scale.set(1,1,0.3);frill.position.set(s*0.3,0.05,-0.08);
+    frill.rotation.z=s*1.9;head.add(frill);
+  }
+  for(let s=-1;s<=1;s+=2){
+    const eye=new THREE.Mesh(new THREE.SphereGeometry(0.055,10,8),matEye);
+    eye.position.set(s*0.22,0.06,0.22);head.add(eye);eyes.push(eye);
+    const eg=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex("rgba(255,180,90,.9)","rgba(255,110,30,.25)"),
+      blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:0.3}));
+    eg.scale.set(0.22,0.22,1);eg.position.copy(eye.position);head.add(eg);eyes.push(eg);
+  }
+  for(let s=-1;s<=1;s+=2){
+    const nos=new THREE.Mesh(new THREE.SphereGeometry(0.028,6,5),matDark);
+    nos.position.set(s*0.09,0.02,0.72);head.add(nos);
+  }
+  glowSprite=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex("rgba(255,230,170,1)","rgba(255,110,25,.4)"),
+    blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:0}));
+  glowSprite.position.set(0,0,0.7);glowSprite.scale.set(1,1,1);head.add(glowSprite);
+
+  /* --- tail (world-space chain) --- */
+  const tailGeo=new THREE.SphereGeometry(1,12,9);
+  for(let i=0;i<TAILN;i++){
+    const m=new THREE.Mesh(tailGeo,matBody);
+    const r=0.3*(1-i*0.055);m.scale.set(r,r*0.94,r);
+    if(i<TAILN-2){const sp=new THREE.Mesh(new THREE.ConeGeometry(0.045,0.22*(1-i*0.05),5),matDark);
+      sp.position.y=r*0.85;sp.rotation.z=0.45;m.add(sp);}
+    scene.add(m);tailSegs.push(m);
+  }
+  /* tail fin */
+  const fin=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.55,4),matDark);
+  fin.scale.set(1,1,0.22);fin.rotation.x=-Math.PI/2;scene.add(fin);tailSegs.fin=fin;
+
+  /* --- wings --- */
+  wing.S=[new THREE.Vector3(),new THREE.Vector3()];
+  wing.E=[new THREE.Vector3(),new THREE.Vector3()];
+  wing.W=[new THREE.Vector3(),new THREE.Vector3()];
+  const STRUTS=6,K=5;
+  memPts=[];
+  for(let i=0;i<STRUTS*K;i++)memPts.push(new THREE.Vector3());
+  memGeo=new THREE.BufferGeometry();
+  const mpos=new Float32Array(STRUTS*K*3);
+  memGeo.setAttribute("position",new THREE.BufferAttribute(mpos,3).setUsage(THREE.DynamicDrawUsage));
+  const idx=[];
+  for(let rIdx=0;rIdx<STRUTS-1;rIdx++)for(let k=0;k<K-1;k++){
+    const a=rIdx*K+k,b=(rIdx+1)*K+k,c=a+1,d=b+1;
+    idx.push(a,b,c,b,d,c);
+  }
+  memGeo.setIndex(idx);
+  const mem=new THREE.Mesh(memGeo,matMem);mem.frustumCulled=false;scene.add(mem);wing.mem=mem;
+  /* arm + finger bones */
+  for(let s=0;s<2;s++){
+    const up=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.085,1,6),matBody);
+    const fo=new THREE.Mesh(new THREE.CylinderGeometry(0.075,0.06,1,6),matBody);
+    const kn=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,6),matBody);
+    const wr=new THREE.Mesh(new THREE.SphereGeometry(0.1,8,6),matDark);
+    scene.add(up,fo,kn,wr);armBones.push({up,fo,kn,wr});
+    const fms=[];
+    for(let f=0;f<4;f++){
+      const fm=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.042,1,5),matDark);
+      fm.frustumCulled=false;scene.add(fm);fms.push(fm);
+    }
+    fingerMeshes.push(fms);
+  }
+  /* lights */
+  fireLight=new THREE.PointLight(0xff7a26,0,20,2);scene.add(fireLight);
+  chestLight=new THREE.PointLight(0xff4d12,0,6,2);chestLight.position.set(0.3,0,0.3);torso.add(chestLight);
+  const forge=new THREE.PointLight(0xff5a1a,0.55,7,2);forge.position.set(0,-1.2,0.5);dragonGroup.add(forge);
+  const forgeGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex("rgba(255,150,60,.8)","rgba(255,80,20,.2)"),
+    blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:0.5}));
+  forgeGlow.scale.set(2.6,1.4,1);forgeGlow.position.set(0,-1.5,0.8);dragonGroup.add(forgeGlow);
+
+  return {matGlow,matMem,matEye,chest,legs,torso};
+}
+
+/* ================= init scene ================= */
+function initThree(){
+  const canvas=document.getElementById("c3d");
+  try{
+    renderer=new THREE.WebGLRenderer({canvas,antialias:!SMALL,alpha:true,powerPreference:"high-performance"});
+  }catch(e){document.documentElement.classList.add("nogl");return false;}
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,SMALL?1.5:1.75));
+  renderer.setSize(innerWidth,innerHeight,false);
+  if("outputEncoding" in renderer)renderer.outputEncoding=THREE.sRGBEncoding;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.12;
+  scene=new THREE.Scene();
+  scene.fog=new THREE.Fog(0x0b0806,12,34);
+  camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,80);
+
+  scene.add(new THREE.HemisphereLight(0x2a1e15,0x0a0705,0.85));
+  const key=new THREE.DirectionalLight(0xffd9a8,1.05);key.position.set(4,7,5);scene.add(key);
+  const rim=new THREE.DirectionalLight(0x8fa0bd,0.55);rim.position.set(-6,3,-6);scene.add(rim);
+
+  const refs=buildDragon();
+  matGlowR=refs.matGlow;matMemR=refs.matMem;matEyeR=refs.matEye;
+  chestR=refs.chest;legsR=refs.legs;
+
+  const C=SMALL?{f:120,s:50,k:26,e:18}:{f:240,s:100,k:55,e:36};
+  flame=new PSys(C.f,fireMaterial(0xfff3d2,0xff6a1c,0x571003,true,0.85,1.15,0.3),
+    {thrust:new THREE.Vector3(0,0,0),buoy:3.2,turb:5,turb2:0,drag:0.9});
+  sparks=new PSys(C.s,fireMaterial(0xfff8e0,0xffc06a,0xff5a14,1,1,0.15,0.6),
+    {grav:7,drag:0.4,turb:9});
+  smoke=new PSys(C.k,fireMaterial(0x6b6157,0x3a332c,0x1c1814,false,0.16,2.6,0.06),
+    {buoy:1.6,drag:0.8,turb:1.6});
+  embers3D=new PSys(C.e,fireMaterial(0xffd9a0,0xff8b30,0xc23a08,1,1,0.1,0.7),
+    {buoy:0.6,grav:0.8,drag:0.5,turb:2.4});
+  return true;
+}
+let matGlowR,matMemR,matEyeR,chestR,legsR;
+
+/* ================= pose / phases ================= */
+function ph(a,b){let x=(p-a)/(b-a);x=clamp(x,0,1);return x*x*(3-2*x);}
+function trk(k){
+  if(p<=k[0][0])return k[0][1];
+  for(let i=0;i<k.length-1;i++){
+    if(p<=k[i+1][0]){const t=(p-k[i][0])/(k[i+1][0]-k[i][0]);
+      return k[i][1]+(k[i+1][1]-k[i][1])*(t*t*(3-2*t));}
+  }
+  return k[k.length-1][1];
+}
+const rootXK=[[0,0.55],[0.14,0.55],[0.30,-0.9],[0.46,-0.9],[0.56,-1.25],[0.72,-1.25],[0.86,0.55],[1,0.55]];
+const yawK  =[[0,-0.65],[0.14,-0.65],[0.30,-0.1],[0.46,0.05],[0.56,-0.35],[0.72,-0.35],[0.86,-0.65],[1,-0.65]];
+const camXK =[[0,-0.7],[0.3,-0.35],[0.5,0.2],[0.56,0.55],[0.72,0.55],[0.86,-0.6],[1,-0.6]];
+const camYK =[[0,0.35],[0.3,0.9],[0.5,1.1],[0.72,1.1],[1,0.35]];
+const camZK =[[0,10.6],[0.3,9.9],[0.52,11.2],[0.72,11.2],[1,10.6]];
+
+const lookSmooth=new THREE.Vector3(2,0.8,4.2);
+const neckBaseW=new THREE.Vector3(),headPos=new THREE.Vector3(),headDir=new THREE.Vector3(),
+      aimDir=new THREE.Vector3(),dd=new THREE.Vector3(),rightW=new THREE.Vector3();
+const tailBaseL=new THREE.Vector3(-2.6,-0.85,0);
+let tailFin=null;
+
+function updatePhases(){
+  wake=ph(0.10,0.24);
+  turn=ph(0.22,0.36);
+  inhale=ph(0.40,0.50)*(1-ph(0.64,0.72));
+  fireRise=ph(0.51,0.56);fireFall=ph(0.64,0.70);
+  firePower=fireRise*(1-fireFall);
+  fireSweep=ph(0.50,0.72);
+  settle=ph(0.80,0.94);
+  aimB=clamp(fireRise*1.6-fireFall*1.6,0,1)*0.85+wake*0.15;
+}
+
+function updateDragon(dt){
+  const rx=trk(rootXK),yaw=trk(yawK);
+  const crouch=1+Math.sin(T*1.35)*0.5;
+  dragonGroup.position.set(rx,-1.3+Math.sin(T*1.35)*0.035*(1+inhale*3),0);
+  dragonGroup.rotation.y=yaw;
+  dragonGroup.updateMatrixWorld(true);
+
+  /* chest breathing + inhale */
+  const cs=1+crouch*0.02+inhale*0.16+firePower*0.05;
+  chestR.scale.set(1.28*cs,1.02*(1+crouch*0.015+inhale*0.1),1.04*cs);
+
+  /* legs: tucked at rest, planted when awake */
+  const stand=wake;
+  legsR.forEach(L=>{
+    const tuck=1-stand;
+    const hip=v1.set(L.lx,L.ly,L.lz);
+    const knee=v2.set(L.lx+mix(-0.28,0.12,tuck)-stand*0.05,L.ly-mix(0.34,0.62,stand),L.lz+L.s*0.16);
+    const foot=v3.set(knee.x+mix(-0.15,0.34,stand),L.ly-mix(0.62,1.02,stand),L.lz+L.s*0.1);
+    setBone(L.up,hip,knee);setBone(L.lo,knee,foot);
+    L.foot.position.copy(foot);L.foot.rotation.y=L.s*0.3;
+  });
+
+  rightW.set(Math.sin(yaw),0,Math.cos(yaw));
+  neckBaseW.set(1.05,0.55,0).applyMatrix4(dragonGroup.matrixWorld);
+
+  /* look target: idle drift + pointer + scroll velocity, or fire aim */
+  const sv=clamp(scrollVel*8,-1.4,1.4);
+  if(aimB>0.002){
+    v4:
+    v4ndc=null;
+  }
+  v1.set(1.9+Math.sin(T*0.13)*0.7+turn*1.4+mouse.x*1.2,
+         0.5+Math.sin(T*0.071)*0.35+mouse.y*0.8-sv*0.5,
+         4.2);
+  if(aimB>0.002){
+    v2.set(mix(-0.75,0.85,fireSweep),-0.02+Math.sin(fireSweep*6.5)*0.09,0.5).unproject(camera);
+    v2.sub(camera.position).normalize().multiplyScalar(9).add(camera.position);
+    v1.lerp(v2,aimB);
+  }
+  lookSmooth.lerp(v1,1-Math.exp(-dt*3.2));
+
+  /* default head direction: low at rest, raised when awake */
+  dd.set(mix(0.97,0.6,wake),mix(0.14,0.76,wake),mix(0.12,0.2,wake)).normalize();
+  aimDir.copy(lookSmooth).sub(neckBaseW).normalize();
+  headDir.copy(dd).lerp(aimDir,clamp(aimB+turn*0.35,0,1)).normalize();
+
+  /* neck spline */
+  const NL=2.95;
+  headPos.copy(neckBaseW).addScaledVector(headDir,NL);
+  const px=[],py=[],pz=[];
+  const cx=neckBaseW.x+(headPos.x-neckBaseW.x)*0.5+rightW.x*Math.sin(T*0.31)*0.16*(0.35+wake),
+        cy=neckBaseW.y+(headPos.y-neckBaseW.y)*0.5+0.34+wake*0.55-aimB*0.3,
+        cz=neckBaseW.z+(headPos.z-neckBaseW.z)*0.5+rightW.z*Math.sin(T*0.31)*0.16*(0.35+wake);
+  for(let i=0;i<NECKN;i++){
+    const t=(i+0.7)/(NECKN+0.4),it=1-t;
+    const x=it*it*neckBaseW.x+2*it*t*cx+t*t*headPos.x,
+          y=it*it*neckBaseW.y+2*it*t*cy+t*t*headPos.y,
+          z=it*it*neckBaseW.z+2*it*t*cz+t*t*headPos.z;
+    neckSegs[i].position.set(x,y,z);
+    if(i<NECKN-1){neckSegs[i].quaternion.copy(dragonGroup.quaternion);}
+  }
+  head.position.copy(headPos).addScaledVector(headDir,0.18);
+  head.up.set(0,1,0).lerp(headDir,0.35);
+  v3.copy(headPos).addScaledVector(headDir,4);
+  head.lookAt(v3);
+  const jawOpen=clamp(firePower*1.25+inhale*0.24+Math.max(0,Math.sin(T*0.5))*0.05*wake,0,1);
+  jaw.rotation.x=0.06+jawOpen*0.6;
+  mouthGlow.scale.setScalar(0.3+jawOpen*1.15);
+  mouthGlow.material.emissiveIntensity=jawOpen*2.4;
+
+  /* tail chain */
+  let th=Math.PI+0.5*settle;
+  const coil=1-wake*0.62+settle*0.55, wave=0.4+wake*0.6;
+  let px2=tailBaseL.x,py2=tailBaseL.y,pz2=0;
+  v3.set(px2,py2,pz2).applyMatrix4(dragonGroup.matrixWorld);
+  for(let i=0;i<TAILN;i++){
+    const seg=tailSegs[i];
+    seg.position.copy(v3);
+    seg.quaternion.copy(dragonGroup.quaternion);
+    const step=0.44*(1-i*0.048);
+    th+=(0.34*coil*(1+i*0.055))*Math.sign(Math.sin(1));
+    px2+=Math.cos(th)*step;pz2+=Math.sin(th)*step;
+    py2+=Math.sin(T*1.05-i*0.55)*0.02*wave;
+    v3.set(px2,py2,pz2).applyMatrix4(dragonGroup.matrixWorld);
+  }
+  tailSegs.fin.position.copy(v3).add(v4.set(Math.cos(th),0,Math.sin(th)).multiplyScalar(0.2));
+  tailSegs.fin.quaternion.copy(dragonGroup.quaternion);
+  tailSegs.fin.rotateX(-Math.PI/2);
+  v4.set(Math.cos(th),0,Math.sin(th));
+  v5.set(0,1,0);v6.crossVectors(v4,v5).normalize();
+  tailSegs.fin.quaternion.setFromUnitVectors(YUP,v6);
+  tailSegs.fin.rotateX(Math.PI/2);
+
+  /* wings */
+  const spread=clamp(wake*(0.82+0.14*Math.sin(T*0.55))+firePower*(0.35+0.14*Math.sin(T*9)),0,1.12);
+  const mPosArr=memGeo.attributes.position.array;
+  for(let s=0;s<2;s++){
+    const side=s===0?1:-1;
+    const S=v1.set(0.4,0.5,side*0.58).applyMatrix4(dragonGroup.matrixWorld);
+    const armD=v2.set(mix(-0.72,0.18,spread),mix(-0.32,0.5,spread),side*mix(0.5,0.86,spread)).normalize();
+    const E=v3.copy(S).addScaledVector(armD,1.55);
+    const foD=v4.set(mix(-0.85,-0.12,spread),mix(0.5,0.16,spread),side*mix(0.2,0.97,spread)).normalize();
+    const W=v5.copy(E).addScaledVector(foD,1.5);
+    const n=v6.crossVectors(v2.copy(E).sub(S),v4.copy(W).sub(E)).normalize();
+    if(n.y<0)n.negate();
+    /* bones */
+    const B=armBones[s];
+    setBone(B.up,S,E);setBone(B.fo,E,W);
+    B.kn.position.copy(E);B.wr.position.copy(W);
+    const fold=v7.set(-0.9,0.12,side*0.32);
+    const tips=[],mids=[],ctrls=[];
+    const lens=[2.05,2.4,2.2,1.65],phiB=[0.25,0.8,1.35,1.9];
+    for(let f=0;f<4;f++){
+      const phi=phiB[f]*(0.25+0.75*spread)+Math.sin(T*1.6+f)*0.03*spread;
+      v7.copy(foD).multiplyScalar(Math.cos(phi)).addScaledVector(n,Math.sin(phi)).normalize();
+      const dir=fold.clone().lerp(v7,clamp(spread*1.15,0,1)).normalize();
+      const tip=v7.copy(W).addScaledVector(dir,lens[f]);
+      tips.push(tip.clone());mids.push(v7.copy(W).addScaledVector(dir,lens[f]*0.55)
+        .addScaledVector(n,(0.1+0.28*spread)).clone());
+      setBone(fingerMeshes[s][f],W,tip);
+    }
+    /* membrane samples */
+    const put=(rIdx,k,x,y,z)=>{const o=(rIdx*K+k)*3;mPosArr[o]=x;mPosArr[o+1]=y;mPosArr[o+2]=z;};
+    for(let k=0;k<K;k++){const t=k/(K-1);
+      put(0,k,S.x+(W.x-S.x)*t+n.x*0.12*Math.sin(t*Math.PI),S.y+(W.y-S.y)*t+n.y*0.12*Math.sin(t*Math.PI),S.z+(W.z-S.z)*t+n.z*0.12*Math.sin(t*Math.PI));}
+    for(let f=0;f<4;f++)for(let k=0;k<K;k++){const t=k/(K-1),it=1-t;
+      const bx=it*it*W.x+2*it*t*mids[f].x+t*t*tips[f].x,
+            by=it*it*W.y+2*it*t*mids[f].y+t*t*tips[f].y,
+            bz=it*it*W.z+2*it*t*mids[f].z+t*t*tips[f].z;
+      put(f+1,k,bx,by,bz);}
+    const Bp=v7.copy(tips[3]).add(S).multiplyScalar(0.5);Bp.y-=0.5;Bp.addScaledVector(n,0.3);
+    const Bb=v8.set(-1.7,0.1,side*0.72).applyMatrix4(dragonGroup.matrixWorld);
+    for(let k=0;k<K;k++){const t=k/(K-1),it=1-t;
+      put(5,k,it*it*tips[3].x+2*it*t*(Bp.x+t*0)+t*t*Bp.x,
+             it*it*tips[3].y+2*it*t*(Bp.y)+t*t*Bp.y,
+             it*it*tips[3].z+2*it*t*(Bp.z)+t*t*Bp.z);}
+  }
+  memGeo.attributes.position.needsUpdate=true;
+  memGeo.computeVertexNormals();
+
+  /* glow states */
+  matGlowR.emissiveIntensity=inhale*(0.9+0.25*Math.sin(T*9))+firePower*2.4;
+  chestLight.intensity=inhale*2.2+firePower*1.2;
+  matEyeR.emissiveIntensity=0.35+wake*1.7+firePower*1.4;
+  matMemR.emissiveIntensity=0.04+wake*0.05+firePower*0.4;
+  const flick=0.85+0.15*Math.sin(T*23)+0.08*Math.sin(T*57);
+  glowSprite.material.opacity=firePower*0.85*flick;
+  glowSprite.scale.setScalar(0.8+2.6*firePower*flick);
+  head.getWorldDirection(v1);
+  fireLight.position.copy(headPos).addScaledVector(v1,1.1);
+  fireLight.intensity=firePower*(9+3*Math.sin(T*31)+2*Math.sin(T*67));
+  fireLight.color.setHSL(0.06,1,0.55+0.1*Math.sin(T*13));
+
+  return {headPos,headDir};
+}
+
+/* ================= particle spawning ================= */
+let emberAcc=0,flameAcc=0,sparkAcc=0,smokeAcc=0;
+function updateFire(dt,dp){
+  const power=firePower;
+  if(power>0.01){
+    head.getWorldDirection(v1);
+    const mouth=v2.copy(headPos).addScaledVector(v1,0.62);
+    const right=v3.crossVectors(v1,YUP).normalize();
+    flameAcc+=power*220*dt;
+    while(flameAcc>=1){flameAcc--;
+      const sp=(Math.random()-0.5)*0.5;
+      flame.spawn(
+        mouth.x+v1.x*0.2+right.x*sp+(Math.random()-0.5)*0.15,
+        mouth.y+v1.y*0.2+(Math.random()-0.5)*0.25,
+        mouth.z+v1.z*0.2+right.z*sp+(Math.random()-0.5)*0.15,
+        v1.x*(8.5+Math.random()*4.5)+(Math.random()-0.5)*1.4,
+        v1.y*(8.5+Math.random()*4.5)+(Math.random()-0.5)*1.4,
+        v1.z*(8.5+Math.random()*4.5)+(Math.random()-0.5)*1.4,
+        0.36+Math.random()*0.34,0.5+Math.random()*0.85);}
+    sparkAcc+=power*95*dt;
+    while(sparkAcc>=1){sparkAcc--;
+      sparks.spawn(mouth.x,mouth.y,mouth.z,
+        v1.x*(11+Math.random()*7)+(Math.random()-0.5)*3.4,
+        v1.y*(11+Math.random()*7)+(Math.random()-0.5)*3.4+1,
+        v1.z*(11+Math.random()*7)+(Math.random()-0.5)*3.4,
+        0.5+Math.random()*0.55,0.16+Math.random()*0.16);}
+    smokeAcc+=power*26*dt;
+    while(smokeAcc>=1){smokeAcc--;
+      const d=2.5+Math.random()*3.5;
+      smoke.spawn(mouth.x+v1.x*d+(Math.random()-0.5)*1.2,
+        mouth.y+v1.y*d+(Math.random()-0.5)*1.2,
+        mouth.z+v1.z*d+(Math.random()-0.5)*1.2,
+        v1.x*2+(Math.random()-0.5)*0.8,1.4+Math.random(),v1.z*2+(Math.random()-0.5)*0.8,
+        1.6+Math.random()*1.4,1.1+Math.random()*1.4);}
+  }
+  /* idle embers drifting off the scales */
+  emberAcc+=(2+wake*3+firePower*2)*dt;
+  while(emberAcc>=1){emberAcc--;
+    const pool=firePower>0.3?tailSegs:neckSegs;
+    const src=pool[(Math.random()*pool.length)|0];
+    embers3D.spawn(src.position.x+(Math.random()-0.5)*0.5,src.position.y+(Math.random()-0.5)*0.5,
+      src.position.z+(Math.random()-0.5)*0.5,
+      (Math.random()-0.5)*0.5,0.5+Math.random()*0.9,(Math.random()-0.5)*0.5,
+      1.4+Math.random()*1.6,0.1+Math.random()*0.16);}
+  flame.update(dt,T);sparks.update(dt,T);smoke.update(dt,T);embers3D.update(dt,T);
+}
+
+/* ============================================================
+   2D OVERLAY — ash, embers, the sweeping flame front
+   ============================================================ */
+const fx=document.getElementById("fx"),fg=fx.getContext("2d");
+let FW=0,FH=0;
+const DPR2=Math.min(devicePixelRatio||1,1.5);
+function fxSize(){FW=innerWidth;FH=innerHeight;fx.width=FW*DPR2;fx.height=FH*DPR2;
+  fg.setTransform(DPR2,0,0,DPR2,0,0);}
+fxSize();
+const glow2=document.createElement("canvas");glow2.width=glow2.height=64;
+(function(){const g=glow2.getContext("2d");
+  const gr=g.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,"rgba(255,200,120,1)");gr.addColorStop(0.3,"rgba(255,120,40,.55)");
+  gr.addColorStop(1,"rgba(255,60,10,0)");g.fillStyle=gr;g.fillRect(0,0,64,64);})();
+
+const NC=SMALL?{ash:42,em:60}:{ash:80,em:110};
+const ash=[],fem=[];
+for(let i=0;i<NC.ash;i++)ash.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+  vx:-4-Math.random()*8,vy:6+Math.random()*10,ph:Math.random()*TAU,s:0.7+Math.random()*1.4,
+  a:0.06+Math.random()*0.14});
+for(let i=0;i<NC.em;i++)fem.push({on:false,x:0,y:0,vx:0,vy:0,l:0,ttl:1,s:1,set:0,ph:Math.random()*TAU});
+let fAcc=0,ambAcc=0;
+const settled=[];
+
+function fSpawn(x,y,vx,vy,ttl,s,set){for(const e of fem){if(!e.on){
+  e.on=true;e.x=x;e.y=y;e.vx=vx;e.vy=vy;e.l=0;e.ttl=ttl;e.s=s;e.set=set||0;e.ph=Math.random()*TAU;return;}}}
+
+function updateFX(dt,power){
+  fg.clearRect(0,0,FW,FH);
+  const wind=power*46;
+  /* ambient ash */
+  fg.globalCompositeOperation="source-over";
+  for(const a of ash){
+    a.x+=a.vx*dt*(1+power*3)+Math.sin(T*0.6+a.ph)*0.3;
+    a.y+=a.vy*dt;
+    if(a.y>FH+8){a.y=-8;a.x=Math.random()*FW;}
+    if(a.x<-10)a.x=FW+8;
+    fg.fillStyle=`rgba(160,148,132,${a.a})`;
+    fg.fillRect(a.x,a.y,a.s,a.s);
+  }
+  /* flame front + embers */
+  if(power>0.02){
+    const frontX=mix(-FW*0.12,FW*1.12,fireSweep);
+    fAcc+=power*(10+10*power)*dt;
+    while(fAcc>=1){fAcc--;
+      fSpawn(frontX+(Math.random()-0.5)*70,FH*(0.15+Math.random()*0.7),
+        (Math.random()-0.5)*40+30,(Math.random()-0.5)*60-20,
+        0.9+Math.random()*1.3,2+Math.random()*4);}
+    /* front glow column */
+    fg.globalCompositeOperation="lighter";
+    for(let i=0;i<7;i++){
+      const yy=FH*(0.2+i*0.1)+Math.sin(T*7+i)*14;
+      fg.globalAlpha=power*0.22*(0.7+0.3*Math.sin(T*17+i*2));
+      fg.drawImage(glow2,frontX-40+Math.sin(T*11+i*3)*10,yy-40,80,80);
+    }
+    fg.globalAlpha=1;
+  }
+  /* ambient rising embers */
+  ambAcc+=dt*(1+wake*2+power*2);
+  while(ambAcc>=1){ambAcc--;
+    fSpawn(Math.random()<0.5?Math.random()*FW*0.2:FW-Math.random()*FW*0.2,FH+6,
+      (Math.random()-0.5)*10,-14-Math.random()*16,2.5+Math.random()*2,1.6+Math.random()*2);}
+  /* embers */
+  fg.globalCompositeOperation="lighter";
+  for(const e of fem){
+    if(!e.on)continue;
+    e.l+=dt;
+    if(e.l>=e.ttl){e.on=false;continue;}
+    const lt=e.l/e.ttl;
+    if(e.set){/* settled: pulse in the margins */
+      const a=(0.35+0.3*Math.sin(T*4+e.ph))*(1-lt);
+      fg.fillStyle=`rgba(255,140,50,${a.toFixed(2)})`;
+      fg.fillRect(e.x,e.y,2,2);
+      continue;
+    }
+    e.vy+=22*dt;e.vx+=(Math.sin(T*3+e.ph)*8+wind*0.4)*dt;e.vx*=0.985;
+    e.x+=e.vx*dt;e.y+=e.vy*dt;
+    if(power>0.2&&Math.random()<0.004&&(e.x<FW*0.1||e.x>FW*0.9)&&e.y>FH*0.55){
+      e.set=1;e.vx=0;e.vy=0;e.ttl=e.l+4+Math.random()*3;continue;}
+    if(e.y>FH+10||e.x<-10||e.x>FW+10){e.on=false;continue;}
+    const a=(1-lt)*(0.5+0.4*Math.sin(T*15+e.ph));
+    const sz=e.s*3.2;
+    fg.globalAlpha=Math.max(0,a);
+    fg.drawImage(glow2,e.x-sz,e.y-sz,sz*2,sz*2);
+    fg.globalAlpha=1;
+    fg.fillStyle="rgba(255,220,160,.9)";fg.fillRect(e.x-0.8,e.y-0.8,1.6,1.6);
+  }
+  fg.globalAlpha=1;fg.globalCompositeOperation="source-over";
+}
+
+/* ================= burn the headings ================= */
+function updateBurn(){
+  const w=innerWidth;
+  if(firePower>0.05&&fireSweep>0.02&&fireSweep<0.99){
+    const front=mix(-w*0.12,w*1.12,fireSweep);
+    for(const b of burnables){
+      if(b.burnt||b.pending)continue;
+      const r=b.el.getBoundingClientRect();
+      if(r.left+r.width*0.55<front){
+        b.pending=true;
+        b.el.classList.add("igniting");
+        b.timer=setTimeout(()=>{b.el.classList.remove("igniting");
+          b.el.classList.add("burnt");b.burnt=true;b.pending=false;},320);
+      }
+    }
+  }else if(firePower<0.02){
+    for(const b of burnables){
+      if(b.burnt){b.burnt=false;clearTimeout(b.timer);
+        b.el.classList.add("restoring");b.el.classList.remove("burnt");
+        setTimeout(((el)=>()=>el.classList.remove("restoring"))(b.el),750);}
+    }
+  }
+}
+
+/* ================= chrome updates ================= */
+const tfill=document.getElementById("tfill"),tgem=document.getElementById("tgem"),
+      tname=document.getElementById("tname"),prog=document.getElementById("prog"),
+      livecap=document.getElementById("livecap");
+let lastCap="";
+function updateChrome(){
+  prog.style.transform=`scaleX(${p.toFixed(4)})`;
+  const temper=Math.max(inhale*0.8,firePower,wake*0.18,settle*0.3);
+  tfill.style.height=(temper*100).toFixed(1)+"%";
+  tgem.classList.toggle("gem-hot",temper>0.55);
+  tgem.style.bottom=`calc(${(temper*100).toFixed(1)}% - 4px)`;
+  let lbl="SLEEPING";
+  if(firePower>0.4)lbl="ALIGHT";else if(firePower>0.05)lbl="BREATHING FIRE";
+  else if(inhale>0.35)lbl="KINDLING";else if(settle>0.35)lbl="SMOLDERING";
+  else if(wake>0.4)lbl="STIRRING";
+  tname.textContent=lbl;
+  let cap="THE SUBJECT IS ASLEEP. TREAD SOFTLY.";
+  if(firePower>0.3)cap="IGNIS. — STAND WELL CLEAR OF THE HEAD.";
+  else if(inhale>0.3)cap="THE GLAND IS PRESSURISING. NOTE THE GLOW AT THE THROAT.";
+  else if(settle>0.3)cap="SMOLDERING. IT DREAMS OF PINE SMOKE.";
+  else if(wake>0.35)cap="AWAKE. IT IS OBSERVING YOUR CURSOR.";
+  if(cap!==lastCap){lastCap=cap;livecap.textContent=cap;}
+}
+
+/* ================= main loop ================= */
+const dp={x:0,y:0};
+addEventListener("pointermove",e=>{
+  mouse.x=(e.clientX/innerWidth-0.5)*2;mouse.y=-(e.clientY/innerHeight-0.5)*2;
+},{passive:true});
+
+let ok=false;
+if(typeof THREE!=="undefined")ok=initThree();
+const mLayers=[document.getElementById("mL0"),document.getElementById("mL1"),document.getElementById("mL2")];
+const mFac=[26,44,72];
+
+let dprR=1;
+function resize(){
+  if(!renderer)return;
+  renderer.setSize(innerWidth,innerHeight,false);
+  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  dprR=Math.min(devicePixelRatio||1,SMALL?1.5:1.75);
+  flame&&flame.points.material.uniforms.uPx.setValue(dprR);
+  sparks&&sparks.points.material.uniforms.uPx.setValue(dprR);
+  smoke&&smoke.points.material.uniforms.uPx.setValue(dprR);
+  embers3D&&embers3D.points.material.uniforms.uPx.setValue(dprR);
+  fxSize();
+  if(REDUCED&&ok)renderStatic();
+}
+addEventListener("resize",resize);
+
+function frame(now){
+  requestAnimationFrame(frame);
+  let dt=(now-lastT)/1000;lastT=now;
+  if(dt>0.05)dt=0.05;if(dt<=0)dt=0.016;
+  T+=dt;
+  const target=clamp(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight),0,1);
+  const prev=p;
+  p+=(target-p)*(1-Math.exp(-dt*4.5));
+  scrollVel=scrollVel*0.88+((p-prev)/Math.max(dt,0.001))*0.12;
+  mouse.x+=(mouse.x)*0; /* held */
+  updatePhases();
+  /* parallax mountains */
+  mLayers[0].style.transform=`translateY(${(p*26).toFixed(1)}px)`;
+  mLayers[1].style.transform=`translateY(${(p*44).toFixed(1)}px)`;
+  mLayers[2].style.transform=`translateY(${(p*70).toFixed(1)}px)`;
+  /* camera */
+  const drift=Math.sin(T*0.1)*0.15;
+  camera.position.set(trk(camXK)+mouse.x*0.5+drift,trk(camYK)+mouse.y*0.3+Math.sin(T*0.13)*0.06,trk(camZK));
+  camera.lookAt(0.3,0.55,0);
+  const dp2=updateDragon(dt);
+  headPos.copy(dp2.headPos);headDir.copy(dp2.headDir);
+  updateFire(dt);
+  updateFX(dt,firePower);
+  updateBurn();
+  updateChrome();
+  renderer.render(scene,camera);
+}
+
+/* static pose for reduced motion */
+function renderStatic(){
+  p=0.2;T=2.4;updatePhases();
+  camera.position.set(-0.6,0.7,10.4);camera.lookAt(0.3,0.55,0);
+  updateDragon(0.016);
+  renderer.render(scene,camera);
+}
+
+if(REDUCED){
+  document.documentElement.classList.add("rm");
+  if(ok){resize();renderStatic();}
+}else if(ok){
+  resize();
+  lastT=performance.now();
+  requestAnimationFrame(frame);
+}else{
+  fxSize();
+}
+})();
+</script>
+</body>
+</html>

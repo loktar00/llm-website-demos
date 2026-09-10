@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Moss Notebook — a year at Fernbrook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Caveat:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ============ THE MOSS NOTEBOOK ============ */
+:root{
+  --desk:#cfc2a4;
+  --paper:#f4edda;
+  --paper2:#efe6cd;
+  --note:#f8f2e2;
+  --ink:#33312b;
+  --ink-soft:#5c5648;
+  --pencil:#8b8574;
+  --sage:#7d9a6a;
+  --moss:#a8b586;
+  --ochre:#c9a45a;
+  --rust:#b26a48;
+  --water:#7b9aa6;
+  --wobble:255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  font-size:1.12rem;line-height:1.68;color:var(--ink);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,250,235,.5), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgba(60,45,20,.28), transparent 60%),
+    var(--desk);
+  padding:clamp(1rem,3vw,3rem) 0 4rem;
+  overflow-x:hidden;
+}
+h1,h2,h3{font-weight:600}
+em{color:var(--ink-soft)}
+::selection{background:rgba(168,181,134,.55)}
+
+/* paper grain over everything */
+.grain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;opacity:.07;mix-blend-mode:multiply;z-index:60}
+
+/* ============ THE PAGE ============ */
+.page{
+  position:relative;max-width:960px;margin:0 auto;
+  background:
+    linear-gradient(175deg,#f7f1e1 0%, var(--paper) 30%, var(--paper2) 78%, #e9dfc3 100%);
+  padding:clamp(1.6rem,4.5vw,3.4rem) clamp(1.4rem,5vw,3.4rem) 2rem;
+  padding-left:clamp(2.2rem,6vw,4rem);
+  box-shadow:0 3px 20px rgba(70,58,32,.32), 0 1px 4px rgba(70,58,32,.2);
+}
+.page::after{ /* inner hand-ruled frame */
+  content:"";position:absolute;inset:9px;pointer-events:none;
+  border:1.4px solid rgba(51,49,43,.30);
+  border-radius:22px 7px 24px 9px / 9px 26px 7px 22px;
+}
+.page::before{ /* punched holes, left margin */
+  content:"";position:absolute;left:12px;top:20px;bottom:20px;width:8px;pointer-events:none;
+  background:radial-gradient(circle, rgba(94,84,60,.55) 3px, rgba(94,84,60,.18) 3.5px, transparent 4px);
+  background-size:8px 92px;background-position:center top;
+  opacity:.75;
+}
+.marginal{position:relative}
+
+/* stains */
+.stain{position:absolute;width:130px;height:130px;pointer-events:none;z-index:1;
+  background:radial-gradient(circle, transparent 52%, rgba(150,110,60,.16) 57%, rgba(150,110,60,.30) 62%, rgba(150,110,60,.10) 67%, transparent 72%);
+  transform:rotate(9deg) scaleX(1.08)}
+
+/* ============ TYPOGRAPHY PIECES ============ */
+.hand{font-family:'Caveat',cursive}
+.pg{position:absolute;top:-1.15em;right:0;font-family:'Caveat',cursive;color:var(--pencil);font-size:1.05rem}
+.sec-head{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin:0 0 .4rem}
+.sec-head h2{font-family:'IM Fell English',Georgia,serif;font-weight:400;
+  font-size:clamp(1.55rem,3.4vw,2.15rem);letter-spacing:.01em}
+.sec-head .no{font-family:'Caveat',cursive;font-size:1.5rem;color:var(--rust);line-height:1}
+.squig{width:6.4rem;height:.55rem;color:var(--pencil);flex:none;align-self:center}
+.squig path{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;opacity:.75}
+.sec-sub{font-family:'Caveat',cursive;font-size:1.28rem;color:var(--ink-soft);margin-bottom:1.6rem;transform:rotate(-.4deg)}
+section{position:relative;margin-top:3.6rem}
+section:first-of-type{margin-top:3rem}
+.prose p{max-width:62ch;margin-bottom:1.05rem}
+.prose p:first-of-type::first-letter{font-size:2.1em;font-family:'IM Fell English',serif;color:var(--rust)}
+
+/* wavy divider */
+.rule{margin:3.2rem auto;max-width:460px;color:var(--pencil)}
+.rule svg{width:100%;height:22px;display:block}
+.rule path{fill:none;stroke:currentColor;stroke-width:1.3;opacity:.6}
+.rule circle,.rule path.leaf{fill:none;stroke:currentColor;stroke-width:1.3;opacity:.85}
+.rule circle{fill:var(--moss);opacity:.5;stroke-width:1}
+
+/* ink drawing-in */
+.js .inview .dw{stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset 1.4s cubic-bezier(.45,.05,.35,1);
+  transition-delay:calc(var(--d,0)*1s)}
+.js .inview.in .dw{stroke-dashoffset:0}
+.ink{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ink.thin{stroke-width:1.3;opacity:.85}
+.ink.pencil{stroke:var(--pencil);stroke-width:1.4;opacity:.7}
+.ink.sage{stroke:var(--sage)}
+.ink.rust{stroke:var(--rust)}
+.ink.water{stroke:var(--water)}
+
+/* ============ COVER ============ */
+.cover{position:relative;padding:2.4rem 0 1rem;text-align:center}
+.cover .wash{position:absolute;inset:-1rem -2rem 0;z-index:0;pointer-events:none}
+.cover .wash svg{width:100%;height:100%}
+.cover > *{position:relative;z-index:2}
+.bloom{animation:bloom 42s ease-in-out infinite alternate;transform-origin:center}
+.bloom.b2{animation-duration:55s;animation-direction:alternate-reverse}
+@keyframes bloom{from{transform:scale(1) rotate(0deg);opacity:.8}to{transform:scale(1.05) rotate(1.6deg);opacity:1}}
+.est{font-family:'Caveat',cursive;font-size:1.25rem;color:var(--ink-soft);letter-spacing:.06em}
+h1{font-family:'IM Fell English',Georgia,serif;font-weight:400;
+  font-size:clamp(2.7rem,7.5vw,4.6rem);letter-spacing:.015em;line-height:1.05;margin:.5rem 0 .2rem}
+.flourish{width:min(430px,88%);height:auto;display:block;margin:.1rem auto 0}
+.sub{font-family:'Caveat',cursive;font-size:clamp(1.35rem,2.6vw,1.7rem);color:var(--ink-soft);margin:.9rem auto .3rem;max-width:34ch;transform:rotate(-.5deg)}
+.dates{font-size:1rem;font-style:italic;color:var(--pencil);letter-spacing:.04em}
+.cover-art{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-top:1.4rem}
+.cover-art svg{flex:1;max-width:230px;height:auto;margin:0 auto}
+.sway{transform-origin:50% 100%;animation:sway 6.5s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-2.2deg)}to{transform:rotate(2.2deg)}}
+.perched{animation:tilt 7s ease-in-out infinite alternate;transform-origin:330px 18px}
+@keyframes tilt{from{transform:rotate(-2deg)}to{transform:rotate(3deg)}}
+
+/* flying sketched bird */
+.flyer{position:absolute;top:26%;left:0;width:66px;height:auto;z-index:5;pointer-events:none;
+  opacity:.85;animation:fly 34s linear infinite;animation-delay:2s}
+.flyer .wing{transform-origin:32px 10px;animation:flap .55s ease-in-out infinite alternate}
+@keyframes flap{from{transform:rotate(20deg)}to{transform:rotate(-26deg)}}
+@keyframes fly{
+  0%{transform:translate(-120px,0) rotate(0deg)}
+  18%{transform:translate(130px,-26px) rotate(4deg)}
+  42%{transform:translate(430px,-10px) rotate(-3deg)}
+  68%{transform:translate(720px,-44px) rotate(4deg)}
+  100%{transform:translate(1060px,-18px) rotate(0deg)}
+}
+
+/* ============ TAPED NOTES ============ */
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.9rem;margin-top:1.8rem}
+.note{
+  position:relative;background:linear-gradient(160deg,#faf5e8,#f3ebd5);
+  border:1.4px solid rgba(51,49,43,.55);
+  border-radius:5px 15px 7px 17px;padding:1.25rem 1.2rem 1.2rem;
+  box-shadow:1px 3px 10px rgba(60,50,30,.15);
+  transform:rotate(var(--rot,0deg));
+  transition:transform .35s ease, box-shadow .35s ease;
+}
+.note:hover{transform:rotate(0deg) translateY(-5px);box-shadow:2px 10px 20px rgba(60,50,30,.24)}
+.note::before{ /* tape */
+  content:"";position:absolute;top:-13px;left:50%;width:92px;height:26px;
+  transform:translateX(-50%) rotate(var(--tape,-2deg));
+  background:linear-gradient(rgba(216,204,168,.72),rgba(216,204,168,.46));
+  border-left:1px dashed rgba(120,105,70,.45);border-right:1px dashed rgba(120,105,70,.45);
+}
+.note h3{font-family:'Caveat',cursive;font-weight:700;font-size:1.65rem;line-height:1.1;margin-bottom:.15rem}
+.note .months{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--rust);letter-spacing:.04em}
+.note p{font-size:1.02rem;margin-top:.55rem;color:var(--ink)}
+.note .doodle{width:150px;height:auto;display:block;margin:.7rem auto .1rem}
+.note ul{list-style:none;margin-top:.55rem;font-size:1rem}
+.note li{padding-left:1.1rem;position:relative;margin-bottom:.25rem}
+.note li::before{content:"·";position:absolute;left:.2rem;font-weight:700;color:var(--sage)}
+
+/* ============ MAP ============ */
+.mapwrap{position:relative;background:linear-gradient(165deg,#f7f1e1,#efe5cb);
+  border:1.5px solid rgba(51,49,43,.5);border-radius:14px 6px 16px 5px / 6px 15px 5px 14px;
+  padding:1rem;box-shadow:inset 0 0 40px rgba(160,135,85,.12), 1px 4px 12px rgba(60,50,30,.12)}
+.mapwrap svg{width:100%;height:auto;display:block}
+.mapwrap text{font-family:'Caveat',cursive;fill:var(--ink-soft)}
+.mnote{position:absolute;font-family:'Caveat',cursive;font-size:1.15rem;color:var(--ink-soft);
+  max-width:150px;line-height:1.15;transform:rotate(2deg)}
+.mnote svg{width:70px;height:auto;display:block;color:var(--ink-soft)}
+.mnote path{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+.mnote.near-map{top:6%;right:-8px}
+.mnote.near-spec{top:-2.4rem;right:2%;text-align:right}
+.mnote.near-spec svg{margin-left:auto;transform:scaleX(-1)}
+.mnote.near-ledger{top:-3.6rem;right:0;text-align:right}
+.mnote.near-ledger svg{margin-left:auto;transform:scaleX(-1)}
+@media (max-width:760px){.mnote{position:static;display:block;max-width:200px;margin:1rem 0 0;transform:none}
+ .mnote svg{margin:0 0 .2rem}.mnote.near-spec svg,.mnote.near-ledger svg{transform:none;margin-left:0}
+ .mnote.near-spec,.mnote.near-ledger{text-align:left}}
+
+/* ============ SPECIMENS ============ */
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1.7rem;margin-top:2rem}
+.spec{background:var(--note);border:1.4px solid rgba(51,49,43,.5);
+  border-radius:4px 12px 5px 14px;padding:.9rem .95rem 1rem;position:relative;
+  box-shadow:1px 3px 9px rgba(60,50,30,.13);transform:rotate(var(--rot,0deg));
+  transition:transform .35s ease, box-shadow .35s ease}
+.spec:hover{transform:rotate(0) translateY(-5px);box-shadow:2px 10px 18px rgba(60,50,30,.22)}
+.spec .plate{background:#fbf7ec;border:1px dashed rgba(139,133,116,.6);border-radius:3px 9px 4px 9px;
+  padding:.4rem .4rem .2rem;position:relative}
+.spec .plate svg{width:100%;height:auto;display:block}
+.spec .pin{position:absolute;top:8px;right:10px;width:9px;height:9px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #d8a875, #8a5a34 70%);box-shadow:0 2px 3px rgba(0,0,0,.3)}
+.spec .tag{display:flex;justify-content:space-between;align-items:baseline;margin-top:.7rem;
+  border-bottom:1.3px solid rgba(51,49,43,.55);padding-bottom:.35rem}
+.spec .num{font-family:'Caveat',cursive;font-size:1.15rem;color:var(--rust)}
+.spec h3{font-size:1.12rem;font-weight:600}
+.spec .lat{font-style:italic;font-size:.95rem;color:var(--sage)}
+.spec .found{font-family:'Caveat',cursive;font-size:1.08rem;color:var(--ink-soft);margin:.35rem 0 .3rem}
+.spec p{font-size:.97rem;line-height:1.5;color:var(--ink)}
+
+/* ============ FEATURED OBSERVATION ============ */
+.feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,430px);gap:2.4rem;align-items:start;margin-top:1.4rem}
+@media (max-width:820px){.feature{grid-template-columns:1fr}}
+.feature .fig{background:var(--note);border:1.4px solid rgba(51,49,43,.5);
+  border-radius:8px 14px 6px 15px;padding:1rem;box-shadow:1px 4px 12px rgba(60,50,30,.15);
+  transform:rotate(.5deg)}
+.feature .fig svg{width:100%;height:auto;display:block}
+.fcap{font-family:'Caveat',cursive;font-size:1.15rem;color:var(--ink-soft);margin-top:.7rem;text-align:center}
+.pull{font-family:'Caveat',cursive;font-size:1.7rem;line-height:1.35;color:var(--rust);
+  border-left:3px solid var(--moss);padding:.4rem 0 .4rem 1.1rem;margin:1.4rem 0;max-width:26ch;transform:rotate(-.4deg)}
+.sig-line{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--ink-soft)}
+
+/* ============ LEDGER ============ */
+.ledgerbox{background:var(--note);border:1.4px solid rgba(51,49,43,.5);
+  border-radius:5px 13px 6px 14px;padding:1.1rem 1.2rem;transform:rotate(-.3deg);
+  box-shadow:1px 3px 9px rgba(60,50,30,.13);overflow-x:auto}
+table.ledger{width:100%;border-collapse:collapse;min-width:520px}
+.ledger th{font-family:'Caveat',cursive;font-weight:600;font-size:1.22rem;text-align:left;
+  padding:.2rem .6rem .45rem;border-bottom:1.6px solid var(--ink)}
+.ledger td{padding:.48rem .6rem;border-bottom:1px dashed rgba(90,85,70,.42);font-size:1rem;vertical-align:middle}
+.ledger tr:last-child td{border-bottom:none}
+.ledger .num{font-family:'Caveat',cursive;font-size:1.18rem;white-space:nowrap}
+.ledger .wt{width:34px}
+.ledger .wt svg{width:20px;height:20px;display:block}
+.ledger .wicon path,.ledger .wicon circle{fill:none;stroke:var(--pencil);stroke-width:1.5;stroke-linecap:round}
+.ledger .note-cell{font-style:italic;color:var(--ink-soft)}
+.ledger .cross{text-decoration:line-through;text-decoration-color:var(--rust);text-decoration-thickness:1.6px}
+
+/* ============ SOUNDSCAPE ============ */
+.sounds{list-style:none;margin-top:1.4rem;max-width:640px}
+.sounds li{display:grid;grid-template-columns:92px 1fr;gap:1rem;padding:.85rem 0;
+  border-bottom:1px dashed rgba(90,85,70,.4);align-items:baseline}
+.sounds li:last-child{border-bottom:none}
+.sounds .time{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rust);white-space:nowrap}
+.sounds .desc{font-size:1.03rem}
+.sounds .desc b{font-family:'Caveat',cursive;font-size:1.25rem;font-weight:600}
+.wave{grid-column:2;width:100%;height:16px;color:var(--water)}
+.wave path{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;opacity:.75}
+@media (max-width:520px){.sounds li{grid-template-columns:1fr;gap:.15rem}.wave{grid-column:1}}
+
+/* ============ SUPPLIES ============ */
+.supplies{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.6rem;margin-top:1.6rem}
+.supplies ul{list-style:none}
+.supplies li{display:flex;align-items:baseline;gap:.7rem;padding:.42rem 0;font-family:'Caveat',cursive;
+  font-size:1.32rem;border-bottom:1px dashed rgba(90,85,70,.35)}
+.supplies .box{flex:none;width:19px;height:19px;border:1.6px solid var(--ink);display:inline-block;
+  border-radius:3px 7px 4px 6px;position:relative;top:2px;transform:rotate(-2deg);
+  box-shadow:1px 1px 0 rgba(60,50,30,.15)}
+.supplies .done .box::after{content:"✓";position:absolute;left:1px;top:-7px;font-size:1.5rem;color:var(--sage);
+  font-family:'Caveat',cursive;transform:rotate(-8deg)}
+.supplies .aside{color:var(--rust);font-size:1.05rem}
+.supplies h3{font-family:'IM Fell English',serif;font-weight:400;font-size:1.35rem;margin-bottom:.5rem;
+  display:flex;align-items:center;gap:.5rem}
+
+/* ============ ABOUT ============ */
+.about{display:grid;grid-template-columns:230px minmax(0,1fr);gap:2.2rem;align-items:center;margin-top:1.6rem}
+@media (max-width:700px){.about{grid-template-columns:1fr;justify-items:center;text-align:center}
+ .about .prose p{margin-left:auto;margin-right:auto}}
+.portrait{width:210px;height:auto;flex:none;transform:rotate(-1deg);
+  background:var(--note);border:1.4px solid rgba(51,49,43,.5);border-radius:5px 12px 6px 13px;
+  padding:.8rem;box-shadow:1px 4px 10px rgba(60,50,30,.15);position:relative}
+.portrait::before{content:"";position:absolute;top:-10px;left:50%;width:70px;height:20px;
+  transform:translateX(-50%) rotate(3deg);
+  background:linear-gradient(rgba(216,204,168,.7),rgba(216,204,168,.45));
+  border-left:1px dashed rgba(120,105,70,.4);border-right:1px dashed rgba(120,105,70,.4)}
+.portrait figcaption{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--ink-soft);text-align:center;margin-top:.3rem}
+.sig{font-family:'Caveat',cursive;font-size:2rem;color:var(--ink);transform:rotate(-2deg);display:inline-block}
+
+/* ============ FOOTER / BACK PAGE ============ */
+.backpage{position:relative;margin-top:3.8rem;padding:2.4rem 1rem 2.6rem;text-align:center;
+  border-top:1.6px solid rgba(51,49,43,.5);border-image:none}
+.backpage .fold{position:absolute;top:-1.6px;right:-1.6px;width:62px;height:62px;
+  background:linear-gradient(315deg,var(--desk) 49%, #eee4c8 50%, #d9cfae 62%, #c9bc95 100%);
+  box-shadow:-3px -3px 6px rgba(0,0,0,.07);border-radius:0 0 0 8px}
+.backpage .colophon{font-size:.98rem;font-style:italic;color:var(--ink-soft);max-width:44ch;margin:0 auto .9rem}
+.backpage .fin{font-family:'Caveat',cursive;font-size:2.2rem;color:var(--rust);transform:rotate(-2deg);display:inline-block}
+.backpage .moth{width:64px;height:auto;margin:0.7rem auto .2rem}
+.pagenum{font-family:'Caveat',cursive;color:var(--pencil);font-size:1.15rem;margin-top:.8rem;letter-spacing:.2em}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .js .inview .dw{stroke-dashoffset:0}
+  .flyer{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- shared svg defs (patterns + watercolor roughening filters) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="wc" x="-25%" y="-25%" width="150%" height="150%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.015 0.028" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="46"/>
+    </filter>
+    <filter id="wc2" x="-25%" y="-25%" width="150%" height="150%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.017" numOctaves="2" seed="21" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="38"/>
+    </filter>
+    <pattern id="hatch" width="6" height="6" patternTransform="rotate(42)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#8b8574" stroke-width="1" opacity=".5"/>
+    </pattern>
+    <pattern id="hatchSage" width="7" height="7" patternTransform="rotate(-30)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#7d9a6a" stroke-width="1" opacity=".55"/>
+    </pattern>
+    <pattern id="hatchWater" width="8" height="8" patternTransform="rotate(8)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#7b9aa6" stroke-width="1" opacity=".5"/>
+    </pattern>
+  </defs>
+</svg>
+
+<!-- paper grain -->
+<svg class="grain" aria-hidden="true">
+  <filter id="grainf"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  <rect width="100%" height="100%" filter="url(#grainf)"/>
+</svg>
+
+<div class="page">
+
+  <!-- sketched bird crossing the margin -->
+  <svg class="flyer" viewBox="0 0 64 40" aria-hidden="true">
+    <g class="ink thin">
+      <path d="M8 22 Q18 13 34 15 Q46 17 44 24 Q36 33 18 30 Q6 28 8 22 Z"/>
+      <path class="wing" d="M24 20 Q30 5 41 8"/>
+      <path d="M44 22 L53 19"/>
+      <path d="M16 30 L13 36 M25 31 L27 37"/>
+      <circle cx="40" cy="20" r="1.1" fill="var(--ink)" stroke="none"/>
+    </g>
+  </svg>
+
+  <!-- ============ COVER ============ -->
+  <header class="cover">
+    <div class="wash" aria-hidden="true">
+      <svg viewBox="0 0 900 300" preserveAspectRatio="none">
+        <ellipse class="bloom" cx="450" cy="130" rx="330" ry="95" fill="#a8b586" opacity=".20" filter="url(#wc)"/>
+        <ellipse class="bloom b2" cx="300" cy="200" rx="180" ry="70" fill="#c9a45a" opacity=".14" filter="url(#wc2)"/>
+        <ellipse class="bloom" cx="640" cy="90" rx="150" ry="60" fill="#7b9aa6" opacity=".14" filter="url(#wc)"/>
+      </svg>
+    </div>
+
+    <p class="est">field notebook · no. 3 · fernbrook valley</p>
+    <h1>The Moss Notebook</h1>
+
+    <svg class="flourish inview" viewBox="0 0 430 44" role="img" aria-label="hand-drawn flourish with a small perched bird">
+      <path class="ink dw" pathLength="1" d="M10 26 Q125 6 215 22 Q310 38 420 14"/>
+      <path class="ink dw thin" pathLength="1" style="--d:.55" d="M58 31 Q215 45 366 19" opacity=".4"/>
+      <g class="perched ink thin">
+        <path d="M331 15 q-8 -1 -8 -8 q0 -7 8 -7 q8 0 8 7 q0 8 -8 8 z"/>
+        <path d="M339 3 l7 1.5"/>
+        <circle cx="335.5" cy="1.8" r="1" fill="var(--ink)" stroke="none"/>
+        <path d="M326 15 l-4 5 M335 15 l1 6"/>
+      </g>
+    </svg>
+
+    <p class="sub">A year of forests, fungi, streams, birds &amp; other small wonders.</p>
+    <p class="dates">March 2024 — February 2025 · kept weekly · ink, water &amp; patience</p>
+
+    <div class="cover-art" aria-hidden="true">
+      <!-- toadstool -->
+      <svg viewBox="0 0 190 235">
+        <ellipse class="ink thin" cx="95" cy="214" rx="46" ry="6.5" opacity=".35"/>
+        <path d="M38 116 Q34 62 95 56 Q158 62 152 116 Q120 134 95 132 Q64 132 38 116 Z" fill="url(#hatchSage)" opacity=".6"/>
+        <path class="ink dw" pathLength="1" d="M38 116 Q34 62 95 56 Q158 62 152 116 Q120 134 95 132 Q64 132 38 116 Z"/>
+        <path class="ink thin" d="M95 60 Q97 96 95 128" opacity=".5"/>
+        <circle class="ink thin" cx="70" cy="84" r="4"/>
+        <circle class="ink thin" cx="112" cy="74" r="5.5"/>
+        <circle class="ink thin" cx="128" cy="100" r="3.4"/>
+        <circle class="ink thin" cx="58" cy="103" r="3.6"/>
+        <path class="ink dw" pathLength="1" style="--d:.5" d="M80 206 Q75 162 85 120"/>
+        <path class="ink dw" pathLength="1" style="--d:.6" d="M110 206 Q116 162 105 120"/>
+        <path class="ink dw thin" pathLength="1" style="--d:.7" d="M80 206 Q95 214 110 206"/>
+        <path class="ink thin" d="M72 176 q-8 2 -11 8 M116 160 q9 2 11 9" opacity=".6"/>
+      </svg>
+
+      <!-- fern -->
+      <svg viewBox="0 0 200 265">
+        <g class="sway">
+          <path class="ink dw" pathLength="1" d="M100 254 Q108 170 84 30"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.3" d="M96 222 q-30 -2 -44 -20"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.35" d="M96 222 q30 -4 43 -25"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.45" d="M97 190 q-28 -4 -40 -22"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.5" d="M97 190 q28 -6 39 -24"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.6" d="M96 158 q-26 -4 -36 -20"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.65" d="M96 158 q26 -6 34 -22"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.75" d="M93 126 q-22 -4 -30 -18"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.8" d="M93 126 q22 -6 29 -20"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.9" d="M89 96 q-18 -4 -24 -15"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.95" d="M89 96 q18 -6 23 -18"/>
+          <path class="ink thin dw" pathLength="1" style="--d:1.05" d="M86 68 q-14 -4 -18 -12"/>
+          <path class="ink thin dw" pathLength="1" style="--d:1.1" d="M86 68 q14 -6 17 -15"/>
+          <path class="ink thin dw" pathLength="1" style="--d:1.2" d="M84 46 q-10 -6 -10 -17 M84 46 q10 -8 8 -19"/>
+        </g>
+      </svg>
+    </div>
+  </header>
+
+  <div class="rule" aria-hidden="true">
+    <svg viewBox="0 0 600 26" preserveAspectRatio="none">
+      <path d="M0 14 Q30 8 60 14 T120 14 T180 14 T240 14 T300 14 T360 14 T420 14 T480 14 T540 14 T600 14"/>
+      <circle cx="300" cy="14" r="4"/>
+      <path class="leaf" d="M300 13 q-5 -8 -12 -8 M300 13 q5 -8 12 -8"/>
+    </svg>
+  </div>
+
+  <!-- ============ I · SEASONS ============ -->
+  <section class="marginal" id="seasons">
+    <span class="pg">p. 2</span>
+    <div class="sec-head">
+      <span class="no">i.</span>
+      <h2>Entries by Season</h2>
+      <svg class="squig" viewBox="0 0 140 10" aria-hidden="true"><path d="M2 6 Q14 2 26 6 T50 6 T74 6 T98 6 T122 6 T138 5"/></svg>
+    </div>
+    <p class="sec-sub">four seasons, one valley — pressed flat between the pages</p>
+
+    <div class="notes">
+      <article class="note" style="--rot:-.8deg; --tape:-3deg">
+        <span class="months">March — May</span>
+        <h3>Spring, kept quiet</h3>
+        <svg class="doodle" viewBox="0 0 160 120" aria-hidden="true">
+          <path class="ink" d="M12 108 Q50 84 96 40 Q112 24 126 10"/>
+          <path class="ink thin" d="M58 76 q-16 -2 -20 -14 q12 -3 20 14 Z M76 58 q-14 -2 -17 -12 q10 -3 17 12 Z"/>
+          <path class="ink thin" d="M58 76 l-8 -6 M76 58 l-7 -5"/>
+          <circle class="ink thin" cx="108" cy="36" r="4"/>
+          <circle class="ink thin" cx="118" cy="42" r="4"/>
+          <circle class="ink thin" cx="102" cy="44" r="4"/>
+          <circle class="ink thin" cx="112" cy="50" r="4"/>
+          <circle class="ink thin" cx="110" cy="42" r="2.6" fill="url(#hatch)"/>
+          <path class="ink pencil" d="M30 90 q6 -6 12 0 q-6 6 -12 0 M34 92 l-3 4"/>
+        </svg>
+        <ul>
+          <li>Wren returns to the same hedge before the hawthorn opens.</li>
+          <li>First toadstools on the old oak — I number them.</li>
+          <li>The brook runs milky; the kingfisher is already fishing.</li>
+        </ul>
+      </article>
+
+      <article class="note" style="--rot:.7deg; --tape:2deg">
+        <span class="months">June — August</span>
+        <h3>Summer, in full hum</h3>
+        <svg class="doodle" viewBox="0 0 160 120" aria-hidden="true">
+          <path class="ink pencil" stroke-dasharray="3 5" d="M16 30 Q56 8 82 42"/>
+          <ellipse class="ink" cx="102" cy="58" rx="17" ry="11" transform="rotate(-18 102 58)"/>
+          <path class="ink thin" d="M92 50 l2 16 M100 46 l2 18 M109 44 l2 17"/>
+          <circle class="ink thin" cx="119" cy="50" r="7"/>
+          <path class="ink thin" d="M124 44 q8 -4 12 2 M118 42 q2 -8 9 -9" opacity=".7"/>
+          <circle class="ink thin" cx="82" cy="52" r="6.5" opacity=".4"/>
+          <circle class="ink thin" cx="88" cy="43" r="5" opacity=".4"/>
+          <path class="ink thin" d="M88 62 l-8 8" opacity=".7"/>
+        </svg>
+        <ul>
+          <li>Longhorn on dead wood under the log pile — No. 06 below.</li>
+          <li>Heat shimmer over the bracken; the whole bank smells of resin.</li>
+          <li>One ash tree, stripped by storm on the 15th. I sketched the gap.</li>
+        </ul>
+      </article>
+
+      <article class="note" style="--rot:-.5deg; --tape:3deg">
+        <span class="months">September — November</span>
+        <h3>Autumn, let go</h3>
+        <svg class="doodle" viewBox="0 0 160 120" aria-hidden="true">
+          <path class="ink" d="M14 96 Q70 84 146 44"/>
+          <path class="ink thin" d="M52 84 C38 78 36 64 44 54 C56 62 58 74 52 84 Z M48 78 l-4 -18"/>
+          <path class="ink thin" d="M92 72 C80 66 78 54 85 45 C95 52 97 63 92 72 Z M89 66 l-4 -15"/>
+          <path class="ink thin" d="M126 60 C116 55 114 45 120 38 C128 44 130 53 126 60 Z"/>
+          <path class="ink pencil" stroke-dasharray="2 5" d="M132 58 q26 8 20 34"/>
+          <path class="ink thin" d="M148 92 C138 88 137 78 143 72 C151 78 153 87 148 92 Z" transform="rotate(30 148 84)"/>
+        </svg>
+        <ul>
+          <li>Chanterelles in the birch — the first real harvest, 6 October.</li>
+          <li>The whole river gold for eleven days. I ran out of ochre.</li>
+          <li>Owl feather under the feeder; I did not touch it. No. 02.</li>
+        </ul>
+      </article>
+
+      <article class="note" style="--rot:.9deg; --tape:-2deg">
+        <span class="months">December — February</span>
+        <h3>Winter, held breath</h3>
+        <svg class="doodle" viewBox="0 0 160 120" aria-hidden="true">
+          <path class="ink" d="M14 100 Q60 88 150 60"/>
+          <path class="ink thin" d="M60 88 q-4 -16 -14 -22 M96 76 q0 -14 10 -20"/>
+          <g fill="url(#hatch)" stroke="none" opacity=".9">
+            <circle cx="48" cy="64" r="5"/><circle cx="58" cy="59" r="6"/><circle cx="68" cy="63" r="4.5"/>
+            <circle cx="104" cy="54" r="5"/><circle cx="114" cy="50" r="5.5"/>
+          </g>
+          <path class="ink" d="M92 52 q-9 -1 -9 -9 q0 -8 9 -9 q10 -1 11 8 q1 10 -11 10 z"/>
+          <path class="ink thin" d="M103 36 l8 2 M98 43 l-2 3"/>
+          <circle class="ink thin" cx="99" cy="35" r="1" fill="var(--ink)"/>
+        </svg>
+        <ul>
+          <li>Footprints only; the forest held its breath at minus three.</li>
+          <li>Icicles on the beech — I counted four hundred, maybe more.</li>
+          <li>Year ends mid-sentence, as the best ones do.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">
+    <svg viewBox="0 0 600 26" preserveAspectRatio="none">
+      <path d="M0 14 Q30 8 60 14 T120 14 T180 14 T240 14 T300 14 T360 14 T420 14 T480 14 T540 14 T600 14"/>
+      <circle cx="300" cy="14" r="4"/>
+      <path class="leaf" d="M300 13 q-5 -8 -12 -8 M300 13 q5 -8 12 -8"/>
+    </svg>
+  </div>
+
+  <!-- ============ II · HABITAT MAP ============ -->
+  <section class="marginal" id="map">
+    <span class="pg">p. 7</span>
+    <div class="sec-head">
+      <span class="no">ii.</span>
+      <h2>The Habitat, Drawn from Memory</h2>
+      <svg class="squig" viewBox="0 0 140 10" aria-hidden="true"><path d="M2 6 Q14 2 26 6 T50 6 T74 6 T98 6 T122 6 T138 5"/></svg>
+    </div>
+    <p class="sec-sub">walked weekly; corrected with a shrug when the bracken disagrees</p>
+
+    <div class="mapwrap">
+      <div class="stain" style="top:-20px;right:14%;opacity:.8"></div>
+      <div class="mnote near-map">
+        the pond is really a<br>kettle hole, I'm<br>pretty sure
+        <svg viewBox="0 0 90 40" aria-hidden="true">
+          <path d="M84 6 Q40 10 10 30 M10 30 l12 -2 M10 30 l5 -10"/>
+        </svg>
+      </div>
+      <svg class="inview" viewBox="0 0 780 500" role="img" aria-label="hand-drawn map of Fernbrook valley with contour lines, a stream, birch tufts, a kettle pond, footpath and compass">
+        <!-- frame -->
+        <rect class="ink thin" x="14" y="14" width="752" height="472" rx="10" opacity=".5"/>
+        <rect class="ink pencil" x="20" y="20" width="740" height="460" rx="8" opacity=".3" stroke-dasharray="none"/>
+        <!-- contours -->
+        <g>
+          <path class="ink thin dw" pathLength="1" d="M110 250 Q95 175 175 140 Q270 95 360 135 Q440 170 425 250 Q410 330 300 345 Q180 355 110 250 Z"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.4" d="M150 245 Q140 190 205 165 Q280 135 345 165 Q400 195 390 250 Q378 305 295 315 Q200 322 150 245 Z"/>
+          <path class="ink thin dw" pathLength="1" style="--d:.8" d="M195 240 Q190 200 235 182 Q290 162 335 185 Q370 205 362 245 Q352 285 290 290 Q220 295 195 240 Z"/>
+          <path class="ink dw" pathLength="1" style="--d:1.2" d="M235 235 Q235 210 265 200 Q300 190 320 210 Q335 225 325 250 Q315 270 275 268 Q240 265 235 235 Z"/>
+          <text x="270" y="192" font-size="17">112 m</text>
+          <text x="146" y="230" font-size="15" opacity=".8">96</text>
+        </g>
+        <!-- stream -->
+        <g>
+          <path class="ink water dw" pathLength="1" style="--d:.6" d="M640 30 Q600 90 560 110 Q500 140 500 200 Q500 260 440 290 Q380 320 370 380 Q360 440 300 470"/>
+          <path class="ink water dw" pathLength="1" style="--d:.9" d="M655 35 Q612 95 575 118 Q515 148 515 205 Q515 262 455 295 Q395 325 385 385 Q375 445 315 475"/>
+          <path class="ink thin" stroke="#7b9aa6" d="M583 128 q6 4 12 1 M505 210 q6 4 12 1 M430 300 q6 4 12 1 M368 400 q6 4 12 1" opacity=".7"/>
+          <text transform="translate(508,236) rotate(72)" font-size="21">Fernbrook</text>
+        </g>
+        <!-- birch tufts -->
+        <g id="tuftsrc" style="display:none">
+          <path id="tuft" class="ink" stroke="#7d9a6a" d="M0 0 Q4 -16 10 -2 Q14 -18 20 -2 Q24 -14 30 0"/>
+        </g>
+        <use href="#tuft" x="150" y="180"/><use href="#tuft" x="190" y="150"/><use href="#tuft" x="250" y="130"/>
+        <use href="#tuft" x="320" y="150"/><use href="#tuft" x="370" y="190"/><use href="#tuft" x="400" y="240"/>
+        <use href="#tuft" x="150" y="300"/><use href="#tuft" x="220" y="330"/>
+        <text x="300" y="118" font-size="16" text-anchor="middle" fill="#7d9a6a">birch</text>
+        <!-- kettle pond -->
+        <g>
+          <path d="M570 392 Q566 372 592 366 Q624 360 638 378 Q646 394 622 404 Q588 410 570 392 Z" fill="url(#hatchWater)"/>
+          <path class="ink thin water" d="M570 392 Q566 372 592 366 Q624 360 638 378 Q646 394 622 404 Q588 410 570 392 Z"/>
+          <path class="ink thin" stroke="#7b9aa6" d="M588 388 q8 4 16 0 M606 398 q8 4 14 0" opacity=".8"/>
+          <text x="560" y="428" font-size="17">kettle pond</text>
+        </g>
+        <!-- footpath -->
+        <g>
+          <path class="ink thin" stroke-dasharray="1 8" stroke-width="2.4" d="M60 468 Q150 430 190 370 Q235 300 285 262"/>
+          <path class="ink" d="M48 458 l16 16 M64 458 l-16 16"/>
+          <text x="80" y="490" font-size="17">you are here (usually)</text>
+        </g>
+        <!-- compass -->
+        <g>
+          <circle class="ink thin" cx="700" cy="84" r="26"/>
+          <path d="M700 58 L709 84 L700 110 L691 84 Z" fill="url(#hatch)" class="ink thin"/>
+          <path class="ink" d="M700 58 L709 84 L700 110 L691 84 Z"/>
+          <text x="695" y="52" font-size="18">N</text>
+        </g>
+        <!-- scale -->
+        <g>
+          <path class="ink thin" d="M590 466 L700 466 M590 461 L590 471 M645 461 L645 471 M700 461 L700 471"/>
+          <text x="604" y="456" font-size="15">0</text>
+          <text x="676" y="456" font-size="15">200 m</text>
+        </g>
+        <!-- margin scrawl -->
+        <text x="34" y="44" font-size="18" fill="#8b8574" transform="rotate(-2 34 44)">drawn from memory —</text>
+        <text x="34" y="64" font-size="18" fill="#8b8574" transform="rotate(-2 34 64)">roughly honest</text>
+      </svg>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">
+    <svg viewBox="0 0 600 26" preserveAspectRatio="none">
+      <path d="M0 14 Q30 8 60 14 T120 14 T180 14 T240 14 T300 14 T360 14 T420 14 T480 14 T540 14 T600 14"/>
+      <circle cx="300" cy="14" r="4"/>
+      <path class="leaf" d="M300 13 q-5 -8 -12 -8 M300 13 q5 -8 12 -8"/>
+    </svg>
+  </div>
+
+  <!-- ============ III · SPECIMENS ============ -->
+  <section class="marginal" id="specimens">
+    <span class="pg">p. 11</span>
+    <div class="sec-head">
+      <span class="no">iii.</span>
+      <h2>Seven Specimen Notes</h2>
+      <svg class="squig" viewBox="0 0 140 10" aria-hidden="true"><path d="M2 6 Q14 2 26 6 T50 6 T74 6 T98 6 T122 6 T138 5"/></svg>
+    </div>
+    <p class="sec-sub">small citizens of the valley, drawn while they were kind enough to sit still</p>
+
+    <div class="mnote near-spec">No. 06 — I keep meaning<br>to learn its name. ask Margot.
+      <svg viewBox="0 0 90 40" aria-hidden="true">
+        <path d="M84 6 Q40 10 10 30 M10 30 l12 -2 M10 30 l5 -10"/>
+      </svg>
+    </div>
+
+    <div class="specs">
+      <!-- 01 chanterelle -->
+      <article class="spec" style="--rot:-.7deg">
+        <div class="plate"><span class="pin"></span>
+          <svg class="inview" viewBox="0 0 200 160" role="img" aria-label="chanterelle sketch">
+            <path d="M30 96 Q34 44 100 38 Q166 44 170 96 Q140 112 100 110 Q60 112 30 96 Z" fill="url(#hatchSage)" opacity=".55"/>
+            <path class="ink dw" pathLength="1" d="M30 96 Q34 44 100 38 Q166 44 170 96 Q140 112 100 110 Q60 112 30 96 Z"/>
+            <path class="ink thin" d="M100 40 Q102 76 100 108" opacity=".5"/>
+            <path class="ink thin" d="M52 62 Q74 56 82 50 M148 62 Q126 56 118 50 M60 92 Q80 88 88 84 M140 92 Q120 88 112 84"/>
+            <path class="ink dw" pathLength="1" style="--d:.4" d="M84 108 Q82 128 88 144 M116 108 Q118 128 112 144 M88 144 Q100 150 112 144"/>
+            <path class="ink pencil" d="M40 130 q14 4 26 2 M134 130 q14 4 26 2" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="tag"><span class="num">No. 01</span><h3>Chanterelle</h3></div>
+        <div class="lat">Cantharellus cibarius</div>
+        <div class="found">found: 06 Oct · in the birch, after rain</div>
+        <p>A yellow trumpet, one solid piece — no gills, only ridges. Smells of apricot. I ate two that night and regret nothing.</p>
+      </article>
+
+      <!-- 02 owl feather -->
+      <article class="spec" style="--rot:.6deg">
+        <div class="plate"><span class="pin"></span>
+          <svg class="inview" viewBox="0 0 200 160" role="img" aria-label="barred owl feather sketch">
+            <path class="ink dw" pathLength="1" d="M102 30 Q70 60 74 110 Q82 140 100 150"/>
+            <path class="ink dw" pathLength="1" style="--d:.25" d="M104 30 Q134 58 128 108 Q120 138 100 150"/>
+            <path class="ink dw" pathLength="1" style="--d:.5" d="M100 152 Q96 90 103 26"/>
+            <path class="ink thin" d="M80 70 l20 -6 M82 92 l20 -6 M88 116 l18 -6 M120 66 l-16 -5 M118 90 l-15 -5 M112 114 l-13 -5" opacity=".65"/>
+            <circle class="ink thin" cx="97" cy="80" r="5"/><circle class="ink thin" cx="101" cy="104" r="4.4"/><circle class="ink thin" cx="98" cy="126" r="3.8"/>
+          </svg>
+        </div>
+        <div class="tag"><span class="num">No. 02</span><h3>Owl Feather</h3></div>
+        <div class="lat">Strix aluco, probably</div>
+        <div class="found">found: 11 Nov · under the feeder</div>
+        <p>One feather, whole and unbroken. I did not touch it. It belongs to the sky, and to a patient thing I only ever hear.</p>
+      </article>
+
+      <!-- 03 ladybird -->
+      <article class="spec" style="--rot:-.5deg">
+        <div class="plate"><span class="pin"></span>
+          <svg class="inview" viewBox="0 0 200 160" role="img" aria-label="ladybird sketch">
+            <path d="M100 44 Q152 46 156 96 Q154 134 100 136 Q46 134 44 96 Q48 46 100 44 Z" fill="url(#hatch)" opacity=".45"/>
+            <path class="ink dw" pathLength="1" d="M100 44 Q152 46 156 96 Q154 134 100 136 Q46 134 44 96 Q48 46 100 44 Z"/>
+            <path class="ink dw thin" pathLength="1" style="--d:.4" d="M100 46 L100 134"/>
+            <circle class="ink dw" pathLength="1" style="--d:.2" cx="100" cy="36" r="13"/>
+            <path class="ink thin" d="M90 26 q-6 -8 -14 -10 M110 26 q6 -8 14 -10"/>
+            <circle class="ink thin" cx="76" cy="76" r="4.5"/><circle class="ink thin" cx="72" cy="108" r="4"/><circle class="ink thin" cx="94" cy="118" r="4.4"/>
+            <circle class="ink thin" cx="124" cy="76" r="4.5"/><circle class="ink thin" cx="128" cy="108" r="4"/><circle class="ink thin" cx="106" cy="118" r="4.4"/>
+            <path class="ink thin" d="M58 66 l-10 -4 M54 100 l-12 0 M60 122 l-10 6 M142 66 l10 -4 M146 100 l12 0 M140 122 l10 6" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="tag"><span class="num">No. 03</span><h3>Ladybird</h3></div>
+        <div class="lat">Coccinella septempunctata</div>
+        <div class="found">found: 27 May · on the nettles</div>
+        <p>Seven dots. I counted them. Twice. I trust it. It crossed my pencil and left the ink unharmed, which felt fair.</p>
+      </article>
+
+      <!-- 04 oak leaf -->
+      <article class="spec" style="--rot:.8deg">
+        <div class="plate"><span class="pin"></span>
+          <svg class="inview" viewBox="0 0 200 160" role="img" aria-label="oak leaf sketch">
+            <path d="M100 148 Q86 128 88 110 Q70 114 66 94 Q52 98 56 76 Q42 74 48 54 Q38 42 58 36 Q66 18 86 28 Q100 10 114 28 Q134 18 142 36 Q162 42 152 54 Q158 74 144 76 Q148 98 134 94 Q130 114 112 110 Q114 128 100 148 Z" fill="url(#hatchSage)" opacity=".5"/>
+            <path class="ink dw" pathLength="1" d="M100 148 Q86 128 88 110 Q70 114 66 94 Q52 98 56 76 Q42 74 48 54 Q38 42 58 36 Q66 18 86 28 Q100 10 114 28 Q134 18 142 36 Q162 42 152 54 Q158 74 144 76 Q148 98 134 94 Q130 114 112 110 Q114 128 100 148 Z"/>
+            <path class="ink thin" d="M100 146 Q103 92 101 32" opacity=".7"/>
+            <path class="ink thin" d="M100 96 L70 84 M100 96 L132 82 M100 68 L74 58 M100 68 L128 56 M100 44 L84 34 M100 44 L118 34" opacity=".55"/>
+            <path class="ink rust" d="M128 96 a10 10 0 1 0 4 -14" opacity=".8"/>
+          </svg>
+        </div>
+        <div class="tag"><span class="num">No. 04</span><h3>Oak Leaf</h3></div>
+        <div class="lat">Quercus robur</div>
+        <div class="found">found: 08 Oct · the big oak by the ford</div>
+        <p>Deep-lobed, and firm. A beetle has eaten a question mark out of it. I have left the question there.</p>
+      </article>
+
+      <!-- 05 bracken -->
+      <article class="spec" style="--rot:-.6deg">
+        <div class="plate"><span class="pin"></span>
+          <svg class="inview" viewBox="0 0 200 160" role="img" aria-label="bracken frond sketch">
+            <path class="ink dw" pathLength="1" d="M108 152 Q116 96 84 16"/>
+            <path class="ink thin dw" pathLength="1" style="--d:.3" d="M104 132 q-26 -2 -38 -18 M104 132 q24 -4 34 -20"/>
+            <path class="ink thin dw" pathLength="1" style="--d:.45" d="M102 108 q-24 -2 -34 -16 M102 108 q23 -4 31 -18"/>
+            <path class="ink thin dw" pathLength="1" style="--d:.6" d="M99 84 q-21 -2 -30 -14 M99 84 q21 -4 27 -16"/>
+            <path class="ink thin dw" pathLength="1" style="--d:.75" d="M94 58 q-17 -2 -24 -11 M94 58 q17 -4 22 -14"/>
+            <path class="ink thin dw" pathLength="1" style="--d:.9" d="M90 38 q-12 -2 -16 -8 M90 38 q12 -4 15 -10"/>
+            <path class="ink thin dw" pathLength="1" style="--d:1" d="M86 22 q-8 -2 -9 -8 M86 22 q8 -4 7 -10"/>
+            <path class="ink pencil" d="M60 148 q20 6 48 2" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="tag"><span class="num">No. 05</span><h3>Bracken Frond</h3></div>
+        <div class="lat">Pteridium aquilinum</div>
+        <div class="found">found: 30 Aug · south bank</div>
+        <p>Curls back into a tight spiral like a fern doing arithmetic. The frond unrolls all June — I marked the days. Forty-one.</p>
+      </article>
+
+      <!-- 06 longhorn -->
+      <article class="spec" style="--rot:.7deg">
+        <div class="plate"><span class="pin"></span>
+          <svg class="inview" viewBox="0 0 200 160" role="img" aria-label="longhorn beetle sketch">
+            <path d="M46 96 Q52 76 98 72 Q160 66 178 88 Q182 102 160 108 Q98 114 48 108 Q40 104 46 96 Z" fill="url(#hatch)" opacity=".55"/>
+            <path class="ink dw" pathLength="1" d="M46 96 Q52 76 98 72 Q160 66 178 88 Q182 102 160 108 Q98 114 48 108 Q40 104 46 96 Z"/>
+            <path class="ink dw thin" pathLength="1" style="--d:.35" d="M60 82 Q120 72 172 90"/>
+            <circle class="ink" cx="40" cy="96" r="11"/>
+            <path class="ink thin" d="M34 88 Q16 62 8 34 M40 84 Q28 60 30 30"/>
+            <path class="ink thin" d="M70 110 l-8 14 M100 112 l-2 16 M134 108 l6 14 M76 76 l-6 -12 M110 70 l2 -14" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="tag"><span class="num">No. 06</span><h3>Longhorn Beetle</h3></div>
+        <div class="lat">Cerambyx — (ask Margot)</div>
+        <div class="found">found: 19 Jun · under the deadwood</div>
+        <p>Horns like thin crescents; moved exactly one centimetre in the whole afternoon. I gave it the honour of this page and the debt of a name.</p>
+      </article>
+
+      <!-- 07 lichen -->
+      <article class="spec" style="--rot:-.9deg">
+        <div class="plate"><span class="pin"></span>
+          <svg class="inview" viewBox="0 0 200 160" role="img" aria-label="map lichen sketch">
+            <defs>
+              <path id="lobe" d="M100 80 Q118 50 142 58 Q154 68 140 84 Q118 96 100 80"/>
+            </defs>
+            <g fill="url(#hatchSage)" opacity=".6" stroke="none">
+              <use href="#lobe"/><use href="#lobe" transform="rotate(60 100 80)"/><use href="#lobe" transform="rotate(120 100 80)"/>
+              <use href="#lobe" transform="rotate(180 100 80)"/><use href="#lobe" transform="rotate(240 100 80)"/><use href="#lobe" transform="rotate(300 100 80)"/>
+            </g>
+            <g class="ink sage" stroke="#7d9a6a">
+              <path class="dw" pathLength="1" d="M100 80 Q118 50 142 58 Q154 68 140 84 Q118 96 100 80"/>
+              <path class="dw" pathLength="1" style="--d:.2" d="M100 80 Q118 50 142 58 Q154 68 140 84 Q118 96 100 80" transform="rotate(60 100 80)"/>
+              <path class="dw" pathLength="1" style="--d:.4" d="M100 80 Q118 50 142 58 Q154 68 140 84 Q118 96 100 80" transform="rotate(120 100 80)"/>
+              <path class="dw" pathLength="1" style="--d:.6" d="M100 80 Q118 50 142 58 Q154 68 140 84 Q118 96 100 80" transform="rotate(180 100 80)"/>
+              <path class="dw" pathLength="1" style="--d:.8" d="M100 80 Q118 50 142 58 Q154 68 140 84 Q118 96 100 80" transform="rotate(240 100 80)"/>
+              <path class="dw" pathLength="1" style="--d:1" d="M100 80 Q118 50 142 58 Q154 68 140 84 Q118 96 100 80" transform="rotate(300 100 80)"/>
+            </g>
+            <circle class="ink thin" cx="100" cy="80" r="6" fill="url(#hatch)"/>
+            <path class="ink pencil" d="M56 132 q30 8 60 2 M96 138 q30 6 56 -4" opacity=".55"/>
+          </svg>
+        </div>
+        <div class="tag"><span class="num">No. 07</span><h3>Map Lichen</h3></div>
+        <div class="lat">Rhizocarpon geographicum</div>
+        <div class="found">found: 02 Sep · the standing stone</div>
+        <p>Draws its own map of the rock — brown continents, pale inlets. Older than the stone's name. Grows one millimetre a year, I've been told. I believe it.</p>
+      </article>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">
+    <svg viewBox="0 0 600 26" preserveAspectRatio="none">
+      <path d="M0 14 Q30 8 60 14 T120 14 T180 14 T240 14 T300 14 T360 14 T420 14 T480 14 T540 14 T600 14"/>
+      <circle cx="300" cy="14" r="4"/>
+      <path class="leaf" d="M300 13 q-5 -8 -12 -8 M300 13 q5 -8 12 -8"/>
+    </svg>
+  </div>
+
+  <!-- ============ IV · FEATURED OBSERVATION ============ -->
+  <section id="observation">
+    <span class="pg">p. 12</span>
+    <div class="sec-head">
+      <span class="no">iv.</span>
+      <h2>A Featured Observation</h2>
+      <svg class="squig" viewBox="0 0 140 10" aria-hidden="true"><path d="M2 6 Q14 2 26 6 T50 6 T74 6 T98 6 T122 6 T138 5"/></svg>
+    </div>
+    <p class="sec-sub">The Kingfisher at Fernbrook — 14 April, 06:14</p>
+
+    <div class="feature">
+      <div class="prose">
+        <p>I went before the light, the way you go into a house when someone is asleep — slowly, on the far side of the doorframe. The valley was still one colour, blue-grey, and the brook was doing the only sound I know that is also a kind of silence. I had brought the notebook open and empty, which was mostly a promise and partly a dare.</p>
+        <p>Then a flash of blue, low on the far bank, no larger than a held thumb. It was gone before I could call it by anything; the stream answered with a single syllable — <em>kree</em> — and twice more, never three. The bird was a small blue promise the river keeps, and for the moment the whole morning was waiting on whether it would cash it.</p>
+        <p>It dived. Not a dive, really, a stitch — in and out of the water, and the water closed with a ring I could have measured. I counted to twelve because there is no other thing to do with twelve. Then it re-perched on the same branch, in the same tilt, and shook once with its whole body, as if to make sure it still belonged to itself.</p>
+        <div class="pull">"It dived the way one stitches a closed wound — in and out, and the water closed over it."</div>
+        <p>I wrote down the time, the temperature of the air, the fact that the willow overhanging the pool was in leaf exactly halfway, and I did not write down the nest, because the nest is not a fact I will help along. Some pages of the year I leave deliberately thin. This is one of them. I will be back before the light. The notebook will be open.</p>
+        <p class="sig-line">— W., pencil, at the ford</p>
+      </div>
+
+      <figure class="fig">
+        <svg class="inview" viewBox="0 0 560 330" role="img" aria-label="watercolour sketch of a kingfisher on a branch above a rippling stream">
+          <!-- wash of water -->
+          <rect x="0" y="204" width="560" height="126" fill="#7b9aa6" opacity=".20" filter="url(#wc)"/>
+          <rect x="0" y="230" width="560" height="100" fill="#7b9aa6" opacity=".14" filter="url(#wc2)"/>
+          <!-- reeds, swaying -->
+          <g class="sway">
+            <path class="ink thin" stroke="#7d9a6a" d="M40 316 Q42 250 34 196 M40 200 q-10 -8 -8 -20 M40 220 q-9 -7 -8 -16"/>
+            <path class="ink thin" stroke="#7d9a6a" d="M66 318 Q70 250 78 208 M78 212 q10 -8 8 -20 M74 236 q9 -6 10 -14"/>
+            <path class="ink thin" stroke="#7d9a6a" d="M92 314 Q92 262 84 226 M84 228 q-8 -8 -6 -18"/>
+          </g>
+          <!-- stones -->
+          <g>
+            <ellipse cx="170" cy="244" rx="42" ry="14" fill="url(#hatch)" class="ink thin"/>
+            <ellipse cx="248" cy="258" rx="28" ry="10" fill="url(#hatch)" class="ink thin"/>
+          </g>
+          <!-- ripples -->
+          <g class="ink thin" stroke="#7b9aa6">
+            <ellipse cx="404" cy="244" rx="18" ry="5"/>
+            <ellipse cx="404" cy="246" rx="34" ry="9" opacity=".7"/>
+            <ellipse cx="406" cy="248" rx="52" ry="13" opacity=".45"/>
+            <path d="M60 268 q10 4 22 0 q10 -4 22 0 M330 292 q10 4 22 0 q10 -4 20 0" opacity=".7"/>
+          </g>
+          <!-- branch -->
+          <path class="ink dw" pathLength="1" d="M560 148 Q480 144 400 154 Q330 162 236 156"/>
+          <path class="ink thin" d="M462 148 l-10 -16 M420 152 l8 -14 M300 158 l-12 12"/>
+          <!-- distant birds -->
+          <path class="ink pencil" d="M468 64 q7 -7 14 0 q7 -7 14 0 M430 92 q6 -6 12 0 q6 -6 12 0"/>
+          <!-- kingfisher -->
+          <g>
+            <path d="M330 154 L296 172 L304 178 L336 160 Z" fill="url(#hatch)" class="ink thin"/>
+            <path class="ink dw" pathLength="1" style="--d:.5" d="M334 158 Q352 176 376 164 Q388 152 380 134 Q370 116 346 126 Q330 136 334 158 Z"/>
+            <path d="M340 148 Q344 168 366 166 Q378 156 372 142 Q354 140 340 148 Z" fill="#c97b4a" opacity=".85" class="ink thin"/>
+            <circle class="ink dw" pathLength="1" style="--d:.35" cx="370" cy="128" r="15" fill="#4f7fa3" stroke="#33312b"/>
+            <path class="ink" d="M384 128 L436 121 L435 129 L385 138 Z"/>
+            <circle cx="374" cy="124" r="1.8" fill="#33312b"/>
+            <path class="ink thin" d="M352 140 q8 6 14 14" opacity=".5"/>
+          </g>
+          <path class="ink thin" d="M404 158 l-4 8 M416 156 l-2 8" opacity=".5"/>
+        </svg>
+        <figcaption class="fcap">fig. 12 — the fern pool, 06:14; the blue is watercolour, mixed with the last drop of dawn</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">
+    <svg viewBox="0 0 600 26" preserveAspectRatio="none">
+      <path d="M0 14 Q30 8 60 14 T120 14 T180 14 T240 14 T300 14 T360 14 T420 14 T480 14 T540 14 T600 14"/>
+      <circle cx="300" cy="14" r="4"/>
+      <path class="leaf" d="M300 13 q-5 -8 -12 -8 M300 13 q5 -8 12 -8"/>
+    </svg>
+  </div>
+
+  <!-- ============ V · WEATHER LEDGER ============ -->
+  <section class="marginal" id="weather">
+    <span class="pg">p. 19</span>
+    <div class="sec-head">
+      <span class="no">v.</span>
+      <h2>The Weather Ledger</h2>
+      <svg class="squig" viewBox="0 0 140 10" aria-hidden="true"><path d="M2 6 Q14 2 26 6 T50 6 T74 6 T98 6 T122 6 T138 5"/></svg>
+    </div>
+    <p class="sec-sub">taken at the same fence post, at the same time, whether I liked it or not</p>
+
+    <div class="mnote near-ledger">crossed out =<br>rain spoiled the ink.<br>kept anyway.
+      <svg viewBox="0 0 90 40" aria-hidden="true">
+        <path d="M84 6 Q40 10 10 30 M10 30 l12 -2 M10 30 l5 -10"/>
+      </svg>
+    </div>
+
+    <div class="ledgerbox">
+      <table class="ledger">
+        <thead>
+          <tr><th>Date</th><th>°C</th><th>Sky</th><th>Wind</th><th>Note</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">3 Mar</td><td class="num">4 / 11</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="sun"><circle cx="10" cy="10" r="4.5"/><path d="M10 1.5 v2.5 M10 16 v2.5 M1.5 10 h2.5 M16 10 h2.5 M4 4 l1.8 1.8 M14.2 14.2 L16 16 M16 4 l-1.8 1.8 M5.8 14.2 L4 16"/></svg></td>
+            <td class="num">NE 12</td><td class="note-cell">first wren at the hedge</td>
+          </tr>
+          <tr>
+            <td class="num">17 Mar</td><td class="num">6 / 13</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="partly cloudy"><circle cx="8" cy="7" r="3.2"/><path d="M2 14.5 q2 -3.5 6 -3.5 q4 -3 8 0 q3 1 2 3.5 z"/></svg></td>
+            <td class="num">W 18</td><td class="note-cell">toadstools on the old oak</td>
+          </tr>
+          <tr>
+            <td class="num">2 Apr</td><td class="num">9 / 16</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="cloud"><path d="M3 13 q2 -4 6 -4 q4 -3.5 8 0 q3 1.5 1.5 4 z M3 17 q2 -3 6 -3 q4 -2.5 7.5 0"/></svg></td>
+            <td class="num">SW 15</td><td class="note-cell">Fernbrook running milky</td>
+          </tr>
+          <tr>
+            <td class="num">14 Apr</td><td class="num">11 / 18</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="sun"><circle cx="10" cy="10" r="4.5"/><path d="M10 1.5 v2.5 M10 16 v2.5 M1.5 10 h2.5 M16 10 h2.5 M4 4 l1.8 1.8 M14.2 14.2 L16 16 M16 4 l-1.8 1.8 M5.8 14.2 L4 16"/></svg></td>
+            <td class="num">N 8</td><td class="note-cell">the kingfisher (see p. 12)</td>
+          </tr>
+          <tr>
+            <td class="num">9 May</td><td class="num">13 / 22</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="rain"><path d="M3 9 q2 -4 6 -4 q4 -3 8 0 q3 1.5 1.5 4 z"/><path d="M6 14 l-1 3 M10 14 l-1 3 M14 14 l-1 3"/></svg></td>
+            <td class="num">E 9</td><td class="note-cell cross">ink smudged — lesson learned</td>
+          </tr>
+          <tr>
+            <td class="num">21 Jun</td><td class="num">16 / 26</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="sun"><circle cx="10" cy="10" r="4.5"/><path d="M10 1.5 v2.5 M10 16 v2.5 M1.5 10 h2.5 M16 10 h2.5 M4 4 l1.8 1.8 M14.2 14.2 L16 16 M16 4 l-1.8 1.8 M5.8 14.2 L4 16"/></svg></td>
+            <td class="num">calm</td><td class="note-cell">heat shimmer over the bracken</td>
+          </tr>
+          <tr>
+            <td class="num">15 Aug</td><td class="num">15 / 24</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="cloud"><path d="M3 13 q2 -4 6 -4 q4 -3.5 8 0 q3 1.5 1.5 4 z M3 17 q2 -3 6 -3 q4 -2.5 7.5 0"/></svg></td>
+            <td class="num">SW 22</td><td class="note-cell">storm stripped one ash</td>
+          </tr>
+          <tr>
+            <td class="num">6 Oct</td><td class="num">9 / 15</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="partly cloudy"><circle cx="8" cy="7" r="3.2"/><path d="M2 14.5 q2 -3.5 6 -3.5 q4 -3 8 0 q3 1 2 3.5 z"/></svg></td>
+            <td class="num">W 14</td><td class="note-cell">leaves — the whole river is gold</td>
+          </tr>
+          <tr>
+            <td class="num">19 Dec</td><td class="num">−3 / 3</td>
+            <td class="wt"><svg class="wicon" viewBox="0 0 20 20" aria-label="snow"><path d="M10 2 v16 M3.5 6 l13 8 M16.5 6 l-13 8 M10 5 l-2.5 -2 M10 5 l2.5 -2 M10 15 l-2.5 2 M10 15 l2.5 2"/></svg></td>
+            <td class="num">NE 7</td><td class="note-cell">footprints only; held breath</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">
+    <svg viewBox="0 0 600 26" preserveAspectRatio="none">
+      <path d="M0 14 Q30 8 60 14 T120 14 T180 14 T240 14 T300 14 T360 14 T420 14 T480 14 T540 14 T600 14"/>
+      <circle cx="300" cy="14" r="4"/>
+      <path class="leaf" d="M300 13 q-5 -8 -12 -8 M300 13 q5 -8 12 -8"/>
+    </svg>
+  </div>
+
+  <!-- ============ VI · SOUNDSCAPE ============ -->
+  <section id="sounds">
+    <span class="pg">p. 23</span>
+    <div class="sec-head">
+      <span class="no">vi.</span>
+      <h2>What the Valley Sounds Like</h2>
+      <svg class="squig" viewBox="0 0 140 10" aria-hidden="true"><path d="M2 6 Q14 2 26 6 T50 6 T74 6 T98 6 T122 6 T138 5"/></svg>
+    </div>
+    <p class="sec-sub">no recorder, only ears — transcribed the next morning while it was still true</p>
+
+    <ul class="sounds">
+      <li>
+        <span class="time">05:42</span>
+        <span class="desc"><b>The wren.</b> A sound like a lit fuse, like a match struck inside a hat — thin, fast, enormous. It walks the hedge with the whole valley listening for the other one.</span>
+        <svg class="wave" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true"><path d="M0 11 Q6 1 12 11 T24 11 T36 3 T48 13 T60 11 T72 4 T84 12 T96 11 T108 8 T120 13 T132 2 T144 12 T156 11 T168 5 T180 12 T192 11 T204 10 T216 12 T228 6 T240 12 T252 11 T264 9 T276 12 T288 10 T300 11"/></svg>
+      </li>
+      <li>
+        <span class="time">07:30</span>
+        <span class="desc"><b>The kingfisher.</b> <em>Kree</em> — one syllable, twice, never three. Distant, low, and slightly amused, as if it had just heard its own name read aloud.</span>
+        <svg class="wave" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true"><path d="M0 11 L60 11 L66 2 L74 13 L82 11 L160 11 L166 3 L172 12 L180 11 L300 11"/></svg>
+      </li>
+      <li>
+        <span class="time">14:00</span>
+        <span class="desc"><b>Rain on the canopy.</b> Not a sound but a pressure — a million small fingers on the birch, the beech, the roof of the wood. Under the eaves it becomes a word, over and over, with no meaning anyone asks for.</span>
+        <svg class="wave" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 Q8 4 16 10 T32 10 T48 7 T64 12 T80 8 T96 11 T112 5 T128 11 T144 9 T160 12 T176 6 T192 11 T208 9 T224 11 T240 7 T256 11 T272 9 T288 11 T300 9"/></svg>
+      </li>
+      <li>
+        <span class="time">11:00</span>
+        <span class="desc"><b>The midday silence.</b> The loudest thing of the whole day: a single leaf striking the water. Everything else goes quiet to hear it finish.</span>
+        <svg class="wave" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true"><path d="M0 11 L132 11 L138 8 L144 13 L150 11 L300 11"/></svg>
+      </li>
+      <li>
+        <span class="time">02:15</span>
+        <span class="desc"><b>The long-eared owl.</b> <em>Hoooo.</em> Then a pause I will not count. Then <em>hoo-oo-oo-oo</em>, a staircase going down into the dark, and then, from a different tree, an answer that takes four nights to arrive.</span>
+        <svg class="wave" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12 Q20 4 40 12 Q60 14 80 12 L140 12 Q150 6 160 12 L210 12 Q230 8 250 12 T300 12"/></svg>
+      </li>
+    </ul>
+  </section>
+
+  <div class="rule" aria-hidden="true">
+    <svg viewBox="0 0 600 26" preserveAspectRatio="none">
+      <path d="M0 14 Q30 8 60 14 T120 14 T180 14 T240 14 T300 14 T360 14 T420 14 T480 14 T540 14 T600 14"/>
+      <circle cx="300" cy="14" r="4"/>
+      <path class="leaf" d="M300 13 q-5 -8 -12 -8 M300 13 q5 -8 12 -8"/>
+    </svg>
+  </div>
+
+  <!-- ============ VII · SUPPLIES ============ -->
+  <section id="supplies">
+    <span class="pg">p. 27</span>
+    <div class="sec-head">
+      <span class="no">vii.</span>
+      <h2>The Kit, Mostly</h2>
+      <svg class="squig" viewBox="0 0 140 10" aria-hidden="true"><path d="M2 6 Q14 2 26 6 T50 6 T74 6 T98 6 T122 6 T138 5"/></svg>
+    </div>
+    <p class="sec-sub">what fits in the coat pocket and survives the drizzle</p>
+
+    <div class="supplies">
+      <div>
+        <h3>In the pocket <span class="aside">— daily</span></h3>
+        <ul>
+          <li class="done"><span class="box"></span>This notebook (21&nbsp;cm, the one with the hole in the spine)</li>
+          <li class="done"><span class="box"></span>4B graphite — the soft one, it smudges and forgives</li>
+          <li class="done"><span class="box"></span>Iron gall ink, half a bottle, leaking a little, accepted</li>
+          <li class="done"><span class="box"></span>Hand lens ×10 (Margot's, lent, overdue, treasured)</li>
+          <li class="done"><span class="box"></span>Cotton swab, for pollen and for accidents</li>
+        </ul>
+      </div>
+      <div>
+        <h3>On the bench <span class="aside">— Sundays</span></h3>
+        <ul>
+          <li class="done"><span class="box"></span>Watercolour pans, five wells, ochre is running low</li>
+          <li class="done"><span class="box"></span>15&nbsp;mm round brush, the one named after the river</li>
+          <li class="done"><span class="box"></span>Soil vial with the cork that mostly works</li>
+          <li><span class="box"></span>Pencils, no eraser. (The rule is the rule.)</li>
+          <li><span class="box"></span>Compass — <span class="aside">lending back to E. next week, promised</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">
+    <svg viewBox="0 0 600 26" preserveAspectRatio="none">
+      <path d="M0 14 Q30 8 60 14 T120 14 T180 14 T240 14 T300 14 T360 14 T420 14 T480 14 T540 14 T600 14"/>
+      <circle cx="300" cy="14" r="4"/>
+      <path class="leaf" d="M300 13 q-5 -8 -12 -8 M300 13 q5 -8 12 -8"/>
+    </svg>
+  </div>
+
+  <!-- ============ VIII · ABOUT ============ -->
+  <section id="about">
+    <span class="pg">p. 31</span>
+    <div class="sec-head">
+      <span class="no">viii.</span>
+      <h2>About the Naturalist</h2>
+      <svg class="squig" viewBox="0 0 140 10" aria-hidden="true"><path d="M2 6 Q14 2 26 6 T50 6 T74 6 T98 6 T122 6 T138 5"/></svg>
+    </div>
+
+    <div class="about">
+      <figure class="portrait">
+        <svg class="inview" viewBox="0 0 200 220" role="img" aria-label="self-portrait sketch of the naturalist in a broad hat and spectacles">
+          <path class="ink dw" pathLength="1" d="M40 84 Q44 34 100 32 Q156 34 160 84 Q110 96 40 84 Z"/>
+          <path class="ink dw thin" pathLength="1" style="--d:.3" d="M30 88 Q100 106 170 88"/>
+          <path d="M52 60 Q100 46 148 60 L148 66 Q100 54 52 66 Z" fill="url(#hatch)" opacity=".7" class="ink thin"/>
+          <path class="ink dw" pathLength="1" style="--d:.5" d="M64 96 Q62 150 84 176 Q100 190 116 176 Q138 150 136 96"/>
+          <circle class="ink dw thin" pathLength="1" style="--d:.7" cx="86" cy="122" r="13"/>
+          <circle class="ink dw thin" pathLength="1" style="--d:.85" cx="118" cy="122" r="13"/>
+          <path class="ink thin" d="M99 122 h6 M73 118 l-9 -4 M131 118 l9 -4"/>
+          <circle cx="86" cy="122" r="1.6" fill="var(--ink)"/><circle cx="118" cy="122" r="1.6" fill="var(--ink)"/>
+          <path class="ink thin" d="M101 130 q2 8 -3 10 M82 158 q18 12 36 0 M88 176 q12 8 24 0" opacity=".8"/>
+          <path class="ink thin" d="M70 108 q16 4 28 2 M128 108 q-14 4 -26 2" opacity=".45"/>
+          <path class="ink thin" d="M150 190 q-8 -30 -22 -42 M50 192 q8 -28 20 -40"/>
+          <path class="ink pencil" d="M30 202 q70 12 140 0" opacity=".5"/>
+        </svg>
+        <figcaption>self-portrait, drawn at the same fence post, 2 Apr</figcaption>
+      </figure>
+
+      <div class="prose">
+        <p>I keep this notebook the way I keep most promises — a little carelessly, and entirely. I am not a scientist, though I have been called that, which is a kind of compliment that arrives with rain. I am a person who stands at the same fence post more often than most, and who has learned that the same tree gives different lessons in April than it does in January.</p>
+        <p>Everything here was drawn with a soft pencil and a bottle of ink that is slowly losing a war against the drizzle. Some of it is accurate. Some of it is what the thing looked like when I believed in it, which I have decided is also a kind of accuracy. When in doubt, I leave the margin open — the moss grows in anyway.</p>
+        <p><span class="sig">Wren Calloway</span><br><span style="font-family:'Caveat',cursive;font-size:1.15rem;color:var(--pencil)">currently: waiting for the chanterelles</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER · BACK PAGE ============ -->
+  <footer class="backpage">
+    <div class="fold" aria-hidden="true"></div>
+    <svg class="moth inview" viewBox="0 0 80 60" aria-hidden="true">
+      <path class="ink thin dw" pathLength="1" d="M40 30 Q20 10 10 22 Q4 34 22 38 Q40 42 40 30"/>
+      <path class="ink thin dw" pathLength="1" style="--d:.2" d="M40 30 Q60 10 70 22 Q76 34 58 38 Q40 42 40 30"/>
+      <path class="ink thin dw" pathLength="1" style="--d:.4" d="M40 30 L40 50 M40 50 l-4 6 M40 50 l4 6 M36 24 q-3 -6 -7 -8 M44 24 q3 -6 7 -8"/>
+      <circle cx="35" cy="34" r="1.4" fill="#8b8574" stroke="none"/><circle cx="45" cy="34" r="1.4" fill="#8b8574" stroke="none"/>
+    </svg>
+    <p class="colophon">
+      Set in IM&nbsp;Fell&nbsp;English, Cormorant &amp; Caveat. Drawn in 4B graphite and iron gall.<br>
+      No photographs were used in the making of this notebook; all was sketched,<br>
+      smudged, and corrected the old way. One coffee ring, two holes in the spine, zero regrets.
+    </p>
+    <span class="fin">fin.</span>
+    <div class="pagenum">· &nbsp;47&nbsp; ·</div>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+(function(){
+  var body = document.body;
+  body.classList.add('js');
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Ink-draw on view: reveal sketched lines as each illustration enters.
+  var targets = document.querySelectorAll('.inview');
+  if (reduced || !('IntersectionObserver' in window)) {
+    targets.forEach ? targets.forEach(function(el){ el.classList.add('in'); })
+                    : Array.prototype.forEach.call(targets, function(el){ el.classList.add('in'); });
+    return;
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
+
+  Array.prototype.forEach.call(targets, function(el){ io.observe(el); });
+
+  // Gentle parallax on the watercolour wash of the cover (very small, and only when motion is fine).
+  var wash = document.querySelector('.cover .wash svg');
+  if (wash && window.innerWidth > 700) {
+    window.addEventListener('scroll', function(){
+      var y = window.scrollY;
+      if (y < 800) wash.style.transform = 'translateY(' + (y * 0.06) + 'px)';
+    }, { passive: true });
+  }
+})();
+</script>
+</body>
+</html>

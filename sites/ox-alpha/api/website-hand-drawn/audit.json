@@ -1,0 +1,14 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/ox-alpha/api/website-hand-drawn/index.html",
+  "pass": true,
+  "notes": [
+    "1 console error(s)"
+  ],
+  "console_errors": [
+    "Error: <path> attribute d: Expected path command, \"M60 44 p2 -3 4 0 M130 4\u2026\"."
+  ],
+  "page_errors": [],
+  "canvas_nonblank": null,
+  "body_text_chars": 6460,
+  "scroll_height": 8559
+}

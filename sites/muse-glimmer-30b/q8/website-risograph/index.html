@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>INK WEATHER — joyful independent print fair & risograph studio festival</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F1E5;
+  --ink:#0A0A0A;
+  --coral:#FF3F5A;
+  --cobalt:#2A5CFF;
+  --sun:#FFD400;
+  --mint:#2DD4A0;
+  --warm:#8A6A4F;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55}
+h1,h2,h3{font-family:"Fraunces",serif;font-weight:800;letter-spacing:-0.02em;line-height:1.05;margin:0 0 .5rem}
+a{color:inherit}
+img{max-width:100%;display:block}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.08;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.skip{position:absolute;left:-999px;top:auto}
+.skip:focus{left:1rem;top:1rem;background:var(--ink);color:var(--paper);padding:.5rem .75rem}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:saturate(1.2)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;max-width:1200px;margin:auto;border-bottom:3px solid var(--ink)}
+.brand{display:flex;gap:.75rem;align-items:center}
+.logo{width:36px;height:36px;border:3px solid var(--ink);transform:rotate(-6deg);display:grid;place-items:center;font-family:"Fraunces",serif;font-weight:800}
+.navlinks{display:flex;gap:1.25rem;font-weight:700}
+.navlinks a{text-decoration:none;padding:.25rem .5rem;border-bottom:2px dashed transparent}
+.navlinks a:hover{border-color:var(--coral)}
+.hero{max-width:1200px;margin:2.5rem auto 3rem;padding:0 1.5rem}
+.poster{position:relative;border:4px solid var(--ink);background:var(--paper);padding:3rem 2.5rem;overflow:hidden}
+.poster::after{content:"";position:absolute;inset:-40px;background:radial-gradient(600px 200px at 20% -10%,color-mix(in srgb,var(--sun) 40%,transparent),transparent),radial-gradient(500px 200px at 90% 110%,color-mix(in srgb,var(--mint) 35%,transparent),transparent);pointer-events:none}
+.stacked{position:relative;display:inline-block}
+.stacked span{position:absolute;left:0;top:0;white-space:nowrap;font-size:clamp(3rem,10vw,9rem);font-family:"Fraunces",serif;line-height:0.9}
+.stacked span.base{position:relative}
+.stacked .layer{transform:translate(0,0)}
+.stacked:hover .coral{transform:translate(2px,-1px)}
+.stacked:hover .cobalt{transform:translate(-2px,1px)}
+.stacked:hover .sun{transform:translate(1px,2px)}
+.eyebrow{display:inline-block;border:3px solid var(--ink);background:var(--sun);transform:rotate(-2deg);padding:.25rem .6rem;font-weight:800;margin-top:1rem}
+.meta{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0 0;font-weight:700}
+.badge{border:3px solid var(--ink);padding:.5rem .8rem;background:var(--paper);transform:rotate(1deg)}
+.badge.coral{background:var(--coral);color:#fff}
+.badge.cobalt{background:var(--cobalt);color:#fff}
+.badge.mint{background:var(--mint)}
+.ink-viz{max-width:1200px;margin:4rem auto;padding:0 1.5rem}
+.viz{position:relative;height:260px;border:4px solid var(--ink);overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,.02),transparent)}
+.blob{position:absolute;border-radius:50%;mix-blend-mode:multiply;opacity:.85;filter:saturate(1.1)}
+.blob.coral{background:var(--coral);width:220px;height:220px;left:-40px;top:20px;animation:drift 26s ease-in-out infinite}
+.blob.cobalt{background:var(--cobalt);width:200px;height:200px;right:-30px;top:40px;animation:drift 31s ease-in-out infinite reverse}
+.blob.sun{background:var(--sun);width:180px;height:180px;left:30%;top:-20px;animation:drift 38s ease-in-out infinite}
+.blob.mint{background:var(--mint);width:160px;height:160px;right:20%;bottom:-30px;animation:drift 44s ease-in-out infinite reverse}
+.roller{position:absolute;left:0;right:0;bottom:0;height:48px;background:repeating-linear-gradient(90deg,var(--ink) 0 14px,transparent 14px 28px);opacity:.12;animation:roll 14s linear infinite}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(18px) rotate(6deg)}}
+@keyframes roll{to{transform:translateX(-28px)}}
+section{max-width:1200px;margin:auto;padding:3rem 1.5rem}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.cut{clip-path:polygon(0 0,100% 3%,100% 97%,97% 100%,3% 100%,0 97%)}
+.grid{display:grid;gap:1.25rem}
+@media(min-width:800px){.grid-2{grid-template-columns:1.1fr .9fr}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-6{grid-template-columns:repeat(3,1fr)}}
+.paper{border:3px solid var(--ink);background:var(--paper);padding:1.25rem;position:relative}
+.paper::before{content:"";position:absolute;inset:8px;border:1px dashed color-mix(in srgb,var(--ink) 25%,transparent)}
+.halftone{background-image:radial-gradient(var(--ink) 0.6px,transparent 0.6px);background-size:10px 10px;opacity:.06}
+.schedule{display:grid;gap:1rem}
+.slot{display:flex;gap:1rem;border-left:6px solid var(--ink);padding:.75rem 1rem;background:color-mix(in srgb,var(--paper) 70%,white);position:relative}
+.slot.coral{border-color:var(--coral)} .slot.cobalt{border-color:var(--cobalt)} .slot.sun{border-color:var(--sun)} .slot.mint{border-color:var(--mint)}
+.time{font-weight:800;min-width:6ch}
+.printers{display:grid;gap:1.5rem}
+.printer{border:4px solid var(--ink);padding:1.25rem;transform:rotate(-1deg);background:var(--paper)}
+.printer:nth-child(even){transform:rotate(1deg)}
+.printer .name{font-family:"Fraunces",serif;font-size:1.6rem}
+.dot{width:12px;height:12px;display:inline-block;border-radius:50%;margin-right:.4rem;border:2px solid var(--ink)}
+.map{border:4px solid var(--ink);padding:1.5rem;background:var(--paper);position:relative}
+.map svg{width:100%;height:auto}
+.shop{display:grid;gap:1.5rem}
+.item{display:flex;gap:1rem;border:4px solid var(--ink);padding:1rem;background:var(--paper)}
+.item .art{width:140px;height:140px;border:3px solid var(--ink);display:grid;place-items:center;background:var(--paper);position:relative}
+.poster-mock{width:100%;height:100%;border:2px solid var(--ink);background:
+  repeating-linear-gradient(0deg,var(--coral) 0 6px,var(--paper) 6px 12px),
+  repeating-linear-gradient(90deg,var(--cobalt) 0 6px,var(--paper) 6px 12px);mix-blend-mode:multiply;opacity:.9}
+.quotes{border:4px solid var(--ink);padding:2rem;background:var(--sun);transform:rotate(.5deg)}
+.faq details{border:3px solid var(--ink);padding:1rem;background:var(--paper);margin-bottom:1rem}
+.faq summary{cursor:pointer;font-weight:800;font-size:1.1rem}
+.newsletter{display:flex;gap:.5rem;border:4px solid var(--ink);padding:.5rem;background:var(--paper);flex-wrap:wrap}
+.newsletter input{flex:1;border:2px solid var(--ink);padding:.75rem;font:inherit}
+.newsletter button{border:3px solid var(--ink);background:var(--coral);color:#fff;font-weight:800;padding:.75rem 1rem;cursor:pointer}
+footer{border-top:4px solid var(--ink);background:var(--ink);color:var(--paper);padding:2.5rem 1.5rem;margin-top:4rem}
+.footgrid{display:grid;gap:1.5rem;max-width:1200px;margin:auto}
+@media(min-width:800px){.footgrid{grid-template-columns:2fr 1fr 1fr}}
+.scrap{position:fixed;width:90px;height:70px;border:3px solid var(--ink);background:var(--sun);transform:rotate(-12deg);pointer-events:none;opacity:.9;z-index:5;animation:float 40s linear infinite}
+.scrap:nth-child(2){background:var(--mint);left:12%;top:20%;animation-duration:52s;transform:rotate(8deg)}
+.scrap:nth-child(3){background:var(--coral);right:8%;top:30%;animation-duration:44s;transform:rotate(-6deg)}
+.scrap:nth-child(4){background:var(--cobalt);left:70%;top:65%;animation-duration:60s;transform:rotate(14deg)}
+@keyframes float{from{transform:translateY(0) rotate(var(--r,0deg))}to{transform:translateY(-120vh) rotate(calc(var(--r,0deg)+30deg))}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+.hand{border:3px solid var(--ink);display:inline-block;padding:.15rem .4rem;background:var(--paper);transform:rotate(-3deg);font-weight:800}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="scrap" style="--r:-12deg;left:5%;top:80%"></div>
+<div class="scrap"></div>
+<div class="scrap"></div>
+<div class="scrap"></div>
+
+<header>
+  <div class="nav">
+    <div class="brand"><div class="logo">IW</div><strong>INK WEATHER</strong></div>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="#schedule">Schedule</a>
+      <a href="#printers">Printers</a>
+      <a href="#venue">Venue</a>
+      <a href="#shop">Shop</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="poster cut reveal">
+    <div class="stacked" aria-label="INK WEATHER">
+      <span class="layer base" aria-hidden="true">INK WEATHER</span>
+      <span class="layer coral" aria-hidden="true">INK WEATHER</span>
+      <span class="layer cobalt" aria-hidden="true">INK WEATHER</span>
+      <span class="layer sun" aria-hidden="true">INK WEATHER</span>
+    </div>
+    <div class="eyebrow">joyful independent print fair & risograph studio festival</div>
+    <div class="meta">
+      <div class="badge coral">12–14 SEP 2025</div>
+      <div class="badge">The Mill, Bristol BS2 8…</div>
+      <div class="badge cobalt">free entry • pay what you can workshops</div>
+      <div class="badge mint">studio open house</div>
+    </div>
+    <p style="max-width:60ch;margin-top:1rem">A three-day weather system of colour, paper and noise. Independent studios, live riso runs, talks, zines, and a limited poster market. Bring a tote, leave with ink on your hands.</p>
+  </div>
+</section>
+
+<section class="ink-viz reveal">
+  <h2>Live ink layers</h2>
+  <p style="max-width:60ch">Four spot colours moving like weather. Watch the registration breathe — the layers drift a little off each other, just like a real riso run.</p>
+  <div class="viz">
+    <div class="blob coral"></div>
+    <div class="blob cobalt"></div>
+    <div class="blob sun"></div>
+    <div class="blob mint"></div>
+    <div class="roller" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section id="schedule">
+  <div class="section-head">
+    <h2>Schedule</h2>
+    <span class="hand">workshops & talks</span>
+  </div>
+  <div class="schedule grid grid-2">
+    <div class="paper cut">
+      <h3>Day 1 — Fri 12 Sep</h3>
+      <div class="slot coral"><div class="time">10:00</div><div><strong>Opening Parade & Riso Sprint</strong><br><small>Main hall • Sun Press</small></div></div>
+      <div class="slot cobalt"><div class="time">13:00</div><div><strong>Halftone & Misregistration</strong><br><small>Workshop • limited tools</small></div></div>
+      <div class="slot sun"><div class="time">16:30</div><div><strong>Talk: Print as Weather</strong><br><small>Editorial, paper, and climate</small></div></div>
+    </div>
+    <div class="paper cut">
+      <h3>Day 2 — Sat 13 Sep</h3>
+      <div class="slot mint"><div class="time">11:00</div><div><strong>Collage Assembly Line</strong><br><small>Hand-cut edges, overprint</small></div></div>
+      <div class="slot coral"><div class="time">14:00</div><div><strong>Riso Studio Tours</strong><br><small>Meet the six resident printers</small></div></div>
+      <div class="slot cobalt"><div class="time">18:00</div><div><strong>Night Print Social</strong><br><small>DJ + live screen, bar</small></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="printers">
+  <div class="section-head"><h2>Resident printers</h2><span class="hand">six fictional studios</span></div>
+  <div class="printers grid grid-6 reveal">
+    <div class="printer paper">
+      <div class="name">Mira Sol — Sun Press</div>
+      <div><span class="dot" style="background:var(--sun)"></span> Bristol • editorial riso, warm yellows</div>
+      <p>Newsprint zines, sun-bleached palettes, always a spare staple.</p>
+    </div>
+    <div class="printer paper">
+      <div class="name">Jasper Kline — Cobalt Riso</div>
+      <div><span class="dot" style="background:var(--cobalt)"></span> Leeds • deep blues, heavy black</div>
+      <p>Maps, posters, misregistered layers on purpose.</p>
+    </div>
+    <div class="printer paper">
+      <div class="name">Ayo Okafor — Coral Ink Co-op</div>
+      <div><span class="dot" style="background:var(--coral)"></span> London • fluorescent coral</div>
+      <p>Community flyers, hand-cut collage, loud.</p>
+    </div>
+    <div class="printer paper">
+      <div class="name">Lena Park — Mint Type Lab</div>
+      <div><span class="dot" style="background:var(--mint)"></span> Manchester • mint & black</div>
+      <p>Type experiments, letterpress + riso hybrids.</p>
+    </div>
+    <div class="printer paper">
+      <div class="name">Theo Voss — Yellow Room</div>
+      <div><span class="dot" style="background:var(--sun)"></span> Glasgow • sunflower</div>
+      <p>Poster editions, playful editorial systems.</p>
+    </div>
+    <div class="printer paper">
+      <div class="name">Rosa Delgado — Blackout Editions</div>
+      <div><span class="dot" style="background:var(--ink)"></span> Sheffield • dense black</div>
+      <p>Night prints, high contrast, rough grain.</p>
+    </div>
+  </div>
+</section>
+
+<section id="venue">
+  <h2>Venue — hand-drawn map</h2>
+  <div class="map cut reveal">
+    <svg viewBox="0 0 800 400" role="img" aria-label="Sketch map of The Mill complex">
+      <rect width="800" height="400" fill="var(--paper)"/>
+      <path d="M80 320 Q200 280 260 340 T420 300 Q560 260 680 320" stroke="var(--ink)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <circle cx="260" cy="340" r="22" fill="var(--sun)" stroke="var(--ink)" stroke-width="3"/>
+      <text x="260" y="345" text-anchor="middle" font-family="Fraunces" font-size="18" fill="var(--ink)">Main</text>
+      <circle cx="420" cy="300" r="18" fill="var(--coral)" stroke="var(--ink)" stroke-width="3"/>
+      <text x="420" y="305" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="14">Workshop</text>
+      <circle cx="680" cy="320" r="18" fill="var(--cobalt)" stroke="var(--ink)" stroke-width="3"/>
+      <text x="680" y="325" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="14">Bar</text>
+      <path d="M120 200 l 40 -10 m -20 30 l 60 -20" stroke="var(--warm)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+    <p style="margin-top:1rem"><strong>The Mill, Bristol</strong> — 3 interconnected warehouses, courtyard printing, step-free access, bike racks, and a paper-stained café.</p>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="section-head"><h2>Limited-edition poster shop</h2><span class="hand">risograph prints, 100 each</span></div>
+  <div class="shop grid grid-3 reveal">
+    <div class="item">
+      <div class="art"><div class="poster-mock"></div></div>
+      <div>
+        <h3>Weather Front #1</h3>
+        <p>Coral + cobalt, misregistered clouds. 50 × 70 cm. £18</p>
+        <button style="border:3px solid var(--ink);background:var(--ink);color:var(--paper);padding:.5rem .8rem;font-weight:800">Add</button>
+      </div>
+    </div>
+    <div class="item">
+      <div class="art"><div class="poster-mock" style="background:
+        repeating-linear-gradient(0deg,var(--mint) 0 6px,var(--paper) 6px 12px),
+        repeating-linear-gradient(90deg,var(--sun) 0 6px,var(--paper) 6px 12px);"></div></div>
+      <div>
+        <h3>Studio Map</h3>
+        <p>Mint + sun, hand-drawn grid. 42 × 59 cm. £14</p>
+        <button style="border:3px solid var(--ink);background:var(--ink);color:var(--paper);padding:.5rem .8rem;font-weight:800">Add</button>
+      </div>
+    </div>
+    <div class="item">
+      <div class="art"><div class="poster-mock" style="background:
+        repeating-linear-gradient(0deg,var(--ink) 0 4px,var(--paper) 4px 8px),
+        repeating-linear-gradient(90deg,var(--coral) 0 8px,var(--paper) 8px 16px);"></div></div>
+      <div>
+        <h3>Night Print</h3>
+        <p>Black + coral, high contrast. 50 × 70 cm. £18</p>
+        <button style="border:3px solid var(--ink);background:var(--ink);color:var(--paper);padding:.5rem .8rem;font-weight:800">Add</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>What people say</h2>
+  <div class="quotes cut reveal">
+    <blockquote>“It feels like walking through a printing press in the rain — colour everywhere, and you can smell the ink.”</blockquote>
+    <p style="font-weight:800;margin-top:.5rem">— A. Patel, zine maker</p>
+  </div>
+</section>
+
+<section id="faq" class="faq">
+  <h2>FAQ</h2>
+  <details><summary>Is it accessible?</summary><p>Yes. Step-free entry, quiet hours 10–12, high-contrast signage, and a printed schedule in large type.</p></details>
+  <details><summary>Can I bring my own paper?</summary><p>Workshops provide paper. For the open fair, please don’t bring loose scraps — we’ll have a collage bin.</p></details>
+  <details><summary>Do I need to book?</strong></summary><p>Fair entry is free. Workshops are pay-what-you-can with limited spots — sign up via the newsletter.</p></details>
+  <details><summary>Will posters ship?</summary><p>Yes. UK shipping included for orders over £25. International on request.</p></details>
+</section>
+
+<section>
+  <h2>Stay in the loop</h2>
+  <form class="newsletter reveal" onsubmit="event.preventDefault();alert('Thanks! You’re on the list.');this.reset()">
+    <input type="email" required placeholder="your@email.com" aria-label="Email for newsletter">
+    <button type="submit">Subscribe</button>
+  </form>
+</section>
+</main>
+
+<footer>
+  <div class="footgrid">
+    <div>
+      <strong style="font-family:Fraunces;font-size:1.6rem">INK WEATHER</strong>
+      <p>A joyful independent print fair & risograph studio festival. 12–14 Sep 2025, The Mill Bristol.</p>
+    </div>
+    <div>
+      <strong>Visit</strong>
+      <p>The Mill<br>Bristol BS2 8…<br>info@inkweather.print</p>
+    </div>
+    <div>
+      <strong>Follow</strong>
+      <p>Instagram @inkweather<br>Newsletter signup above</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const reveals=document.querySelectorAll('.reveal');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target);} });
+},{threshold:.15});
+reveals.forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

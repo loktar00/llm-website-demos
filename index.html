@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Qwen3.8-27B - Release Day Demos</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM website demos</title>
 <style>
   :root {
     --bg: #fafbfc;
@@ -20,22 +20,20 @@
     --radius: 12px;
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
     --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --badge-audited-bg: #ecfdf3; --badge-audited-fg: #067647; --badge-audited-bd: #abefc6;
+    --badge-unvalidated-bg: #fff8eb; --badge-unvalidated-fg: #b54708; --badge-unvalidated-bd: #fedf89;
+    --badge-self-fix-bg: #eff8ff; --badge-self-fix-fg: #175cd3; --badge-self-fix-bd: #b2ddff;
+    --badge-hand-patched-bg: #f4f3ff; --badge-hand-patched-fg: #5925dc; --badge-hand-patched-bd: #d9d6fe;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
-
   body {
     font-family: var(--font);
     background: var(--bg);
     color: var(--ink);
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
   }
-
-  /* ---------- Header ---------- */
   .site-header {
     background: var(--surface);
     border-bottom: 1px solid var(--line);
@@ -43,7 +41,6 @@
     top: 0;
     z-index: 50;
   }
-
   .header-inner {
     max-width: 1200px;
     margin: 0 auto;
@@ -52,80 +49,38 @@
     align-items: center;
     justify-content: space-between;
     gap: 24px;
+    flex-wrap: wrap;
   }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    min-width: 0;
-  }
-
-  .brand img {
-    height: 34px;
-    width: auto;
-    display: block;
-    flex-shrink: 0;
-  }
-
-  .brand-text { min-width: 0; }
-
   .brand-title {
     font-size: 17px;
     font-weight: 650;
     letter-spacing: -0.01em;
     color: var(--ink);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
-
   .brand-sub {
     font-size: 12.5px;
     color: var(--ink-faint);
     margin-top: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
-
   .header-nav {
-    flex-shrink: 0;
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
   }
-
   .nav-link {
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 550;
     color: var(--ink-soft);
     text-decoration: none;
-    padding: 8px 14px;
+    padding: 6px 12px;
     border: 1px solid var(--line-strong);
     border-radius: 8px;
     background: var(--surface);
-    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
   }
-
-  .nav-link:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: var(--accent-soft);
-  }
-
-  /* ---------- Page head ---------- */
-  .page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 56px 32px 72px;
-  }
-
-  .page-head {
-    max-width: 720px;
-    margin-bottom: 44px;
-  }
-
+  .nav-link:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+  .page { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
+  .page-head { max-width: 760px; margin-bottom: 40px; }
   .eyebrow {
     display: inline-flex;
     align-items: center;
@@ -141,72 +96,37 @@
     border-radius: 999px;
     margin-bottom: 18px;
   }
-
-  .eyebrow .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.35; transform: scale(0.75); }
-  }
-
   .page-head h1 {
-    font-size: clamp(28px, 4.4vw, 40px);
+    font-size: clamp(26px, 4vw, 38px);
     font-weight: 700;
     letter-spacing: -0.025em;
     line-height: 1.15;
-    color: var(--ink);
     margin-bottom: 14px;
   }
-
-  .page-head p {
-    font-size: 16px;
-    color: var(--ink-soft);
-    max-width: 560px;
-  }
-
-  .meta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 22px;
-  }
-
+  .page-head p { font-size: 15.5px; color: var(--ink-soft); max-width: 620px; }
+  .model-section { margin-top: 56px; padding-top: 8px; border-top: 1px solid var(--line); }
+  .model-section:first-of-type { margin-top: 0; border-top: none; }
+  .section-head { margin-bottom: 20px; }
+  .section-head h2 { font-size: 21px; font-weight: 650; letter-spacing: -0.015em; margin-bottom: 8px; }
+  .section-note { font-size: 13.5px; color: var(--ink-faint); }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .meta-chip {
-    font-size: 12px;
-    font-weight: 550;
+    font-size: 11.5px;
+    font-weight: 600;
     color: var(--ink-soft);
     background: var(--surface);
-    border: 1px solid var(--line);
+    border: 1px solid var(--line-strong);
     border-radius: 999px;
-    padding: 5px 12px;
+    padding: 3px 10px;
   }
-
-  /* ---------- Grid ---------- */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  @media (max-width: 980px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 600px) {
     .grid { grid-template-columns: 1fr; }
-    .page { padding: 40px 20px 56px; }
-    .header-inner { padding: 14px 20px; }
+    .page { padding: 36px 18px 60px; }
+    .header-inner { padding: 14px 18px; }
   }
-
-  /* ---------- Card ---------- */
   .card {
-    position: relative;
     display: flex;
     flex-direction: column;
     background: var(--surface);
@@ -216,659 +136,1756 @@
     text-decoration: none;
     color: inherit;
     overflow: hidden;
-    transition: transform 0.22s cubic-bezier(0.22, 0.8, 0.36, 1),
-                box-shadow 0.22s cubic-bezier(0.22, 0.8, 0.36, 1),
-                border-color 0.22s ease;
-    opacity: 0;
-    transform: translateY(14px);
+    transition: transform 0.2s cubic-bezier(0.22, 0.8, 0.36, 1), box-shadow 0.2s ease, border-color 0.2s ease;
   }
-
-  .card.visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 0.8, 0.36, 1),
-                box-shadow 0.22s cubic-bezier(0.22, 0.8, 0.36, 1),
-                border-color 0.22s ease;
-  }
-
-  .card:hover,
-  .card:focus-visible {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lift);
-    border-color: var(--line-strong);
-  }
-
-  .card:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  /* Compact header strip, like production video chrome */
+  .card:hover, .card:focus-visible { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--line-strong); }
+  .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .card-strip {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 10px;
     padding: 10px 14px;
     border-bottom: 1px solid var(--line);
     background: linear-gradient(180deg, #fdfdfe 0%, #f7f9fb 100%);
   }
-
   .card-name {
-    font-size: 11.5px;
+    font-size: 12.5px;
     font-weight: 650;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+    color: var(--ink);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
-  .card-index {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    color: var(--ink-faint);
+  .badge {
     flex-shrink: 0;
-    letter-spacing: 0.04em;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid;
   }
-
-  /* Screen area */
+  .badge-audited { background: var(--badge-audited-bg); color: var(--badge-audited-fg); border-color: var(--badge-audited-bd); }
+  .badge-unvalidated { background: var(--badge-unvalidated-bg); color: var(--badge-unvalidated-fg); border-color: var(--badge-unvalidated-bd); }
+  .badge-self-fix { background: var(--badge-self-fix-bg); color: var(--badge-self-fix-fg); border-color: var(--badge-self-fix-bd); }
+  .badge-hand-patched { background: var(--badge-hand-patched-bg); color: var(--badge-hand-patched-fg); border-color: var(--badge-hand-patched-bd); }
   .card-screen {
     position: relative;
     aspect-ratio: 16 / 9;
     background: #f2f4f7;
-    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
-  .card-screen video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .card-screen .glyph {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
+  .glyph {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
     background: var(--surface);
     border: 1px solid var(--line-strong);
     box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s cubic-bezier(0.22, 0.8, 0.36, 1);
+    transition: transform 0.25s cubic-bezier(0.22, 0.8, 0.36, 1);
   }
-
-  .card:hover .card-screen .glyph {
-    transform: scale(1.08) rotate(-3deg);
-  }
-
-  .card-screen .glyph svg {
-    width: 24px;
-    height: 24px;
-    color: var(--ink-faint);
-  }
-
-  /* Subtle scanline texture on the screen area */
-  .card-screen::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(22, 24, 29, 0.014) 0px,
-      rgba(22, 24, 29, 0.014) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    pointer-events: none;
-  }
-
-  /* Play affordance */
-  .card-play {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid var(--line-strong);
-    box-shadow: 0 4px 14px rgba(16, 24, 40, 0.12);
+  .card:hover .glyph { transform: scale(1.06) rotate(-3deg); }
+  .glyph svg { width: 22px; height: 22px; color: var(--ink-faint); }
+  .card-foot {
     display: flex;
     align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 0.8, 0.36, 1);
-    pointer-events: none;
-    z-index: 2;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 14px;
+    font-size: 11px;
   }
-
-  .card-play svg {
-    width: 14px;
-    height: 14px;
-    color: var(--ink);
-    margin-left: 2px;
-  }
-
-  .card:hover .card-play,
-  .card:focus-visible .card-play {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  .card:hover .card-screen .glyph {
-    opacity: 0;
-  }
-
-  .card-screen .glyph {
-    transition: transform 0.3s cubic-bezier(0.22, 0.8, 0.36, 1), opacity 0.22s ease;
-  }
-
-  /* Card body */
-  .card-body {
-    padding: 16px 18px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-  }
-
-  .card-body h3 {
-    font-size: 15.5px;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-  }
-
-  .card-body p {
-    font-size: 13.5px;
-    color: var(--ink-soft);
-    line-height: 1.5;
-  }
-
-  .card-footer {
-    margin-top: auto;
-    padding-top: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .card-cta {
-    font-size: 12.5px;
-    font-weight: 600;
-    color: var(--accent);
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    opacity: 0.85;
-    transition: gap 0.2s ease, opacity 0.2s ease;
-  }
-
-  .card:hover .card-cta {
-    gap: 9px;
-    opacity: 1;
-  }
-
-  .card-cta svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  /* ---------- Footer / credit ---------- */
-  .site-footer {
-    border-top: 1px solid var(--line);
-    background: var(--surface);
-    margin-top: 24px;
-  }
-
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 36px 32px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .credit-mark {
+  .cell-id { font-family: var(--mono); color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .variant-chip {
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: var(--accent-soft);
-    border: 1px solid #dbe6ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .credit-mark svg {
-    width: 18px;
-    height: 18px;
-    color: var(--accent);
-  }
-
-  .credit-text {
-    font-size: 13px;
-    color: var(--ink-soft);
-    max-width: 720px;
-  }
-
-  .credit-text strong {
     font-weight: 650;
-    color: var(--ink);
+    color: var(--ink-soft);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2px 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
-
-  @media (max-width: 600px) {
-    .footer-inner { padding: 28px 20px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .card { opacity: 1; transform: none; transition: none; }
-    .card:hover, .card:focus-visible { transform: none; }
-    .eyebrow .dot { animation: none; }
-    .card-screen .glyph, .card-play { transition: none; }
-  }
+  footer { max-width: 1200px; margin: 0 auto; padding: 0 32px 56px; color: var(--ink-faint); font-size: 13px; }
+  footer a { color: var(--accent); }
 </style>
 </head>
 <body>
-
 <header class="site-header">
   <div class="header-inner">
-    <div class="brand">
-      <img src="qwen-logo.png" alt="Qwen">
-      <div class="brand-text">
-        <div class="brand-title">Qwen3.8-27B - Release Day Demos</div>
-        <div class="brand-sub">Thirty-two demos, shipped on day one</div>
-      </div>
+    <div>
+      <div class="brand-title">LLM website demos</div>
+      <div class="brand-sub">92 sites across 10 benchmarked models</div>
     </div>
-    <nav class="header-nav" aria-label="Site">
-      <a class="nav-link" href="prompts/">Prompts</a>
+    <nav class="header-nav">
+      <a class="nav-link" href="#claude-fable-5-1">Claude Fable 5.1</a>
+      <a class="nav-link" href="#deepseek-v41-flash">DeepSeek V4.1 Flash</a>
+      <a class="nav-link" href="#glm53-flash">GLM 5.3 Flash</a>
+      <a class="nav-link" href="#muse-glimmer-30b">Muse Glimmer 30B</a>
+      <a class="nav-link" href="#muse-spark-13">Muse Spark 1.3</a>
+      <a class="nav-link" href="#ox-alpha">Ox Alpha</a>
+      <a class="nav-link" href="#qwen3.6-27b">Qwen 3.6 27B</a>
+      <a class="nav-link" href="#qwen3.8-27b">Qwen 3.8 27B</a>
+      <a class="nav-link" href="#qwen3.8-max-preview">Qwen 3.8 Max Preview</a>
+      <a class="nav-link" href="#qwen38-flash-next">Qwen 3.8 Flash Next</a>
+      <a class="nav-link" href="#original-qwen-demos">Original Qwen demos</a>
     </nav>
   </div>
 </header>
-
 <main class="page">
   <div class="page-head">
-    <span class="eyebrow"><span class="dot"></span>Release Day Collection</span>
-    <h1>Qwen3.8-27B - Release Day Demos</h1>
-    <p>A curated gallery of demo pages generated by Qwen3.8-27B on the day the model shipped. Each card links to a self-contained demo.</p>
-    <div class="meta-row">
-      <span class="meta-chip">32 demos</span>
-      <span class="meta-chip">Generated in a single sitting</span>
-      <span class="meta-chip">Qwen3.8-27B</span>
-    </div>
+    <div class="eyebrow"><span class="dot"></span>Day-0 benchmark gallery</div>
+    <h1>LLM website demos</h1>
+    <p>Every website-generation cell from Jason's day-0 model benchmarks: the same battery of website prompts, run against every model as it was benchmarked. Static HTML output, unedited except where a card says otherwise.</p>
   </div>
-
-  <div class="grid" id="grid">
-
-    <a class="card" href="pagoda-voxel/">
-      <div class="card-strip"><span class="card-name">pagoda-voxel</span><span class="card-index">01</span></div>
-      <div class="card-screen"><video src="thumbs/pagoda-voxel.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Voxel Pagoda Garden</h3>
-        <p>A layered voxel garden where pagodas rise from tiled courtyards.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    <section class="model-section" id="claude-fable-5-1">
+      <div class="section-head">
+        <h2>Claude Fable 5.1</h2>
+        <div class="meta-row"><span class="meta-chip">api</span></div>
       </div>
-    </a>
-
-    <a class="card" href="bento-grid-1bit-dither/">
-      <div class="card-strip"><span class="card-name">bento-grid-1bit-dither</span><span class="card-index">02</span></div>
-      <div class="card-screen"><video src="thumbs/bento-grid-1bit-dither.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Dithered Bento Grid</h3>
-        <p>A bento layout rendered entirely in one-bit dithered textures.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/claude-fable-5-1/api/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/claude-fable-5-1/api/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Hand-Drawn Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/claude-fable-5-1/api/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Risograph Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="stationery-retail-catalogue/">
-      <div class="card-strip"><span class="card-name">stationery-retail-catalogue</span><span class="card-index">03</span></div>
-      <div class="card-screen"><video src="thumbs/stationery-retail-catalogue.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Stationery Retail Catalogue</h3>
-        <p>A crisp retail catalogue for pens, paper, and desk goods.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="deepseek-v41-flash">
+      <div class="section-head">
+        <h2>DeepSeek V4.1 Flash</h2>
+        <div class="meta-row"><span class="meta-chip">api</span></div>
       </div>
-    </a>
-
-    <a class="card" href="virtual-boy-website/">
-      <div class="card-strip"><span class="card-name">virtual-boy-website</span><span class="card-index">04</span></div>
-      <div class="card-screen"><video src="thumbs/virtual-boy-website.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Virtual Boy Microsite</h3>
-        <p>A monochrome homage to the Virtual Boy, straight off the assembly line of 1995.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/deepseek-v41-flash/api/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/deepseek-v41-flash/api/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Hand-Drawn Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/deepseek-v41-flash/api/website-hand-drawn-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Hand-Drawn Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn-2</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/deepseek-v41-flash/api/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Risograph Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="website-hand-drawn/">
-      <div class="card-strip"><span class="card-name">website-hand-drawn</span><span class="card-index">05</span></div>
-      <div class="card-screen"><video src="thumbs/website-hand-drawn.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>The Moss Notebook</h3>
-        <p>A quiet, hand-drawn notebook site that feels sketched in pencil.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="glm53-flash">
+      <div class="section-head">
+        <h2>GLM 5.3 Flash</h2>
+        <div class="meta-row"><span class="meta-chip">fp8</span></div>
       </div>
-    </a>
-
-    <a class="card" href="fbm-color-breathing-terrain/">
-      <div class="card-strip"><span class="card-name">fbm-color-breathing-terrain</span><span class="card-index">06</span></div>
-      <div class="card-screen"><video src="thumbs/fbm-color-breathing-terrain.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Breathing Terrain</h3>
-        <p>Fractional Brownian motion terrain that inhales and exhales through color.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/glm53-flash/fp8/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/virtual-boy-website-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website-2</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/virtual-boy-website-selffix/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-self-fix">Self-fix</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website-selffix</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-art-deco-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco-2</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-art-deco-selffix/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-self-fix">Self-fix</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco-selffix</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-brutalist-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist-2</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-dragon-fire/index.html">
+        <div class="card-strip">
+          <span class="card-name">Dragon Fire Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-dragon-fire</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-dragon-fire-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Dragon Fire Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-dragon-fire-2</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-hand-drawn-3d/index.html">
+        <div class="card-strip">
+          <span class="card-name">Hand-Drawn Website (3D Hero)</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn-3d</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-hand-drawn-3d-selffix/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn 3D</span>
+          <span class="badge badge-self-fix">Self-fix</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn-3d-selffix</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-risograph-3d/index.html">
+        <div class="card-strip">
+          <span class="card-name">Risograph Website (3D Hero)</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph-3d</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-risograph-3d-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Risograph Website (3D Hero)</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph-3d-2</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/glm53-flash/fp8/website-swiss-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss-2</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="shader-molten-metaballs/">
-      <div class="card-strip"><span class="card-name">shader-molten-metaballs</span><span class="card-index">07</span></div>
-      <div class="card-screen"><video src="thumbs/shader-molten-metaballs.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Molten Metaballs</h3>
-        <p>A fragment shader demo of liquid metal blobs flowing into each other.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="muse-glimmer-30b">
+      <div class="section-head">
+        <h2>Muse Glimmer 30B</h2>
+        <div class="meta-row"><span class="meta-chip">bf16</span><span class="meta-chip">q8</span></div>
       </div>
-    </a>
-
-    <a class="card" href="organic-iridescent-blob/">
-      <div class="card-strip"><span class="card-name">organic-iridescent-blob</span><span class="card-index">08</span></div>
-      <div class="card-screen"><video src="thumbs/organic-iridescent-blob.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Iridescent Blob</h3>
-        <p>An organic, oil-slick blob that shifts color as it drifts.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/muse-glimmer-30b/bf16/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/bf16/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/bf16/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/bf16/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/bf16/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/q8/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/q8/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/q8/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/q8/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/q8/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-glimmer-30b/q8/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="zombie-car-apocalypse/">
-      <div class="card-strip"><span class="card-name">zombie-car-apocalypse</span><span class="card-index">09</span></div>
-      <div class="card-screen"><video src="thumbs/zombie-car-apocalypse.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Zombie Car Apocalypse</h3>
-        <p>Steer through a horde of undead drivers in a top-down arcade rush.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="muse-spark-13">
+      <div class="section-head">
+        <h2>Muse Spark 1.3</h2>
+        <div class="meta-row"><span class="meta-chip">api</span></div>
       </div>
-    </a>
-
-    <a class="card" href="zombie-wasteland-driver/">
-      <div class="card-strip"><span class="card-name">zombie-wasteland-driver</span><span class="card-index">10</span></div>
-      <div class="card-screen"><video src="thumbs/zombie-wasteland-driver.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Wasteland Driver</h3>
-        <p>A dusty post-collapse road, endless and unrelenting.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/muse-spark-13/api/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-spark-13/api/virtual-boy-website-hand-patched/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-hand-patched">Hand-patched</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website-hand-patched</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-spark-13/api/website-hand-drawn-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Hand-Drawn Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn-2</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/muse-spark-13/api/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Risograph Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="forest-fire/">
-      <div class="card-strip"><span class="card-name">forest-fire</span><span class="card-index">11</span></div>
-      <div class="card-screen"><video src="thumbs/forest-fire.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Forest Fire Simulation</h3>
-        <p>A cellular automaton fire sweeping through a pixel pine forest.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="ox-alpha">
+      <div class="section-head">
+        <h2>Ox Alpha</h2>
+        <div class="meta-row"><span class="meta-chip">api</span></div>
       </div>
-    </a>
-
-    <a class="card" href="website-brutalist/">
-      <div class="card-strip"><span class="card-name">website-brutalist</span><span class="card-index">12</span></div>
-      <div class="card-screen"><video src="thumbs/website-brutalist.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Brutalist</h3>
-        <p>Raw concrete, hard edges, and typography set in shouting sizes.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/ox-alpha/api/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/ox-alpha/api/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/ox-alpha/api/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/ox-alpha/api/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/ox-alpha/api/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="website-risograph/">
-      <div class="card-strip"><span class="card-name">website-risograph</span><span class="card-index">13</span></div>
-      <div class="card-screen"><video src="thumbs/website-risograph.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Risograph</h3>
-        <p>A print-inspired site built from layered riso inks and visible grain.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="qwen3.6-27b">
+      <div class="section-head">
+        <h2>Qwen 3.6 27B</h2>
+        <div class="meta-row"><span class="meta-chip">bf16</span><span class="meta-chip">q4</span><span class="meta-chip">q8</span></div>
       </div>
-    </a>
-
-    <a class="card" href="website-swiss/">
-      <div class="card-strip"><span class="card-name">website-swiss</span><span class="card-index">14</span></div>
-      <div class="card-screen"><video src="thumbs/website-swiss.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Swiss</h3>
-        <p>International Style: strict grids, neutral palette, and honest type.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/qwen3.6-27b/bf16/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/bf16/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/bf16/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/bf16/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/bf16/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/bf16/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q4/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">q4</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q4/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">q4</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q4/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">q4</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q4/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">q4</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q4/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">q4</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q4/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">q4</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q8/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q8/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q8/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q8/website-hand-drawn-run-1/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn-run-1</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q8/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.6-27b/q8/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="saas-pricing-terminal/">
-      <div class="card-strip"><span class="card-name">saas-pricing-terminal</span><span class="card-index">15</span></div>
-      <div class="card-screen"><video src="thumbs/saas-pricing-terminal.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Pricing Terminal</h3>
-        <p>SaaS pricing plans rendered as a live, typewriter-driven terminal.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="qwen3.8-27b">
+      <div class="section-head">
+        <h2>Qwen 3.8 27B</h2>
+        <div class="meta-row"><span class="meta-chip">bf16</span><span class="meta-chip">nvfp4</span><span class="meta-chip">q8</span></div>
       </div>
-    </a>
-
-    <a class="card" href="website-terminal-zine/">
-      <div class="card-strip"><span class="card-name">website-terminal-zine</span><span class="card-index">16</span></div>
-      <div class="card-screen"><video src="thumbs/website-terminal-zine.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>/dev/null ZINE</h3>
-        <p>An ASCII zine about dead ends, exit codes, and everything discarded.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/qwen3.8-27b/bf16/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-1bit-dither-site/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website 1bit Dither Site</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-1bit-dither-site</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-gh-gallery/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Gh Gallery</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-gh-gallery</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-gh-gallery-bento-v2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Gh Gallery Bento</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-gh-gallery-bento-v2</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-gh-gallery-pro/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Gh Gallery Pro</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-gh-gallery-pro</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-metro-transit/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Metro Transit</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-metro-transit</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/bf16/website-terminal-zine/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Terminal Zine</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-terminal-zine</span>
+          <span class="variant-chip">bf16</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/nvfp4/nvfp4-virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">nvfp4-virtual-boy-website</span>
+          <span class="variant-chip">nvfp4</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/nvfp4/nvfp4-website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">nvfp4-website-hand-drawn</span>
+          <span class="variant-chip">nvfp4</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/q8/q8-virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">q8-virtual-boy-website</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/q8/q8-virtual-boy-website-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">q8-virtual-boy-website-2</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-27b/q8/q8-website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">q8-website-hand-drawn</span>
+          <span class="variant-chip">q8</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="website-metro-transit/">
-      <div class="card-strip"><span class="card-name">website-metro-transit</span><span class="card-index">17</span></div>
-      <div class="card-screen"><video src="thumbs/website-metro-transit.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Meridian Metro</h3>
-        <p>A transit authority site with live maps, fares, and departure boards.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="qwen3.8-max-preview">
+      <div class="section-head">
+        <h2>Qwen 3.8 Max Preview</h2>
+        <div class="meta-row"><span class="meta-chip">api</span></div>
       </div>
-    </a>
-
-    <a class="card" href="website-1bit-dither-site/">
-      <div class="card-strip"><span class="card-name">website-1bit-dither-site</span><span class="card-index">18</span></div>
-      <div class="card-screen"><video src="thumbs/website-1bit-dither-site.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Bayer and Sons Print Works</h3>
-        <p>A fictional print works cataloguing dither matrices, one bit at a time.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/qwen3.8-max-preview/api/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-max-preview/api/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Art Deco</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-max-preview/api/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Brutalist</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-max-preview/api/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-max-preview/api/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen3.8-max-preview/api/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Swiss</span>
+          <span class="badge badge-unvalidated">Unvalidated</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">api</span>
+        </div>
+      </a>
       </div>
-    </a>
-
-    <a class="card" href="ai-battle-royale-pretty/">
-      <div class="card-strip"><span class="card-name">ai-battle-royale-pretty</span><span class="card-index">19</span></div>
-      <div class="card-screen"><video src="thumbs/ai-battle-royale-pretty.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>AI Battle Royale</h3>
-        <p>Sixty AI fighters drop, loot, and fight it out as the storm circle closes in.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    </section>
+    <section class="model-section" id="qwen38-flash-next">
+      <div class="section-head">
+        <h2>Qwen 3.8 Flash Next</h2>
+        <div class="meta-row"><span class="meta-chip">fp8</span></div>
       </div>
-    </a>
-
-    <a class="card" href="zombie-outbreak-sim-v1-modified/">
-      <div class="card-strip"><span class="card-name">zombie-outbreak-sim-v1-modified</span><span class="card-index">20</span></div>
-      <div class="card-screen"><video src="thumbs/zombie-outbreak-sim-v1-modified.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>The Outbreak</h3>
-        <p>A hand-drawn town where survivors flee and the infected spread, wave after wave.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="sites/qwen38-flash-next/fp8/virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen38-flash-next/fp8/website-art-deco/index.html">
+        <div class="card-strip">
+          <span class="card-name">Art Deco Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-art-deco</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen38-flash-next/fp8/website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Brutalist Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen38-flash-next/fp8/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Hand-Drawn Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen38-flash-next/fp8/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Risograph Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen38-flash-next/fp8/website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Minimalist Swiss Website</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen38-flash-next/fp8/wow-website-self-upgrade/index.html">
+        <div class="card-strip">
+          <span class="card-name">WOW: Website Self-Upgrade (turn 1 / v1)</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">wow-website-self-upgrade</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
+      <a class="card" href="sites/qwen38-flash-next/fp8/wow-website-self-upgrade-v2/index.html">
+        <div class="card-strip">
+          <span class="card-name">WOW Website Self Upgrade</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">wow-website-self-upgrade-v2</span>
+          <span class="variant-chip">fp8</span>
+        </div>
+      </a>
       </div>
-    </a>
+    </section>
 
-    <a class="card" href="living-reef/">
-      <div class="card-strip"><span class="card-name">living-reef</span><span class="card-index">21</span></div>
-      <div class="card-screen"><video src="thumbs/living-reef.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Living Reef</h3>
-        <p>A coral reef that keeps growing, with fish schooling through shifting light.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+    <section class="model-section" id="original-qwen-demos">
+      <div class="section-head">
+        <h2>Original Qwen 3.8 27B demos</h2>
+        <p class="section-note">The original release-day gallery this repo started as. Unchanged; kept at repo root.</p>
       </div>
-    </a>
-
-    <a class="card" href="forest-fire-chalkboard/">
-      <div class="card-strip"><span class="card-name">forest-fire-chalkboard</span><span class="card-index">22</span></div>
-      <div class="card-screen"><video src="thumbs/forest-fire-chalkboard.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Chalkboard Wildfire</h3>
-        <p>A wildfire crawling across a chalk-drawn forest, high contrast and always burning.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <div class="grid">
+      <a class="card" href="pagoda-voxel/index.html">
+        <div class="card-strip">
+          <span class="card-name">Voxel Pagoda Garden</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">pagoda-voxel</span>
+        </div>
+      </a>
+      <a class="card" href="bento-grid-1bit-dither/index.html">
+        <div class="card-strip">
+          <span class="card-name">Dithered Bento Grid</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">bento-grid-1bit-dither</span>
+        </div>
+      </a>
+      <a class="card" href="stationery-retail-catalogue/index.html">
+        <div class="card-strip">
+          <span class="card-name">Stationery Retail Catalogue</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">stationery-retail-catalogue</span>
+        </div>
+      </a>
+      <a class="card" href="virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Microsite</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">virtual-boy-website</span>
+        </div>
+      </a>
+      <a class="card" href="website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">The Moss Notebook</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+        </div>
+      </a>
+      <a class="card" href="fbm-color-breathing-terrain/index.html">
+        <div class="card-strip">
+          <span class="card-name">Breathing Terrain</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">fbm-color-breathing-terrain</span>
+        </div>
+      </a>
+      <a class="card" href="shader-molten-metaballs/index.html">
+        <div class="card-strip">
+          <span class="card-name">Molten Metaballs</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">shader-molten-metaballs</span>
+        </div>
+      </a>
+      <a class="card" href="organic-iridescent-blob/index.html">
+        <div class="card-strip">
+          <span class="card-name">Iridescent Blob</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">organic-iridescent-blob</span>
+        </div>
+      </a>
+      <a class="card" href="zombie-car-apocalypse/index.html">
+        <div class="card-strip">
+          <span class="card-name">Zombie Wasteland Patrol</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">zombie-car-apocalypse</span>
+        </div>
+      </a>
+      <a class="card" href="website-brutalist/index.html">
+        <div class="card-strip">
+          <span class="card-name">Concrete Index</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-brutalist</span>
+        </div>
+      </a>
+      <a class="card" href="website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Ink Weather</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+        </div>
+      </a>
+      <a class="card" href="website-swiss/index.html">
+        <div class="card-strip">
+          <span class="card-name">Helvetica Transit Archive</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-swiss</span>
+        </div>
+      </a>
+      <a class="card" href="saas-pricing-terminal/index.html">
+        <div class="card-strip">
+          <span class="card-name">Terminal Pricing Console</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">saas-pricing-terminal</span>
+        </div>
+      </a>
+      <a class="card" href="zombie-wasteland-driver/index.html">
+        <div class="card-strip">
+          <span class="card-name">Wasteland Driver</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">zombie-wasteland-driver</span>
+        </div>
+      </a>
+      <a class="card" href="forest-fire/index.html">
+        <div class="card-strip">
+          <span class="card-name">Forest Fire Simulation</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">forest-fire</span>
+        </div>
+      </a>
+      <a class="card" href="forest-fire-chalkboard/index.html">
+        <div class="card-strip">
+          <span class="card-name">Chalkboard Wildfire</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">forest-fire-chalkboard</span>
+        </div>
+      </a>
+      <a class="card" href="living-reef/index.html">
+        <div class="card-strip">
+          <span class="card-name">Living Reef</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">living-reef</span>
+        </div>
+      </a>
+      <a class="card" href="ai-battle-royale-pretty/index.html">
+        <div class="card-strip">
+          <span class="card-name">AI Battle Royale</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">ai-battle-royale-pretty</span>
+        </div>
+      </a>
+      <a class="card" href="scribble-tendrils-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Ink Bloom</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">scribble-tendrils-2</span>
+        </div>
+      </a>
+      <a class="card" href="zombie-outbreak-sim-v1-modified/index.html">
+        <div class="card-strip">
+          <span class="card-name">Zombie Outbreak Sim</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">zombie-outbreak-sim-v1-modified</span>
+        </div>
+      </a>
+      <a class="card" href="nvfp4-bento-grid-1bit-dither/index.html">
+        <div class="card-strip">
+          <span class="card-name">Dithered Bento Grid (NVFP4)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">nvfp4-bento-grid-1bit-dither</span>
+        </div>
+      </a>
+      <a class="card" href="nvfp4-stationery-retail-catalogue/index.html">
+        <div class="card-strip">
+          <span class="card-name">Stationery Retail Catalogue (NVFP4)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">nvfp4-stationery-retail-catalogue</span>
+        </div>
+      </a>
+      <a class="card" href="nvfp4-virtual-boy-website/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Microsite (NVFP4)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">nvfp4-virtual-boy-website</span>
+        </div>
+      </a>
+      <a class="card" href="nvfp4-website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">The Moss Notebook (NVFP4)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">nvfp4-website-hand-drawn</span>
+        </div>
+      </a>
+      <a class="card" href="q8-bento-grid-1bit-dither/index.html">
+        <div class="card-strip">
+          <span class="card-name">Dithered Bento Grid (Q8)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">q8-bento-grid-1bit-dither</span>
+        </div>
+      </a>
+      <a class="card" href="q8-pagoda-voxel/index.html">
+        <div class="card-strip">
+          <span class="card-name">Voxel Pagoda Garden (Q8)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">q8-pagoda-voxel</span>
+        </div>
+      </a>
+      <a class="card" href="q8-stationery-retail-catalogue/index.html">
+        <div class="card-strip">
+          <span class="card-name">Stationery Retail Catalogue (Q8)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">q8-stationery-retail-catalogue</span>
+        </div>
+      </a>
+      <a class="card" href="q8-virtual-boy-website-2/index.html">
+        <div class="card-strip">
+          <span class="card-name">Virtual Boy Microsite (Q8)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">q8-virtual-boy-website-2</span>
+        </div>
+      </a>
+      <a class="card" href="q8-website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">The Moss Notebook (Q8)</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">q8-website-hand-drawn</span>
+        </div>
+      </a>
+      <a class="card" href="website-1bit-dither-site/index.html">
+        <div class="card-strip">
+          <span class="card-name">1-Bit Dither Site</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-1bit-dither-site</span>
+        </div>
+      </a>
+      <a class="card" href="website-metro-transit/index.html">
+        <div class="card-strip">
+          <span class="card-name">Metro Transit Site</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-metro-transit</span>
+        </div>
+      </a>
+      <a class="card" href="website-terminal-zine/index.html">
+        <div class="card-strip">
+          <span class="card-name">Terminal Zine</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-terminal-zine</span>
+        </div>
+      </a>
       </div>
-    </a>
+    </section>
 
-    <a class="card" href="scribble-tendrils-2/">
-      <div class="card-strip"><span class="card-name">scribble-tendrils-2</span><span class="card-index">23</span></div>
-      <div class="card-screen"><video src="thumbs/scribble-tendrils-2.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Ink Bloom</h3>
-        <p>Ink tendrils that twist and reach across the page like something alive.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="nvfp4-bento-grid-1bit-dither/">
-      <div class="card-strip"><span class="card-name">nvfp4-bento-grid-1bit-dither</span><span class="card-index">24</span></div>
-      <div class="card-screen"><video src="thumbs/nvfp4-bento-grid-1bit-dither.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Dithered Bento Grid (NVFP4)</h3>
-        <p>The same 1-bit bento layout, rendered at NVFP4 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="nvfp4-stationery-retail-catalogue/">
-      <div class="card-strip"><span class="card-name">nvfp4-stationery-retail-catalogue</span><span class="card-index">25</span></div>
-      <div class="card-screen"><video src="thumbs/nvfp4-stationery-retail-catalogue.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Stationery Retail Catalogue (NVFP4)</h3>
-        <p>The same stationery shop catalogue, rendered at NVFP4 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="nvfp4-virtual-boy-website/">
-      <div class="card-strip"><span class="card-name">nvfp4-virtual-boy-website</span><span class="card-index">26</span></div>
-      <div class="card-screen"><video src="thumbs/nvfp4-virtual-boy-website.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Virtual Boy Microsite (NVFP4)</h3>
-        <p>The same retro Virtual Boy microsite, rendered at NVFP4 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="nvfp4-website-hand-drawn/">
-      <div class="card-strip"><span class="card-name">nvfp4-website-hand-drawn</span><span class="card-index">27</span></div>
-      <div class="card-screen"><video src="thumbs/nvfp4-website-hand-drawn.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>The Moss Notebook (NVFP4)</h3>
-        <p>The same hand-drawn field journal, rendered at NVFP4 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="q8-bento-grid-1bit-dither/">
-      <div class="card-strip"><span class="card-name">q8-bento-grid-1bit-dither</span><span class="card-index">28</span></div>
-      <div class="card-screen"><video src="thumbs/q8-bento-grid-1bit-dither.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Dithered Bento Grid (Q8)</h3>
-        <p>The same 1-bit bento layout, rendered at Q8 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="q8-stationery-retail-catalogue/">
-      <div class="card-strip"><span class="card-name">q8-stationery-retail-catalogue</span><span class="card-index">29</span></div>
-      <div class="card-screen"><video src="thumbs/q8-stationery-retail-catalogue.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Stationery Retail Catalogue (Q8)</h3>
-        <p>The same stationery shop catalogue, rendered at Q8 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="q8-virtual-boy-website-2/">
-      <div class="card-strip"><span class="card-name">q8-virtual-boy-website-2</span><span class="card-index">30</span></div>
-      <div class="card-screen"><video src="thumbs/q8-virtual-boy-website-2.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Virtual Boy Microsite (Q8)</h3>
-        <p>The same retro Virtual Boy microsite, rendered at Q8 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="q8-website-hand-drawn/">
-      <div class="card-strip"><span class="card-name">q8-website-hand-drawn</span><span class="card-index">31</span></div>
-      <div class="card-screen"><video src="thumbs/q8-website-hand-drawn.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>The Moss Notebook (Q8)</h3>
-        <p>The same hand-drawn field journal, rendered at Q8 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-    <a class="card" href="q8-pagoda-voxel/">
-      <div class="card-strip"><span class="card-name">q8-pagoda-voxel</span><span class="card-index">32</span></div>
-      <div class="card-screen"><video src="thumbs/q8-pagoda-voxel.mp4" autoplay muted loop playsinline></video><span class="card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
-      <div class="card-body">
-        <h3>Voxel Pagoda Garden (Q8)</h3>
-        <p>The same voxel pagoda garden, rendered at Q8 precision.</p>
-        <div class="card-footer"><span class="card-cta">Open demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-      </div>
-    </a>
-
-  </div>
 </main>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <span class="credit-mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"/></svg>
-    </span>
-    <p class="credit-text"><strong>Every page here is a first attempt.</strong> This gallery and all thirty-two demos linked from it were generated by Qwen3.8-27B on release day.</p>
-  </div>
+<footer>
+  Source on <a href="https://github.com/loktar00/qwen3-8-27b-demos">GitHub</a>. Read the <a href="prompts/">prompts</a> behind the original Qwen demos.
 </footer>
-
-<script>
-  (function () {
-    var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
-
-    if (!('IntersectionObserver' in window)) {
-      cards.forEach(function (c) { c.classList.add('visible'); });
-      return;
-    }
-
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          var el = entry.target;
-          var idx = cards.indexOf(el);
-          setTimeout(function () { el.classList.add('visible'); }, Math.min(idx, 8) * 45);
-          io.unobserve(el);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -24px 0px' });
-
-    cards.forEach(function (c) { io.observe(c); });
-  })();
-</script>
-
 </body>
 </html>

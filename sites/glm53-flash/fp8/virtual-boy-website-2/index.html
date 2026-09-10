@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIRTUAL BOY — Red Space Collector Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Chakra+Petch:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#070303; --bg2:#0b0404; --panel:#100505; --line:#2a0a07;
+  --red:#ff2015; --red-hi:#ff6a5e; --red-mid:#d8432f; --red-dim:#a4342a; --red-deep:#5c0f09;
+  --txt:#e7c9c2; --txt-dim:#97706a; --txt-faint:#6b4b46;
+  --paper:#ece1cd; --paper2:#e3d6bd; --ink:#1c110e; --pink:#b3140a;
+  --disp:'Michroma',sans-serif; --body:'Chakra Petch',sans-serif; --mono:'IBM Plex Mono',monospace; --px:'Press Start 2P',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--body);font-weight:300;overflow-x:hidden;line-height:1.65}
+::selection{background:var(--red);color:#140404}
+a{color:inherit;text-decoration:none}
+img,canvas,svg{display:block}
+:focus-visible{outline:1px dashed var(--red);outline-offset:3px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#0b0404}
+::-webkit-scrollbar-thumb{background:#3d0f0a;border:2px solid #0b0404}
+::-webkit-scrollbar-thumb:hover{background:var(--red-dim)}
+
+/* ============ GLOBAL FX ============ */
+.fx-scan{position:fixed;inset:0;pointer-events:none;z-index:96;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);opacity:.45;mix-blend-mode:multiply}
+.fx-noise{position:fixed;inset:0;pointer-events:none;z-index:95;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23n)' opacity='0.6'/></svg>")}
+#progress{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--red);transform:scaleX(0);transform-origin:0 50%;z-index:120;box-shadow:0 0 12px rgba(255,32,21,.7)}
+
+/* ============ BOOT ============ */
+#boot{position:fixed;inset:0;z-index:300;background:#050202;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;cursor:pointer;transition:opacity .55s ease;animation:bootout .5s ease 2.3s forwards}
+#boot.done{opacity:0;pointer-events:none}
+@keyframes bootout{to{opacity:0;visibility:hidden}}
+.boot-mark{width:64px;height:40px;border:2px solid var(--red);border-radius:14px;position:relative;box-shadow:0 0 22px rgba(255,32,21,.35),inset 0 0 12px rgba(255,32,21,.15);animation:bootpulse 1s steps(2) infinite}
+.boot-mark::before,.boot-mark::after{content:"";position:absolute;top:50%;width:14px;height:14px;border:1px solid var(--red);border-radius:50%;transform:translateY(-50%)}
+.boot-mark::before{left:9px}.boot-mark::after{right:9px}
+@keyframes bootpulse{50%{opacity:.55}}
+#bootlog{font:10px var(--px);color:var(--red-dim,#8c2a1e);line-height:2.1;text-align:left;min-height:110px}
+#bootlog div{animation:blip .2s steps(2)}
+@keyframes blip{from{opacity:0}}
+
+/* ============ NAV ============ */
+nav{position:fixed;top:0;left:0;right:0;z-index:110;display:flex;align-items:center;gap:28px;padding:0 clamp(18px,4vw,44px);height:66px;border-bottom:1px solid var(--line);background:rgba(7,3,3,.72);backdrop-filter:blur(10px);transition:height .3s,background .3s}
+nav.small{height:54px;background:rgba(7,3,3,.92)}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.brand svg{width:38px;height:24px}
+.brand-name{font:11px var(--disp);color:var(--red-hi);letter-spacing:.14em}
+.brand-sub{font:8px var(--mono);color:var(--txt-faint);letter-spacing:.28em;display:block;margin-top:2px}
+.nav-links{display:flex;gap:26px;list-style:none}
+.nav-links a{font:500 10.5px var(--mono);letter-spacing:.22em;color:var(--txt-dim);padding:6px 2px;position:relative;transition:color .25s}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--red);transition:width .3s}
+.nav-links a:hover,.nav-links a.active{color:var(--red-hi)}
+.nav-links a.active::after,.nav-links a:hover::after{width:100%}
+.nav-cta{font:600 10px var(--mono);letter-spacing:.2em;color:var(--red);border:1px solid var(--red-deep);padding:9px 16px;background:rgba(255,32,21,.05);transition:.3s;white-space:nowrap}
+.nav-cta:hover{background:var(--red);color:#120303;border-color:var(--red);box-shadow:0 0 20px rgba(255,32,21,.45)}
+#menuBtn{display:none;width:40px;height:34px;background:none;border:1px solid var(--line);cursor:pointer;position:relative}
+#menuBtn span{position:absolute;left:8px;right:8px;height:2px;background:var(--red);transition:.3s}
+#menuBtn span:nth-child(1){top:10px}#menuBtn span:nth-child(2){top:16px}#menuBtn span:nth-child(3){top:22px}
+#mmenu{position:fixed;inset:0;z-index:105;background:rgba(6,2,2,.97);display:flex;flex-direction:column;justify-content:center;padding:0 10vw;gap:6px;opacity:0;pointer-events:none;transition:opacity .35s}
+#mmenu.open{opacity:1;pointer-events:auto}
+#mmenu a{font:clamp(22px,7vw,34px) var(--disp);color:var(--txt);padding:12px 0;border-bottom:1px solid var(--line);transition:color .25s}
+#mmenu a:hover{color:var(--red)}
+body.menu-open #menuBtn span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+body.menu-open #menuBtn span:nth-child(2){opacity:0}
+body.menu-open #menuBtn span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ============ LAYOUT PRIMITIVES ============ */
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+section{scroll-margin-top:76px}
+.sec{padding:clamp(80px,11vh,130px) 0;position:relative}
+.sec-head{margin-bottom:clamp(36px,6vh,64px)}
+.sec-meta{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.sec-num{font:10px var(--px);color:var(--red);letter-spacing:.1em}
+.sec-rule{flex:0 0 clamp(50px,8vw,110px);height:1px;background:linear-gradient(90deg,var(--red),transparent)}
+.sec-tag{font:500 10px var(--mono);letter-spacing:.34em;color:var(--txt-faint)}
+.sec h2{font:clamp(24px,3.6vw,42px) var(--disp);line-height:1.18;color:#f3ded7;letter-spacing:.01em;max-width:820px}
+.sec h2 em{font-style:normal;color:var(--red)}
+.ticks{height:12px;max-width:1180px;margin:0 auto;opacity:.5;background:repeating-linear-gradient(90deg,rgba(255,42,28,.55) 0 1px,transparent 1px 16px);-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .85s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none}
+
+/* buttons */
+.btn{position:relative;display:inline-flex;align-items:center;gap:.8em;font:600 11px var(--mono);letter-spacing:.24em;text-transform:uppercase;padding:16px 28px;border:1px solid var(--red);color:var(--red-hi);background:rgba(255,32,21,.05);cursor:pointer;transition:.3s;user-select:none}
+.btn::before,.btn::after{content:"";position:absolute;width:7px;height:7px;border:1px solid var(--red);transition:.3s}
+.btn::before{top:-4px;left:-4px;border-right:0;border-bottom:0}
+.btn::after{bottom:-4px;right:-4px;border-left:0;border-top:0}
+.btn:hover{background:var(--red);color:#140404;box-shadow:0 0 30px rgba(255,32,21,.4)}
+.btn:hover::before{top:-8px;left:-8px}
+.btn:hover::after{bottom:-8px;right:-8px}
+.btn-solid{background:var(--red);color:#140404}
+.btn-solid:hover{background:var(--red-hi);border-color:var(--red-hi)}
+
+/* ============ HERO ============ */
+.hero{position:relative;height:100svh;min-height:620px;max-height:1100px;overflow:hidden;display:flex;align-items:center}
+.hero-canvas{position:absolute;inset:0;cursor:grab}
+.hero-canvas:active{cursor:grabbing}
+.hero-canvas canvas{display:block}
+.hero-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 120% 90% at 50% 42%,rgba(7,3,3,0) 30%,rgba(7,3,3,.82) 100%)}
+.hero-inner{position:relative;z-index:5;text-align:center;padding:0 20px;pointer-events:none;transform:translate3d(calc(var(--mx,0)*-10px),calc(var(--my,0)*-6px),0)}
+.eyebrow{font:10px var(--px);color:var(--red-dim);letter-spacing:.2em;margin-bottom:30px;text-shadow:0 0 14px rgba(255,32,21,.4)}
+.hero-title{font-family:var(--disp);line-height:.98;letter-spacing:.02em}
+.hero-title .line{display:block}
+.hero-title .outline{font-size:clamp(2.4rem,8.4vw,7.2rem);color:transparent;-webkit-text-stroke:1.5px var(--red-mid);text-stroke:1.5px var(--red-mid)}
+.hero-title .fill{position:relative;font-size:clamp(3.2rem,12.5vw,10.5rem);color:var(--red);animation:flick 7s steps(1) infinite}
+.hero-title .ghost{position:absolute;left:2px;top:2px;width:100%;color:var(--red);filter:blur(22px);opacity:.4;z-index:-1;animation:flick 7s steps(1) infinite}
+@keyframes flick{0%,88.9%,92.9%,95.9%,100%{opacity:1}89%{opacity:.6}91%{opacity:.85}93%{opacity:.5}95%{opacity:1}96.5%{opacity:.75}}
+.hero-tag{max-width:520px;margin:30px auto 40px;color:var(--txt);font-size:clamp(14px,1.6vw,17px);font-weight:400;text-shadow:0 2px 18px rgba(0,0,0,.9)}
+.hero-cta{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;pointer-events:auto}
+.hud{position:absolute;z-index:5;font:9px var(--px);color:rgba(216,67,47,.75);letter-spacing:.1em;pointer-events:none;transition:transform .2s}
+.hud-tl{top:86px;left:26px}.hud-tr{top:86px;right:26px;text-align:right}.hud-bl{bottom:26px;left:26px}.hud-br{bottom:26px;right:26px;text-align:right}
+.scroll-cue{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:5;font:9px var(--px);color:var(--txt-faint);letter-spacing:.3em;display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none}
+.scroll-cue span{width:1px;height:34px;background:linear-gradient(var(--red),transparent);animation:drip 1.6s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}55%{transform:scaleY(1);transform-origin:top}56%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ============ MARQUEE ============ */
+.marquee{overflow:hidden;border-block:1px solid var(--line);background:var(--bg2);padding:13px 0}
+.mq-track{display:flex;gap:0;width:max-content;animation:mq 30s linear infinite}
+.marquee.rev .mq-track{animation-direction:reverse}
+.mq-track span{font:9px var(--px);color:var(--red-dim);letter-spacing:.14em;padding:0 26px;white-space:nowrap}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ============ STORY ============ */
+.story-grid{display:grid;grid-template-columns:190px 1fr;gap:clamp(30px,5vw,70px)}
+.story-rail{position:relative}
+.story-rail .rail-year{font:10px var(--px);color:var(--red);writing-mode:vertical-rl;letter-spacing:.5em;opacity:.8;position:sticky;top:120px}
+.story-body p{margin-bottom:26px;font-size:clamp(15px,1.5vw,17.5px);color:var(--txt);max-width:66ch}
+.story-body p:first-of-type::first-letter{font-family:var(--disp);font-size:3.4em;float:left;line-height:.85;padding:6px 14px 0 0;color:var(--red)}
+.pull{margin:46px 0;padding:26px 0 26px 30px;border-left:2px solid var(--red);font:clamp(17px,2vw,22px) var(--disp);line-height:1.5;color:#f3ded7}
+.pull small{display:block;margin-top:14px;font:10px var(--mono);letter-spacing:.3em;color:var(--txt-faint)}
+
+/* ============ OBJECT / DIAGRAM ============ */
+.object-grid{display:grid;grid-template-columns:7fr 5fr;gap:clamp(30px,5vw,64px);align-items:start}
+#diagram{width:100%;height:auto;background:radial-gradient(circle at 50% 45%,rgba(255,32,21,.05),transparent 65%);border:1px solid var(--line)}
+#diagram [data-part]{transition:opacity .4s,transform .75s cubic-bezier(.22,.9,.26,1)}
+#diagram.hotg [data-part]{opacity:.22}
+#diagram.hotg [data-part].hot{opacity:1}
+#diagram [data-part].hot .ds{stroke:var(--red-hi)}
+#diagram [data-part].hot text{fill:var(--red-hi)}
+#diagram text{font:10px var(--mono);letter-spacing:.12em;fill:#8a625b;transition:fill .3s}
+#diagram .axis{opacity:0;transition:opacity .5s;stroke:var(--red-deep);stroke-dasharray:3 6}
+#diagram.exp .axis{opacity:.7}
+#diagram .ds{transition:stroke .3s}
+#diagram .led{fill:var(--red);animation:ledblink 2.2s steps(1) infinite}
+@keyframes ledblink{0%,100%{opacity:1}50%{opacity:.25}}
+#diagram.exp .p-lensl{transform:translate(-28px,-10px)}
+#diagram.exp .p-lensr{transform:translate(28px,-10px)}
+#diagram.exp .p-arch{transform:translateY(-30px)}
+#diagram.exp .p-slider{transform:translateY(-14px)}
+#diagram.exp .p-stand{transform:translateY(26px)}
+#diagram.exp .p-pad{transform:translate(28px,14px)}
+#diagram.exp .p-led{transform:translate(16px,-6px)}
+.obj-tools{display:flex;gap:14px;margin-top:16px}
+.parts{list-style:none}
+.parts li{padding:16px 4px;border-top:1px solid var(--line);display:grid;grid-template-columns:44px 1fr;gap:6px 14px;cursor:default;transition:background .3s,padding-left .3s}
+.parts li:last-child{border-bottom:1px solid var(--line)}
+.parts li:hover{background:rgba(255,32,21,.05);padding-left:12px}
+.parts .p-num{font:10px var(--px);color:var(--red);padding-top:4px}
+.parts .p-name{font:500 13px var(--body);letter-spacing:.18em;color:#f0d9d1;text-transform:uppercase}
+.parts .p-copy{grid-column:2;font-size:13.5px;color:var(--txt-dim)}
+
+/* ============ FEATURES ============ */
+.feat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.feat{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),#0c0404);padding:26px 24px 24px;overflow:hidden;transition:border-color .35s,transform .35s,box-shadow .35s;min-height:210px;display:flex;flex-direction:column}
+.feat:hover{border-color:var(--red-dim);transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,0,0,.6),0 0 0 1px rgba(255,32,21,.2),0 0 34px rgba(255,32,21,.09)}
+.feat .f-idx{position:absolute;top:8px;right:14px;font:26px var(--disp);color:rgba(255,42,28,.1);transition:color .35s}
+.feat:hover .f-idx{color:rgba(255,42,28,.28)}
+.feat svg{width:30px;height:30px;stroke:var(--red);fill:none;stroke-width:1.4;margin-bottom:16px}
+.feat h3{font:12px var(--disp);letter-spacing:.12em;color:#f0d9d1;margin-bottom:10px;line-height:1.5}
+.feat p{font-size:13.5px;color:var(--txt-dim)}
+.feat .f-led{margin-top:auto;height:54px;background-image:radial-gradient(circle,rgba(255,42,28,.95) 1.3px,transparent 1.8px),radial-gradient(circle,rgba(255,42,28,.25) 1.3px,transparent 1.8px);background-size:9px 9px;background-position:0 0,4.5px 4.5px;animation:ledwave 1.1s steps(3) infinite;mask-image:linear-gradient(90deg,#000 55%,transparent)}
+@keyframes ledwave{to{background-position:9px 0,13.5px 4.5px}}
+.feat .f-rar{margin-top:auto;display:flex;gap:4px}
+.feat .f-rar i{width:22px;height:8px;background:rgba(255,32,21,.14)}
+.feat .f-rar i.on{background:var(--red);box-shadow:0 0 8px rgba(255,32,21,.6)}
+.feat .f-note{margin-top:auto;font:8.5px var(--px);color:var(--red-dim);letter-spacing:.14em;line-height:1.9}
+.f-w4{grid-column:span 4}.f-w3{grid-column:span 3}.f-w2{grid-column:span 2}.f-w6{grid-column:span 6}
+.feat.f-w6{flex-direction:row;align-items:center;gap:34px;min-height:0}
+.feat.f-w6 .f-banner{margin-left:auto;text-align:right}
+.feat.f-w6 h3{font-size:15px}
+.feat.f-w6 p{max-width:52ch}
+
+/* ============ PAPER (dossier) ============ */
+.paper-wrap{background:var(--paper);color:var(--ink);position:relative;box-shadow:0 30px 80px rgba(0,0,0,.65)}
+.paper-wrap::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(28,17,14,.03) 0 1px,transparent 1px 4px)}
+.paper-inner{max-width:1180px;margin:0 auto;padding:clamp(44px,7vw,84px) clamp(22px,6vw,80px);position:relative}
+.paper-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:8px;flex-wrap:wrap}
+.paper-head h2{font:clamp(19px,2.6vw,30px) var(--disp);color:var(--pink);letter-spacing:.02em;max-width:none}
+.paper-code{font:11px var(--mono);letter-spacing:.2em;color:#6a5647;text-align:right;line-height:1.9}
+.paper-sub{font:11px var(--mono);letter-spacing:.28em;color:#8a7361;margin-bottom:34px}
+.stamp{position:absolute;top:clamp(80px,10vw,120px);right:clamp(20px,5vw,60px);transform:rotate(8deg);border:2px solid var(--pink);color:var(--pink);font:9px var(--px);padding:10px 14px;letter-spacing:.14em;opacity:.75;line-height:1.9;text-align:center;pointer-events:none}
+.barcode{height:32px;width:150px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 9px,var(--ink) 9px 12px,transparent 12px 14px,var(--ink) 14px 15px,transparent 15px 20px)}
+.spec-list{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,4vw,70px)}
+.spec-row{display:flex;justify-content:space-between;gap:18px;padding:12px 2px;border-bottom:1px solid rgba(28,17,14,.2);font-size:14px}
+.spec-row dt{font:11px var(--mono);letter-spacing:.16em;color:#8a7361;text-transform:uppercase;padding-top:2px;white-space:nowrap}
+.spec-row dd{font-weight:500;text-align:right;color:var(--ink)}
+.paper-foot{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding-top:14px;border-top:2px solid var(--ink);font:10px var(--mono);letter-spacing:.2em;color:#6a5647}
+
+/* comparison table */
+.tbl-scroll{overflow-x:auto;margin-top:8px}
+table.cmp{width:100%;border-collapse:collapse;font-size:13px;min-width:840px}
+.cmp th,.cmp td{border:1px solid rgba(28,17,14,.25);padding:11px 14px;text-align:left;vertical-align:top}
+.cmp thead th{font:11px var(--mono);letter-spacing:.14em;background:var(--ink);color:var(--paper);text-transform:uppercase}
+.cmp td:first-child{font:10.5px var(--mono);letter-spacing:.14em;color:#6a5647;text-transform:uppercase;white-space:nowrap}
+.cmp .vb{background:rgba(179,20,10,.1);font-weight:600;color:var(--pink)}
+.cmp thead .vb{background:var(--pink);color:var(--paper)}
+.cmp tbody tr:hover td:not(.vb){background:rgba(28,17,14,.05)}
+.cmp tbody tr:hover td.vb{background:rgba(179,20,10,.2)}
+
+/* ============ LIBRARY ============ */
+.lib-rail{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 22px;cursor:grab;scrollbar-width:none}
+.lib-rail::-webkit-scrollbar{display:none}
+.lib-rail.dragging{cursor:grabbing}
+.cart{flex:0 0 296px;scroll-snap-align:start;border:1px solid var(--line);background:linear-gradient(180deg,#120606,#0b0404);padding:16px;transition:border-color .35s,transform .35s,box-shadow .35s;user-select:none}
+.cart:hover{border-color:var(--red-dim);transform:translateY(-5px);box-shadow:0 16px 44px rgba(0,0,0,.7),0 0 26px rgba(255,32,21,.14)}
+.cart-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.cart-tag{font:9px var(--mono);letter-spacing:.2em;color:var(--txt-faint)}
+.cart-ridges{width:60px;height:10px;background:repeating-linear-gradient(90deg,var(--red-deep) 0 3px,transparent 3px 7px)}
+.thumb{position:relative;border:1px solid var(--line);margin-bottom:14px;overflow:hidden;background:#0a0303}
+.thumb canvas{width:100%;display:block;image-rendering:pixelated}
+.thumb .scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);pointer-events:none}
+.cart h3{font:12px var(--disp);letter-spacing:.1em;color:#f3ded7;margin-bottom:8px}
+.cart p{font-size:13px;color:var(--txt-dim);min-height:78px}
+.cart-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.cart-foot .lbl{font:8.5px var(--mono);letter-spacing:.24em;color:var(--txt-faint)}
+.dots{display:flex;gap:4px}
+.dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,32,21,.15)}
+.dots i.on{background:var(--red);box-shadow:0 0 7px rgba(255,32,21,.7)}
+.lib-progress{height:2px;background:var(--line);margin-top:6px}
+.lib-progress span{display:block;height:100%;width:12%;background:var(--red);transition:width .15s}
+.lib-hint{font:9px var(--mono);letter-spacing:.3em;color:var(--txt-faint);margin-top:14px}
+
+/* ============ VERDICT ============ */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);margin-bottom:clamp(40px,7vh,70px)}
+.stat{padding:28px 22px;border-right:1px solid var(--line);position:relative}
+.stat:last-child{border-right:0}
+.stat b{font:clamp(28px,4vw,46px) var(--disp);color:var(--red);display:block;line-height:1}
+.stat b small{font-size:.45em;color:var(--red-mid)}
+.stat span{font:9px var(--px);color:var(--txt-faint);letter-spacing:.16em;display:block;margin-top:12px;line-height:1.8}
+.verdict-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,54px)}
+.vcol h3{font:13px var(--px);letter-spacing:.2em;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.vcol.fall h3{color:var(--txt-dim)}
+.vcol.light h3{color:var(--red)}
+.vcol ul{list-style:none}
+.vcol li{padding:15px 0 15px 26px;border-bottom:1px solid rgba(255,42,28,.1);font-size:14.5px;position:relative;color:var(--txt)}
+.vcol li::before{content:"";position:absolute;left:0;top:24px;width:10px;height:10px;border:1px solid var(--red-dim);transform:rotate(45deg)}
+.vcol.light li::before{background:var(--red-deep);border-color:var(--red)}
+
+/* ============ TIMELINE ============ */
+.tl{position:relative;padding-left:34px;max-width:860px}
+.tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:1px;background:linear-gradient(var(--red),var(--red-deep),transparent)}
+.tl-item{position:relative;padding:0 0 40px 34px}
+.tl-item:nth-child(even){margin-left:clamp(0px,7vw,90px)}
+.tl-item::before{content:"";position:absolute;left:-34px;top:8px;width:11px;height:11px;background:var(--bg);border:2px solid var(--red);transform:rotate(45deg);box-shadow:0 0 12px rgba(255,32,21,.5)}
+.tl-year{font:15px var(--disp);color:var(--red);letter-spacing:.06em}
+.tl-t{font:500 15px var(--body);letter-spacing:.2em;color:#f0d9d1;text-transform:uppercase;margin:6px 0 8px}
+.tl-item p{font-size:14px;color:var(--txt-dim);max-width:56ch}
+
+/* ============ RED SPACE ============ */
+.visor-frame{position:relative;border:1px solid var(--red-deep);background:#080202;padding:14px;box-shadow:0 0 0 1px #000,0 24px 70px rgba(0,0,0,.7),inset 0 0 60px rgba(255,32,21,.05)}
+.visor-frame::after{content:"";position:absolute;inset:14px;pointer-events:none;box-shadow:inset 0 0 90px rgba(120,10,4,.55)}
+#redcv{width:100%;height:clamp(320px,46vw,520px);display:block;cursor:crosshair;touch-action:pan-y}
+.visor-strip{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:12px;font:9px var(--px);color:var(--red-dim);letter-spacing:.14em}
+.visor-strip .blink{animation:ledblink 1.4s steps(1) infinite}
+@keyframes ledblink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ============ MARKET ============ */
+.mkt-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.lot{border:1px solid var(--line);background:linear-gradient(180deg,#120606,#0c0404);padding:22px;transition:border-color .35s,transform .35s,box-shadow .35s;display:flex;flex-direction:column}
+.lot:hover{border-color:var(--red-dim);transform:translateY(-4px);box-shadow:0 16px 44px rgba(0,0,0,.7),0 0 24px rgba(255,32,21,.12)}
+.lot-feat{grid-column:span 7;grid-row:span 2;background:linear-gradient(160deg,#1a0706,#0b0404 70%)}
+.lot-s{grid-column:span 5}
+.lot-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.tier{font:8.5px var(--px);letter-spacing:.12em;padding:7px 10px;border:1px solid var(--red-deep);color:var(--red-mid)}
+.lot-feat .tier{border-color:var(--red);color:var(--red);background:rgba(255,32,21,.08);box-shadow:0 0 16px rgba(255,32,21,.25)}
+.lot h3{font:13px var(--disp);letter-spacing:.1em;color:#f3ded7;line-height:1.6}
+.lot .cond{font:10px var(--mono);letter-spacing:.2em;color:var(--red-hi);margin:8px 0 12px}
+.lot p{font-size:13.5px;color:var(--txt-dim)}
+.manifest{list-style:none;margin:16px 0;columns:2;column-gap:26px;font:11.5px var(--mono);color:var(--txt-dim)}
+.manifest li{padding:5px 0;border-bottom:1px dashed rgba(255,42,28,.16);break-inside:avoid}
+.manifest li::before{content:"▸ ";color:var(--red-dim)}
+.lot-foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.price{font:clamp(16px,2vw,22px) var(--disp);color:var(--red)}
+.price small{display:block;font:9px var(--mono);letter-spacing:.22em;color:var(--txt-faint);margin-top:5px}
+.watch{font:600 9.5px var(--mono);letter-spacing:.2em;padding:10px 16px;border:1px solid var(--red-deep);background:none;color:var(--red-mid);cursor:pointer;transition:.3s}
+.watch:hover{border-color:var(--red);color:var(--red);background:rgba(255,32,21,.08);box-shadow:0 0 16px rgba(255,32,21,.3)}
+.watch.on{background:var(--red);color:#140404;border-color:var(--red)}
+.lot-meta{font:9px var(--mono);letter-spacing:.18em;color:var(--txt-faint);margin-top:8px}
+.mkt-note{margin-top:26px;font:10px var(--mono);letter-spacing:.16em;color:var(--txt-faint);line-height:2}
+
+/* ============ VOICES ============ */
+.voices{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,54px)}
+.vq-big{position:relative;padding:34px 0 0 34px}
+.vq-big::before{content:"";position:absolute;left:0;top:0;width:2px;height:100%;background:var(--red)}
+.vq-big blockquote{font:clamp(19px,2.6vw,30px) var(--disp);line-height:1.45;color:#f3ded7}
+.vq-big blockquote em{font-style:normal;color:var(--red)}
+.vq-big cite{display:block;margin-top:22px;font:10px var(--mono);letter-spacing:.26em;color:var(--txt-faint);font-style:normal}
+.vq{padding:22px 0;border-bottom:1px solid var(--line)}
+.vq:first-child{padding-top:0}
+.vq blockquote{font-size:15.5px;color:var(--txt)}
+.vq cite{display:block;margin-top:10px;font:9.5px var(--mono);letter-spacing:.24em;color:var(--txt-faint);font-style:normal}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--line);background:var(--bg2);position:relative;overflow:hidden}
+.foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:36px;padding:clamp(50px,8vh,80px) 0 50px}
+.foot-brand p{font-size:13px;color:var(--txt-faint);max-width:34ch;margin-top:14px}
+.foot-col h4{font:9px var(--px);color:var(--red);letter-spacing:.2em;margin-bottom:18px}
+.foot-col ul{list-style:none}
+.foot-col li{margin-bottom:10px}
+.foot-col a{font:12.5px var(--mono);letter-spacing:.12em;color:var(--txt-dim);transition:.25s;display:inline-flex;gap:8px}
+.foot-col a::before{content:"→";color:var(--red-deep);transition:.25s}
+.foot-col a:hover{color:var(--red-hi)}
+.foot-col a:hover::before{color:var(--red);transform:translateX(3px)}
+.legal{border-top:1px solid var(--line);padding:26px 0 10px;font:10px var(--mono);letter-spacing:.1em;color:var(--txt-faint);line-height:2}
+.foot-ghost{overflow:hidden;pointer-events:none}
+.foot-ghost span{display:block;font:clamp(50px,13vw,150px) var(--disp);color:transparent;-webkit-text-stroke:1px rgba(255,42,28,.13);text-align:center;line-height:1.1;white-space:nowrap;transform:translateY(18%)}
+#toasts{position:fixed;right:20px;bottom:20px;z-index:250;display:flex;flex-direction:column;gap:10px}
+.toast{font:10px var(--mono);letter-spacing:.14em;background:#120505;border:1px solid var(--red);border-left:4px solid var(--red);color:var(--red-hi);padding:14px 18px;max-width:320px;opacity:0;transform:translateX(24px);transition:.4s;box-shadow:0 10px 34px rgba(0,0,0,.7)}
+.toast.show{opacity:1;transform:none}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:980px){
+  .story-grid{grid-template-columns:1fr}
+  .story-rail .rail-year{writing-mode:horizontal-tb;position:static;display:block;margin-bottom:14px}
+  .object-grid{grid-template-columns:1fr}
+  .feat{grid-column:span 3 !important}
+  .feat.f-w6{flex-direction:column;align-items:flex-start}
+  .feat.f-w6 .f-banner{text-align:left;margin-left:0}
+  .spec-list{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:0}
+  .stat:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .verdict-grid,.voices{grid-template-columns:1fr}
+  .lot-feat,.lot-s{grid-column:span 12}
+  .manifest{columns:1}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  .nav-links{display:none}
+  #menuBtn{display:block}
+  .hud-bl,.hud-tr{display:none}
+  .feat{grid-column:span 6 !important}
+  .stamp{position:static;transform:rotate(-3deg);display:inline-block;margin-bottom:26px}
+  .foot-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  .mq-track,.hero-title .fill,.hero-title .ghost,.feat .f-led,#diagram .led,.scroll-cue span,.visor-strip .blink{animation:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- global fx -->
+<div class="fx-scan" aria-hidden="true"></div>
+<div class="fx-noise" aria-hidden="true"></div>
+<div id="progress" aria-hidden="true"></div>
+<div id="toasts" aria-live="polite"></div>
+
+<!-- boot -->
+<div id="boot" aria-hidden="true">
+  <div class="boot-mark"></div>
+  <div id="bootlog"></div>
+</div>
+
+<!-- nav -->
+<nav id="nav">
+  <a class="brand" href="#top" style="text-decoration:none">
+    <svg viewBox="0 0 38 24" aria-hidden="true"><rect x="1.5" y="1.5" width="35" height="21" rx="10" fill="none" stroke="#ff2015" stroke-width="2"/><circle cx="12.5" cy="12" r="4.4" fill="none" stroke="#ff2015" stroke-width="1.6"/><circle cx="25.5" cy="12" r="4.4" fill="none" stroke="#ff2015" stroke-width="1.6"/></svg>
+    <span><span class="brand-name">VIRTUAL&nbsp;BOY</span><br><span class="brand-sub">COLLECTOR ARCHIVE // VB-01</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#story" data-sec="story">THE STORY</a></li>
+    <li><a href="#object" data-sec="object">THE OBJECT</a></li>
+    <li><a href="#library" data-sec="library">LIBRARY</a></li>
+    <li><a href="#market" data-sec="market">MARKET</a></li>
+    <li><a href="#voices" data-sec="voices">LEGACY</a></li>
+  </ul>
+  <a class="nav-cta" href="#redspace">ENTER RED SPACE</a>
+  <button id="menuBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mmenu">
+  <a href="#story">THE STORY</a><a href="#object">THE OBJECT</a><a href="#library">LIBRARY</a><a href="#redspace">RED SPACE</a><a href="#market">MARKET</a><a href="#voices">LEGACY</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-canvas" id="heroCanvas" aria-label="Interactive wireframe Virtual Boy diorama. Drag to rotate."></div>
+  <div class="hero-vignette" aria-hidden="true"></div>
+  <div class="hud hud-tl">SIG // VB-01 LIVE</div>
+  <div class="hud hud-tr">PARALLAX: ON</div>
+  <div class="hud hud-bl">2× LED · 384×224 · 50.4&nbsp;HZ</div>
+  <div class="hud hud-br">DRAG TO ROTATE</div>
+  <div class="hero-inner">
+    <p class="eyebrow rv">NINTENDO · R&amp;D1 · MODEL VB-01 · SHIPPED 1995</p>
+    <h1 class="hero-title">
+      <span class="outline rv" style="--d:.08s">VIRTUAL</span>
+      <span class="fill rv" style="--d:.16s">BOY<span class="ghost" aria-hidden="true">BOY</span></span>
+    </h1>
+    <p class="hero-tag rv" style="--d:.28s">One color. Two eyes. A future the world wasn't ready to hold up to its face.</p>
+    <div class="hero-cta rv" style="--d:.4s">
+      <a class="btn btn-solid" href="#story">EXPLORE THE HARDWARE</a>
+      <a class="btn" href="#redspace">ENTER RED SPACE</a>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#story"><span></span>SCROLL</a>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="mq-track">
+  <span>/// PARALLAX ENGINE</span><span>/// FOUR SHADES OF RED</span><span>/// NO SCREEN REQUIRED</span><span>/// MODEL VB-01</span><span>/// EST. 1995</span><span>/// DEPTH IS A DIRECTION</span><span>/// HANDLE HISTORY WITH CARE</span>
+  <span>/// PARALLAX ENGINE</span><span>/// FOUR SHADES OF RED</span><span>/// NO SCREEN REQUIRED</span><span>/// MODEL VB-01</span><span>/// EST. 1995</span><span>/// DEPTH IS A DIRECTION</span><span>/// HANDLE HISTORY WITH CARE</span>
+</div></div>
+
+<!-- ============ STORY ============ -->
+<section class="sec" id="story">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.01</span><span class="sec-rule"></span><span class="sec-tag">THE EXPERIMENT</span></div>
+      <h2>The most conservative company in gaming shipped its strangest machine.</h2>
+    </header>
+    <div class="story-grid">
+      <div class="story-rail rv"><span class="rail-year">JUL 1995 — SENT TO MARKET</span></div>
+      <div class="story-body">
+        <p class="rv">In July 1995, Nintendo was the most confident company in the industry. It had just defined portable play, and its mascot was everywhere. Into that certainty, R&amp;D1 — the laboratory of Gunpei Yokoi, the engineer famous for finding new uses for old technology — slipped its strangest document: a console with no shared screen. No TV. No window. A visor you lowered onto your face at a kitchen table, alone with two mirrors and four shades of red.</p>
+        <p class="rv" style="--d:.1s">The Virtual Boy didn't display games; it placed them a few inches behind your eyes. Each LED matrix fired a single color at a single retina, and the engineered offset between the two images became depth — genuine, physical parallax, not the painted illusion of the era's pseudo-3D. For a few minutes, a wireframe horizon truly receded. Players of a certain age still describe the first time in the same words: it felt like the future, if the future only had one color.</p>
+        <blockquote class="pull rv" style="--d:.15s">"It offered depth the only way it could — one color, delivered twice."
+          <cite>— ARCHIVE ANNOTATION, LOT 0387</cite>
+        </blockquote>
+        <p class="rv" style="--d:.1s">It was withdrawn within fourteen months, and for two decades it served as shorthand for failure. But failed-forward artifacts age differently. What remains is the purest document of a moment when "virtual reality" was a promise rather than a product category — an object of lab-grade stubbornness, released into a living room that wasn't asking for it. Which is, of course, exactly why we archive it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ticks" aria-hidden="true"></div>
+
+<!-- ============ OBJECT ============ -->
+<section class="sec" id="object">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.02</span><span class="sec-rule"></span><span class="sec-tag">REINTRODUCED FOR COLLECTORS</span></div>
+      <h2>Anatomy of the object: a visor, a tripod, and a pad from a braver timeline.</h2>
+    </header>
+    <div class="object-grid">
+      <div class="rv">
+        <svg id="diagram" viewBox="0 0 760 520" role="img" aria-label="Annotated wireframe diagram of the Virtual Boy headset and controller">
+          <line class="axis" x1="380" y1="60" x2="380" y2="500" stroke-dasharray="3 6"/>
+          <!-- shell -->
+          <g class="p-shell" data-part="shell">
+            <rect class="ds" x="200" y="150" width="360" height="190" rx="70" fill="none" stroke="#d8432f" stroke-width="2"/>
+            <rect class="ds" x="216" y="164" width="328" height="162" rx="58" fill="none" stroke="#7c2a20" stroke-width="1" stroke-dasharray="4 5"/>
+            <text x="596" y="192">04 · VISOR SHELL</text>
+            <line class="ds" x1="590" y1="188" x2="556" y2="212" stroke="#5c2b23" stroke-dasharray="3 4"/>
+            <circle class="ds" cx="556" cy="212" r="2.5" fill="#d8432f" stroke="none"/>
+          </g>
+          <!-- lens left -->
+          <g class="p-optics p-lensl" data-part="optics">
+            <circle class="ds" cx="300" cy="245" r="58" fill="rgba(255,32,21,.04)" stroke="#d8432f" stroke-width="2"/>
+            <circle class="ds" cx="300" cy="245" r="36" fill="none" stroke="#7c2a20" stroke-width="1.2"/>
+            <circle class="ds" cx="300" cy="245" r="18" fill="none" stroke="#7c2a20" stroke-width="1" stroke-dasharray="3 4"/>
+            <path class="ds" d="M 266,220 A 46 46 0 0 1 292,204" fill="none" stroke="#ff6a5e" stroke-width="1.6"/>
+            <text x="52" y="140">01 · DUAL OPTICS</text>
+            <line class="ds" x1="130" y1="146" x2="256" y2="212" stroke="#5c2b23" stroke-dasharray="3 4"/>
+            <circle class="ds" cx="256" cy="212" r="2.5" fill="#d8432f" stroke="none"/>
+          </g>
+          <!-- lens right -->
+          <g class="p-optics p-lensr" data-part="optics">
+            <circle class="ds" cx="460" cy="245" r="58" fill="rgba(255,32,21,.04)" stroke="#d8432f" stroke-width="2"/>
+            <circle class="ds" cx="460" cy="245" r="36" fill="none" stroke="#7c2a20" stroke-width="1.2"/>
+            <circle class="ds" cx="460" cy="245" r="18" fill="none" stroke="#7c2a20" stroke-width="1" stroke-dasharray="3 4"/>
+            <path class="ds" d="M 426,220 A 46 46 0 0 1 452,204" fill="none" stroke="#ff6a5e" stroke-width="1.6"/>
+          </g>
+          <!-- slider -->
+          <g class="p-slider" data-part="slider">
+            <rect class="ds" x="335" y="120" width="90" height="10" rx="5" fill="none" stroke="#7c2a20" stroke-width="1.4"/>
+            <rect class="ds" x="368" y="115" width="20" height="19" rx="4" fill="#d8432f" stroke="none"/>
+            <text x="298" y="66">02 · FOCUS SLIDER</text>
+            <line class="ds" x1="380" y1="72" x2="380" y2="110" stroke="#5c2b23" stroke-dasharray="3 4"/>
+          </g>
+          <!-- arch -->
+          <g class="p-arch" data-part="arch">
+            <path class="ds" d="M 258,150 C 258,80 502,80 502,150" fill="none" stroke="#d8432f" stroke-width="2"/>
+            <path class="ds" d="M 276,150 C 276,96 484,96 484,150" fill="none" stroke="#7c2a20" stroke-width="1"/>
+            <text x="556" y="86">03 · CARRY ARCH</text>
+            <line class="ds" x1="550" y1="82" x2="498" y2="102" stroke="#5c2b23" stroke-dasharray="3 4"/>
+          </g>
+          <!-- stand -->
+          <g class="p-stand" data-part="stand">
+            <line class="ds" x1="285" y1="340" x2="243" y2="462" stroke="#d8432f" stroke-width="2"/>
+            <line class="ds" x1="475" y1="340" x2="517" y2="462" stroke="#d8432f" stroke-width="2"/>
+            <circle class="ds" cx="266" cy="398" r="4" fill="#0b0404" stroke="#d8432f" stroke-width="1.6"/>
+            <circle class="ds" cx="494" cy="398" r="4" fill="#0b0404" stroke="#d8432f" stroke-width="1.6"/>
+            <rect class="ds" x="228" y="462" width="32" height="7" fill="#d8432f" stroke="none"/>
+            <rect class="ds" x="500" y="462" width="32" height="7" fill="#d8432f" stroke="none"/>
+            <text x="60" y="492">05 · TABLETOP STAND</text>
+            <line class="ds" x1="216" y1="486" x2="252" y2="452" stroke="#5c2b23" stroke-dasharray="3 4"/>
+          </g>
+          <!-- led -->
+          <g class="p-led" data-part="led">
+            <circle class="led" cx="536" cy="308" r="5"/>
+            <text x="576" y="312">07 · STANDBY LED</text>
+            <line class="ds" x1="570" y1="304" x2="546" y2="306" stroke="#5c2b23" stroke-dasharray="3 4"/>
+          </g>
+          <!-- controller -->
+          <g class="p-pad" data-part="pad" transform="translate(548,352)">
+            <rect class="ds" x="0" y="10" width="150" height="42" rx="21" fill="rgba(255,32,21,.04)" stroke="#d8432f" stroke-width="2"/>
+            <rect class="ds" x="14" y="40" width="26" height="52" rx="13" fill="none" stroke="#7c2a20" stroke-width="1.4" transform="rotate(12 27 66)"/>
+            <rect class="ds" x="110" y="40" width="26" height="52" rx="13" fill="none" stroke="#7c2a20" stroke-width="1.4" transform="rotate(-12 123 66)"/>
+            <rect class="ds" x="30" y="25" width="26" height="8" rx="2" fill="#d8432f" stroke="none"/>
+            <rect class="ds" x="34" y="21" width="8" height="20" rx="2" fill="#d8432f" stroke="none"/>
+            <circle class="ds" cx="100" cy="24" r="5" fill="none" stroke="#7c2a20" stroke-width="1.4"/>
+            <circle class="ds" cx="116" cy="24" r="5" fill="none" stroke="#7c2a20" stroke-width="1.4"/>
+            <circle class="ds" cx="100" cy="40" r="5" fill="none" stroke="#7c2a20" stroke-width="1.4"/>
+            <circle class="ds" cx="116" cy="40" r="5" fill="none" stroke="#7c2a20" stroke-width="1.4"/>
+            <text x="568" y="472">06 · DUAL-GRIP PAD</text>
+            <line class="ds" x1="640" y1="462" x2="622" y2="440" stroke="#5c2b23" stroke-dasharray="3 4"/>
+            <path class="ds" d="M 560,352 C 548,320 588,318 560,300" fill="none" stroke="#5c2b23" stroke-width="1.4" stroke-dasharray="4 4"/>
+          </g>
+        </svg>
+        <div class="obj-tools">
+          <button class="btn" id="explodeBtn" style="padding:12px 20px">ENGAGE EXPLODED VIEW</button>
+        </div>
+      </div>
+      <ul class="parts rv" style="--d:.12s">
+        <li data-part="optics"><span class="p-num">01</span><span class="p-name">Dual Optics</span><span class="p-copy">Twin lens barrels, one per eye, each terminating in its own red LED matrix. The pair does the work a color display never could.</span></li>
+        <li data-part="slider"><span class="p-num">02</span><span class="p-name">Focus Slider</span><span class="p-copy">A diopter lever on the crown pulls the double image into one. Skipping the ritual is why some players remember headaches instead of depth.</span></li>
+        <li data-part="arch"><span class="p-num">03</span><span class="p-name">Carry Arch</span><span class="p-name" hidden></span><span class="p-copy">The top handle makes the machine read as equipment, not toy. You carry it like an instrument.</span></li>
+        <li data-part="shell"><span class="p-num">04</span><span class="p-name">Visor Shell</span><span class="p-copy">Hard, matte, deliberately blackout. Nothing visible except the promise of what's behind the lenses.</span></li>
+        <li data-part="stand"><span class="p-num">05</span><span class="p-name">Tabletop Stand</span><span class="p-copy">Two legs plus your table complete the tripod. The headset never touches your lap — or your dignity.</span></li>
+        <li data-part="pad"><span class="p-num">06</span><span class="p-name">Dual-Grip Pad</span><span class="p-copy">Wired controller: two grips, an orthogonal D-pad, four face buttons. Geometry the industry spent a decade re-learning.</span></li>
+        <li data-part="led"><span class="p-num">07</span><span class="p-name">Standby LED</span><span class="p-copy">A single red dot beside the visor. The only indicator on the machine, and the only honest one.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="sec" id="features" style="background:var(--bg2);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.03</span><span class="sec-rule"></span><span class="sec-tag">CAPABILITY SET</span></div>
+      <h2>Eight reasons it shouldn't have worked. Eight reasons it's collectible.</h2>
+    </header>
+    <div class="feat-grid feat" style="display:contents">
+      <article class="feat f-w4 rv"><span class="f-idx">01</span>
+        <svg viewBox="0 0 30 30" aria-hidden="true"><circle cx="6" cy="6" r="2.4" fill="#ff2015" stroke="none"/><circle cx="15" cy="6" r="2.4"/><circle cx="24" cy="6" r="2.4" fill="#ff2015" stroke="none"/><circle cx="6" cy="15" r="2.4"/><circle cx="15" cy="15" r="2.4" fill="#ff2015" stroke="none"/><circle cx="24" cy="15" r="2.4"/><circle cx="6" cy="24" r="2.4" fill="#ff2015" stroke="none"/><circle cx="15" cy="24" r="2.4"/><circle cx="24" cy="24" r="2.4" fill="#ff2015" stroke="none"/></svg>
+        <h3>RED MONOCHROME DISPLAY</h3>
+        <p>Dual LED matrices painting four shades of a single red. Not a compromise — a signature. Nothing else, then or now, looks like this.</p>
+        <div class="f-led" aria-hidden="true"></div>
+      </article>
+      <article class="feat f-w2 rv" style="--d:.06s"><span class="f-idx">02</span>
+        <svg viewBox="0 0 30 30" aria-hidden="true"><rect x="3" y="9" width="12" height="12"/><rect x="15" y="5" width="12" height="12" stroke-dasharray="3 3"/><line x1="9" y1="15" x2="21" y2="11" stroke-dasharray="2 3"/></svg>
+        <h3>STEREOSCOPIC PARALLAX</h3>
+        <p>Two screens, one per eye, offset by design. Depth you can lean into — no glasses, no dials, no apologies.</p>
+      </article>
+      <article class="feat f-w2 rv"><span class="f-idx">03</span>
+        <svg viewBox="0 0 30 30" aria-hidden="true"><path d="M15 4 L7 27 M15 4 L23 27 M15 4 L15 27"/><rect x="10" y="1" width="10" height="5"/></svg>
+        <h3>TABLETOP HEADSET</h3>
+        <p>A visor on a tripod. It doesn't fold into a pocket; it plants itself on the desk like lab equipment.</p>
+      </article>
+      <article class="feat f-w2 rv" style="--d:.06s"><span class="f-idx">04</span>
+        <svg viewBox="0 0 30 30" aria-hidden="true"><rect x="4" y="10" width="24" height="10" rx="5"/><line x1="8" y1="15" x2="14" y2="15"/><line x1="11" y1="12" x2="11" y2="18"/><circle cx="24" cy="13" r="1.2" fill="#ff2015" stroke="none"/><circle cx="27" cy="16" r="1.2" fill="#ff2015" stroke="none"/></svg>
+        <h3>DUAL-GRIP CONTROLLER</h3>
+        <p>Two grips, one orthogonal pad, four face buttons. Ergonomics borrowed from a braver timeline.</p>
+      </article>
+      <article class="feat f-w2 rv" style="--d:.12s"><span class="f-idx">05</span>
+        <svg viewBox="0 0 30 30" aria-hidden="true"><rect x="8" y="4" width="14" height="22"/><line x1="10" y1="8" x2="20" y2="8"/><line x1="10" y1="11" x2="10" y2="11.5"/><line x1="14" y1="11" x2="14" y2="11.5"/><line x1="18" y1="11" x2="18" y2="11.5"/><rect x="11" y="14" width="8" height="8"/></svg>
+        <h3>CARTRIDGE LIBRARY</h3>
+        <p>22 titles shipped. Small, strange, fearless — every one an experiment with a serial number.</p>
+      </article>
+      <article class="feat f-w3 rv"><span class="f-idx">06</span>
+        <svg viewBox="0 0 30 30" aria-hidden="true"><rect x="10" y="5" width="14" height="22" rx="2"/><rect x="12.5" y="8" width="9" height="6"/><line x1="6" y1="12" x2="6" y2="20"/><line x1="4" y1="14" x2="4" y2="18"/></svg>
+        <h3>PORTABLE, NOT HANDHELD</h3>
+        <p>It travels — with a table, an outlet, and a little patience. Portability as redefined by a committee of one.</p>
+      </article>
+      <article class="feat f-w3 rv" style="--d:.06s"><span class="f-idx">07</span>
+        <svg viewBox="0 0 30 30" aria-hidden="true"><rect x="7" y="10" width="16" height="10" rx="5"/><circle cx="12.5" cy="15" r="2.4"/><circle cx="17.5" cy="15" r="2.4"/><line x1="3" y1="7" x2="7" y2="10"/><line x1="27" y1="7" x2="23" y2="10"/><line x1="2" y1="15" x2="7" y2="15"/><line x1="28" y1="15" x2="23" y2="15"/></svg>
+        <h3>1995 VR CONCEPT</h3>
+        <p>Decades before the vocabulary existed, R&amp;D1 shipped true binocular 3D to living rooms and asked the market: too soon?</p>
+      </article>
+      <article class="feat f-w6 rv" style="--d:.1s"><span class="f-idx">08</span>
+        <div>
+          <h3>COLLECTOR RARITY — TIER 1</h3>
+          <p>A fourteen-month production run, a devoted afterlife, and a completeness chase that is still genuinely winnable. Short enough to finish. Strange enough to matter.</p>
+        </div>
+        <div class="f-banner">
+          <div class="f-rar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+          <span style="font:8.5px var(--px);color:var(--red-dim);letter-spacing:.14em;display:block;margin-top:10px">TIER-1 / SHORT RUN / RISING</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPECS (PAPER) ============ -->
+<section class="sec" id="specs" style="padding-block:clamp(60px,8vh,90px)">
+  <div class="wrap rv" style="margin-bottom:clamp(34px,5vh,56px)">
+    <div class="sec-meta"><span class="sec-num">SEC.04</span><span class="sec-rule"></span><span class="sec-tag">TECHNICAL DOSSIER — PAGE 01</span></div>
+  </div>
+  <div class="paper-wrap rv">
+    <div class="paper-inner">
+      <div class="paper-head">
+        <h2>MODEL VB-01 — SPECIFICATION SHEET</h2>
+        <div class="paper-code">FORM VB-01-A<br>REV. 4 / ARCHIVE PRINT</div>
+      </div>
+      <div class="paper-sub">NINTENDO R&amp;D1 · BINOCULAR ENTERTAINMENT SYSTEM · ISSUED FOR COLLECTOR REFERENCE</div>
+      <div class="stamp" aria-hidden="true">ARCHIVED BY HISTORY<br>NOT AFFILIATED</div>
+      <dl class="spec-list">
+        <div class="spec-row"><dt>Designation</dt><dd>VIRTUAL BOY · Model VB-01</dd></div>
+        <div class="spec-row"><dt>Release</dt><dd>Jul 21, 1995 (JP) / Aug 14, 1995 (NA)</dd></div>
+        <div class="spec-row"><dt>Display type</dt><dd>2 × reflective LED matrix (per eye)</dd></div>
+        <div class="spec-row"><dt>Effective resolution</dt><dd>384 × 224 across both eyes</dd></div>
+        <div class="spec-row"><dt>Color palette</dt><dd>4 shades of red · 1-bit, 4-level</dd></div>
+        <div class="spec-row"><dt>Stereoscopy</dt><dd>True parallax · ~50.4 Hz per eye</dd></div>
+        <div class="spec-row"><dt>Processor</dt><dd>32-bit RISC @ 20 MHz (NEC V810 class)</dd></div>
+        <div class="spec-row"><dt>Memory</dt><dd>1 MB WRAM · 512 KB VRAM · 512 KB SRAM</dd></div>
+        <div class="spec-row"><dt>Audio</dt><dd>Dual-channel stereo PCM synthesizer</dd></div>
+        <div class="spec-row"><dt>Game format</dt><dd>8–16 Mbit ROM cartridge</dd></div>
+        <div class="spec-row"><dt>Controller</dt><dd>Wired dual-grip pad · 6-way + 4 buttons</dd></div>
+        <div class="spec-row"><dt>Power source</dt><dd>6 × AA · approx. 7 hours</dd></div>
+        <div class="spec-row"><dt>Dimensions</dt><dd>211 × 109 × 191 mm on stand</dd></div>
+        <div class="spec-row"><dt>Player mode</dt><dd>1 player · table required · privacy included</dd></div>
+        <div class="spec-row"><dt>Units sold</dt><dd>≈ 770,000 worldwide</dd></div>
+        <div class="spec-row"><dt>Collector status</dt><dd>Tier 1 · rising · completeness attainable</dd></div>
+      </dl>
+      <div class="paper-foot">
+        <span>PRINTED FROM THE RED SPACE ARCHIVE — FOR REFERENCE ONLY</span>
+        <div class="barcode" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIBRARY ============ -->
+<section class="sec" id="library">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.05</span><span class="sec-rule"></span><span class="sec-tag">THE 22</span></div>
+      <h2>Only 22 cartridges ever shipped. These six are where every collection starts.</h2>
+    </header>
+  </div>
+  <div class="wrap">
+    <div class="lib-rail rv" id="rail">
+      <article class="cart" data-name="MARIO'S TENNIS">
+        <div class="cart-top"><span class="cart-tag">1995 · SPORTS</span><span class="cart-ridges"></span></div>
+        <div class="thumb"><canvas data-g="tennis" width="220" height="150"></canvas><span class="scan"></span></div>
+        <h3>MARIO'S TENNIS</h3>
+        <p>The system's reliable handshake: readable depth, honest timing, and the clearest demonstration of the parallax engine ever put on cartridge.</p>
+        <div class="cart-foot"><span class="lbl">RARITY</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span class="lbl">LOT 01</span></div>
+      </article>
+      <article class="cart" data-name="RED ALARM">
+        <div class="cart-top"><span class="cart-tag">1995 · 3D SHOOTER</span><span class="cart-ridges"></span></div>
+        <div class="thumb"><canvas data-g="alarm" width="220" height="150"></canvas><span class="scan"></span></div>
+        <h3>RED ALARM</h3>
+        <p>A pure wireframe combat flight sim with zero paint and total conviction. The machine's cult classic — and its best closing argument.</p>
+        <div class="cart-foot"><span class="lbl">RARITY</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span class="lbl">LOT 02</span></div>
+      </article>
+      <article class="cart" data-name="WARIO LAND">
+        <div class="cart-top"><span class="cart-tag">1995 · PLATFORM</span><span class="cart-ridges"></span></div>
+        <div class="thumb"><canvas data-g="wario" width="220" height="150"></canvas><span class="scan"></span></div>
+        <h3>WARIO LAND</h3>
+        <p>The biggest license on the smallest palette. Proof that the red world could still feel broad, greedy, and genuinely funny.</p>
+        <div class="cart-foot"><span class="lbl">RARITY</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span><span class="lbl">LOT 03</span></div>
+      </article>
+      <article class="cart" data-name="TELEROBOXER">
+        <div class="cart-top"><span class="cart-tag">1995 · SPORTS SIM</span><span class="cart-ridges"></span></div>
+        <div class="thumb"><canvas data-g="boxer" width="220" height="150"></canvas><span class="scan"></span></div>
+        <h3>TELEROBOXER</h3>
+        <p>First-person robot boxing with giant telemetry arms. Impossible to explain to anyone who wasn't there. Perfect, then.</p>
+        <div class="cart-foot"><span class="lbl">RARITY</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span class="lbl">LOT 04</span></div>
+      </article>
+      <article class="cart" data-name="GALACTIC PINBALL">
+        <div class="cart-top"><span class="cart-tag">1995 · ARCADE</span><span class="cart-ridges"></span></div>
+        <div class="thumb"><canvas data-g="pinball" width="220" height="150"></canvas><span class="scan"></span></div>
+        <h3>GALACTIC PINBALL</h3>
+        <p>Flippers, bumpers, and bonus stages where the ball leaves the table entirely — the definitive showcase for a screen with depth.</p>
+        <div class="cart-foot"><span class="lbl">RARITY</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span class="lbl">LOT 05</span></div>
+      </article>
+      <article class="cart" data-name="VERTICAL FORCE">
+        <div class="cart-top"><span class="cart-tag">1995 · SHOOT 'EM UP</span><span class="cart-ridges"></span></div>
+        <div class="thumb"><canvas data-g="force" width="220" height="150"></canvas><span class="scan"></span></div>
+        <h3>VERTICAL FORCE</h3>
+        <p>A vertical shooter that treats parallax as a mechanic, stacking waves into the distance. Quietly brilliant, quietly scarce.</p>
+        <div class="cart-foot"><span class="lbl">RARITY</span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span class="lbl">LOT 06</span></div>
+      </article>
+    </div>
+    <div class="lib-progress rv"><span id="libProg"></span></div>
+    <p class="lib-hint rv">DRAG TO BROWSE THE SHELF · CLICK A CARTRIDGE TO REQUEST ITS COLLECTOR SHEET</p>
+  </div>
+</section>
+
+<div class="ticks" aria-hidden="true"></div>
+
+<!-- ============ VERDICT ============ -->
+<section class="sec" id="verdict">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.06</span><span class="sec-rule"></span><span class="sec-tag">THE LEDGER</span></div>
+      <h2>Why it failed. Why it matters. Both answers are true at once.</h2>
+    </header>
+    <div class="stats rv">
+      <div class="stat"><b><span class="cnt" data-n="770">0</span>K</b><span>UNITS SOLD,<br>WORLDWIDE</span></div>
+      <div class="stat"><b><span class="cnt" data-n="22">0</span></b><span>CARTRIDGES RELEASED,<br>ALL REGIONS</span></div>
+      <div class="stat"><b><span class="cnt" data-n="14">0</span></b><span>MONTHS OF MARKET LIFE,<br>JUL 1995 – SPR 1996</span></div>
+      <div class="stat"><b><span class="cnt" data-n="4">0</span></b><span>SHADES OF RED.<br>THAT WAS THE PALETTE</span></div>
+    </div>
+    <div class="verdict-grid">
+      <div class="vcol fall rv">
+        <h3>THE FALL</h3>
+        <ul>
+          <li>It hurt, a little. Sessions were capped in minutes, and necks and eyes filed complaints the manual never anticipated.</li>
+          <li>One color, chosen for cost and clarity — read by the market as a downgrade the moment 16-bit color and polygon hype crested.</li>
+          <li>It asked players to sit alone at a table. 1995 wanted the couch, the link cable, the crowd.</li>
+          <li>It was priced like a console and scoped like a lab experiment. Retail never found the shelf to explain it from.</li>
+        </ul>
+      </div>
+      <div class="vcol light rv" style="--d:.1s">
+        <h3>THE LIGHT</h3>
+        <ul>
+          <li>The parallax engine worked. Reviewers who mocked it in daylight admitted, in private, that the depth was real.</li>
+          <li>Its industrial design remains untouched by anything before or since: a visor on a tripod, a pad with two grips, a box like lab equipment.</li>
+          <li>It put true binocular 3D in living rooms years before "VR" was a shelf label — tuition paid on behalf of an entire industry.</li>
+          <li>Tier-1 collector status: a short production run, a devoted afterlife, and a chase that is still winnable.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section class="sec" id="timeline" style="background:var(--bg2);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.06</span><span class="sec-rule"></span><span class="sec-tag">CHRONOLOGY</span></div>
+      <h2>From skunkworks sketch to shelf queen, in eight entries.</h2>
+    </header>
+    <div class="tl">
+      <div class="tl-item rv"><span class="tl-year">1993</span><span class="tl-t">PROJECT PARALLAX</span><p>R&amp;1 sketches a binocular visor around dual LED matrices — a bet on depth over color, from the office of lateral thinking.</p></div>
+      <div class="tl-item rv"><span class="tl-year">NOV 1994</span><span class="tl-t">THE REVEAL</span><p>The visor debuts to a stunned trade press. The headline the next morning is a single word long: "Why?"</p></div>
+      <div class="tl-item rv"><span class="tl-year">JUL 1995</span><span class="tl-t">JAPAN LAUNCH</span><p>Midnight lines in Akihabara. The machine works exactly as promised — which turns out to be a different thing than the market wanted.</p></div>
+      <div class="tl-item rv"><span class="tl-year">AUG 1995</span><span class="tl-t">WESTERN LAUNCH</span><p>US$179.95, marketed as the future with the ergonomics of a prototype. Children ask for it. Parents ask questions.</p></div>
+      <div class="tl-item rv"><span class="tl-year">SPR 1996</span><span class="tl-t">SILENCE</span><p>Production ends after roughly 770,000 units and fourteen months. The future is postponed, politely and without a sequel.</p></div>
+      <div class="tl-item rv"><span class="tl-year">2004</span><span class="tl-t">CULT SIGNAL</span><p>Emulation pioneers and preservation zines rediscover the library. The word "misunderstood" starts appearing in print.</p></div>
+      <div class="tl-item rv"><span class="tl-year">2016</span><span class="tl-t">REDISCOVERY</span><p>Consumer VR arrives and makes the old experiment legible. Essays reposition the Virtual Boy as a prototype of an idea, not a punchline.</p></div>
+      <div class="tl-item rv"><span class="tl-year">TODAY</span><span class="tl-t">THE ARCHIVE</span><p>Tier-1 collector status. This microsite joins the paper trail — and the red stays on.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RED SPACE ============ -->
+<section class="sec" id="redspace">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.07</span><span class="sec-rule"></span><span class="sec-tag">LIVE SIGNAL</span></div>
+      <h2>Red space: a reconstruction of what the visor actually showed you.</h2>
+    </header>
+    <div class="visor-frame rv">
+      <canvas id="redcv" aria-label="Interactive red monochrome wireframe flight demo. Move the mouse to steer, hold to boost."></canvas>
+    </div>
+    <div class="visor-strip rv" style="--d:.1s">
+      <span>PARALLAX: <b class="blink">LOCKED</b></span>
+      <span>PALETTE: 4-RED</span>
+      <span>INPUT: MOUSE STEERS · HOLD TO BOOST</span>
+      <span style="margin-left:auto">RECONSTRUCTION — NOT EMULATION</span>
+    </div>
+  </div>
+</section>
+
+<div class="marquee rev" aria-hidden="true"><div class="mq-track">
+  <span>/// LOT LISTING FOLLOWS</span><span>/// CONDITION GRADED BY EYE AND HEART</span><span>/// PRICES ARE FICTION, LONGING IS REAL</span><span>/// LOT LISTING FOLLOWS</span><span>/// CONDITION GRADED BY EYE AND HEART</span><span>/// PRICES ARE FICTION, LONGING IS REAL</span>
+</div></div>
+
+<!-- ============ MARKET ============ -->
+<section class="sec" id="market">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.08</span><span class="sec-rule"></span><span class="sec-tag">MARKET INDEX</span></div>
+      <h2>The collector market, as the archive would price it.</h2>
+    </header>
+    <div class="mkt-grid">
+      <article class="lot lot-feat rv">
+        <div class="lot-head"><span class="tier">GRAIL TIER</span><span class="tier">LOT #000</span></div>
+        <h3>THE FULL ARCHIVE BUNDLE — VB-01 ENSEMBLE, AS-NEW</h3>
+        <div class="cond">COMPLETE-IN-CONTEXT · GRADE A / ARCHIVAL</div>
+        <p>The complete story in one transaction: chassis, stand, both controller revisions, a working cartridge wall, and the packaging most owners threw away in 1996. The kind of lot museums make quiet calls about.</p>
+        <ul class="manifest">
+          <li>VB-01 chassis + tabletop stand</li>
+          <li>2 wired dual-grip controllers</li>
+          <li>14 cartridges (2 factory sealed)</li>
+          <li>Foam shipping insert, intact</li>
+          <li>Reproduction outer carton</li>
+          <li>Archival documentation binder</li>
+        </ul>
+        <div class="lot-foot">
+          <div class="price">$2,800–3,600<small>WATCHERS: 2,401 · KYOTO NODE</small></div>
+          <button class="watch">WATCH LOT</button>
+        </div>
+      </article>
+      <article class="lot lot-s rv" style="--d:.06s">
+        <div class="lot-head"><span class="tier">STANDARD</span><span class="tier">LOT #114</span></div>
+        <h3>LOOSE CONSOLE — CHASSIS ONLY</h3>
+        <div class="cond">CONDITION B− · TESTED, RUNS</div>
+        <p>Visor clean, legs complete, faint hatch wear on the shell. Runs on the first cartridge, every time. The honest way in.</p>
+        <div class="lot-foot">
+          <div class="price">$180–260<small>WATCHERS: 214 · OSAKA NODE</small></div>
+          <button class="watch">WATCH LOT</button>
+        </div>
+      </article>
+      <article class="lot lot-s rv" style="--d:.12s">
+        <div class="lot-head"><span class="tier">COMPLETE</span><span class="tier">LOT #207</span></div>
+        <h3>COMPLETE-IN-BOX UNIT</h3>
+        <div class="cond">CIB · GRADE A−</div>
+        <p>Box, insert, manual, plastic tray — all present. One softened corner on the lid, foam uncrumbled. The collector's baseline of respectability.</p>
+        <div class="lot-foot">
+          <div class="price">$520–680<small>WATCHERS: 512 · NAGOYA NODE</small></div>
+          <button class="watch">WATCH LOT</button>
+        </div>
+      </article>
+      <article class="lot lot-s rv" style="--d:.06s">
+        <div class="lot-head"><span class="tier">SEALED</span><span class="tier">LOT #339</span></div>
+        <h3>GALACTIC PINBALL — FACTORY SEALED</h3>
+        <div class="cond">GRADE A+ · V-SEAM INTACT</div>
+        <p>Hangtab present, light shelf fade along the spine. One of the few sealed examples that surfaces per year — and it will be argued about.</p>
+        <div class="lot-foot">
+          <div class="price">$1,400–1,850<small>WATCHERS: 1,208 · DENVER NODE</small></div>
+          <button class="watch">WATCH LOT</button>
+        </div>
+      </article>
+      <article class="lot lot-s rv" style="--d:.12s">
+        <div class="lot-head"><span class="tier">PARTS</span><span class="tier">LOT #402</span></div>
+        <h3>CONTROLLER ONLY — DUAL GRIP</h3>
+        <div class="cond">CONDITION B+ · UNTESTED CABLE</div>
+        <p>Shell bright, cable unworn, one sticky B button away from perfection. The quiet workhorse that completes a hundred other lots.</p>
+        <div class="lot-foot">
+          <div class="price">$70–110<small>WATCHERS: 96 · LEIPZIG NODE</small></div>
+          <button class="watch">WATCH LOT</button>
+        </div>
+      </article>
+    </div>
+    <p class="mkt-note rv">ALL LOTS, PRICES, NODES AND WATCHER COUNTS ARE FICTIONAL SCENARIO DATA FOR THIS ARCHIVE. NO REAL MARKETPLACE IS REFERENCED OR IMPLIED. GRADE WITH YOUR EYES, SHIP WITH YOUR CONSCIENCE.</p>
+  </div>
+</section>
+
+<!-- ============ COMPARE (PAPER) ============ -->
+<section class="sec" id="compare" style="padding-block:clamp(60px,8vh,90px)">
+  <div class="wrap rv" style="margin-bottom:clamp(34px,5vh,56px)">
+    <div class="sec-meta"><span class="sec-num">SEC.08</span><span class="sec-rule"></span><span class="sec-tag">MARKET POSITION — PAGE 02</span></div>
+  </div>
+  <div class="paper-wrap rv">
+    <div class="paper-inner">
+      <div class="paper-head">
+        <h2>COMPARATIVE HARDWARE POSITION</h2>
+        <div class="paper-code">FORM VB-01-B<br>CROSS-REFERENCE MATRIX</div>
+      </div>
+      <div class="paper-sub">THE RED VISOR, MEASURED AGAINST ITS NEIGHBORS ACROSS FIVE CATEGORIES OF MACHINE</div>
+      <div class="tbl-scroll">
+        <table class="cmp">
+          <thead><tr><th>Criterion</th><th class="vb">Virtual Boy</th><th>Handheld Consoles</th><th>Home Consoles</th><th>Arcade Cabinets</th><th>Modern VR Headsets</th></tr></thead>
+          <tbody>
+            <tr><td>Era</td><td class="vb">1995</td><td>1989 —</td><td>1983 —</td><td>1971 —</td><td>2016 —</td></tr>
+            <tr><td>Display</td><td class="vb">Dual red LED, 4-level 1-bit</td><td>Reflective LCD, mono → color</td><td>Composite CRT</td><td>CRT, per cabinet</td><td>Dual OLED, 90–120 Hz</td></tr>
+            <tr><td>Portability</td><td class="vb">Portable, tabletop only</td><td>True pocket format</td><td>Stationary</td><td>Venue-bound</td><td>Tethered / standalone</td></tr>
+            <tr><td>3D support</td><td class="vb">Native stereoscopic</td><td>None</td><td>Pseudo-3D only</td><td>Pseudo-3D, per cabinet</td><td>Native stereoscopic</td></tr>
+            <tr><td>Comfort</td><td class="vb">Table-mounted; short sessions advised</td><td>Excellent</td><td>Good, couch-grade</td><td>Stand-up, brief</td><td>Strap pressure; short sessions</td></tr>
+            <tr><td>Game library</td><td class="vb">22 titles</td><td>1,000+</td><td>Thousands</td><td>Hundreds per era</td><td>Hundreds, growing</td></tr>
+            <tr><td>Legacy</td><td class="vb">Prototype of an idea</td><td>Defined portable play</td><td>Anchored the living room</td><td>Preserved as installations</td><td>Category still forming</td></tr>
+            <tr><td>Collector appeal</td><td class="vb">Tier 1 — rising</td><td>High (graded market)</td><td>Moderate — high</td><td>Museum-grade</td><td>Too early to grade</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="paper-foot"><span>SHARED DNA: NONE. SHARED COURAGE: ONE COLUMN ONLY.</span><div class="barcode" aria-hidden="true"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VOICES ============ -->
+<section class="sec" id="voices">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <div class="sec-meta"><span class="sec-num">SEC.09</span><span class="sec-rule"></span><span class="sec-tag">TRANSMISSIONS</span></div>
+    </header>
+    <div class="voices">
+      <div class="vq-big rv">
+        <blockquote>"The Virtual Boy didn't fail because it was wrong. It failed because it was <em>early</em> — and it knew it."</blockquote>
+        <cite>— DR. E. MARLOWE · CURATOR, MUSEUM OF INTERRUPTED HARDWARE (FICTIONAL)</cite>
+      </div>
+      <div class="rv" style="--d:.1s">
+        <div class="vq">
+          <blockquote>"Two million parallax calculations a second — and the joke of the day was the color red. The color aged better than the joke."</blockquote>
+          <cite>— RETRO//SIGNAL PODCAST · EP. 112 (FICTIONAL)</cite>
+        </div>
+        <div class="vq">
+          <blockquote>"You don't really play a Virtual Boy. You visit it. And it stays with you longer than most consoles you've owned."</blockquote>
+          <cite>— DONOR NOTE, LOT 0387 · RED SPACE ARCHIVE (FICTIONAL)</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top" style="text-decoration:none">
+          <svg viewBox="0 0 38 24" aria-hidden="true"><rect x="1.5" y="1.5" width="35" height="21" rx="10" fill="none" stroke="#ff2015" stroke-width="2"/><circle cx="12.5" cy="12" r="4.4" fill="none" stroke="#ff2015" stroke-width="1.6"/><circle cx="25.5" cy="12" r="4.4" fill="none" stroke="#ff2015" stroke-width="1.6"/></svg>
+          <span><span class="brand-name">VIRTUAL&nbsp;BOY</span><br><span class="brand-sub">COLLECTOR ARCHIVE // VB-01</span></span>
+        </a>
+        <p>An independent, non-commercial archive keeping one strange red machine in focus. Handle history with clean hands.</p>
+      </div>
+      <div class="foot-col">
+        <h4>ARCHIVE</h4>
+        <ul>
+          <li><a href="#story">The Story</a></li>
+          <li><a href="#object">Anatomy of VB-01</a></li>
+          <li><a href="#timeline">Chronology</a></li>
+          <li><a href="#redspace">Red Space Signal</a></li>
+          <li><a href="#" class="offgrid">Serial Registry</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>COLLECTOR RESOURCES</h4>
+        <ul>
+          <li><a href="#market">Market Index</a></li>
+          <li><a href="#" class="offgrid">Grading Guide (Fictional)</a></li>
+          <li><a href="#" class="offgrid">Reproduction Parts Board</a></li>
+          <li><a href="#" class="offgrid">Preservation Zine Stack</a></li>
+          <li><a href="#" class="offgrid">Visor Restoration Wiki</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>MUSEUM NETWORK</h4>
+        <ul>
+          <li><a href="#" class="offgrid">Museum of Interrupted Hardware</a></li>
+          <li><a href="#" class="offgrid">Binocular Heritage Trust</a></li>
+          <li><a href="#" class="offgrid">Red Matrix Preservation Project</a></li>
+          <li><a href="#" class="offgrid">1995 VR Oral Histories</a></li>
+          <li><a href="#" class="offgrid">Signal Relay (RSS)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      THIS IS A NON-COMMERCIAL DESIGN STUDY. "VIRTUAL BOY", "NINTENDO" AND ALL GAME TITLES ARE THE PROPERTY OF THEIR RESPECTIVE OWNERS; NO AFFILIATION OR ENDORSEMENT IS IMPLIED. ALL MARKET LOTS, PRICES, INSTITUTIONS, QUOTES AND ARCHIVE NODES ARE FICTIONAL. ALL ARTWORK IS ORIGINAL — NO OFFICIAL ASSETS ARE USED. <span id="yr"></span> · RED SPACE ARCHIVE · END OF SIGNAL.
+    </div>
+  </div>
+  <div class="foot-ghost" aria-hidden="true"><span>VIRTUAL BOY</span></div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s,r)=> (r||document).querySelector(s);
+const $$ = (s,r)=> Array.from((r||document).querySelectorAll(s));
+
+/* ---------- toasts ---------- */
+const toastBox = $('#toasts');
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  toastBox.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),450)},2600);
+}
+
+/* ---------- boot ---------- */
+const boot=$('#boot'), bootLog=$('#bootlog');
+['VB-01 POWER .............. OK','PARALLAX ENGINE ........... OK','RED PALETTE [4] ........... OK','STEREO ALIGNMENT .......... OK','ARCHIVE MODE .............. ENGAGED']
+.forEach((l,i)=> setTimeout(()=>{const d=document.createElement('div'); d.textContent=l; bootLog.appendChild(d)}, 90+i*105));
+setTimeout(()=>boot.classList.add('done'), RM?200:1250);
+boot.addEventListener('click',()=>boot.classList.add('done'));
+
+/* ---------- nav ---------- */
+const nav=$('#nav');
+addEventListener('scroll',()=>{
+  nav.classList.toggle('small', scrollY>40);
+  const d=document.documentElement;
+  $('#progress').style.transform='scaleX('+(scrollY/(d.scrollHeight-innerHeight||1))+')';
+},{passive:true});
+const mBtn=$('#menuBtn'), mMenu=$('#mmenu');
+mBtn.addEventListener('click',()=>{ mMenu.classList.toggle('open'); document.body.classList.toggle('menu-open'); });
+$$('#mmenu a').forEach(a=>a.addEventListener('click',()=>{ mMenu.classList.remove('open'); document.body.classList.remove('menu-open'); }));
+
+/* active link tracking */
+const secIds=['story','object','library','market','voices'];
+addEventListener('scroll',()=>{
+  let cur='';
+  secIds.forEach(id=>{ const el=document.getElementById(id); if(el && el.getBoundingClientRect().top<innerHeight*.45) cur=id; });
+  $$('.nav-links a').forEach(a=>a.classList.toggle('active', a.dataset.sec===cur));
+},{passive:true});
+
+/* ---------- reveal ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+$$('.rv').forEach(el=>io.observe(el));
+
+/* ---------- counters ---------- */
+const cio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return; cio.unobserve(e.target);
+  const el=e.target, n=+el.dataset.n, t0=performance.now();
+  (function step(now){ const p=Math.min(1,(now-t0)/1400), v=Math.round(n*(1-Math.pow(1-p,3)));
+    el.textContent=v; if(p<1) requestAnimationFrame(step); })(t0);
+}),{threshold:.5});
+$$('.cnt').forEach(el=>cio.observe(el));
+
+/* ---------- object diagram ---------- */
+const dia=$('#diagram');
+function hot(part,on){
+  $$('#diagram [data-part]').forEach(g=>g.classList.toggle('hot', on && g.dataset.part===part));
+  dia.classList.toggle('hotg', on);
+}
+$$('.parts li').forEach(li=>{
+  const p=li.dataset.part;
+  li.addEventListener('mouseenter',()=>hot(p,true));
+  li.addEventListener('mouseleave',()=>hot(p,false));
+  li.addEventListener('click',()=>hot(p,true));
+});
+const exBtn=$('#explodeBtn');
+exBtn.addEventListener('click',()=>{
+  const on=dia.classList.toggle('exp');
+  exBtn.textContent=on ? 'RESTORE ASSEMBLY' : 'ENGAGE EXPLODED VIEW';
+  toast(on ? 'EXPLODED VIEW ENGAGED — 7 SUBASSEMBLIES' : 'ASSEMBLY RESTORED — UNIT SEALED');
+});
+
+/* ---------- library: thumbnails ---------- */
+const PAL={bg:'#0b0303',d1:'#2b0806',d2:'#7e120b',r:'#ff2015',h:'#ff6a5e'};
+function grid(c){ c.strokeStyle='rgba(255,42,28,.08)'; for(let i=0;i<220;i+=20){c.beginPath();c.moveTo(i,0);c.lineTo(i,150);c.stroke();} for(let j=0;j<150;j+=20){c.beginPath();c.moveTo(0,j);c.lineTo(220,j);c.stroke();} }
+const DRAWS={
+  tennis(c,t){ c.fillStyle=PAL.bg; c.fillRect(0,0,220,150); grid(c);
+    c.strokeStyle=PAL.r; c.lineWidth=1.4;
+    c.beginPath(); c.moveTo(60,30); c.lineTo(160,30); c.lineTo(210,128); c.lineTo(10,128); c.closePath(); c.stroke();
+    c.beginPath(); c.moveTo(74,58); c.lineTo(146,58); c.moveTo(44,94); c.lineTo(176,94); c.moveTo(110,30); c.lineTo(110,128); c.stroke();
+    c.lineWidth=3; c.strokeStyle=PAL.h; c.beginPath(); c.moveTo(24,100); c.lineTo(196,100); c.stroke(); c.lineWidth=1;
+    c.fillStyle=PAL.d2; c.fillRect(56,32,12,4); c.fillRect(152,120,12,4);
+    const bx=110+Math.sin(t*1.7)*66, by=64+Math.cos(t*1.7)*24;
+    c.fillStyle=PAL.h; c.beginPath(); c.arc(bx,by,3.4,0,7); c.fill();
+    c.fillStyle='rgba(255,106,94,.35)'; c.beginPath(); c.arc(bx-Math.sin(t*1.7)*9,by+7,2,0,7); c.fill(); },
+  alarm(c,t){ c.fillStyle=PAL.bg; c.fillRect(0,0,220,150); grid(c);
+    c.strokeStyle='rgba(255,42,28,.25)'; c.beginPath(); c.arc(110,74,58,0,7); c.stroke(); c.beginPath(); c.arc(110,74,34,0,7); c.stroke();
+    const cx=110,cy=74, ry=t*.9;
+    const P=[[-26,0,0],[26,0,0],[0,-16,0],[0,16,0],[0,0,20],[0,0,-20]].map(v=>{
+      let[x,y,z]=v; const x1=x*Math.cos(ry)+z*Math.sin(ry), z1=-x*Math.sin(ry)+z*Math.cos(ry);
+      const y1=y*Math.cos(t*.6)-z1*Math.sin(t*.6), s=3/(5+ (z1*Math.cos(t*.6)+y*Math.sin(t*.6))*0.02+2);
+      return [cx+x1*1.6, cy+y*1.6]; });
+    c.strokeStyle=PAL.r; c.lineWidth=1.5;
+    [[0,4],[1,5],[2,4],[3,5],[0,2],[1,3],[2,5],[3,5],[0,3],[1,4]].forEach(p=>{ c.beginPath(); c.moveTo(P[p[0]][0],P[p[0]][1]); c.lineTo(P[p[1]][0],P[p[1]][1]); c.stroke(); });
+    c.strokeStyle=PAL.h; c.beginPath(); c.arc(110,74,3,0,7); c.stroke();
+    c.fillStyle=PAL.d2; for(let i=0;i<8;i++){ const a=i/8*6.28+t*.4; c.fillRect(110+Math.cos(a)*58-1.5,74+Math.sin(a)*58-1.5,3,3);} },
+  wario(c,t){ c.fillStyle=PAL.bg; c.fillRect(0,0,220,150); grid(c);
+    c.strokeStyle=PAL.r; c.lineWidth=1.6;
+    c.strokeRect(66,74,88,52); c.beginPath(); c.moveTo(66,74); c.lineTo(78,52); c.lineTo(142,52); c.lineTo(154,74); c.stroke();
+    c.strokeStyle=PAL.h; c.beginPath(); c.moveTo(88,74); c.lineTo(88,94); c.arc(110,94,22,3.14,0,true); c.lineTo(132,74); c.stroke();
+    c.beginPath(); c.arc(110,84,4,0,7); c.stroke();
+    for(let i=0;i<4;i++){ const a=t*2+i*1.57, px=110+Math.cos(a)*40, py=34+Math.sin(a)*12;
+      c.fillStyle=PAL.r; c.beginPath(); c.arc(px,py,4.5,0,7); c.fill(); c.fillStyle=PAL.bg; c.fillRect(px-1,py-3,2,6); }
+    if(Math.sin(t*6)>0.4){ c.fillStyle=PAL.h; c.fillRect(176,60,3,3); c.fillRect(40,44,3,3); } },
+  boxer(c,t){ c.fillStyle=PAL.bg; c.fillRect(0,0,220,150); grid(c);
+    c.strokeStyle=PAL.r; c.lineWidth=1.6;
+    c.strokeRect(78,38,64,58); c.beginPath(); c.moveTo(110,38); c.lineTo(110,20); c.stroke();
+    c.fillStyle=PAL.h; c.fillRect(107,30,6,6);
+    const blink=Math.sin(t*3)>-0.85;
+    if(blink){ c.fillStyle=PAL.r; c.fillRect(90,58,14,6); c.fillRect(116,58,14,6); }
+    else { c.strokeStyle=PAL.h; c.beginPath(); c.moveTo(90,61); c.lineTo(104,61); c.moveTo(116,61); c.lineTo(130,61); c.stroke(); }
+    c.strokeStyle=PAL.d2; for(let i=0;i<3;i++){ c.beginPath(); c.moveTo(150,52+i*8); c.lineTo(162,52+i*8); c.moveTo(58,52+i*8); c.lineTo(70,52+i*8); c.stroke(); }
+    const f1=98+Math.sin(t*4)*16, f2=98-Math.sin(t*4)*16;
+    c.strokeStyle=PAL.h; c.strokeRect(26,f1,26,20); c.strokeRect(168,f2,26,20);
+    c.strokeStyle=PAL.d2; c.strokeRect(60,110,100,26); },
+  pinball(c,t){ c.fillStyle=PAL.bg; c.fillRect(0,0,220,150); grid(c);
+    c.strokeStyle=PAL.r; c.lineWidth=1.5;
+    c.beginPath(); c.moveTo(48,16); c.lineTo(66,138); c.moveTo(172,16); c.lineTo(154,138); c.stroke();
+    c.beginPath(); c.moveTo(48,16); c.lineTo(66,16); c.moveTo(154,16); c.lineTo(172,16); c.stroke();
+    [[92,50],[134,58],[112,92]].forEach((b,i)=>{ const pu=3+Math.sin(t*5+i)*1.4;
+      c.strokeStyle=PAL.r; c.beginPath(); c.arc(b[0],b[1],8,0,7); c.stroke();
+      c.fillStyle=PAL.h; c.beginPath(); c.arc(b[0],b[1],pu,0,7); c.fill(); });
+    const bx=110+Math.sin(t*2.1)*50, by=64+Math.sin(t*3.4)*38;
+    c.fillStyle=PAL.h; c.beginPath(); c.arc(bx,by,3.2,0,7); c.fill();
+    const fl=Math.sin(t*3)*0.5;
+    c.strokeStyle=PAL.h; c.lineWidth=2.4;
+    c.beginPath(); c.moveTo(78,124); c.lineTo(78+26*Math.cos(0.6+fl),124-26*Math.sin(0.6+fl)); c.stroke();
+    c.beginPath(); c.moveTo(142,124); c.lineTo(142-26*Math.cos(0.6-fl),124-26*Math.sin(0.6-fl)); c.stroke(); c.lineWidth=1;
+    c.fillStyle=PAL.d2; for(let i=0;i<12;i++) c.fillRect(20+((i*67)%180),(i*53+40)%140,2,2); },
+  force(c,t){ c.fillStyle=PAL.bg; c.fillRect(0,0,220,150);
+    c.strokeStyle='rgba(255,42,28,.2)';
+    for(let i=0;i<9;i++){ const yy=((i*22)+(t*46)%22)%172-11; c.beginPath(); c.moveTo(i*26+8,yy); c.lineTo(i*26+8,yy+9); c.stroke(); }
+    for(let i=0;i<3;i++){ const ey=((t*40)+i*52)%170, ex=44+i*66;
+      c.strokeStyle=PAL.d2; c.beginPath(); c.moveTo(ex-8,ey); c.lineTo(ex+8,ey); c.lineTo(ex,ey+13); c.closePath(); c.stroke(); }
+    const sw=Math.sin(t*2)*6;
+    c.strokeStyle=PAL.r; c.lineWidth=1.7;
+    c.beginPath(); c.moveTo(110,96+sw*0.3); c.lineTo(126,132); c.lineTo(114,126); c.lineTo(110,132); c.lineTo(106,126); c.lineTo(94,132); c.closePath(); c.stroke(); c.lineWidth=1;
+    c.fillStyle=PAL.h; c.fillRect(108,66+sw*0.2,4,16);
+    c.fillStyle='rgba(255,106,94,.7)'; c.fillRect(109,40+((t*260)%60),2,10); }
+};
+let libVis=false;
+new IntersectionObserver(e=>libVis=e[0].isIntersecting,{threshold:.15}).observe($('#library'));
+let lastLib=0;
+(function libLoop(now){
+  requestAnimationFrame(libLoop);
+  if(!libVis || document.hidden || now-lastLib<110) return;
+  lastLib=now;
+  $$('.thumb canvas').forEach(cv=>{ const d=DRAWS[cv.dataset.g]; if(d) d(cv.getContext('2d'), (now)/1000); });
+})(performance.now());
+
+/* library: drag scroll + progress + click */
+const rail=$('#rail'), libProg=$('#libProg');
+let dragging=false, dsx=0, ds0=0, moved=0;
+rail.addEventListener('pointerdown',e=>{ dragging=true; moved=0; dsx=e.clientX; rail.scrollLeft=rail.scrollLeft; rail.classList.add('dragging'); ds0=rail.scrollLeft; });
+addEventListener('pointermove',e=>{ if(!dragging) return; const dx=e.clientX-dsx; moved=Math.max(moved,Math.abs(dx)); rail.scrollLeft=ds0-dx; });
+addEventListener('pointerup',()=>{ dragging=false; rail.classList.remove('dragging'); });
+rail.addEventListener('scroll',()=>{
+  const max=rail.scrollWidth-rail.clientWidth;
+  libProg.style.width=(12+ (rail.scrollLeft/(max||1))*88)+'%';
+},{passive:true});
+$$('.cart').forEach(card=>card.addEventListener('click',()=>{ if(moved>8) return; toast('COLLECTOR SHEET QUEUED — '+card.dataset.name); }));
+
+/* ---------- market / footer buttons ---------- */
+$$('.watch').forEach(b=>b.addEventListener('click',()=>{
+  b.classList.toggle('on');
+  b.textContent=b.classList.contains('on')?'WATCHING ✓':'WATCH LOT';
+  toast(b.classList.contains('on')?'LOT ADDED TO WATCHLIST':'LOT REMOVED FROM WATCHLIST');
+}));
+$$('a.offgrid').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); toast('OFF-GRID NODE — LINK DISABLED IN ARCHIVE MODE'); }));
+
+/* ============================================================
+   THREE.JS HERO — floating wireframe Virtual Boy diorama
+============================================================ */
+(function initHero(){
+  const wrap=$('#heroCanvas'); if(!wrap || !window.THREE) return;
+  const W=()=>wrap.clientWidth, H=()=>wrap.clientHeight;
+  const renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  renderer.setSize(W(),H()); wrap.appendChild(renderer.domElement);
+
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x070303);
+  scene.fog=new THREE.FogExp2(0x070303,0.05);
+  const cam=new THREE.PerspectiveCamera(52,W()/H(),.1,140);
+  cam.position.set(0,.7,9.4);
+
+  const mEdge=new THREE.LineBasicMaterial({color:0xff2a1c,transparent:true,opacity:.95});
+  const mDim =new THREE.LineBasicMaterial({color:0x8c1a10,transparent:true,opacity:.6});
+  const mFill=new THREE.MeshBasicMaterial({color:0x0c0403,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
+  function edged(geo,mat,fill){
+    const g=new THREE.Group();
+    if(fill!==false) g.add(new THREE.Mesh(geo,mFill));
+    g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo,20),mat||mEdge));
+    return g;
+  }
+
+  /* grid floor + pedestal rings */
+  const grid=new THREE.GridHelper(90,90,0x571009,0x2a0704);
+  grid.material.transparent=true; grid.material.opacity=.5; grid.position.y=-2.3;
+  scene.add(grid);
+  const rings=[];
+  [2.8,3.6].forEach((r,i)=>{
+    const pts=[]; for(let k=0;k<=72;k++){const a=k/72*Math.PI*2; pts.push(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r));}
+    const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color:i?0x571009:0x9c150c,transparent:true,opacity:i?.5:.75}));
+    l.position.y=-2.28; scene.add(l); rings.push(l);
+  });
+
+  /* the machine */
+  const rig=new THREE.Group(); scene.add(rig);
+  const sh=new THREE.Shape();
+  sh.moveTo(2.3,0); sh.lineTo(2.3,.55); sh.quadraticCurveTo(2,1.05,1.2,1.05);
+  sh.lineTo(-.9,1.05); sh.quadraticCurveTo(-2.05,1.05,-2.35,.25);
+  sh.quadraticCurveTo(-2.6,-.35,-1.95,-.78); sh.lineTo(1.5,-.78); sh.quadraticCurveTo(2.3,-.78,2.3,0);
+  const shGeo=new THREE.ExtrudeGeometry(sh,{depth:3.3,bevelEnabled:true,bevelThickness:.14,bevelSize:.14,bevelSegments:2,steps:1});
+  shGeo.translate(0,0,-1.65); rig.add(edged(shGeo));
+
+  /* eyepieces + animated lens texture */
+  const lcv=document.createElement('canvas'); lcv.width=lcv.height=128;
+  const lx=lcv.getContext('2d');
+  const ltex=new THREE.CanvasTexture(lcv);
+  function drawLens(t){
+    lx.fillStyle='#160403'; lx.fillRect(0,0,128,128);
+    lx.strokeStyle='rgba(255,42,28,.13)';
+    for(let i=6;i<128;i+=12){lx.beginPath();lx.moveTo(i,0);lx.lineTo(i,128);lx.stroke();}
+    lx.fillStyle='rgba(255,42,28,.12)'; for(let j=0;j<128;j+=8) lx.fillRect(0,j,128,2);
+    lx.strokeStyle=PAL.r; lx.lineWidth=2; lx.beginPath();
+    for(let px=0;px<=128;px+=4){ const y=76+Math.sin(px*.055+t*2.2)*9+Math.sin(px*.12-t*3.4)*5; px?lx.lineTo(px,y):lx.moveTo(px,y); }
+    lx.stroke();
+    lx.beginPath(); lx.arc(64,42,12+Math.sin(t*1.4)*2.4,0,7); lx.stroke();
+    lx.fillStyle='rgba(255,42,28,.5)';
+    for(let i=0;i<26;i++) lx.fillRect(Math.random()*128|0,Math.random()*128|0,2,2);
+    lx.strokeStyle=PAL.r; lx.lineWidth=6; lx.strokeRect(0,0,128,128);
+    ltex.needsUpdate=true;
+  }
+  const eyeGeo=new THREE.CylinderGeometry(.62,.62,.6,22); eyeGeo.rotateZ(Math.PI/2);
+  const lensGeo=new THREE.CircleGeometry(.5,30); lensGeo.rotateY(Math.PI/2);
+  [-0.85,0.85].forEach(z=>{
+    const e=edged(eyeGeo,mDim); e.position.set(2.72,.18,z); rig.add(e);
+    const l=new THREE.Mesh(lensGeo,new THREE.MeshBasicMaterial({map:ltex})); l.position.set(3.03,.18,z); rig.add(l);
+  });
+
+  /* handle + focus slider + legs */
+  const hGeo=new THREE.TorusGeometry(.8,.05,8,26,Math.PI); hGeo.rotateY(Math.PI/2);
+  const hnd=edged(hGeo,mDim); hnd.position.set(.25,1.1,0); rig.add(hnd);
+  const trk=edged(new THREE.BoxGeometry(1.0,.06,.24),mDim); trk.position.set(.95,1.18,0); rig.add(trk);
+  const knb=edged(new THREE.BoxGeometry(.18,.1,.3),mDim); knb.position.set(1.18,1.22,0); rig.add(knb);
+  [-1,1].forEach(s=>{
+    const leg=new THREE.Group();
+    const lg=new THREE.CylinderGeometry(.05,.08,1.8,8); lg.translate(0,-.9,0); leg.add(edged(lg,mDim));
+    const ft=new THREE.CylinderGeometry(.17,.17,.06,12); ft.translate(0,-1.8,0); leg.add(edged(ft,mDim));
+    leg.position.set(.4,-.92,.55*s); leg.rotation.x=.55; leg.rotation.z=-.12*s;
+    rig.add(leg);
+  });
+
+  /* controller + cable */
+  const pad=new THREE.Group();
+  pad.add(edged(new THREE.BoxGeometry(2.1,.32,1.0)));
+  [-1,1].forEach(s=>{
+    const gg=new THREE.CylinderGeometry(.26,.3,.95,10); gg.translate(0,-.45,0);
+    const grip=edged(gg,mDim); grip.position.set(.72*s,-.12,0); grip.rotation.x=1.05; pad.add(grip);
+  });
+  const d1=edged(new THREE.BoxGeometry(.5,.08,.16),mDim); d1.position.set(-.6,.22,0); pad.add(d1);
+  const d2=edged(new THREE.BoxGeometry(.16,.08,.5),mDim); d2.position.set(-.6,.22,0); pad.add(d2);
+  [[.55,-.14],[.85,-.14],[.55,.16],[.85,.16]].forEach(p=>{
+    const b=new THREE.CylinderGeometry(.09,.09,.09,8);
+    const gb=edged(b,mDim); gb.position.set(p[0],.22,p[1]); pad.add(gb);
+  });
+  pad.position.set(-.4,-2.35,2.7); pad.rotation.set(.35,-.2,.08); rig.add(pad);
+  const curve=new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(-.5,-.85,.9), new THREE.Vector3(-2.1,-2.7,2.1), new THREE.Vector3(-.5,-2.15,2.7));
+  rig.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(44)), new THREE.LineBasicMaterial({color:0x8c1a10,transparent:true,opacity:.85})));
+
+  /* floating cartridges */
+  const carts=[];
+  [[4.4,1.5,-2.8,.5,4.4],[-4.6,2.2,-3.6,-.4,-3],[3.6,-1.6,-1.6,.2,2.2]].forEach((p,i)=>{
+    const c=new THREE.Group();
+    c.add(edged(new THREE.BoxGeometry(.72,1.05,.3)));
+    for(let k=0;k<4;k++){ const r=edged(new THREE.BoxGeometry(.05,.08,.31),mDim,false); r.position.set(-.21+k*.14,.56,0); c.add(r); }
+    const lab=edged(new THREE.BoxGeometry(.5,.6,.06),mDim,false); lab.position.set(0,-.05,.16); c.add(lab);
+    c.position.set(p[0],p[1],p[2]); c.rotation.set(p[3],p[4],0); c.userData.ph=i*2.1;
+    scene.add(c); carts.push(c);
+  });
+
+  /* background debris + particles */
+  const debris=[];
+  for(let i=0;i<10;i++){
+    const g=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.OctahedronGeometry(.16+Math.random()*.3)),
+      new THREE.LineBasicMaterial({color:0x5c0f09,transparent:true,opacity:.55}));
+    const a=i/10*Math.PI*2, r=8+Math.random()*8;
+    g.position.set(Math.cos(a)*r,-2+Math.random()*5,-5-Math.random()*9);
+    g.userData.s=.2+Math.random()*.5; scene.add(g); debris.push(g);
+  }
+  const pcv=document.createElement('canvas'); pcv.width=pcv.height=64;
+  const pc=pcv.getContext('2d');
+  const rg=pc.createRadialGradient(32,32,2,32,32,30);
+  rg.addColorStop(0,'rgba(255,255,255,1)'); rg.addColorStop(.4,'rgba(255,255,255,.5)'); rg.addColorStop(1,'rgba(255,255,255,0)');
+  pc.fillStyle=rg; pc.fillRect(0,0,64,64);
+  const N=320, pos=new Float32Array(N*3), vel=new Float32Array(N);
+  for(let i=0;i<N;i++){ pos[i*3]=(Math.random()*2-1)*10; pos[i*3+1]=-2.5+Math.random()*7.5; pos[i*3+2]=-13+Math.random()*21; vel[i]=.1+Math.random()*.3; }
+  const pgeo=new THREE.BufferGeometry(); pgeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  scene.add(new THREE.Points(pgeo,new THREE.PointsMaterial({size:.1,map:new THREE.CanvasTexture(pcv),color:0xff3a2a,transparent:true,opacity:.85,depthWrite:false,blending:THREE.AdditiveBlending})));
+
+  /* interaction */
+  const hero=$('.hero');
+  const ptr={x:0,y:0}; let dragX=0,dragY=0,tDX=0,tDY=0,down=false,lpx=0,lpy=0;
+  addEventListener('pointermove',e=>{
+    const r=hero.getBoundingClientRect();
+    ptr.x=((e.clientX-r.left)/r.width)*2-1;
+    ptr.y=((e.clientY-r.top)/r.height)*2-1;
+    hero.style.setProperty('--mx',ptr.x.toFixed(3));
+    hero.style.setProperty('--my',ptr.y.toFixed(3));
+    if(down){ tDX+=(e.clientX-lpx)*.006; tDY=Math.max(-.4,Math.min(.6,tDY+(e.clientY-lpy)*.004)); lpx=e.clientX; lpy=e.clientY; }
+  },{passive:true});
+  wrap.addEventListener('pointerdown',e=>{ down=true; lpx=e.clientX; lpy=e.clientY; });
+  addEventListener('pointerup',()=>down=false);
+  let vis=true;
+  new IntersectionObserver(es=>vis=es[0].isIntersecting,{threshold:.02}).observe(wrap);
+
+  const clock=new THREE.Clock(); let lt=0;
+  (function tick(){
+    requestAnimationFrame(tick);
+    const dt=Math.min(clock.getDelta(),.05), t=clock.elapsedTime;
+    if(!vis||document.hidden) return;
+    const idle=RM?0:1;
+    dragX+=(tDX-dragX)*.08; dragY+=(tDY-dragY)*.08;
+    rig.rotation.y=-.85+dragX+Math.sin(t*.25)*.1*idle;
+    rig.rotation.x=.06+dragY+Math.sin(t*.4)*.03*idle;
+    rig.position.y=.15+Math.sin(t*.8)*.16*idle;
+    pad.rotation.y=-.2+Math.sin(t*.5)*.2*idle;
+    carts.forEach((c,i)=>{ c.rotation.y+=dt*.3*(i%2?1:-1); c.rotation.x+=dt*.12; c.position.y=pArr[i][1]+Math.sin(t*.7+c.userData.ph)*.22*idle; });
+    debris.forEach(d=>{ d.rotation.y+=dt*d.userData.s; d.rotation.x+=dt*d.userData.s*.6; });
+    grid.position.z=idle?(t*1.3)%1:0;
+    rings[0].rotation.y=t*.06*idle; rings[1].rotation.y=-t*.04*idle;
+    const p=pgeo.attributes.position.array;
+    if(idle) for(let i=0;i<N;i++){ p[i*3+1]+=vel[i]*dt; if(p[i*3+1]>5.2) p[i*3+1]=-2.6; }
+    pgeo.attributes.position.needsUpdate=true;
+    cam.position.x+=((ptr.x*.85)-cam.position.x)*.05;
+    cam.position.y+=((.72-ptr.y*.5)-cam.position.y)*.05;
+    cam.lookAt(0,-.1,0);
+    if(t-lt>.09){ drawLens(t); lt=t; }
+    renderer.render(scene,cam);
+  })();
+  const pArr=[[4.4,1.5,-2.8],[-4.6,2.2,-3.6],[3.6,-1.6,-1.6]];
+  addEventListener('resize',()=>{ cam.aspect=W()/H(); cam.updateProjectionMatrix(); renderer.setSize(W(),H()); });
+})();
+
+/* ============================================================
+   RED SPACE — faux stereo viewport (canvas)
+============================================================ */
+(function initRed(){
+  const cv=$('#redcv'); if(!cv) return;
+  const x=cv.getContext('2d');
+  let w=0,h=0; const dpr=Math.min(devicePixelRatio||1,2);
+  function fit(){ const r=cv.getBoundingClientRect(); w=Math.max(320,r.width); h=Math.max(220,r.height); cv.width=w*dpr; cv.height=h*dpr; x.setTransform(dpr,0,0,dpr,0,0); }
+  fit(); addEventListener('resize',fit);
+  let vis=false;
+  new IntersectionObserver(e=>vis=e[0].isIntersecting,{threshold:.12}).observe(cv);
+  const ptr={tx:.5,ty:.62,x:.5,y:.62};
+  let boostT=0,boost=0,score=0,hits=0,flash=0,msg='STEREO BUFFER OK',msgA=3;
+  const say=m=>{msg=m;msgA=2.6;};
+  cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect(); ptr.tx=(e.clientX-r.left)/r.width; ptr.ty=(e.clientY-r.top)/r.height;});
+  cv.addEventListener('pointerdown',()=>{boostT=1; say('BOOST ENGAGED');});
+  cv.addEventListener('pointerleave',()=>{ptr.tx=.5; ptr.ty=.62;});
+  addEventListener('pointerup',()=>boostT=0);
+  const obs=[]; for(let i=0;i<7;i++) obs.push({x:Math.random()*11-5.5,z:2+Math.random()*24,r:.32+Math.random()*.3,rot:Math.random()*6,vs:(Math.random()-.5)*1.4});
+  const stars=[]; for(let i=0;i<80;i++) stars.push({x:Math.random(),y:Math.random(),s:Math.random()});
+  const fx=[];
+  const proj=(xw,z)=>[w/2+xw*.42*(h*.95)/z, h*.36+.475*h/z];
+  let last=performance.now();
+  function frame(now){
+    requestAnimationFrame(frame);
+    if(!vis||document.hidden) return;
+    const dt=Math.min(.05,(now-last)/1000); last=now;
+    boost+=(boostT-boost)*.08;
+    ptr.x+=(ptr.tx-ptr.x)*.1; ptr.y+=(ptr.ty-ptr.y)*.1;
+    const sp=5*(1+boost*1.6), shipWX=(ptr.x-.5)*8;
+    obs.forEach(o=>{
+      o.z-=dt*sp; o.rot+=dt*o.vs;
+      if(o.z<.55){
+        const d=Math.abs(o.x-shipWX);
+        if(d<.62&&ptr.y>.4){ hits++; flash=1; say('SHIELD IMPACT — SECTOR '+(hits%9+1)); if(hits>=5){hits=0; say('SHIELDS CYCLED — SIGNAL STABLE');} }
+        else if(d<1.3){ score+=25; fx.push({a:1}); say('PROXIMITY PASS +25'); }
+        o.z=24+Math.random()*8; o.x=Math.random()*11-5.5; o.r=.32+Math.random()*.3;
+      }
+    });
+    flash=Math.max(0,flash-dt*2);
+    for(let i=fx.length-1;i>=0;i--){ fx[i].a-=dt*1.8; if(fx[i].a<=0) fx.splice(i,1); }
+    /* --- draw --- */
+    x.fillStyle='#0a0303'; x.fillRect(0,0,w,h);
+    stars.forEach(s=>{ const sx=(((s.x*w)-(now*.004*(1+s.s*3)))%w+w)%w, sy=s.y*h*.32, b=.2+.4*Math.abs(Math.sin(now*.003+s.s*9));
+      x.fillStyle='rgba(255,110,94,'+(b*.5)+')'; x.fillRect(sx,sy,s.s>.75?2:1,s.s>.75?2:1); });
+    /* ridge */
+    x.fillStyle='#150404'; x.beginPath(); x.moveTo(0,h*.36);
+    for(let i=0;i<=24;i++) x.lineTo(i/24*w, h*.36-8-Math.abs(Math.sin(i*2.7))*24-((i*7)%3)*3);
+    x.lineTo(w,h*.36); x.closePath(); x.fill();
+    x.strokeStyle='rgba(255,42,28,.3)'; x.stroke();
+    /* terrain */
+    x.lineWidth=1;
+    for(let i=1;i<=16;i++){
+      const z=i+1-((now*.0035*sp)%1), sy=h*.36+.475*h/z;
+      if(sy>h+4) continue;
+      const half=10*.42*(h*.95)/z;
+      x.globalAlpha=Math.max(0,Math.min(.55,1.15-z/24));
+      x.strokeStyle='#ff2015'; x.beginPath(); x.moveTo(w/2-half,sy); x.lineTo(w/2+half,sy); x.stroke();
+    }
+    x.globalAlpha=.16;
+    for(let g=-10;g<=10;g++){
+      const nx=w/2+g*.42*(h*.95)/.7, ny=h*.36+.475*h/.7;
+      x.beginPath(); x.moveTo(w/2+g*.42*(h*.95)/30,h*.36); x.lineTo(nx,ny); x.stroke();
+    }
+    x.globalAlpha=1;
+    /* obstacles */
+    obs.forEach(o=>{
+      const p=proj(o.x,o.z), s=o.r*(h*.95)/o.z;
+      x.globalAlpha=Math.max(.06,Math.min(1,1.4-o.z/24));
+      x.strokeStyle='#ff2a1c'; x.lineWidth=1.4;
+      x.save(); x.translate(p[0],p[1]); x.rotate(o.rot);
+      x.beginPath(); x.moveTo(0,-s); x.lineTo(s,0); x.lineTo(0,s); x.lineTo(-s,0); x.closePath(); x.stroke();
+      x.beginPath(); x.moveTo(0,-s); x.lineTo(0,s); x.moveTo(-s,0); x.lineTo(s,0); x.stroke();
+      x.restore();
+    });
+    x.globalAlpha=1; x.lineWidth=1;
+    /* ship */
+    const sx=w/2+(ptr.x-.5)*w*.5, sy=h*.36+.475*h/1.15+(ptr.y-.62)*h*.14, bank=(ptr.tx-ptr.x)*2.4;
+    fx.forEach(f=>{ x.globalAlpha=f.a*.6; x.strokeStyle='#ff6a5e'; x.beginPath(); x.arc(sx,sy,10+(1-f.a)*46,0,7); x.stroke(); });
+    x.globalAlpha=1;
+    x.save(); x.translate(sx,sy); x.rotate(bank);
+    x.strokeStyle='#ff2a1c'; x.lineWidth=1.6;
+    x.beginPath(); x.moveTo(0,-16); x.lineTo(13,12); x.lineTo(5,8); x.lineTo(0,13); x.lineTo(-5,8); x.lineTo(-13,12); x.closePath(); x.stroke();
+    x.beginPath(); x.moveTo(0,-9); x.lineTo(0,4); x.stroke();
+    x.fillStyle='rgba(255,106,94,'+(.35+Math.random()*.4)+')';
+    x.beginPath(); x.moveTo(-3,12); x.lineTo(0,20+Math.random()*9); x.lineTo(3,12); x.closePath(); x.fill();
+    x.restore(); x.lineWidth=1;
+    if(flash>0){ x.fillStyle='rgba(255,42,28,.15)'; x.fillRect(0,0,w,h); }
+    /* binocular vignette + seam */
+    let g=x.createRadialGradient(w*.25,h*.5,h*.22,w*.25,h*.5,h*.68);
+    g.addColorStop(0,'rgba(5,1,1,0)'); g.addColorStop(1,'rgba(5,1,1,.92)');
+    x.fillStyle=g; x.fillRect(0,0,w*.55,h);
+    g=x.createRadialGradient(w*.75,h*.5,h*.22,w*.75,h*.5,h*.68);
+    g.addColorStop(0,'rgba(5,1,1,0)'); g.addColorStop(1,'rgba(5,1,1,.92)');
+    x.fillStyle=g; x.fillRect(w*.45,0,w*.55,h);
+    g=x.createLinearGradient(w/2-16,0,w/2+16,0);
+    g.addColorStop(0,'rgba(8,2,2,0)'); g.addColorStop(.5,'rgba(8,2,2,.7)'); g.addColorStop(1,'rgba(8,2,2,0)');
+    x.fillStyle=g; x.fillRect(w/2-16,0,32,h);
+    /* scanlines */
+    x.fillStyle='rgba(0,0,0,.14)';
+    for(let yy=0;yy<h;yy+=3) x.fillRect(0,yy,w,1);
+    /* HUD */
+    x.font='10px "IBM Plex Mono",monospace'; x.fillStyle='rgba(255,140,124,.85)';
+    x.fillText('SECTOR 04 // RED SPACE',14,20);
+    x.fillText('SCORE '+String(score).padStart(6,'0'),14,h-14);
+    x.fillText('SPD '+(sp/2).toFixed(1),w-96,h-14);
+    for(let i=0;i<5;i++){ x.fillStyle=i<5-hits?'#ff2015':'rgba(255,42,28,.16)'; x.fillRect(w-96+i*14,14,10,5); }
+    if(msgA>0){ msgA-=dt; x.globalAlpha=Math.min(1,msgA); x.fillStyle='#ff6a5e'; x.fillText('> '+msg,14,h-32); x.globalAlpha=1; }
+  }
+  requestAnimationFrame(frame);
+})();
+
+$('#year'); /* noop anchor */
+})();
+</script>
+</body>
+</html>

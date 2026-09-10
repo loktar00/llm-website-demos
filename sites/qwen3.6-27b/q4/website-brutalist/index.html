@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCRETE INDEX — Independent Archive of Civic Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #0a0a0a;
+  --white: #f2f0eb;
+  --orange: #ff4500;
+  --blue: #0066ff;
+  --gray: #1a1a1a;
+  --grid-color: rgba(255,255,255,0.08);
+  --mono: 'IBM Plex Mono', monospace;
+  --display: 'Archivo Black', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--mono);
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.4;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* GRID OVERLAY */
+.grid-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 120px 120px;
+  opacity: 0.3;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--orange); }
+
+/* TOP BAR */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 48px;
+  background: var(--black);
+  border-bottom: 2px solid var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 1000;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.top-bar .left { display: flex; gap: 24px; align-items: center; }
+.top-bar .right { display: flex; gap: 24px; align-items: center; }
+.top-bar .issue { color: var(--orange); font-weight: 600; }
+.top-bar .tick { animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* HERO */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  border-bottom: 4px solid var(--white);
+}
+
+.hero-left {
+  position: relative;
+  padding: 120px 48px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-right: 2px solid var(--white);
+}
+
+.hero-title {
+  font-family: var(--display);
+  font-size: clamp(4rem, 11vw, 10rem);
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.hero-title span {
+  display: block;
+}
+
+.hero-title .line2 {
+  color: var(--orange);
+  margin-left: 8vw;
+}
+
+.hero-meta {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(242,240,235,0.6);
+  margin-bottom: 16px;
+}
+
+.hero-desc {
+  max-width: 420px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(242,240,235,0.75);
+  border-left: 3px solid var(--blue);
+  padding-left: 20px;
+}
+
+/* HERO RIGHT - SVG PLAN */
+.hero-right {
+  position: relative;
+  overflow: hidden;
+  background: var(--gray);
+}
+
+.hero-plan {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  transform-origin: center;
+}
+
+.hero-plan svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Registration marks */
+.reg-mark {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(242,240,235,0.4);
+}
+.reg-mark::before, .reg-mark::after {
+  content: '';
+  position: absolute;
+  background: rgba(242,240,235,0.4);
+}
+.reg-mark::before { width: 100%; height: 1px; top: 50%; }
+.reg-mark::after { width: 1px; height: 100%; left: 50%; }
+.reg-mark.tl { top: 16px; left: 16px; }
+.reg-mark.tr { top: 16px; right: 16px; }
+.reg-mark.bl { bottom: 16px; left: 16px; }
+.reg-mark.br { bottom: 16px; right: 16px; }
+
+/* Crosshair animation */
+.crosshair {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  animation: crosshairPulse 3s ease-in-out infinite;
+}
+.crosshair::before, .crosshair::after {
+  content: '';
+  position: absolute;
+  background: var(--orange);
+}
+.crosshair::before { width: 100%; height: 1px; top: 50%; }
+.crosshair::after { width: 1px; height: 100%; left: 50%; }
+@keyframes crosshairPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Measurement arrows */
+.measure-arrow {
+  position: absolute;
+  color: var(--blue);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+/* TICKER */
+.ticker {
+  position: relative;
+  height: 48px;
+  background: var(--orange);
+  border-bottom: 2px solid var(--white);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-track {
+  display: flex;
+  white-space: nowrap;
+  animation: tickerScroll 30s linear infinite;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--black);
+}
+
+.ticker-track span {
+  padding: 0 32px;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* SECTION HEADERS */
+.section-header {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 24px;
+  align-items: baseline;
+  padding: 80px 48px 40px;
+  border-bottom: 2px solid var(--white);
+}
+
+.section-num {
+  font-family: var(--display);
+  font-size: 3rem;
+  color: var(--orange);
+  line-height: 1;
+}
+
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 4rem);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(242,240,235,0.5);
+  text-align: right;
+}
+
+/* INDEX SECTION */
+.index-section {
+  border-bottom: 4px solid var(--white);
+}
+
+.index-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0;
+}
+
+.index-item {
+  position: relative;
+  border: 1px solid rgba(242,240,235,0.15);
+  padding: 32px 28px;
+  overflow: hidden;
+  transition: background 0s, transform 0s;
+  cursor: pointer;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.index-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.15s steps(3);
+}
+
+.index-item:hover::before {
+  transform: scaleX(1);
+}
+
+.index-item:hover {
+  background: rgba(242,240,235,0.03);
+}
+
+.index-item:nth-child(1) { grid-column: 1 / 7; }
+.index-item:nth-child(2) { grid-column: 7 / 13; }
+.index-item:nth-child(3) { grid-column: 1 / 5; }
+.index-item:nth-child(4) { grid-column: 5 / 9; }
+.index-item:nth-child(5) { grid-column: 9 / 13; }
+.index-item:nth-child(6) { grid-column: 1 / 13; }
+
+.index-num {
+  font-family: var(--display);
+  font-size: 4rem;
+  line-height: 1;
+  color: rgba(242,240,235,0.15);
+  transition: color 0s;
+}
+
+.index-item:hover .index-num {
+  color: var(--orange);
+}
+
+.index-name {
+  font-family: var(--display);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin: 12px 0 8px;
+}
+
+.index-loc {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.index-year {
+  font-size: 11px;
+  color: rgba(242,240,235,0.5);
+  margin-top: 8px;
+}
+
+.index-svg {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 180px;
+  height: 120px;
+  opacity: 0.6;
+}
+
+/* EDITORIAL */
+.editorial {
+  border-bottom: 4px solid var(--white);
+  padding: 0;
+}
+
+.editorial-grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  min-height: 70vh;
+}
+
+.editorial-visual {
+  position: relative;
+  background: var(--gray);
+  border-right: 2px solid var(--white);
+  overflow: hidden;
+}
+
+.editorial-visual svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+.editorial-content {
+  padding: 60px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.editorial-tag {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.editorial-tag::after {
+  content: '';
+  width: 40px;
+  height: 2px;
+  background: var(--orange);
+}
+
+.editorial-title {
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+
+.editorial-title em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+.editorial-body {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(242,240,235,0.75);
+  max-width: 540px;
+  margin-bottom: 32px;
+}
+
+.editorial-body p + p {
+  margin-top: 16px;
+}
+
+.editorial-quote {
+  font-size: 1.4rem;
+  font-family: var(--display);
+  text-transform: uppercase;
+  border-left: 4px solid var(--orange);
+  padding-left: 24px;
+  margin: 32px 0;
+  line-height: 1.3;
+}
+
+.editorial-meta {
+  font-size: 11px;
+  color: rgba(242,240,235,0.5);
+  letter-spacing: 0.05em;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* SPECS TABLE */
+.specs-section {
+  border-bottom: 4px solid var(--white);
+}
+
+.specs-table-wrap {
+  overflow-x: auto;
+  padding: 0 48px 60px;
+}
+
+.specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 700px;
+}
+
+.specs-table th {
+  text-align: left;
+  padding: 12px 16px;
+  border: 1px solid rgba(242,240,235,0.2);
+  background: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-size: 10px;
+  color: var(--orange);
+}
+
+.specs-table td {
+  padding: 12px 16px;
+  border: 1px solid rgba(242,240,235,0.15);
+  vertical-align: top;
+}
+
+.specs-table tr:hover td {
+  background: rgba(242,240,235,0.03);
+}
+
+.specs-table .col-label {
+  color: rgba(242,240,235,0.6);
+  width: 180px;
+  white-space: nowrap;
+}
+
+/* MANIFESTO */
+.manifesto {
+  border-bottom: 4px solid var(--white);
+  padding: 80px 48px;
+  position: relative;
+}
+
+.manifesto-title {
+  font-family: var(--display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  text-transform: uppercase;
+  line-height: 0.9;
+  margin-bottom: 60px;
+}
+
+.manifesto-title .word {
+  display: inline-block;
+  margin-right: 0.3em;
+}
+
+.manifesto-title .word:nth-child(even) {
+  color: var(--orange);
+}
+
+.manifesto-fragments {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+
+.manifesto-fragment {
+  border-top: 2px solid var(--white);
+  padding-top: 24px;
+}
+
+.manifesto-fragment:nth-child(2) {
+  margin-top: 60px;
+}
+
+.manifesto-fragment:nth-child(3) {
+  margin-top: 120px;
+}
+
+.manifesto-fragment .num {
+  font-family: var(--display);
+  font-size: 2rem;
+  color: var(--blue);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.manifesto-fragment p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: rgba(242,240,235,0.7);
+}
+
+.manifesto-fragment p strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* ARCHIVE STRIP */
+.archive-strip {
+  border-bottom: 4px solid var(--white);
+  overflow: hidden;
+  padding: 40px 0;
+}
+
+.archive-strip-inner {
+  display: flex;
+  gap: 0;
+  animation: archiveScroll 40s linear infinite;
+  width: max-content;
+}
+
+.archive-item {
+  flex-shrink: 0;
+  width: 320px;
+  border: 1px solid rgba(242,240,235,0.2);
+  padding: 24px;
+  margin-right: -1px;
+  transition: background 0s;
+}
+
+.archive-item:hover {
+  background: var(--blue);
+}
+
+.archive-item .a-num {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.archive-item .a-name {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.archive-item .a-meta {
+  font-size: 10px;
+  color: rgba(242,240,235,0.5);
+}
+
+.archive-item:hover .a-meta {
+  color: rgba(242,240,235,0.8);
+}
+
+@keyframes archiveScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* FOOTER */
+.footer {
+  background: var(--gray);
+  border-top: 4px solid var(--white);
+  padding: 60px 48px 40px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 60px;
+}
+
+.footer-brand {
+  font-family: var(--display);
+  font-size: 2rem;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.footer-brand span { color: var(--orange); }
+
+.footer-desc {
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgba(242,240,235,0.6);
+  max-width: 320px;
+}
+
+.footer-col h4 {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--orange);
+  margin-bottom: 16px;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col li {
+  font-size: 12px;
+  padding: 4px 0;
+  color: rgba(242,240,235,0.6);
+  cursor: pointer;
+  transition: color 0s;
+}
+
+.footer-col li:hover { color: var(--white); }
+
+.footer-doc {
+  border-top: 1px solid rgba(242,240,235,0.2);
+  padding-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  font-size: 10px;
+  color: rgba(242,240,235,0.4);
+  letter-spacing: 0.05em;
+}
+
+.footer-doc .stamp {
+  border: 2px solid var(--orange);
+  color: var(--orange);
+  padding: 8px 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: inline-block;
+  transform: rotate(-2deg);
+}
+
+/* CONCRETE GRAIN TEXTURE */
+.concrete-grain {
+  position: relative;
+}
+.concrete-grain::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* ANIMATED DIAGRAM FRAGMENTS */
+.diagram-line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawLine 3s ease forwards;
+}
+
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+.diagram-pulse {
+  animation: diagPulse 2s ease-in-out infinite;
+}
+
+@keyframes diagPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: 60vh 40vh;
+  }
+  .hero-left {
+    border-right: none;
+    border-bottom: 2px solid var(--white);
+    padding: 100px 24px 40px;
+  }
+  .hero-right {
+    min-height: 300px;
+  }
+  .index-item:nth-child(n) { grid-column: 1 / -1; }
+  .index-item { min-height: 240px; }
+  .editorial-grid { grid-template-columns: 1fr; }
+  .editorial-visual { min-height: 300px; border-right: none; border-bottom: 2px solid var(--white); }
+  .editorial-content { padding: 40px 24px; }
+  .manifesto-fragments { grid-template-columns: 1fr; gap: 32px; }
+  .manifesto-fragment:nth-child(2), .manifesto-fragment:nth-child(3) { margin-top: 0; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-doc { grid-template-columns: 1fr; }
+  .section-header { padding: 60px 24px 32px; grid-template-columns: 60px 1fr; }
+  .section-label { display: none; }
+  .specs-table-wrap { padding: 0 24px 40px; }
+  .top-bar .left span:nth-child(2) { display: none; }
+}
+
+@media (max-width: 600px) {
+  .hero-title { font-size: clamp(3rem, 15vw, 5rem); }
+  .hero-title .line2 { margin-left: 0; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .archive-item { width: 240px; }
+}
+
+/* UTILITY */
+.mono-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(242,240,235,0.5);
+}
+
+.orange-block {
+  background: var(--orange);
+  color: var(--black);
+  padding: 2px 8px;
+  font-weight: 600;
+}
+
+.blue-block {
+  background: var(--blue);
+  color: var(--white);
+  padding: 2px 8px;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<div class="grid-overlay"></div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="left">
+    <span>CONCRETE INDEX</span>
+    <span class="issue">ISSUE <span id="issueCounter">047</span></span>
+    <span class="tick">▮</span>
+  </div>
+  <div class="right">
+    <span>EST. 2019</span>
+    <span>GRID 12×8</span>
+    <span id="liveTime">00:00:00</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero concrete-grain">
+  <div class="hero-left">
+    <div class="hero-meta">VOL. 04 — CIVIC STRUCTURES / PUBLIC INFRASTRUCTURE</div>
+    <h1 class="hero-title">
+      <span>CONCRETE</span>
+      <span class="line2">INDEX</span>
+    </h1>
+    <p class="hero-desc">An independent archive of remarkable civic architecture and public infrastructure. Documenting the monumental, the utilitarian, and the forgotten built environment.</p>
+  </div>
+  <div class="hero-right">
+    <div class="hero-plan" id="heroPlan">
+      <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice">
+        <!-- Site plan background -->
+        <rect x="0" y="0" width="600" height="700" fill="#1a1a1a"/>
+        <!-- Grid -->
+        <g stroke="rgba(242,240,235,0.06)" stroke-width="0.5">
+          <line x1="100" y1="0" x2="100" y2="700"/><line x1="200" y1="0" x2="200" y2="700"/>
+          <line x1="300" y1="0" x2="300" y2="700"/><line x1="400" y1="0" x2="400" y2="700"/>
+          <line x1="500" y1="0" x2="500" y2="700"/>
+          <line x1="0" y1="100" x2="600" y2="100"/><line x1="0" y1="200" x2="600" y2="200"/>
+          <line x1="0" y1="300" x2="600" y2="300"/><line x1="0" y1="400" x2="600" y2="400"/>
+          <line x1="0" y1="500" x2="600" y2="500"/><line x1="0" y1="600" x2="600" y2="600"/>
+        </g>
+        <!-- Building silhouette 1 - brutalist block -->
+        <rect x="80" y="180" width="160" height="320" fill="none" stroke="rgba(242,240,235,0.7)" stroke-width="1.5"/>
+        <rect x="100" y="200" width="40" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="150" y="200" width="40" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="200" y="200" width="30" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="100" y="250" width="40" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="150" y="250" width="40" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="200" y="250" width="30" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="100" y="300" width="40" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="150" y="300" width="40" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="200" y="300" width="30" height="30" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <!-- Building silhouette 2 - cantilever -->
+        <rect x="320" y="250" width="180" height="250" fill="none" stroke="rgba(0,102,255,0.8)" stroke-width="1.5"/>
+        <rect x="300" y="230" width="200" height="30" fill="none" stroke="rgba(0,102,255,0.8)" stroke-width="1.5"/>
+        <line x1="320" y1="280" x2="500" y2="280" stroke="rgba(0,102,255,0.4)" stroke-width="0.5"/>
+        <line x1="320" y1="320" x2="500" y2="320" stroke="rgba(0,102,255,0.4)" stroke-width="0.5"/>
+        <line x1="320" y1="360" x2="500" y2="360" stroke="rgba(0,102,255,0.4)" stroke-width="0.5"/>
+        <line x1="320" y1="400" x2="500" y2="400" stroke="rgba(0,102,255,0.4)" stroke-width="0.5"/>
+        <!-- Measurement arrows -->
+        <g stroke="rgba(255,69,0,0.8)" stroke-width="1" fill="none">
+          <line x1="80" y1="520" x2="80" y2="180"/>
+          <polygon points="80,180 76,190 84,190" fill="rgba(255,69,0,0.8)" stroke="none"/>
+          <polygon points="80,520 76,510 84,510" fill="rgba(255,69,0,0.8)" stroke="none"/>
+        </g>
+        <text x="60" y="350" fill="rgba(255,69,0,0.8)" font-size="10" font-family="IBM Plex Mono" transform="rotate(-90 60 350)">34.2M</text>
+        <!-- Dimension line bottom -->
+        <g stroke="rgba(242,240,235,0.5)" stroke-width="0.5" fill="none">
+          <line x1="80" y1="540" x2="240" y2="540"/>
+          <line x1="80" y1="535" x2="80" y2="545"/>
+          <line x1="240" y1="535" x2="240" y2="545"/>
+        </g>
+        <text x="130" y="555" fill="rgba(242,240,235,0.5)" font-size="9" font-family="IBM Plex Mono">160.0M</text>
+        <!-- Animated crosshair -->
+        <g class="diagram-pulse">
+          <line x1="410" y1="300" x2="430" y2="300" stroke="#ff4500" stroke-width="1"/>
+          <line x1="420" y1="290" x2="420" y2="310" stroke="#ff4500" stroke-width="1"/>
+        </g>
+        <!-- Registration marks -->
+        <g stroke="rgba(242,240,235,0.3)" stroke-width="0.5" fill="none">
+          <rect x="20" y="20" width="16" height="16"/>
+          <line x1="20" y1="28" x2="36" y2="28"/>
+          <line x1="28" y1="20" x2="28" y2="36"/>
+          <rect x="564" y="20" width="16" height="16"/>
+          <line x1="564" y1="28" x2="580" y2="28"/>
+          <line x1="572" y1="20" x2="572" y2="36"/>
+          <rect x="20" y="664" width="16" height="16"/>
+          <line x1="20" y1="672" x2="36" y2="672"/>
+          <line x1="28" y1="664" x2="28" y2="680"/>
+          <rect x="564" y="664" width="16" height="16"/>
+          <line x1="564" y1="672" x2="580" y2="672"/>
+          <line x1="572" y1="664" x2="572" y2="680"/>
+        </g>
+        <!-- Title block -->
+        <rect x="420" y="620" width="160" height="60" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <text x="430" y="638" fill="rgba(242,240,235,0.4)" font-size="8" font-family="IBM Plex Mono">SHEET 01 OF 04</text>
+        <text x="430" y="652" fill="rgba(242,240,235,0.4)" font-size="8" font-family="IBM Plex Mono">SCALE 1:500</text>
+        <text x="430" y="666" fill="rgba(242,240,235,0.4)" font-size="8" font-family="IBM Plex Mono">DWG NO. CI-2024-047</text>
+      </svg>
+    </div>
+    <div class="reg-mark tl"></div>
+    <div class="reg-mark tr"></div>
+    <div class="reg-mark bl"></div>
+    <div class="reg-mark br"></div>
+    <div class="crosshair" style="top: 30%; left: 20%;"></div>
+    <div class="crosshair" style="top: 60%; left: 65%; animation-delay: 1.5s;"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <span>■ NEW RECORD: VORTEX WATER PLANT — KIEL, GERMANY</span>
+    <span>■ ARCHIVE UPDATE: 2,847 STRUCTURES CATALOGUED</span>
+    <span>■ FEATURE: MONUMENTAL COASTAL INFRASTRUCTURE</span>
+    <span>■ FIELD REPORT: BRUTALIST TRANSIT HUBS — VOL. 03</span>
+    <span>■ EXHIBITION: CONCRETE FORMWORK 1950–1990</span>
+    <span>■ NEXT ISSUE: SUBTERRANEAN CIVIC SPACES</span>
+    <span>■ NEW RECORD: VORTEX WATER PLANT — KIEL, GERMANY</span>
+    <span>■ ARCHIVE UPDATE: 2,847 STRUCTURES CATALOGUED</span>
+    <span>■ FEATURE: MONUMENTAL COASTAL INFRASTRUCTURE</span>
+    <span>■ FIELD REPORT: BRUTALIST TRANSIT HUBS — VOL. 03</span>
+    <span>■ EXHIBITION: CONCRETE FORMWORK 1950–1990</span>
+    <span>■ NEXT ISSUE: SUBTERRANEAN CIVIC SPACES</span>
+  </div>
+</div>
+
+<!-- INDEX SECTION -->
+<section class="index-section">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-title">Structure Index</div>
+    <div class="section-label">RECORDS 001–006 / SORTED BY COMPLETION DATE</div>
+  </div>
+  <div class="index-grid">
+    <div class="index-item">
+      <div>
+        <div class="index-num">001</div>
+        <div class="index-name">Kransen Waterworks</div>
+        <div class="index-loc">Kiel, Schleswig-Holstein</div>
+        <div class="index-year">COMPLETED 1972 / REVISION 2018</div>
+      </div>
+      <svg class="index-svg" viewBox="0 0 180 120">
+        <rect x="10" y="30" width="60" height="80" fill="none" stroke="rgba(242,240,235,0.5)" stroke-width="1"/>
+        <rect x="80" y="50" width="90" height="60" fill="none" stroke="rgba(242,240,235,0.5)" stroke-width="1"/>
+        <line x1="10" y1="30" x2="80" y2="50" stroke="rgba(255,69,0,0.6)" stroke-width="1"/>
+        <rect x="20" y="40" width="15" height="12" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+        <rect x="40" y="40" width="15" height="12" fill="none" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="index-item">
+      <div>
+        <div class="index-num">002</div>
+        <div class="index-name">Port Authority Terminal</div>
+        <div class="index-loc">Rotterdam, Netherlands</div>
+        <div class="index-year">COMPLETED 1968 / EXPANDED 1984</div>
+      </div>
+      <svg class="index-svg" viewBox="0 0 180 120">
+        <rect x="10" y="60" width="160" height="50" fill="none" stroke="rgba(0,102,255,0.6)" stroke-width="1"/>
+        <rect x="30" y="30" width="40" height="30" fill="none" stroke="rgba(0,102,255,0.6)" stroke-width="1"/>
+        <rect x="90" y="20" width="50" height="40" fill="none" stroke="rgba(0,102,255,0.6)" stroke-width="1"/>
+        <line x1="10" y1="60" x2="170" y2="60" stroke="rgba(0,102,255,0.3)" stroke-width="0.5" stroke-dasharray="4 2"/>
+      </svg>
+    </div>
+    <div class="index-item">
+      <div>
+        <div class="index-num">003</div>
+        <div class="index-name">Nordring Transit Hub</div>
+        <div class="index-loc">Copenhagen, Denmark</div>
+        <div class="index-year">COMPLETED 1977</div>
+      </div>
+      <svg class="index-svg" viewBox="0 0 180 120">
+        <path d="M10 100 L10 40 L60 20 L170 20 L170 100 Z" fill="none" stroke="rgba(242,240,235,0.5)" stroke-width="1"/>
+        <line x1="60" y1="20" x2="60" y2="100" stroke="rgba(242,240,235,0.2)" stroke-width="0.5"/>
+        <line x1="10" y1="60" x2="170" y2="60" stroke="rgba(255,69,0,0.4)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="index-item">
+      <div>
+        <div class="index-num">004</div>
+        <div class="index-name">Bunker Reservoir Array</div>
+        <div class="index-loc">Oslo, Norway</div>
+        <div class="index-year">COMPLETED 1963 / DECOMMISSIONED 2005</div>
+      </div>
+      <svg class="index-svg" viewBox="0 0 180 120">
+        <circle cx="50" cy="60" r="35" fill="none" stroke="rgba(242,240,235,0.5)" stroke-width="1"/>
+        <circle cx="50" cy="60" r="20" fill="none" stroke="rgba(255,69,0,0.4)" stroke-width="0.5"/>
+        <rect x="100" y="30" width="60" height="60" fill="none" stroke="rgba(242,240,235,0.5)" stroke-width="1"/>
+        <line x1="85" y1="60" x2="100" y2="60" stroke="rgba(242,240,235,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="index-item">
+      <div>
+        <div class="index-num">005</div>
+        <div class="index-name">Halbinsel Pump Station</div>
+        <div class="index-loc">Hamburg, Germany</div>
+        <div class="index-year">COMPLETED 1981</div>
+      </div>
+      <svg class="index-svg" viewBox="0 0 180 120">
+        <rect x="20" y="40" width="50" height="70" fill="none" stroke="rgba(0,102,255,0.6)" stroke-width="1"/>
+        <rect x="80" y="30" width="40" height="80" fill="none" stroke="rgba(0,102,255,0.6)" stroke-width="1"/>
+        <rect x="130" y="50" width="40" height="60" fill="none" stroke="rgba(0,102,255,0.6)" stroke-width="1"/>
+        <line x1="70" y1="50" x2="80" y2="40" stroke="rgba(0,102,255,0.4)" stroke-width="0.5"/>
+        <line x1="120" y1="60" x2="130" y2="60" stroke="rgba(0,102,255,0.4)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="index-item">
+      <div>
+        <div class="index-num">006</div>
+        <div class="index-name">Vortex Coastal Water Plant</div>
+        <div class="index-loc">Kiel Fjord, Baltic Sea</div>
+        <div class="index-year">COMPLETED 1974 / ONGOING OPERATION</div>
+      </div>
+      <svg class="index-svg" viewBox="0 0 180 120">
+        <path d="M10 100 Q90 10 170 100" fill="none" stroke="rgba(255,69,0,0.6)" stroke-width="1.5"/>
+        <rect x="60" y="50" width="60" height="50" fill="none" stroke="rgba(242,240,235,0.5)" stroke-width="1"/>
+        <line x1="90" y1="50" x2="90" y2="100" stroke="rgba(255,69,0,0.3)" stroke-width="0.5" stroke-dasharray="3 3"/>
+        <circle cx="90" cy="50" r="5" fill="none" stroke="rgba(255,69,0,0.6)" stroke-width="1"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- EDITORIAL -->
+<section class="editorial">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-title">Editorial Feature</div>
+    <div class="section-label">LONG-FORM / FIELD STUDY / 2024</div>
+  </div>
+  <div class="editorial-grid">
+    <div class="editorial-visual">
+      <svg viewBox="0 0 500 600" preserveAspectRatio="xMidYMid slice">
+        <rect x="0" y="0" width="500" height="600" fill="#1a1a1a"/>
+        <!-- Water plant cross-section -->
+        <g stroke="rgba(242,240,235,0.6)" stroke-width="1" fill="none">
+          <!-- Main structure -->
+          <rect x="60" y="100" width="380" height="350"/>
+          <!-- Internal divisions -->
+          <line x1="60" y1="180" x2="440" y2="180"/>
+          <line x1="60" y1="260" x2="440" y2="260"/>
+          <line x1="60" y1="340" x2="440" y2="340"/>
+          <line x1="60" y1="420" x2="440" y2="420"/>
+          <!-- Vertical sections -->
+          <line x1="155" y1="100" x2="155" y2="450"/>
+          <line x1="250" y1="100" x2="250" y2="450"/>
+          <line x1="345" y1="100" x2="345" y2="450"/>
+          <!-- Inlet pipes -->
+          <rect x="30" y="140" width="30" height="20" fill="none" stroke="rgba(0,102,255,0.8)" stroke-width="1.5"/>
+          <rect x="30" y="220" width="30" height="20" fill="none" stroke="rgba(0,102,255,0.8)" stroke-width="1.5"/>
+          <rect x="30" y="300" width="30" height="20" fill="none" stroke="rgba(0,102,255,0.8)" stroke-width="1.5"/>
+          <!-- Outlet -->
+          <rect x="440" y="380" width="30" height="40" fill="none" stroke="rgba(255,69,0,0.8)" stroke-width="1.5"/>
+          <!-- Animated flow lines -->
+          <g class="diagram-line" stroke="rgba(0,102,255,0.6)" stroke-width="1" fill="none">
+            <path d="M60 160 L155 160 L250 240 L345 240 L440 320"/>
+          </g>
+          <g class="diagram-line" stroke="rgba(0,102,255,0.4)" stroke-width="1" fill="none" style="animation-delay: 1s;">
+            <path d="M60 240 L155 240 L250 320 L345 320 L440 400"/>
+          </g>
+          <!-- Vortex chamber -->
+          <circle cx="250" cy="270" r="40" fill="none" stroke="rgba(255,69,0,0.6)" stroke-width="1.5"/>
+          <circle cx="250" cy="270" r="25" fill="none" stroke="rgba(255,69,0,0.4)" stroke-width="1"/>
+          <g class="diagram-pulse">
+            <path d="M250 230 A40 40 0 0 1 290 270" fill="none" stroke="rgba(255,69,0,0.8)" stroke-width="2"/>
+          </g>
+          <!-- Dimension annotations -->
+          <g stroke="rgba(242,240,235,0.4)" stroke-width="0.5">
+            <line x1="60" y1="480" x2="440" y2="480"/>
+            <line x1="60" y1="475" x2="60" y2="485"/>
+            <line x1="440" y1="475" x2="440" y2="485"/>
+          </g>
+          <text x="200" y="495" fill="rgba(242,240,235,0.4)" font-size="10" font-family="IBM Plex Mono">380.0M — MAIN HALL</text>
+          <!-- Elevation markers -->
+          <g stroke="rgba(242,240,235,0.3)" stroke-width="0.5">
+            <line x1="470" y1="100" x2="470" y2="450"/>
+            <line x1="465" y1="100" x2="475" y2="100"/>
+            <line x1="465" y1="180" x2="475" y2="180"/>
+            <line x1="465" y1="260" x2="475" y2="260"/>
+            <line x1="465" y1="340" x2="475" y2="340"/>
+            <line x1="465" y1="420" x2="475" y2="420"/>
+            <line x1="465" y1="450" x2="475" y2="450"/>
+          </g>
+          <text x="478" y="105" fill="rgba(242,240,235,0.3)" font-size="8" font-family="IBM Plex Mono">+12.0</text>
+          <text x="478" y="185" fill="rgba(242,240,235,0.3)" font-size="8" font-family="IBM Plex Mono">+8.0</text>
+          <text x="478" y="265" fill="rgba(242,240,235,0.3)" font-size="8" font-family="IBM Plex Mono">+4.0</text>
+          <text x="478" y="345" fill="rgba(242,240,235,0.3)" font-size="8" font-family="IBM Plex Mono">+0.0</text>
+          <text x="478" y="425" fill="rgba(242,240,235,0.3)" font-size="8" font-family="IBM Plex Mono">−4.0</text>
+          <!-- Title block -->
+          <rect x="30" y="520" width="440" height="60" fill="none" stroke="rgba(242,240,235,0.2)" stroke-width="0.5"/>
+          <text x="40" y="540" fill="rgba(242,240,235,0.4)" font-size="9" font-family="IBM Plex Mono">VORTEX COASTAL WATER PLANT — SECTION A-A</text>
+          <text x="40" y="555" fill="rgba(242,240,235,0.4)" font-size="9" font-family="IBM Plex Mono">SCALE 1:200 / DRAWN BY CI-ARCHIVE</text>
+          <text x="40" y="570" fill="rgba(242,240,235,0.4)" font-size="9" font-family="IBM Plex Mono">REV. C / 2024-03-15</text>
+        </g>
+      </svg>
+    </div>
+    <div class="editorial-content">
+      <div class="editorial-tag">FIELD STUDY / INFRASTRUCTURE</div>
+      <h2 class="editorial-title">The Vortex Plant: <em>Water as Monument</em></h2>
+      <div class="editorial-body">
+        <p>Rising from the Kiel Fjord like a geological formation, the Vortex Coastal Water Plant processes 420,000 cubic metres of Baltic water daily through a single centrifugal chamber. Its concrete shell — 1.2 metres thick at the base, tapering to 30 centimetres at the crown — was poured in seven continuous operations between March and September 1974.</p>
+        <p>The structure rejects ornament entirely. What remains is pure hydraulic geometry: a parabolic bowl carved into the bedrock, its walls ribbed with 48 radial fins that distribute hydrostatic pressure into the surrounding granite. The plant's architects, working from a brief that specified "no decorative elements whatsoever," delivered a form so functionally precise it has been mistaken for a natural formation by satellite surveyors.</p>
+      </div>
+      <div class="editorial-quote">"We did not design a building. We designed a machine for water, and the concrete merely holds its shape."</div>
+      <div class="editorial-meta">
+        <span>AUTHOR: M. VOGEL</span>
+        <span>PHOTO: CI-047-REF-12</span>
+        <span>WORD COUNT: 4,200</span>
+        <span>READ TIME: 18 MIN</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS TABLE -->
+<section class="specs-section">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-title">Technical Specifications</div>
+    <div class="section-label">VORTEX COASTAL WATER PLANT / ALL DATA VERIFIED</div>
+  </div>
+  <div class="specs-table-wrap">
+    <table class="specs-table">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+          <th>Unit</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-label">Total Floor Area</td>
+          <td>14,200</td>
+          <td>m²</td>
+          <td><span class="orange-block">ACTIVE</span></td>
+          <td>5 operational levels</td>
+        </tr>
+        <tr>
+          <td class="col-label">Concrete Volume</td>
+          <td>38,400</td>
+          <td>m³</td>
+          <td><span class="orange-block">ACTIVE</span></td>
+          <td>C45/55 mix, air-entrained</td>
+        </tr>
+        <tr>
+          <td class="col-label">Structural Height</td>
+          <td>24.6</td>
+          <td>m</td>
+          <td><span class="orange-block">ACTIVE</span></td>
+          <td>From bedrock datum</td>
+        </tr>
+        <tr>
+          <td class="col-label">Vortex Chamber Ø</td>
+          <td>18.0</td>
+          <td>m</td>
+          <td><span class="orange-block">ACTIVE</span></td>
+          <td>Parabolic profile, f=0.42</td>
+        </tr>
+        <tr>
+          <td class="col-label">Design Capacity</td>
+          <td>420,000</td>
+          <td>m³/day</td>
+          <td><span class="orange-block">ACTIVE</span></td>
+          <td>Peak: 580,000 m³/day</td>
+        </tr>
+        <tr>
+          <td class="col-label">Wall Thickness (Base)</td>
+          <td>1,200</td>
+          <td>mm</td>
+          <td><span class="blue-block">MONITORED</span></td>
+          <td>Radial fins: 48 @ 7.5°</td>
+        </tr>
+        <tr>
+          <td class="col-label">Wall Thickness (Crown)</td>
+          <td>300</td>
+          <td>mm</td>
+          <td><span class="blue-block">MONITORED</span></td>
+          <td>Tapered via formwork</td>
+        </tr>
+        <tr>
+          <td class="col-label">Reinforcement</td>
+          <td>2,840</td>
+          <td>tonnes</td>
+          <td><span class="orange-block">ACTIVE</span></td>
+          <td>St500, epoxy-coated</td>
+        </tr>
+        <tr>
+          <td class="col-label">Foundation Depth</td>
+          <td>18.5</td>
+          <td>m</td>
+          <td><span class="blue-block">MONITORED</span></td>
+          <td>Bedrock anchor, 12 piles</td>
+        </tr>
+        <tr>
+          <td class="col-label">Design Life</td>
+          <td>120</td>
+          <td>years</td>
+          <td><span class="orange-block">ACTIVE</span></td>
+          <td>Original: 1974–2094</td>
+        </tr>
+        <tr>
+          <td class="col-label">Seismic Rating</td>
+          <td>7.2</td>
+          <td>Mw</td>
+          <td><span class="blue-block">MONITORED</span></td>
+          <td>Base isolation, 2018 retrofit</td>
+        </tr>
+        <tr>
+          <td class="col-label">Operational Status</td>
+          <td colspan="4">CONTINUOUS — 50 YEARS UNINTERRUPTED SERVICE</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="section-header" style="padding-top: 0;">
+    <div class="section-num">04</div>
+    <div class="section-title">Manifesto</div>
+    <div class="section-label">FRAGMENTED / UNEDITED / 2024</div>
+  </div>
+  <h2 class="manifesto-title">
+    <span class="word">WE</span><span class="word">DO</span><span class="word">NOT</span><span class="word">DOCUMENT</span><span class="word">BUILDINGS.</span><span class="word">WE</span><span class="word">DOCUMENT</span><span class="word">THE</span><span class="word">FORCE</span><span class="word">THAT</span><span class="word">MADE</span><span class="word">THEM.</span>
+  </h2>
+  <div class="manifesto-fragments">
+    <div class="manifesto-fragment">
+      <span class="num">/01</span>
+      <p><strong>Civic architecture is not decoration.</strong> It is the physical manifestation of collective will — poured, cured, and left to weather. We archive the structures that serve millions without asking for recognition. The water plant, the transit hub, the reservoir. These are the cathedrals of the modern age, and they are being demolished for parking lots.</p>
+    </div>
+    <div class="manifesto-fragment">
+      <span class="num">/02</span>
+      <p><strong>Concrete remembers everything.</strong> Every formwork joint, every pour line, every day of cold weather that delayed the cure. Our archive preserves these records because the structures themselves will not survive another century. We are the memory of the machine.</p>
+    </div>
+    <div class="manifesto-fragment">
+      <span class="num">/03</span>
+      <p><strong>There is no such thing as ugly infrastructure.</strong> Only honest infrastructure and dishonest infrastructure. A water plant that looks like a water plant is beautiful. A transit hub that hides its function behind glass and steel is a lie. We index the honest ones. We will never index the lies.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHIVE STRIP -->
+<section class="archive-strip">
+  <div class="section-header" style="padding-bottom: 0;">
+    <div class="section-num">05</div>
+    <div class="section-title">Archive Strip</div>
+    <div class="section-label">COMPLETE CATALOGUE / 2,847 RECORDS</div>
+  </div>
+  <div class="archive-strip-inner" id="archiveStrip">
+    <div class="archive-item"><div class="a-num">CI-001</div><div class="a-name">Kransen Waterworks</div><div class="a-meta">KIEL / 1972 / 14,200 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-002</div><div class="a-name">Port Authority Terminal</div><div class="a-meta">ROTTERDAM / 1968 / 22,400 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-003</div><div class="a-name">Nordring Transit Hub</div><div class="a-meta">COPENHAGEN / 1977 / 8,900 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-004</div><div class="a-name">Bunker Reservoir Array</div><div class="a-meta">OSLO / 1963 / 31,000 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-005</div><div class="a-name">Halbinsel Pump Station</div><div class="a-meta">HAMBURG / 1981 / 6,700 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-006</div><div class="a-name">Vortex Coastal Plant</div><div class="a-meta">KIEL / 1974 / 14,200 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-007</div><div class="a-name">Stadthalle Underground</div><div class="a-meta">BERLIN / 1979 / 18,500 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-008</div><div class="a-name">Fjord Bridge Approach</div><div class="a-meta">STAVANGER / 1991 / 4,200 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-009</div><div class="a-name">Wattensand Pumping Array</div><div class="a-meta">NORTH SEA / 1967 / 9,800 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-010</div><div class="a-name">Kattegat Storm Barrier</div><div class="a-meta">DENMARK / 1985 / 52,000 M²</div></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="archive-item"><div class="a-num">CI-001</div><div class="a-name">Kransen Waterworks</div><div class="a-meta">KIEL / 1972 / 14,200 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-002</div><div class="a-name">Port Authority Terminal</div><div class="a-meta">ROTTERDAM / 1968 / 22,400 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-003</div><div class="a-name">Nordring Transit Hub</div><div class="a-meta">COPENHAGEN / 1977 / 8,900 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-004</div><div class="a-name">Bunker Reservoir Array</div><div class="a-meta">OSLO / 1963 / 31,000 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-005</div><div class="a-name">Halbinsel Pump Station</div><div class="a-meta">HAMBURG / 1981 / 6,700 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-006</div><div class="a-name">Vortex Coastal Plant</div><div class="a-meta">KIEL / 1974 / 14,200 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-007</div><div class="a-name">Stadthalle Underground</div><div class="a-meta">BERLIN / 1979 / 18,500 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-008</div><div class="a-name">Fjord Bridge Approach</div><div class="a-meta">STAVANGER / 1991 / 4,200 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-009</div><div class="a-name">Wattensand Pumping Array</div><div class="a-meta">NORTH SEA / 1967 / 9,800 M²</div></div>
+    <div class="archive-item"><div class="a-num">CI-010</div><div class="a-name">Kattegat Storm Barrier</div><div class="a-meta">DENMARK / 1985 / 52,000 M²</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">CONCRETE <span>INDEX</span></div>
+      <p class="footer-desc">An independent archive of remarkable civic architecture and public infrastructure. Published quarterly. No advertisements. No compromise.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Index</h4>
+      <ul>
+        <li>All Structures</li>
+        <li>Water Infrastructure</li>
+        <li>Transit & Rail</li>
+        <li>Reservoirs & Tanks</li>
+        <li>Coastal Works</li>
+        <li>Decommissioned</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Archive</h4>
+      <ul>
+        <li>Issue 01 — Foundations</li>
+        <li>Issue 02 — Vertical Works</li>
+        <li>Issue 03 — Transit Hubs</li>
+        <li>Issue 04 — Water Systems</li>
+        <li>Field Reports</li>
+        <li>Photographic Record</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Operations</h4>
+      <ul>
+        <li>Editorial Board</li>
+        <li>Submission Guidelines</li>
+        <li>Archive Access</li>
+        <li>Print Edition</li>
+        <li>Contact</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-doc">
+    <div>
+      <span class="stamp">APPROVED</span>
+      <p style="margin-top: 12px;">CONCRETE INDEX MEDIA GMBH<br>KIEL, GERMANY<br>REG. NO. HRB-2024-CI</p>
+    </div>
+    <div>
+      <p>DOCUMENT SHEET: 04/04<br>REVISON: C<br>DATE: 2024-12-15<br>DRAWN BY: CI-EDITORIAL</div>
+    <div>
+      <p>© 2024 CONCRETE INDEX<br>ALL RIGHTS RESERVED<br>NO REPRODUCTION WITHOUT<br>WRITTEN PERMISSION</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Issue counter ticking
+(function() {
+  const counter = document.getElementById('issueCounter');
+  let count = 47;
+  setInterval(() => {
+    count += 1;
+    counter.textContent = String(count).padStart(3, '0');
+  }, 4000);
+})();
+
+// Live time
+(function() {
+  const timeEl = document.getElementById('liveTime');
+  function updateTime() {
+    const now = new Date();
+    timeEl.textContent = now.toTimeString().split(' ')[0];
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+})();
+
+// Parallax on hero plan
+(function() {
+  const plan = document.getElementById('heroPlan');
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        const scrollY = window.scrollY;
+        const offset = scrollY * 0.3;
+        plan.style.transform = `translateY(${offset}px) scale(1.05)`;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+})();
+
+// Animate diagram lines on scroll
+(function() {
+  const lines = document.querySelectorAll('.diagram-line');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.3 });
+  
+  lines.forEach(line => {
+    line.style.animationPlayState = 'paused';
+    observer.observe(line);
+  });
+})();
+
+// Index item hover sound-like visual feedback
+(function() {
+  const items = document.querySelectorAll('.index-item');
+  items.forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      item.style.transition = 'none';
+    });
+    item.addEventListener('mouseleave', () => {
+      item.style.transition = 'background 0.1s steps(2)';
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

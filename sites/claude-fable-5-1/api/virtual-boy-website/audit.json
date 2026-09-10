@@ -1,0 +1,21 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/claude-fable-5-1/api/virtual-boy-website/index.html",
+  "pass": false,
+  "notes": [
+    "1 uncaught page error(s)"
+  ],
+  "console_errors": [],
+  "page_errors": [
+    "cv.getContext is not a function"
+  ],
+  "canvas_nonblank": true,
+  "canvas_count": 2,
+  "canvas_kinds": [
+    "webgl",
+    "webgl"
+  ],
+  "served_by": "base",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 18067,
+  "scroll_height": 19924
+}

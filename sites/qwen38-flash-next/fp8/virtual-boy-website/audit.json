@@ -1,0 +1,23 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/qwen38-flash-next/fp8/virtual-boy-website/index.html",
+  "pass": true,
+  "notes": [],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": true,
+  "canvas_count": 8,
+  "canvas_kinds": [
+    "webgl",
+    "2d",
+    "2d",
+    "2d",
+    "2d",
+    "2d",
+    "2d",
+    "2d"
+  ],
+  "served_by": "base",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 12688,
+  "scroll_height": 13935
+}

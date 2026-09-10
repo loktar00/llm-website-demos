@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Aurelian Express — Grand Coastal Lines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============ FOUNDATION ============ */
+:root{
+  --navy:#0b1530;
+  --navy-2:#101d3f;
+  --navy-3:#152550;
+  --ivory:#f4ead6;
+  --ivory-dim:rgba(244,234,214,.72);
+  --black:#0a0a0d;
+  --teal:#2c6e68;
+  --teal-deep:#17423f;
+  --gold:#c9a35a;
+  --gold-soft:#e6cf9a;
+  --gold-line:rgba(201,163,90,.45);
+  --gold-faint:rgba(201,163,90,.22);
+  --notch:polygon(0 14px,14px 14px,14px 0,calc(100% - 14px) 0,calc(100% - 14px) 14px,100% 14px,100% calc(100% - 14px),calc(100% - 14px) calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,14px calc(100% - 14px),0 calc(100% - 14px));
+  --disp:'Marcellus',serif;
+  --body:'Jost',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--navy);
+  color:var(--ivory);
+  font-family:var(--body);
+  font-weight:300;
+  font-size:17px;
+  line-height:1.65;
+  letter-spacing:.02em;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.06em;line-height:1.15}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--gold);color:var(--navy)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+.eyebrow{
+  font-family:var(--body);font-weight:500;font-size:.72rem;
+  letter-spacing:.42em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:16px;justify-content:center;
+}
+.eyebrow::before,.eyebrow::after{content:"";height:1px;width:44px;background:var(--gold-line)}
+
+.sec{padding:110px 0;position:relative}
+.sec-head{text-align:center;margin-bottom:64px}
+.sec-head h2{font-size:clamp(2rem,4vw,3rem);margin:14px 0 12px}
+.sec-head p{max-width:560px;margin:0 auto;color:var(--ivory-dim);font-size:1.02rem}
+
+.brass{height:1px;background:linear-gradient(90deg,transparent,var(--gold-line) 20%,var(--gold) 50%,var(--gold-line) 80%,transparent)}
+
+/* notched deco frame */
+.nf{clip-path:var(--notch);background:var(--gold-line);padding:1px}
+.nf>.ni{clip-path:var(--notch);height:100%;background:var(--navy-2)}
+.nf.gold{background:var(--gold)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .9s ease var(--d,0s),transform .9s ease var(--d,0s)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ HEADER ============ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  transition:background .4s ease,box-shadow .4s ease,border-color .4s;
+  border-bottom:1px solid transparent;
+}
+header.scrolled{background:rgba(9,15,34,.92);backdrop-filter:blur(10px);border-bottom-color:var(--gold-faint);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:76px}
+.brand{display:flex;align-items:center;gap:14px}
+.mono{
+  width:44px;height:44px;border:1px solid var(--gold);display:grid;place-items:center;
+  font-family:var(--disp);font-size:1.3rem;color:var(--gold);position:relative;
+  clip-path:polygon(0 8px,8px 8px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 8px) calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 8px),0 calc(100% - 8px));
+}
+.brand-name{font-family:var(--disp);font-size:1.05rem;letter-spacing:.3em}
+.brand-name small{display:block;font-family:var(--body);font-size:.58rem;letter-spacing:.4em;color:var(--gold);margin-top:2px}
+nav.links{display:flex;gap:34px;align-items:center}
+nav.links a{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;font-weight:500;color:var(--ivory-dim);transition:color .3s}
+nav.links a:hover{color:var(--gold-soft)}
+.nav-cta{
+  font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;font-weight:600;
+  border:1px solid var(--gold);color:var(--gold-soft);padding:11px 22px;
+  clip-path:polygon(0 8px,8px 8px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 8px) calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 8px),0 calc(100% - 8px));
+  transition:background .3s,color .3s;
+}
+.nav-cta:hover{background:var(--gold);color:var(--navy)}
+@media(max-width:900px){nav.links a{display:none}}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(120% 90% at 50% 118%, rgba(44,110,104,.35) 0%, transparent 55%),
+    radial-gradient(80% 60% at 50% 0%, var(--navy-3) 0%, transparent 70%),
+    linear-gradient(180deg,#070d20 0%,var(--navy) 60%,#0d1a38 100%);
+  padding:130px 0 0;
+}
+#stars{position:absolute;inset:0;z-index:1;opacity:.85}
+.hero-burst{
+  position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
+  width:min(1000px,140vw);opacity:.14;z-index:1;pointer-events:none;
+}
+.hero-burst .rays{animation:spin 140s linear infinite}
+.hero-inner{position:relative;z-index:3;text-align:center;max-width:900px;margin:0 auto;padding:0 28px}
+.hero .est{
+  font-size:.7rem;letter-spacing:.5em;text-transform:uppercase;color:var(--ivory-dim);
+  display:flex;align-items:center;gap:18px;justify-content:center;margin-bottom:26px;
+}
+.hero .est::before,.hero .est::after{content:"";height:1px;width:60px;background:var(--gold-line)}
+.hero h1{
+  font-size:clamp(2.8rem,8.4vw,6.2rem);letter-spacing:.14em;color:var(--ivory);
+  text-shadow:0 0 60px rgba(201,163,90,.25);
+}
+.hero h1 .thin{display:block;font-size:.36em;letter-spacing:.5em;color:var(--gold);margin-bottom:14px}
+.hero .tag{
+  margin:26px auto 40px;max-width:520px;color:var(--ivory-dim);font-size:1.05rem;font-style:italic;font-weight:300;
+}
+.hero-btns{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.btn{
+  display:inline-block;font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;font-weight:600;
+  padding:16px 34px;transition:all .35s;
+  clip-path:polygon(0 10px,10px 10px,10px 0,calc(100% - 10px) 0,calc(100% - 10px) 10px,100% 10px,100% calc(100% - 10px),calc(100% - 10px) calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,10px calc(100% - 10px),0 calc(100% - 10px));
+}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:var(--gold-soft);box-shadow:0 0 40px rgba(201,163,90,.4)}
+.btn-ghost{border:1px solid var(--gold-line);color:var(--ivory)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-soft)}
+.scroll-cue{position:absolute;left:50%;bottom:270px;transform:translateX(-50%);z-index:3;color:var(--gold);font-size:.62rem;letter-spacing:.4em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll-cue::after{content:"";width:1px;height:38px;background:linear-gradient(var(--gold),transparent);animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%,100%{opacity:.3;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
+/* hero train */
+.train-stage{position:absolute;left:0;right:0;bottom:0;z-index:2}
+.train-stage .horizon{height:1px;background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--gold) 70%,transparent);opacity:.7}
+.train-svg{width:100%;height:auto}
+.headlight{animation:flicker 5s ease-in-out infinite}
+@keyframes flicker{0%,100%{opacity:.85}42%{opacity:.6}55%{opacity:.9}70%{opacity:.65}}
+.window-glow{animation:wglow 7s ease-in-out infinite}
+@keyframes wglow{0%,100%{opacity:.95}50%{opacity:.7}}
+.platform-lamp i{
+  position:absolute;inset:-30px;border-radius:50%;
+  background:radial-gradient(circle,rgba(230,207,154,.5) 0%,transparent 60%);
+  opacity:0;transition:opacity 2.4s ease;
+}
+.lit .platform-lamp i{opacity:1}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ WINDOW BAND ============ */
+.window-band{padding:100px 0 90px;background:linear-gradient(180deg,#070d20,#0a1226);position:relative}
+.window-frame{
+  max-width:1080px;margin:44px auto 0;padding:0 28px;
+}
+.wf{clip-path:var(--notch);background:var(--gold);padding:3px;max-width:1020px;margin:0 auto}
+.wi{
+  clip-path:var(--notch);position:relative;height:420px;overflow:hidden;
+  background:linear-gradient(180deg,#0a1128 0%,#101d3f 55%,#1a2c52 100%);
+}
+.wi .sky-stars{
+  position:absolute;inset:0;background-image:
+   radial-gradient(1.5px 1.5px at 12% 18%,rgba(244,234,214,.9) 50%,transparent 51%),
+   radial-gradient(1px 1px at 34% 8%,rgba(244,234,214,.7) 50%,transparent 51%),
+   radial-gradient(1.5px 1.5px at 56% 22%,rgba(244,234,214,.8) 50%,transparent 51%),
+   radial-gradient(1px 1px at 72% 12%,rgba(244,234,214,.6) 50%,transparent 51%),
+   radial-gradient(1.5px 1.5px at 88% 28%,rgba(244,234,214,.85) 50%,transparent 51%),
+   radial-gradient(1px 1px at 45% 34%,rgba(244,234,214,.5) 50%,transparent 51%);
+  background-size:420px 300px;background-repeat:repeat;
+  animation:twinkle 6s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:.9}50%{opacity:.45}}
+.wi .moon{
+  position:absolute;top:48px;right:11%;width:58px;height:58px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%,#fdf6e2,#d9c28a 70%,#a8894e);
+  box-shadow:0 0 60px 18px rgba(230,207,154,.28);
+}
+.layer{position:absolute;bottom:0;left:0;width:200%;height:auto;animation:drift linear infinite}
+.layer.far{animation-duration:70s;opacity:.9}
+.layer.mid{animation-duration:42s}
+.layer.near{animation-duration:24s}
+@keyframes drift{to{transform:translateX(-50%)}}
+.window-cap{text-align:center;margin-top:30px;color:var(--ivory-dim);font-style:italic;font-size:.95rem}
+.window-cap b{color:var(--gold-soft);font-weight:500;font-style:normal;letter-spacing:.2em;text-transform:uppercase;font-size:.7rem;display:block;margin-bottom:8px}
+@media(max-width:700px){.wi{height:300px}.wi .moon{width:42px;height:42px;top:30px}}
+
+/* ============ ROUTE ============ */
+.route-sec{background:var(--navy);overflow:hidden}
+.route-map{margin:0 0 70px}
+.route-map svg{width:100%;height:auto}
+.route-glow{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.8s ease .3s}
+.in .route-glow,.route-map.in .route-glow{stroke-dashoffset:0}
+.map-dot{opacity:0;transform:scale(.4);transform-origin:center;transition:opacity .5s ease,transform .5s ease}
+.route-map.in .map-dot{opacity:1;transform:scale(1)}
+.route-map.in .map-dot:nth-child(1){transition-delay:1s}
+.route-map.in .map-dot:nth-child(2){transition-delay:1.35s}
+.route-map.in .map-dot:nth-child(3){transition-delay:1.7s}
+.route-map.in .map-dot:nth-child(4){transition-delay:2.05s}
+.route-map.in .map-dot:nth-child(5){transition-delay:2.4s}
+.route-map.in .map-dot:nth-child(6){transition-delay:2.75s}
+.route-map.in .map-dot:nth-child(7){transition-delay:3.1s}
+.map-label{font-family:var(--body);font-size:15px;letter-spacing:.2em;fill:var(--ivory-dim)}
+.map-num{font-family:var(--disp);font-size:14px;fill:var(--navy)}
+
+.stops{position:relative;max-width:960px;margin:0 auto}
+.spine{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--gold-faint)}
+.spine-fill{
+  position:absolute;inset:0;background:linear-gradient(180deg,var(--gold),var(--gold-soft) 60%,var(--teal));
+  transform:scaleY(0);transform-origin:top;transition:transform 3s cubic-bezier(.4,0,.2,1) .2s;
+}
+.route-sec.in .spine-fill{transform:scaleY(1)}
+.stop{position:relative;display:grid;grid-template-columns:1fr 120px 1fr;align-items:center;margin-bottom:56px}
+.stop:last-child{margin-bottom:0}
+.stop .med{grid-column:2;justify-self:center}
+.stop .node{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:10px;height:10px;background:var(--navy);border:1px solid var(--gold);
+  rotate:45deg;z-index:2;
+}
+.stop .info h3{font-size:1.55rem;letter-spacing:.12em}
+.stop .info .time{font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:block}
+.stop .info p{color:var(--ivory-dim);font-size:.95rem;margin-top:8px;max-width:380px}
+.stop.odd .info{grid-column:1;grid-row:1;text-align:right;justify-self:end}
+.stop.odd .info p{margin-left:auto}
+.stop.even .info{grid-column:3;grid-row:1;text-align:left}
+.med svg{width:120px;height:120px;margin:0 auto}
+.med .rays{transform-box:fill-box;transform-origin:center;animation:spin 60s linear infinite}
+.med:hover .rays{animation-duration:14s}
+.m-outer{fill:none;stroke:var(--gold);stroke-width:1.5}
+.m-inner{fill:rgba(23,66,63,.35);stroke:var(--gold-line);stroke-width:1}
+.m-icon *{stroke:var(--gold-soft);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.rays line{stroke:var(--gold);stroke-width:.8;opacity:.55}
+@media(max-width:760px){
+  .stop{grid-template-columns:78px 1fr;gap:20px;padding-left:0}
+  .spine{left:39px}
+  .stop .med{grid-column:1;width:78px}
+  .med svg{width:78px;height:78px}
+  .stop .info,.stop.odd .info,.stop.even .info{grid-column:2;grid-row:1;text-align:left;justify-self:start}
+  .stop .info p{margin-left:0}
+  .stop .node{left:39px}
+}
+
+/* ============ SUITES & DINING ============ */
+.stay{background:linear-gradient(180deg,var(--navy) 0%,#0a1226 100%)}
+.stay-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.stay-card .ni{padding:34px 30px 30px;display:flex;flex-direction:column}
+.stay-card svg{width:100%;height:auto;margin-bottom:26px;background:var(--navy-3);border:1px solid var(--gold-faint)}
+.stay-card h3{font-size:1.5rem;letter-spacing:.12em;margin-bottom:6px}
+.stay-card .sub{font-size:.68rem;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.stay-card p{color:var(--ivory-dim);font-size:.96rem}
+.stay-card ul{list-style:none;margin-top:18px;border-top:1px solid var(--gold-faint);padding-top:18px}
+.stay-card li{font-size:.9rem;color:var(--ivory-dim);padding:6px 0 6px 22px;position:relative}
+.stay-card li::before{content:"◆";position:absolute;left:0;color:var(--gold);font-size:.55rem;top:11px}
+.lamp-flare{animation:lampOn 3s ease 1s forwards;opacity:0}
+.in .lamp-flare{animation:lampOn 2.4s ease .6s forwards}
+@keyframes lampOn{0%{opacity:0}100%{opacity:.9}}
+@media(max-width:860px){.stay-grid{grid-template-columns:1fr}}
+
+/* ============ TIMELINE ============ */
+.journey{
+  background:linear-gradient(180deg,#2b2440 0%,#1c1f3d 22%,#101d3f 52%,#0a1226 100%);
+  position:relative;
+}
+.tl{max-width:760px;margin:0 auto;position:relative}
+.tl-item{display:grid;grid-template-columns:80px 1fr;gap:28px;padding:26px 0;border-bottom:1px solid rgba(201,163,90,.14);position:relative}
+.tl-item:last-child{border-bottom:none}
+.tl-time{font-family:var(--disp);font-size:1.15rem;color:var(--gold-soft);letter-spacing:.1em;text-align:right;padding-top:8px}
+.tl-body h4{font-size:1.15rem;letter-spacing:.14em;margin-bottom:4px}
+.tl-body p{color:var(--ivory-dim);font-size:.94rem;max-width:520px}
+.tl-lamp{position:relative;width:52px;height:66px;margin-top:2px}
+.tl-lamp i{
+  position:absolute;left:50%;top:16px;width:130px;height:130px;transform:translate(-50%,-30%) scale(.4);
+  border-radius:50%;background:radial-gradient(circle,rgba(230,207,154,.55) 0%,transparent 62%);
+  opacity:0;transition:opacity 1.6s ease calc(var(--i)*.45s),transform 1.6s ease calc(var(--i)*.45s);
+}
+.journey.in .tl-lamp i{opacity:1;transform:translate(-50%,-30%) scale(1)}
+.tl-lamp svg{position:relative}
+.lamp-bulb{fill:var(--ivory-dim);transition:fill 1.6s ease calc(var(--i)*.45s)}
+.journey.in .lamp-bulb{fill:var(--gold-soft)}
+@media(max-width:600px){.tl-item{grid-template-columns:60px 1fr;gap:16px}.tl-time{font-size:1rem}}
+
+/* ============ SPECS ============ */
+.specs{background:var(--navy)}
+.spec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--gold-faint);border:1px solid var(--gold-faint)}
+.spec{background:var(--navy);padding:36px 22px;text-align:center}
+.spec .num{font-family:var(--disp);font-size:2.4rem;color:var(--gold-soft);letter-spacing:.04em}
+.spec .num small{font-size:.9rem;color:var(--ivory-dim);letter-spacing:.2em}
+.spec .lbl{font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;color:var(--ivory-dim);margin-top:10px}
+@media(max-width:860px){.spec-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:460px){.spec-grid{grid-template-columns:1fr}}
+
+/* ============ RITUALS ============ */
+.rituals{background:linear-gradient(180deg,var(--navy),#0a1226)}
+.rit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px 56px;max-width:920px;margin:0 auto}
+.rit{display:grid;grid-template-columns:64px 1fr;gap:22px;align-items:start}
+.rit .no{font-family:var(--disp);font-size:2.1rem;color:var(--gold);opacity:.85;line-height:1}
+.rit .no::after{content:"";display:block;width:34px;height:1px;background:var(--gold-line);margin-top:12px}
+.rit h4{font-size:1.12rem;letter-spacing:.16em;margin-bottom:6px}
+.rit p{color:var(--ivory-dim);font-size:.93rem}
+@media(max-width:700px){.rit-grid{grid-template-columns:1fr}}
+
+/* ============ TESTIMONIALS ============ */
+.words{background:#0a1226}
+.word-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.word .ni{padding:38px 30px;height:100%;display:flex;flex-direction:column;background:linear-gradient(160deg,var(--navy-2),#0c1630)}
+.word .mark{font-family:var(--disp);font-size:3rem;color:var(--gold);line-height:.6;margin-bottom:20px}
+.word q{quotes:"“" "”";font-style:italic;font-weight:300;color:var(--ivory);font-size:1rem;line-height:1.7;flex:1}
+.word .who{margin-top:24px;padding-top:16px;border-top:1px solid var(--gold-faint);font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-align:center}
+@media(max-width:860px){.word-grid{grid-template-columns:1fr;max-width:520px;margin:0 auto}}
+
+/* ============ FARES ============ */
+.fares{background:var(--navy)}
+.fare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;align-items:stretch}
+.fare .ni{padding:44px 30px 36px;height:100%;display:flex;flex-direction:column;background:var(--navy-2);position:relative}
+.fare.featured{background:var(--gold)}
+.fare.featured>.ni{background:linear-gradient(170deg,#12204a,#0c1630)}
+.fare .tier{font-size:.68rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);text-align:center}
+.fare.featured .tier{color:var(--gold-soft)}
+.fare h3{text-align:center;font-size:1.5rem;letter-spacing:.12em;margin:12px 0 4px}
+.fare .price{font-family:var(--disp);font-size:2.3rem;color:var(--ivory);text-align:center;margin:14px 0 2px}
+.fare .price small{font-size:.8rem;color:var(--ivory-dim);letter-spacing:.14em;display:block;margin-top:4px;font-family:var(--body);font-weight:400}
+.fare .rule{height:1px;background:var(--gold-faint);margin:22px 0}
+.fare ul{list-style:none;flex:1}
+.fare li{padding:8px 0 8px 20px;position:relative;font-size:.9rem;color:var(--ivory-dim);border-bottom:1px dashed rgba(201,163,90,.14)}
+.fare li::before{content:"—";position:absolute;left:0;color:var(--gold)}
+.fare .btn{margin-top:28px;text-align:center}
+.ribbon{
+  position:absolute;top:-1px;left:50%;transform:translate(-50%,-50%);
+  background:var(--gold);color:var(--navy);font-size:.6rem;letter-spacing:.34em;font-weight:600;
+  text-transform:uppercase;padding:7px 20px;
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,10px 100%,0 50%);
+}
+@media(max-width:860px){.fare-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto}}
+
+/* ============ BOOKING ============ */
+.book{background:radial-gradient(90% 120% at 50% 0%,#152550 0%,#0a1226 60%);overflow:hidden}
+.docket{max-width:720px;margin:0 auto;position:relative}
+.docket .ni{padding:56px 46px;background:linear-gradient(165deg,#0f1c3e,#0a1226)}
+.docket-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px;gap:20px;flex-wrap:wrap}
+.docket-head .lbl{font-size:.66rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold)}
+.docket-head h2{font-size:1.9rem;letter-spacing:.14em;margin-top:8px}
+.stamp{
+  width:84px;height:84px;border:1px solid var(--gold-line);border-radius:50%;
+  display:grid;place-items:center;text-align:center;color:var(--gold);
+  font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;line-height:1.7;
+  transform:rotate(8deg);flex-shrink:0;position:relative;
+}
+.stamp::before{content:"";position:absolute;inset:6px;border:1px dashed var(--gold-faint);border-radius:50%}
+.bform{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.bform .full{grid-column:1/-1}
+.field label{display:block;font-size:.62rem;letter-spacing:.34em;text-transform:uppercase;color:var(--ivory-dim);margin-bottom:9px}
+.field input,.field select{
+  width:100%;background:rgba(10,10,13,.55);border:1px solid var(--gold-faint);color:var(--ivory);
+  font-family:var(--body);font-size:.95rem;padding:14px 16px;letter-spacing:.04em;
+  transition:border-color .3s;appearance:none;border-radius:0;
+}
+.field select{background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px,6px 6px;background-repeat:no-repeat;cursor:pointer}
+.field input:focus,.field select:focus{outline:none;border-color:var(--gold)}
+.field input::placeholder{color:rgba(244,234,214,.35);font-style:italic}
+.bform .btn{margin-top:8px;grid-column:1/-1;width:100%}
+.b-note{grid-column:1/-1;text-align:center;font-size:.72rem;letter-spacing:.2em;color:var(--ivory-dim);margin-top:4px}
+.b-done{
+  grid-column:1/-1;text-align:center;padding:26px;border:1px dashed var(--gold-line);
+  color:var(--gold-soft);font-family:var(--disp);font-size:1.1rem;letter-spacing:.1em;display:none;
+}
+.b-done.show{display:block}
+@media(max-width:640px){.bform{grid-template-columns:1fr}.docket .ni{padding:40px 24px}}
+
+/* ============ FOOTER ============ */
+footer{background:var(--black);padding:70px 0 46px;text-align:center;border-top:1px solid var(--gold-faint)}
+footer .mono{margin:0 auto 22px;width:56px;height:56px;font-size:1.6rem}
+footer .fname{font-family:var(--disp);letter-spacing:.4em;font-size:1.05rem}
+footer .fsub{font-size:.62rem;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin:10px 0 30px}
+footer .fline{max-width:520px;margin:0 auto 30px;color:rgba(244,234,214,.45);font-size:.82rem}
+footer .fine{font-size:.62rem;letter-spacing:.24em;color:rgba(244,234,214,.35);text-transform:uppercase}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .layer{animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header id="hdr">
+  <div class="wrap nav">
+    <a class="brand" href="#top">
+      <span class="mono">A</span>
+      <span class="brand-name">AURELIAN<small>GRAND COASTAL LINES</small></span>
+    </a>
+    <nav class="links">
+      <a href="#route">The Route</a>
+      <a href="#stay">Suites</a>
+      <a href="#dining">Dining</a>
+      <a href="#journey">The Journey</a>
+      <a href="#fares">Fares</a>
+      <a class="nav-cta" href="#reserve">Reserve</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero lit" id="top">
+  <canvas id="stars"></canvas>
+  <svg class="hero-burst" viewBox="-100 -100 200 200" aria-hidden="true">
+    <g class="rays" transform="translate(0,0)" data-rays="36" data-r1="52" data-r2="98"></g>
+    <circle r="46" fill="none" stroke="#c9a35a" stroke-width=".6"/>
+    <circle r="52" fill="none" stroke="#c9a35a" stroke-width=".3"/>
+  </svg>
+
+  <div class="hero-inner">
+    <p class="est">Est. MCMXXVII · A Single Night, Seven Ports</p>
+    <h1><span class="thin">The Aurelian</span>EXPRESS</h1>
+    <p class="tag">One lacquered carriage of quiet luxury, gliding from the last of the sun at Valmonte to first light over the Noctara cliffs.</p>
+    <div class="hero-btns">
+      <a class="btn btn-gold" href="#reserve">Reserve a Suite</a>
+      <a class="btn btn-ghost" href="#route">Trace the Route</a>
+    </div>
+  </div>
+
+  <a class="scroll-cue" href="#window" aria-label="Scroll to continue">Descend</a>
+
+  <div class="train-stage" aria-hidden="true">
+    <div class="horizon"></div>
+    <svg class="train-svg" viewBox="0 0 1440 210" preserveAspectRatio="xMidYMax meet">
+      <defs>
+        <radialGradient id="hlGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f6e8c0" stop-opacity=".9"/>
+          <stop offset="100%" stop-color="#f6e8c0" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="bodyShade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#111523"/>
+          <stop offset="60%" stop-color="#0a0a0d"/>
+          <stop offset="100%" stop-color="#050507"/>
+        </linearGradient>
+      </defs>
+      <!-- ground -->
+      <rect x="0" y="188" width="1440" height="3" fill="#05050a"/>
+      <line x1="0" y1="188" x2="1440" y2="188" stroke="#c9a35a" stroke-width="1" opacity=".35"/>
+      <!-- lamps behind train -->
+      <g>
+        <g class="platform-lamp"><i></i>
+          <rect x="180" y="130" width="4" height="58" fill="#0c0e16"/>
+          <circle cx="182" cy="126" r="6" fill="#e6cf9a" opacity=".9"/>
+          <rect x="172" y="118" width="20" height="4" fill="#0c0e16"/>
+        </g>
+        <g class="platform-lamp"><i></i>
+          <rect x="760" y="120" width="4" height="68" fill="#0c0e16"/>
+          <circle cx="762" cy="116" r="6" fill="#e6cf9a" opacity=".9"/>
+          <rect x="752" y="108" width="20" height="4" fill="#0c0e16"/>
+        </g>
+        <g class="platform-lamp"><i></i>
+          <rect x="1280" y="130" width="4" height="58" fill="#0c0e16"/>
+          <circle cx="1282" cy="126" r="6" fill="#e6cf9a" opacity=".9"/>
+          <rect x="1272" y="118" width="20" height="4" fill="#0c0e16"/>
+        </g>
+      </g>
+      <!-- train: nose left -->
+      <g>
+        <!-- headlight glow -->
+        <ellipse class="headlight" cx="120" cy="140" rx="130" ry="42" fill="url(#hlGlow)"/>
+        <!-- locomotive -->
+        <path d="M96 172 Q92 118 150 110 Q200 104 268 104 L470 104 L470 172 Z" fill="url(#bodyShade)" stroke="#c9a35a" stroke-width="1" stroke-opacity=".4"/>
+        <path d="M110 158 Q120 128 200 122 L462 122 L462 132 L120 132 Q112 144 110 158 Z" fill="#17423f" opacity=".5"/>
+        <line x1="150" y1="112" x2="466" y2="112" stroke="#c9a35a" stroke-width="1.4" opacity=".8"/>
+        <rect x="118" y="128" width="42" height="24" rx="6" fill="#e6cf9a" class="window-glow"/>
+        <rect x="176" y="130" width="26" height="20" rx="5" fill="#e6cf9a" opacity=".85" class="window-glow"/>
+        <circle cx="122" cy="141" r="7" fill="#fdf4d8"/>
+        <circle cx="122" cy="141" r="10" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+        <!-- cab cars -->
+        <g>
+          <rect x="482" y="108" width="300" height="64" rx="12" fill="url(#bodyShade)" stroke="#c9a35a" stroke-width="1" stroke-opacity=".35"/>
+          <rect x="496" y="114" width="272" height="5" fill="#c9a35a" opacity=".7"/>
+          <g fill="#e6cf9a" class="window-glow">
+            <rect x="500" y="128" width="28" height="26" rx="5"/><rect x="544" y="128" width="28" height="26" rx="5"/>
+            <rect x="588" y="128" width="28" height="26" rx="5"/><rect x="632" y="128" width="28" height="26" rx="5"/>
+            <rect x="676" y="128" width="28" height="26" rx="5"/><rect x="720" y="128" width="28" height="26" rx="5"/>
+          </g>
+          <rect x="794" y="128" width="18" height="34" fill="#050507" stroke="#c9a35a" stroke-opacity=".4"/>
+        </g>
+        <g>
+          <rect x="796" y="112" width="300" height="60" rx="12" fill="url(#bodyShade)" stroke="#c9a35a" stroke-width="1" stroke-opacity=".3"/>
+          <rect x="810" y="118" width="272" height="5" fill="#c9a35a" opacity=".55"/>
+          <g fill="#e6cf9a" opacity=".8" class="window-glow">
+            <rect x="814" y="132" width="26" height="24" rx="5"/><rect x="856" y="132" width="26" height="24" rx="5"/>
+            <rect x="898" y="132" width="26" height="24" rx="5"/><rect x="940" y="132" width="26" height="24" rx="5"/>
+            <rect x="982" y="132" width="26" height="24" rx="5"/><rect x="1024" y="132" width="26" height="24" rx="5"/>
+          </g>
+        </g>
+        <g>
+          <rect x="1110" y="116" width="240" height="56" rx="12" fill="url(#bodyShade)" stroke="#c9a35a" stroke-width="1" stroke-opacity=".25"/>
+          <rect x="1124" y="122" width="212" height="4" fill="#c9a35a" opacity=".4"/>
+          <g fill="#e6cf9a" opacity=".65" class="window-glow">
+            <rect x="1128" y="136" width="24" height="22" rx="5"/><rect x="1168" y="136" width="24" height="22" rx="5"/>
+            <rect x="1208" y="136" width="24" height="22" rx="5"/><rect x="1248" y="136" width="24" height="22" rx="5"/>
+            <rect x="1288" y="136" width="24" height="22" rx="5"/>
+          </g>
+        </g>
+        <!-- underframe & wheels -->
+        <line x1="96" y1="172" x2="1352" y2="172" stroke="#05050a" stroke-width="6"/>
+        <g fill="#05050a" stroke="#c9a35a" stroke-opacity=".5" stroke-width="1">
+          <circle cx="150" cy="180" r="10"/><circle cx="220" cy="180" r="10"/>
+          <circle cx="530" cy="180" r="9"/><circle cx="600" cy="180" r="9"/><circle cx="730" cy="180" r="9"/>
+          <circle cx="850" cy="180" r="9"/><circle cx="920" cy="180" r="9"/><circle cx="1040" cy="180" r="9"/>
+          <circle cx="1160" cy="180" r="9"/><circle cx="1230" cy="180" r="9"/><circle cx="1330" cy="180" r="9"/>
+        </g>
+        <g fill="#c9a35a" opacity=".7">
+          <circle cx="150" cy="180" r="2.4"/><circle cx="220" cy="180" r="2.4"/><circle cx="530" cy="180" r="2.2"/>
+          <circle cx="600" cy="180" r="2.2"/><circle cx="730" cy="180" r="2.2"/><circle cx="850" cy="180" r="2.2"/>
+          <circle cx="920" cy="180" r="2.2"/><circle cx="1040" cy="180" r="2.2"/><circle cx="1160" cy="180" r="2.2"/>
+          <circle cx="1230" cy="180" r="2.2"/><circle cx="1330" cy="180" r="2.2"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ================= WINDOW BAND ================= -->
+<section class="window-band" id="window">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The View</span>
+      <h2>Through the Window</h2>
+      <p>Every Aurelian pane is a slow gallery. The coast arrives in layers — the far teal hills, the lamp-lit harbours, the black cypresses at the rail's edge.</p>
+    </div>
+  </div>
+  <div class="window-frame reveal" style="--d:.15s">
+    <div class="wf"><div class="wi" aria-label="Animated view of a coastal night landscape drifting past the train window">
+      <div class="sky-stars"></div>
+      <div class="moon"></div>
+      <svg class="layer far" viewBox="0 0 2400 220" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <g id="farHills">
+            <path d="M0 150 Q150 96 300 132 Q450 162 600 118 Q750 82 900 128 Q1050 166 1200 122 L1200 220 L0 220 Z" fill="#17423f" opacity=".55"/>
+          </g>
+        </defs>
+        <use href="#farHills"/><use href="#farHills" x="1200"/>
+      </svg>
+      <svg class="layer mid" viewBox="0 0 2400 220" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <g id="midCoast">
+            <path d="M0 178 L140 172 L260 176 Q420 164 560 174 Q760 184 900 170 Q1080 162 1200 172 L1200 220 L0 220 Z" fill="#0d1b2e"/>
+            <g fill="#0d1b2e">
+              <rect x="316" y="112" width="16" height="66"/>
+              <path d="M310 112 L338 112 L332 98 L316 98 Z"/>
+              <rect x="306" y="90" width="34" height="10"/>
+            </g>
+            <circle cx="324" cy="95" r="4.5" fill="#e6cf9a" class="window-glow"/>
+            <g fill="#0d1b2e">
+              <rect x="936" y="128" width="14" height="52"/>
+              <path d="M931 128 L955 128 L950 116 L936 116 Z"/>
+              <rect x="928" y="109" width="30" height="8"/>
+            </g>
+            <circle cx="943" cy="113" r="3.8" fill="#e6cf9a" class="window-glow"/>
+            <g fill="#e6cf9a" opacity=".8">
+              <circle cx="480" cy="168" r="2"/><circle cx="520" cy="172" r="1.6"/><circle cx="640" cy="166" r="2"/>
+              <circle cx="700" cy="172" r="1.6"/><circle cx="1080" cy="168" r="2"/><circle cx="1130" cy="172" r="1.6"/>
+            </g>
+          </g>
+        </defs>
+        <use href="#midCoast"/><use href="#midCoast" x="1200"/>
+      </svg>
+      <svg class="layer near" viewBox="0 0 2400 220" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <g id="nearTrees">
+            <path d="M0 220 L0 214 L28 158 L54 214 L86 132 L116 214 L146 162 L176 214 L208 128 L240 214 L272 156 L302 214 L334 138 L366 214 L398 164 L430 214 L462 130 L494 214 L524 154 L556 214 L588 140 L620 214 L652 166 L684 214 L716 134 L748 214 L780 152 L810 214 L842 137 L874 214 L906 162 L938 214 L970 129 L1002 214 L1032 150 L1064 214 L1096 141 L1128 214 L1160 163 L1200 214 L1200 220 Z" fill="#06070a"/>
+          </g>
+        </defs>
+        <use href="#nearTrees"/><use href="#nearTrees" x="1200"/>
+      </svg>
+    </div></div>
+  </div>
+  <p class="window-cap reveal" style="--d:.3s"><b>Carriage 03 · Westward Bay Window</b>The coastline does not pass. It accompanies.</p>
+</section>
+
+<!-- ================= ROUTE ================= -->
+<section class="sec route-sec" id="route">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The Route</span>
+      <h2>Seven Grand Coastal Cities</h2>
+      <p>1 204 kilometres of headland, harbour and cypress, threaded by one unbroken line of gold. Departures at dusk, every night of the season.</p>
+    </div>
+
+    <div class="route-map reveal" id="map">
+      <svg viewBox="0 0 1200 300" aria-label="Stylized coastal route map with seven numbered ports">
+        <defs>
+          <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#123a3a"/><stop offset="100%" stop-color="#0a1226"/>
+          </linearGradient>
+        </defs>
+        <!-- sea -->
+        <path d="M0 300 L0 150 Q120 120 240 148 Q360 176 480 142 Q620 104 760 140 Q900 176 1040 138 Q1130 114 1200 132 L1200 300 Z" fill="url(#seaG)" opacity=".8"/>
+        <!-- coast line -->
+        <path d="M0 150 Q120 120 240 148 Q360 176 480 142 Q620 104 760 140 Q900 176 1040 138 Q1130 114 1200 132" fill="none" stroke="#c9a35a" stroke-width="1" opacity=".45"/>
+        <!-- dashed guide -->
+        <path id="routeBase" d="M90 128 C220 84 300 158 430 118 C560 78 640 152 770 110 C900 68 1000 138 1120 96" fill="none" stroke="#f4ead6" stroke-width="1" stroke-dasharray="2 8" opacity=".35"/>
+        <!-- gold drawing line -->
+        <path class="route-glow" pathLength="1" d="M90 128 C220 84 300 158 430 118 C560 78 640 152 770 110 C900 68 1000 138 1120 96" fill="none" stroke="#e6cf9a" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- compass -->
+        <g transform="translate(1080,238)" opacity=".7">
+          <circle r="26" fill="none" stroke="#c9a35a" stroke-width=".8"/>
+          <circle r="20" fill="none" stroke="#c9a35a" stroke-width=".4" stroke-dasharray="2 4"/>
+          <path d="M0 -18 L4 0 L0 18 L-4 0 Z" fill="#c9a35a"/>
+          <path d="M-18 0 L0 -4 L18 0 L0 4 Z" fill="#c9a35a" opacity=".5"/>
+          <text y="-30" text-anchor="middle" font-size="11" fill="#c9a35a" font-family="Jost" letter-spacing="3">N</text>
+        </g>
+        <!-- dots -->
+        <g id="mapDots">
+          <g class="map-dot"><circle cx="90" cy="128" r="13" fill="#c9a35a"/><text class="map-num" x="90" y="133" text-anchor="middle">1</text></g>
+          <g class="map-dot"><circle cx="265" cy="103" r="13" fill="#c9a35a"/><text class="map-num" x="265" y="108" text-anchor="middle">2</text></g>
+          <g class="map-dot"><circle cx="430" cy="118" r="13" fill="#c9a35a"/><text class="map-num" x="430" y="123" text-anchor="middle">3</text></g>
+          <g class="map-dot"><circle cx="600" cy="102" r="13" fill="#c9a35a"/><text class="map-num" x="600" y="107" text-anchor="middle">4</text></g>
+          <g class="map-dot"><circle cx="770" cy="110" r="13" fill="#c9a35a"/><text class="map-num" x="770" y="115" text-anchor="middle">5</text></g>
+          <g class="map-dot"><circle cx="945" cy="110" r="13" fill="#c9a35a"/><text class="map-num" x="945" y="115" text-anchor="middle">6</text></g>
+          <g class="map-dot"><circle cx="1120" cy="96" r="13" fill="#c9a35a"/><text class="map-num" x="1120" y="101" text-anchor="middle">7</text></g>
+        </g>
+        <g font-family="Jost">
+          <text class="map-label" x="90" y="170" text-anchor="middle">VALMONTE</text>
+          <text class="map-label" x="265" y="145" text-anchor="middle">CIEL D'ORO</text>
+          <text class="map-label" x="430" y="160" text-anchor="middle">PORT SABLE</text>
+          <text class="map-label" x="600" y="144" text-anchor="middle">AURÉLE</text>
+          <text class="map-label" x="770" y="152" text-anchor="middle">LUMEA</text>
+          <text class="map-label" x="945" y="152" text-anchor="middle">TESSARA</text>
+          <text class="map-label" x="1120" y="138" text-anchor="middle">NOCTARA</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="stops" id="stops">
+      <div class="spine"><div class="spine-fill"></div></div>
+
+      <div class="stop odd reveal">
+        <span class="node"></span>
+        <div class="med">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="m-outer" cx="60" cy="60" r="56"/><circle class="m-inner" cx="60" cy="60" r="48"/>
+            <g class="rays" transform="translate(60,60)" data-rays="24" data-r1="34" data-r2="45"></g>
+            <g class="m-icon" transform="translate(60,60)">
+              <path d="M-5 16 L-3 -6 L3 -6 L5 16 Z M-6 -6 L6 -6 L3 -13 L-3 -13 Z"/>
+              <line x1="-13" y1="-9" x2="-6" y2="-9"/><line x1="6" y1="-9" x2="13" y2="-9"/>
+              <line x1="-9" y1="16" x2="9" y2="16"/>
+            </g>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="time">Departure · 18:40</span>
+          <h3>Valmonte</h3>
+          <p>The gateway city. Brass gates of the station, a lighthouse that has never once gone dark, and the last of the sun poured into the salon car.</p>
+        </div>
+      </div>
+
+      <div class="stop even reveal" style="--d:.05s">
+        <span class="node"></span>
+        <div class="med">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="m-outer" cx="60" cy="60" r="56"/><circle class="m-inner" cx="60" cy="60" r="48"/>
+            <g class="rays" transform="translate(60,60)" data-rays="24" data-r1="34" data-r2="45"></g>
+            <g class="m-icon" transform="translate(60,60)">
+              <circle r="6"/><line x1="0" y1="-15" x2="0" y2="-10"/><line x1="0" y1="10" x2="0" y2="15"/>
+              <line x1="-15" y1="0" x2="-10" y2="0"/><line x1="10" y1="0" x2="15" y2="0"/>
+              <line x1="-10" y1="-10" x2="-7" y2="-7"/><line x1="7" y1="7" x2="10" y2="10"/>
+              <line x1="10" y1="-10" x2="7" y2="-7"/><line x1="-7" y1="7" x2="-10" y2="10"/>
+            </g>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="time">19:55 · Ten Minutes</span>
+          <h3>Ciel d'Oro</h3>
+          <p>A terraced harbour city of pale stone, where the cliffs hold their gold until late. The express pauses just long enough for one last look upward.</p>
+        </div>
+      </div>
+
+      <div class="stop odd reveal" style="--d:.05s">
+        <span class="node"></span>
+        <div class="med">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="m-outer" cx="60" cy="60" r="56"/><circle class="m-inner" cx="60" cy="60" r="48"/>
+            <g class="rays" transform="translate(60,60)" data-rays="24" data-r1="34" data-r2="45"></g>
+            <g class="m-icon" transform="translate(60,60)">
+              <circle cy="-12" r="4"/><line x1="0" y1="-8" x2="0" y2="14"/>
+              <path d="M-11 2 Q0 12 11 2"/><line x1="-12" y1="0" x2="12" y2="0"/>
+              <path d="M-11 2 L-13 -2 M11 2 L13 -2"/>
+            </g>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="time">21:10 · Twenty Minutes</span>
+          <h3>Port Sable</h3>
+          <p>The great anchor city — dark water, tall masts, and a fish market that closes to the sound of the Aurelian's first night whistle.</p>
+        </div>
+      </div>
+
+      <div class="stop even reveal" style="--d:.05s">
+        <span class="node"></span>
+        <div class="med">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="m-outer" cx="60" cy="60" r="56"/><circle class="m-inner" cx="60" cy="60" r="48"/>
+            <g class="rays" transform="translate(60,60)" data-rays="24" data-r1="34" data-r2="45"></g>
+            <g class="m-icon" transform="translate(60,60)">
+              <path d="M-14 0 Q-7 -8 0 0 Q7 8 14 0"/><path d="M-14 9 Q-7 1 0 9 Q7 17 14 9"/>
+              <circle cx="-14" cy="0" r="1.6"/><circle cx="14" cy="9" r="1.6"/>
+            </g>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="time">22:35 · Fifteen Minutes</span>
+          <h3>Auréle</h3>
+          <p>Low tide, high walls, and a promenade of fountains that run on the sea's own rhythm. The dining car is at its finest at this stop.</p>
+        </div>
+      </div>
+
+      <div class="stop odd reveal" style="--d:.05s">
+        <span class="node"></span>
+        <div class="med">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="m-outer" cx="60" cy="60" r="56"/><circle class="m-inner" cx="60" cy="60" r="48"/>
+            <g class="rays" transform="translate(60,60)" data-rays="24" data-r1="34" data-r2="45"></g>
+            <g class="m-icon" transform="translate(60,60)">
+              <path d="M6 -13 A14 14 0 1 0 6 13 A11 11 0 1 1 6 -13 Z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="time">00:20 · Pass Through</span>
+          <h3>Lumea</h3>
+          <p>The city of a thousand lamps, crossed at the deepest hour. No stop — only the long roll of windows through a river of small gold lights.</p>
+        </div>
+      </div>
+
+      <div class="stop even reveal" style="--d:.05s">
+        <span class="node"></span>
+        <div class="med">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="m-outer" cx="60" cy="60" r="56"/><circle class="m-inner" cx="60" cy="60" r="48"/>
+            <g class="rays" transform="translate(60,60)" data-rays="24" data-r1="34" data-r2="45"></g>
+            <g class="m-icon" transform="translate(60,60)">
+              <path d="M-8 12 Q-8 -2 0 -12 Q8 -2 8 12 Z"/><line x1="-12" y1="12" x2="12" y2="12"/><circle cy="16" r="2"/>
+            </g>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="time">02:05 · Pass Through</span>
+          <h3>Tessara</h3>
+          <p>The bell city. Four towers ring the midnight hour into the bay; the express answers with a single, low, unhurried note of its own.</p>
+        </div>
+      </div>
+
+      <div class="stop odd reveal" style="--d:.05s">
+        <span class="node"></span>
+        <div class="med">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="m-outer" cx="60" cy="60" r="56"/><circle class="m-inner" cx="60" cy="60" r="48"/>
+            <g class="rays" transform="translate(60,60)" data-rays="24" data-r1="34" data-r2="45"></g>
+            <g class="m-icon" transform="translate(60,60)">
+              <path d="M0 -14 L3.5 -3.5 L14 0 L3.5 3.5 L0 14 L-3.5 3.5 L-14 0 L-3.5 -3.5 Z"/>
+              <circle r="2.2" fill="#e6cf9a" stroke="none"/>
+            </g>
+          </svg>
+        </div>
+        <div class="info">
+          <span class="time">Arrival · 04:50</span>
+          <h3>Noctara</h3>
+          <p>The final headland. The Aurelian pulls into Noctara's white-stone dock just as the horizon catches fire — you arrive to watch the dawn you crossed through.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="brass"></div>
+
+<!-- ================= SUITES & DINING ================= -->
+<section class="sec stay" id="stay">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Aboard</span>
+      <h2>Suites &amp; Dining</h2>
+      <p>Forty-two suites, one salon, and a dining room that turns the whole coast into its backdrop. Everything is brass, lacquer, linen and quiet.</p>
+    </div>
+
+    <div class="stay-grid">
+      <div class="stay-card nf reveal" id="suite">
+        <div class="ni">
+          <svg viewBox="0 0 400 250" role="img" aria-label="Illustration of an Aurelia suite at night with a sea view and a glowing lamp">
+            <rect x="8" y="8" width="384" height="234" fill="none" stroke="#c9a35a" stroke-opacity=".3"/>
+            <!-- window -->
+            <rect x="30" y="30" width="150" height="120" fill="#0d1b2e" stroke="#c9a35a" stroke-width="1.2"/>
+            <line x1="105" y1="30" x2="105" y2="150" stroke="#c9a35a" stroke-width="1"/>
+            <path d="M30 110 Q75 96 105 108 Q140 120 180 104 L180 150 L30 150 Z" fill="#17423f" opacity=".8"/>
+            <path d="M30 126 Q80 116 180 122 L180 150 L30 150 Z" fill="#0a1226"/>
+            <circle cx="150" cy="58" r="10" fill="#e6cf9a" opacity=".9"/>
+            <!-- headboard & bed -->
+            <rect x="212" y="66" width="150" height="58" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+            <path d="M222 76 L222 116 M232 76 L232 116 M242 76 L242 116 M252 76 L252 116 M262 76 L262 116 M272 76 L272 116 M282 76 L282 116 M292 76 L292 116 M302 76 L302 116 M312 76 L312 116 M322 76 L322 116 M332 76 L332 116 M342 76 L342 116" stroke="#c9a35a" stroke-width=".7" opacity=".55"/>
+            <rect x="204" y="124" width="168" height="46" rx="8" fill="#101d3f" stroke="#c9a35a" stroke-width="1.2"/>
+            <rect x="214" y="112" width="62" height="18" rx="6" fill="#f4ead6" opacity=".92"/>
+            <rect x="284" y="112" width="62" height="18" rx="6" fill="#f4ead6" opacity=".92"/>
+            <line x1="204" y1="150" x2="372" y2="150" stroke="#c9a35a" stroke-width="1" opacity=".7"/>
+            <path d="M204 168 L372 168 L372 190 Q288 178 204 190 Z" fill="#17423f" opacity=".7"/>
+            <!-- side table + lamp -->
+            <rect x="188" y="168" width="0" height="0"/>
+            <line x1="188" y1="178" x2="188" y2="212" stroke="#c9a35a" stroke-width="1.4"/>
+            <line x1="176" y1="212" x2="200" y2="212" stroke="#c9a35a" stroke-width="1.4"/>
+            <line x1="188" y1="178" x2="188" y2="158" stroke="#c9a35a" stroke-width="1.2"/>
+            <path d="M176 158 L200 158 L194 138 L182 138 Z" fill="#c9a35a" opacity=".85"/>
+            <circle class="lamp-flare" cx="188" cy="152" r="26" fill="url(#suiteLampG)"/>
+            <defs>
+              <radialGradient id="suiteLampG" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#e6cf9a" stop-opacity=".5"/><stop offset="100%" stop-color="#e6cf9a" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <!-- rug line -->
+            <line x1="60" y1="226" x2="340" y2="226" stroke="#c9a35a" stroke-width=".8" stroke-dasharray="4 6" opacity=".6"/>
+            <path d="M30 178 L180 178" stroke="#c9a35a" stroke-width=".6" opacity=".4"/>
+          </svg>
+          <span class="sub">Carriages 02 — 06</span>
+          <h3>The Aurelia Suite</h3>
+          <p>A private room built around a single westward bay window. Lacquer black cabinetry, ivory linen, a brass bell for everything, and a door that the conductor keeps unlocked only for you.</p>
+          <ul>
+            <li>Queen berth converts to a twin by midnight request</li>
+            <li>Roll-top vanity with porcelain and cold water</li>
+            <li>Dedicated steward, call it the "Night Bell"</li>
+            <li>Silk nightcap, monogrammed on request</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="stay-card nf reveal" id="dining" style="--d:.15s">
+        <div class="ni">
+          <svg viewBox="0 0 400 250" role="img" aria-label="Illustration of the dining car with glowing hanging lamps, a set table and a candelabra">
+            <rect x="8" y="8" width="384" height="234" fill="none" stroke="#c9a35a" stroke-opacity=".3"/>
+            <!-- window band -->
+            <rect x="30" y="26" width="340" height="58" fill="#0d1b2e" stroke="#c9a35a" stroke-width="1"/>
+            <line x1="117" y1="26" x2="117" y2="84" stroke="#c9a35a" stroke-width=".8"/>
+            <line x1="204" y1="26" x2="204" y2="84" stroke="#c9a35a" stroke-width=".8"/>
+            <line x1="291" y1="26" x2="291" y2="84" stroke="#c9a35a" stroke-width=".8"/>
+            <path d="M30 66 Q120 56 204 64 Q290 72 370 60 L370 84 L30 84 Z" fill="#17423f" opacity=".75"/>
+            <g fill="#e6cf9a" opacity=".8">
+              <circle cx="70" cy="52" r="1.6"/><circle cx="160" cy="48" r="1.6"/><circle cx="250" cy="52" r="1.6"/><circle cx="330" cy="48" r="1.6"/>
+            </g>
+            <!-- lamps -->
+            <g>
+              <line x1="120" y1="84" x2="120" y2="112" stroke="#c9a35a" stroke-width="1"/>
+              <path d="M104 112 L136 112 L128 130 L112 130 Z" fill="#c9a35a" opacity=".9"/>
+              <circle class="lamp-flare" cx="120" cy="128" r="30" fill="url(#dinLampG)"/>
+              <line x1="280" y1="84" x2="280" y2="112" stroke="#c9a35a" stroke-width="1"/>
+              <path d="M264 112 L296 112 L288 130 L272 130 Z" fill="#c9a35a" opacity=".9"/>
+              <circle class="lamp-flare" cx="280" cy="128" r="30" fill="url(#dinLampG)"/>
+            </g>
+            <defs>
+              <radialGradient id="dinLampG" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#e6cf9a" stop-opacity=".45"/><stop offset="100%" stop-color="#e6cf9a" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <!-- table -->
+            <line x1="80" y1="176" x2="320" y2="176" stroke="#c9a35a" stroke-width="1.6"/>
+            <path d="M80 176 L320 176 L336 216 L64 216 Z" fill="#f4ead6" opacity=".94"/>
+            <path d="M96 216 L304 216 L296 230 L104 230 Z" fill="#17423f" opacity=".6"/>
+            <line x1="70" y1="230" x2="330" y2="230" stroke="#c9a35a" stroke-width="1"/>
+            <!-- place settings -->
+            <ellipse cx="140" cy="192" rx="16" ry="4.5" fill="none" stroke="#c9a35a" stroke-width="1"/>
+            <ellipse cx="260" cy="192" rx="16" ry="4.5" fill="none" stroke="#c9a35a" stroke-width="1"/>
+            <path d="M112 180 Q108 168 112 158 M122 180 Q120 170 122 162" stroke="#c9a35a" stroke-width="1" fill="none"/>
+            <path d="M278 180 Q274 168 278 158 M288 180 Q286 170 288 162" stroke="#c9a35a" stroke-width="1" fill="none"/>
+            <path d="M134 168 Q140 158 146 168 Z" fill="none" stroke="#c9a35a" stroke-width="1"/>
+            <path d="M254 168 Q260 158 266 168 Z" fill="none" stroke="#c9a35a" stroke-width="1"/>
+            <!-- candelabra -->
+            <line x1="200" y1="176" x2="200" y2="140" stroke="#c9a35a" stroke-width="1.4"/>
+            <path d="M186 176 L214 176" stroke="#c9a35a" stroke-width="1.4"/>
+            <path d="M200 156 Q188 152 186 142 M200 156 Q212 152 214 142" stroke="#c9a35a" stroke-width="1" fill="none"/>
+            <g fill="#e6cf9a">
+              <rect x="184.6" y="130" width="2.8" height="10"/><rect x="198.6" y="126" width="2.8" height="12"/><rect x="212.6" y="130" width="2.8" height="10"/>
+            </g>
+            <circle class="lamp-flare" cx="200" cy="136" r="24" fill="url(#dinLampG)"/>
+          </svg>
+          <span class="sub">Carriage 04 · The Salon d'Or</span>
+          <h3>Dining in Motion</h3>
+          <p>One service at dusk, one at the hour of deepest dark, and a dawn breakfast poured as Noctara's headland rises. The menu is written each morning by the chef and never the same twice.</p>
+          <ul>
+            <li>Harbour fish landed that very afternoon</li>
+            <li>Gold-leaf service from the first pour</li>
+            <li>Champagne hour, 21:10 — the Port Sable whistle</li>
+            <li>A book of the coast, printed each season</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= JOURNEY TIMELINE ================= -->
+<section class="sec journey" id="journey">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The Hour by Hour</span>
+      <h2>One Night, Dusk to Dawn</h2>
+      <p>The lamps of the carriages wake as the sun goes down. What follows is not a schedule — it is a rhythm.</p>
+    </div>
+
+    <div class="tl" id="tl">
+      <div class="tl-item reveal">
+        <span class="tl-time">18:40</span>
+        <div class="tl-body">
+          <div style="display:flex;gap:20px;align-items:flex-start">
+            <div class="tl-lamp" style="--i:0"><i></i>
+              <svg viewBox="0 0 52 66" width="52" height="66" aria-hidden="true">
+                <line x1="26" y1="18" x2="26" y2="6" stroke="#c9a35a" stroke-width="1.4"/>
+                <path d="M12 38 L40 38 L34 20 L18 20 Z" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+                <circle class="lamp-bulb" cx="26" cy="31" r="4"/>
+                <line x1="16" y1="38" x2="36" y2="38" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="26" y1="38" x2="26" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="18" y1="58" x2="34" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div><h4>Boarding at Valmonte</h4><p>Luggage in by the brass scales, gold cards on the door, the last of the sun across the platform. The whistle once — long and low.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <span class="tl-time">19:15</span>
+        <div class="tl-body">
+          <div style="display:flex;gap:20px;align-items:flex-start">
+            <div class="tl-lamp" style="--i:1"><i></i>
+              <svg viewBox="0 0 52 66" width="52" height="66" aria-hidden="true">
+                <line x1="26" y1="18" x2="26" y2="6" stroke="#c9a35a" stroke-width="1.4"/>
+                <path d="M12 38 L40 38 L34 20 L18 20 Z" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+                <circle class="lamp-bulb" cx="26" cy="31" r="4"/>
+                <line x1="16" y1="38" x2="36" y2="38" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="26" y1="38" x2="26" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="18" y1="58" x2="34" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div><h4>The First Pour</h4><p>Ice, vermouth, a twist of peel. The conductor reads the night's notes — which sea, which tide, which star.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <span class="tl-time">20:30</span>
+        <div class="tl-body">
+          <div style="display:flex;gap:20px;align-items:flex-start">
+            <div class="tl-lamp" style="--i:2"><i></i>
+              <svg viewBox="0 0 52 66" width="52" height="66" aria-hidden="true">
+                <line x1="26" y1="18" x2="26" y2="6" stroke="#c9a35a" stroke-width="1.4"/>
+                <path d="M12 38 L40 38 L34 20 L18 20 Z" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+                <circle class="lamp-bulb" cx="26" cy="31" r="4"/>
+                <line x1="16" y1="38" x2="36" y2="38" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="26" y1="38" x2="26" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="18" y1="58" x2="34" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div><h4>Dinner as the Cliffs Hold Gold</h4><p>The Salon d'Or seats the full table for the first of two services, timed to the slowest sunset on the coast.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <span class="tl-time">22:00</span>
+        <div class="tl-body">
+          <div style="display:flex;gap:20px;align-items:flex-start">
+            <div class="tl-lamp" style="--i:3"><i></i>
+              <svg viewBox="0 0 52 66" width="52" height="66" aria-hidden="true">
+                <line x1="26" y1="18" x2="26" y2="6" stroke="#c9a35a" stroke-width="1.4"/>
+                <path d="M12 38 L40 38 L34 20 L18 20 Z" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+                <circle class="lamp-bulb" cx="26" cy="31" r="4"/>
+                <line x1="16" y1="38" x2="36" y2="38" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="26" y1="38" x2="26" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="18" y1="58" x2="34" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div><h4>The Turning of the Cabin</h4><p>Lamps lowered to a bronze half-bright. Linen smoothed, windows darkened, a single candle left burning in each suite if asked.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <span class="tl-time">00:20</span>
+        <div class="tl-body">
+          <div style="display:flex;gap:20px;align-items:flex-start">
+            <div class="tl-lamp" style="--i:4"><i></i>
+              <svg viewBox="0 0 52 66" width="52" height="66" aria-hidden="true">
+                <line x1="26" y1="18" x2="26" y2="6" stroke="#c9a35a" stroke-width="1.4"/>
+                <path d="M12 38 L40 38 L34 20 L18 20 Z" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+                <circle class="lamp-bulb" cx="26" cy="31" r="4"/>
+                <line x1="16" y1="38" x2="36" y2="38" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="26" y1="38" x2="26" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="18" y1="58" x2="34" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div><h4>The River of Lumea Lights</h4><p>A slow crossing of the lamp city, one full minute of small gold stars sliding past the panes. The quietest, most watched minute of the night.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <span class="tl-time">03:40</span>
+        <div class="tl-body">
+          <div style="display:flex;gap:20px;align-items:flex-start">
+            <div class="tl-lamp" style="--i:5"><i></i>
+              <svg viewBox="0 0 52 66" width="52" height="66" aria-hidden="true">
+                <line x1="26" y1="18" x2="26" y2="6" stroke="#c9a35a" stroke-width="1.4"/>
+                <path d="M12 38 L40 38 L34 20 L18 20 Z" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+                <circle class="lamp-bulb" cx="26" cy="31" r="4"/>
+                <line x1="16" y1="38" x2="36" y2="38" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="26" y1="38" x2="26" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="18" y1="58" x2="34" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div><h4>Pre-Dawn Quiet</h4><p>The engine drops to a murmur. Wake-up calls, a cup of small hot milk at the suite door, the sea somewhere outside turning violet.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <span class="tl-time">04:50</span>
+        <div class="tl-body">
+          <div style="display:flex;gap:20px;align-items:flex-start">
+            <div class="tl-lamp" style="--i:6"><i></i>
+              <svg viewBox="0 0 52 66" width="52" height="66" aria-hidden="true">
+                <line x1="26" y1="18" x2="26" y2="6" stroke="#c9a35a" stroke-width="1.4"/>
+                <path d="M12 38 L40 38 L34 20 L18 20 Z" fill="none" stroke="#c9a35a" stroke-width="1.4"/>
+                <circle class="lamp-bulb" cx="26" cy="31" r="4"/>
+                <line x1="16" y1="38" x2="36" y2="38" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="26" y1="38" x2="26" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+                <line x1="18" y1="58" x2="34" y2="58" stroke="#c9a35a" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div><h4>The Dawn Bell at Noctara</h4><p>The brass bell rings once above the platform. Luggage out, coats on, the horizon catching fire beyond the headland. It is, everyone says, worth a single night's sleep.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SPECS ================= -->
+<section class="sec specs">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The Machine</span>
+      <h2>Specifications</h2>
+      <p>Restored in 1931, refined in 1968, silent since. The Aurelian is the only carriage of her kind still running the full coast.</p>
+    </div>
+    <div class="spec-grid reveal">
+      <div class="spec"><div class="num"><span data-count="214">0</span></div><div class="lbl">Km/h · Cruising Pace</div></div>
+      <div class="spec"><div class="num"><span data-count="9">0</span></div><div class="lbl">Lacquered Carriages</div></div>
+      <div class="spec"><div class="num"><span data-count="42">0</span></div><div class="lbl">Private Suites</div></div>
+      <div class="spec"><div class="num"><span data-count="1204">0</span></div><div class="lbl">Kilometres of Coast</div></div>
+      <div class="spec"><div class="num"><span data-count="1435">0</span></div><div class="lbl">mm · Coastal Gauge</div></div>
+      <div class="spec"><div class="num"><span data-count="2">0</span></div><div class="lbl">Dining Services a Night</div></div>
+      <div class="spec"><div class="num"><span data-count="1">0</span></div><div class="lbl">Continuous Gold Line</div></div>
+      <div class="spec"><div class="num"><span data-count="98">0</span><small> yrs</small></div><div class="lbl">Of Unbroken Service</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="brass"></div>
+
+<!-- ================= RITUALS ================= -->
+<section class="sec rituals">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The Unwritten Rules</span>
+      <h2>Service Rituals</h2>
+      <p>Nobody is written into the guidebook. These are the small ceremonies the staff has kept for a century, and the reason the line has its own hymn.</p>
+    </div>
+    <div class="rit-grid">
+      <div class="rit reveal"><span class="no">01</span><div><h4>The Greeting</h4><p>Every door is opened by hand before departure, every name read aloud once, quietly, in the same tone — as if the train itself were saying good evening.</p></div></div>
+      <div class="rit reveal" style="--d:.1s"><span class="no">02</span><div><h4>The Pour</h4><p>The first drink of the night is always poured from the tallest brass carafe, and never hurried. If the coast is rough, the pour is slower.</p></div></div>
+      <div class="rit reveal" style="--d:.2s"><span class="no">03</span><div><h4>The Turning</h4><p>At 22:00 sharp, the stewards make their rounds in unison — linen smoothed, lamps lowered, the last window wiper given one final pass.</p></div></div>
+      <div class="rit reveal" style="--d:.3s"><span class="no">04</span><div><h4>The Dawn Bell</h4><p>Before Noctara, the brass bell rings once. Passengers may answer it with a wave to the platform. Most do.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="sec words">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">From the Guest Books</span>
+      <h2>Words From the Carriages</h2>
+    </div>
+    <div class="word-grid">
+      <div class="word nf reveal"><div class="ni">
+        <span class="mark">“</span>
+        <q>I have taken night trains on five continents. None of them has ever made darkness feel like the main event. The Aurelian does.</q>
+        <div class="who">M. Osei · Aurelia Suite</div>
+      </div></div>
+      <div class="word nf reveal" style="--d:.12s"><div class="ni">
+        <span class="mark">“</span>
+        <q>The minute through Lumea is worth the whole fare. I set my watch to it on the first crossing and have never changed it.</q>
+        <div class="who">H. Lindqvist · Cabine Classique</div>
+      </div></div>
+      <div class="word nf reveal" style="--d:.24s"><div class="ni">
+        <span class="mark">“</span>
+        <q>We arrived to a sunrise we had to walk a quarter mile to reach, and we watched it from the top of the headland like a secret shared only with strangers.</q>
+        <div class="who">The Ferreira Party · Salon Privé</div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FARES ================= -->
+<section class="sec fares" id="fares">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The Season's Tariff</span>
+      <h2>Fare Tiers</h2>
+      <p>All fares include both dinner services, the dawn breakfast, and the view — which, on this line, is the finest amenity aboard.</p>
+    </div>
+    <div class="fare-grid">
+      <div class="fare nf reveal"><div class="ni">
+        <span class="tier">Tier I</span>
+        <h3>Cabine Classique</h3>
+        <div class="price">480<small>per night · per guest</small></div>
+        <div class="rule"></div>
+        <ul>
+          <li>Private four-poster cabine, window seat</li>
+          <li>Both dining services &amp; dawn breakfast</li>
+          <li>Nightcap &amp; morning coffee at the door</li>
+          <li>The book of the coast, one edition</li>
+        </ul>
+        <a class="btn btn-ghost" href="#reserve">Select Cabine</a>
+      </div></div>
+
+      <div class="fare nf featured reveal" style="--d:.12s"><div class="ni">
+        <span class="ribbon">Most Reserved</span>
+        <span class="tier">Tier II</span>
+        <h3>Aurelia Suite</h3>
+        <div class="price">1 150<small>per night · per suite</small></div>
+        <div class="rule"></div>
+        <ul>
+          <li>Full suite with westward bay window</li>
+          <li>Roll-top vanity &amp; porcelain wash</li>
+          <li>Personal steward &amp; the Night Bell</li>
+          <li>Champagne hour in the Salon d'Or</li>
+          <li>Reserved seat on the dawn deck</li>
+        </ul>
+        <a class="btn btn-gold" href="#reserve">Reserve the Suite</a>
+      </div></div>
+
+      <div class="fare nf reveal" style="--d:.24s"><div class="ni">
+        <span class="tier">Tier III</span>
+        <h3>Salon Privé</h3>
+        <div class="price">3 400<small>per night · the whole carriage</small></div>
+        <div class="rule"></div>
+        <ul>
+          <li>Carriage No. 07 in its entirety</li>
+          <li>Private chef for both services</li>
+          <li>Complimentary gold cards, 200g</li>
+          <li>The conductor reads the night's notes for you alone</li>
+        </ul>
+        <a class="btn btn-ghost" href="#reserve">Inquire Privately</a>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BOOKING ================= -->
+<section class="sec book" id="reserve">
+  <div class="wrap">
+    <div class="docket nf reveal"><div class="ni">
+      <div class="docket-head">
+        <div>
+          <span class="lbl">Reservation Docket Nº 1147</span>
+          <h2>Request Passage</h2>
+        </div>
+        <div class="stamp">Grand<br>Coastal<br>Lines</div>
+      </div>
+      <form class="bform" id="bform" novalidate>
+        <div class="field">
+          <label for="f-name">Full Name</label>
+          <input id="f-name" type="text" placeholder="As it should appear on the gold card" required>
+        </div>
+        <div class="field">
+          <label for="f-date">Night of Passage</label>
+          <input id="f-date" type="date" required>
+        </div>
+        <div class="field">
+          <label for="f-route">Journey</label>
+          <select id="f-route">
+            <option>Valmonte → Noctara · Full Crossing</option>
+            <option>Valmonte → Port Sable · Early Night</option>
+            <option>Port Sable → Noctara · After Midnight</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-tier">Fare Tier</label>
+          <select id="f-tier">
+            <option>Cabine Classique</option>
+            <option selected>Aurelia Suite</option>
+            <option>Salon Privé</option>
+          </select>
+        </div>
+        <button class="btn btn-gold" type="submit">Submit the Docket</button>
+        <div class="b-done" id="bdone">The docket is received. A gold card will reach you by post — the conductor awaits your name.</div>
+        <p class="b-note">The line runs every night of the season · Dockets answered within one turn of the tide</p>
+      </form>
+    </div></div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="mono">A</div>
+    <div class="fname">THE AURELIAN EXPRESS</div>
+    <div class="fsub">Grand Coastal Lines · Est. MCMXXVII</div>
+    <div class="brass" style="max-width:220px;margin:0 auto 30px"></div>
+    <p class="fline">Seven grand coastal cities. One night's crossing. The route departs Valmonte at 18:40 and arrives at Noctara at first light — every night, without exception, without hurry.</p>
+    <p class="fine">A fiction, drawn wholly in gold &amp; brass · No actual rail service is scheduled</p>
+  </div>
+</footer>
+
+<script>
+/* ---------- sunburst ray generation ---------- */
+document.querySelectorAll('g.rays').forEach(function(g){
+  var n = +g.dataset.rays || 24, r1 = +g.dataset.r1 || 18, r2 = +g.dataset.r2 || 46;
+  var s = '';
+  for (var i = 0; i < n; i++){
+    var a = (i / n) * Math.PI * 2;
+    s += '<line x1="' + (Math.cos(a)*r1).toFixed(1) + '" y1="' + (Math.sin(a)*r1).toFixed(1) +
+         '" x2="' + (Math.cos(a)*r2).toFixed(1) + '" y2="' + (Math.sin(a)*r2).toFixed(1) + '"/>';
+  }
+  g.innerHTML = s;
+});
+
+/* ---------- hero starfield ---------- */
+(function(){
+  var c = document.getElementById('stars');
+  if (!c) return;
+  var ctx = c.getContext('2d'), stars = [], W, H;
+  function resize(){
+    W = c.width = c.offsetWidth; H = c.height = c.offsetHeight;
+    stars = [];
+    var n = Math.min(140, Math.floor(W * H / 9000));
+    for (var i = 0; i < n; i++){
+      stars.push({x: Math.random()*W, y: Math.random()*H*0.72, r: Math.random()*1.1 + .3, p: Math.random()*Math.PI*2, s: .3 + Math.random()*.8});
+    }
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  function tick(t){
+    ctx.clearRect(0,0,W,H);
+    for (var i = 0; i < stars.length; i++){
+      var st = stars[i];
+      var a = .25 + .55 * Math.abs(Math.sin(t/1000 * st.s + st.p));
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(244,234,214,' + a.toFixed(2) + ')';
+      ctx.arc(st.x, st.y, st.r, 0, 6.283);
+      ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* ---------- header state ---------- */
+var hdr = document.getElementById('hdr');
+window.addEventListener('scroll', function(){
+  hdr.classList.toggle('scrolled', window.scrollY > 40);
+}, {passive:true});
+
+/* ---------- scroll reveals ---------- */
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if (e.isIntersecting){
+      e.target.classList.add('in');
+      if (e.target.id === 'map' || e.target.closest('.route-sec')) document.querySelector('.route-sec').classList.add('in');
+      if (e.target.id === 'tl') document.querySelector('.journey').classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, {threshold: .18});
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+/* section-level triggers (spine, lamps, map) */
+var secIO = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if (e.isIntersecting){
+      e.target.classList.add('in');
+      secIO.unobserve(e.target);
+    }
+  });
+}, {threshold: .12});
+['#route','#journey','#stay','#suite','#dining','#map'].forEach(function(sel){
+  var el = document.querySelector(sel);
+  if (el) secIO.observe(el);
+});
+
+/* ---------- spec counters ---------- */
+var counted = false;
+var specIO = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if (e.isIntersecting && !counted){
+      counted = true;
+      document.querySelectorAll('[data-count]').forEach(function(el){
+        var end = +el.dataset.count, t0 = null, dur = 1400;
+        function step(t){
+          if (!t0) t0 = t;
+          var p = Math.min(1, (t - t0) / dur);
+          p = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(end * p).toLocaleString('en-US').replace(/,/g,' ');
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      });
+      specIO.disconnect();
+    }
+  });
+}, {threshold: .4});
+var sg = document.querySelector('.spec-grid');
+if (sg) specIO.observe(sg);
+
+/* ---------- booking docket ---------- */
+var form = document.getElementById('bform');
+form.addEventListener('submit', function(ev){
+  ev.preventDefault();
+  var name = document.getElementById('f-name').value.trim();
+  var date = document.getElementById('f-date').value;
+  if (!name || !date){
+    document.getElementById('bdone').style.display = 'block';
+    document.getElementById('bdone').textContent = 'The docket requires a name and a night. The train, of course, waits for neither.';
+    return;
+  }
+  document.getElementById('bdone').style.display = 'block';
+  document.getElementById('bdone').textContent = 'Received, ' + name.split(' ')[0] + '. A gold card will reach you by post — the conductor awaits your name.';
+  form.querySelectorAll('input,select,button').forEach(function(el){ el.disabled = true; });
+});
+</script>
+</body>
+</html>

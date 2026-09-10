@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/ox-alpha/api/website-risograph/index.html",
+  "pass": false,
+  "notes": [
+    "all canvases blank after settle"
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": false,
+  "body_text_chars": 4900,
+  "scroll_height": 8349
+}

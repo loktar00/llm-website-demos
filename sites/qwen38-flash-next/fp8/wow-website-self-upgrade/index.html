@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noctuary — the field almanac for the night sky</title>
+<meta name="description" content="Noctuary plans your observing nights around seeing, transparency, moon phase and your own gear. Stop checking four apps before you haul out the scope.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Spline+Sans+Mono:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0d13;
+    --ink-2:#10131c;
+    --ink-3:#161a26;
+    --paper:#ece4d0;
+    --paper-dim:rgba(236,228,208,.62);
+    --paper-faint:rgba(236,228,208,.34);
+    --gold:#d9a441;
+    --gold-soft:rgba(217,164,65,.16);
+    --sage:#8fb3a4;
+    --rust:#c97a58;
+    --line:rgba(236,228,208,.16);
+    --line-soft:rgba(236,228,208,.08);
+    --serif:"Fraunces",Georgia,serif;
+    --mono:"Spline Sans Mono",ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--mono);
+    font-size:15px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold);color:var(--ink)}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+  h1,h2,h3,.display{font-family:var(--serif);font-weight:500;letter-spacing:-.01em;line-height:1.08}
+  em{font-style:italic}
+  a{color:inherit}
+
+  .kicker{
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--gold);display:flex;align-items:center;gap:12px;
+  }
+  .kicker::before{content:"";width:34px;height:1px;background:var(--gold);opacity:.7}
+
+  /* ---------- nav ---------- */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,13,19,.86);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:21px;text-decoration:none}
+  .logo svg{flex:none}
+  .logo b{font-weight:600}
+  .logo span{color:var(--gold)}
+  .navlinks{display:flex;gap:30px;list-style:none;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+  .navlinks a{text-decoration:none;color:var(--paper-dim);transition:color .2s}
+  .navlinks a:hover{color:var(--gold)}
+  .nav-cta{
+    display:inline-block;text-decoration:none;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;
+    border:1px solid var(--gold);color:var(--gold);padding:9px 18px;border-radius:2px;transition:.2s;
+  }
+  .nav-cta:hover{background:var(--gold);color:var(--ink)}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--paper);
+    font-family:var(--mono);font-size:12px;padding:8px 12px;letter-spacing:.1em;cursor:pointer}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line-soft)}
+  #stars{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .hero-inner{
+    position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;
+    gap:56px;align-items:center;padding:104px 0 110px;
+  }
+  .hero h1{font-size:clamp(42px,5.6vw,72px);margin:26px 0 24px;font-weight:400}
+  .hero h1 em{color:var(--gold)}
+  .hero .lede{max-width:52ch;color:var(--paper-dim);font-size:15.5px}
+  .hero-actions{display:flex;gap:16px;margin-top:36px;flex-wrap:wrap}
+  .btn{
+    display:inline-block;text-decoration:none;padding:14px 26px;border-radius:2px;
+    font-size:13px;letter-spacing:.1em;text-transform:uppercase;transition:.2s;
+  }
+  .btn-solid{background:var(--gold);color:#141008;font-weight:600;border:1px solid var(--gold)}
+  .btn-solid:hover{background:#eec06a;border-color:#eec06a}
+  .btn-ghost{border:1px solid var(--line);color:var(--paper-dim)}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .hero-meta{margin-top:26px;font-size:12px;color:var(--paper-faint);letter-spacing:.05em}
+
+  /* card: tonight's sky */
+  .sky-card{
+    background:linear-gradient(175deg,var(--ink-3),var(--ink-2));
+    border:1px solid var(--line);border-radius:4px;padding:26px 26px 20px;position:relative;
+    box-shadow:0 30px 80px -30px rgba(0,0,0,.8);
+  }
+  .sky-card::before,.sky-card::after{
+    content:"+";position:absolute;color:var(--gold);opacity:.6;font-size:15px;line-height:1;
+  }
+  .sky-card::before{top:-9px;left:-8px}
+  .sky-card::after{bottom:-9px;right:-8px}
+  .sc-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    border-bottom:1px solid var(--line-soft);padding-bottom:14px;font-size:12px}
+  .sc-head .place{letter-spacing:.14em;text-transform:uppercase;color:var(--paper-dim)}
+  .sc-head .date{color:var(--gold)}
+  .sc-moon{display:flex;gap:18px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line-soft)}
+  .sc-moon .moon-txt{font-size:12.5px;color:var(--paper-dim)}
+  .sc-moon .moon-txt b{display:block;color:var(--paper);font-size:14px;font-weight:500;letter-spacing:.03em}
+  .sc-bars{padding:16px 0;border-bottom:1px solid var(--line-soft)}
+  .sc-row{display:grid;grid-template-columns:118px 1fr 44px;align-items:center;gap:12px;
+    font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:11px}
+  .sc-row:last-child{margin-bottom:0}
+  .bar{height:5px;background:var(--line-soft);border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:3px;background:var(--sage);
+    transform-origin:left;animation:grow 1.3s cubic-bezier(.2,.8,.2,1) both}
+  .bar.low i{background:var(--rust)}
+  .bar.mid i{background:var(--gold)}
+  @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  .sc-row .val{text-align:right;color:var(--paper)}
+  .targets{list-style:none;padding-top:6px}
+  .targets li{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;
+    padding:10px 0;border-bottom:1px dashed var(--line-soft);font-size:13px}
+  .targets li:last-child{border-bottom:none}
+  .targets .desig{color:var(--gold);font-size:11.5px;min-width:52px}
+  .targets .alt,.targets .tr{color:var(--paper-dim);font-size:11.5px}
+  .targets .tr{min-width:52px;text-align:right}
+  .sc-foot{padding-top:14px;font-size:11px;color:var(--paper-faint);letter-spacing:.06em;text-align:right}
+  .pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sage);margin-right:7px;
+    box-shadow:0 0 0 0 rgba(143,179,164,.5);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(143,179,164,.45)}70%{box-shadow:0 0 0 9px rgba(143,179,164,0)}100%{box-shadow:0 0 0 0 rgba(143,179,164,0)}}
+
+  /* ---------- ticker ---------- */
+  .ticker{border-bottom:1px solid var(--line-soft);background:var(--ink-2);overflow:hidden}
+  .ticker-track{display:flex;gap:64px;white-space:nowrap;padding:14px 0;width:max-content;
+    animation:slide 34s linear infinite;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-faint)}
+  .ticker-track b{color:var(--paper-dim);font-weight:400}
+  .ticker-track .star{color:var(--gold)}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  /* ---------- section frame ---------- */
+  section{padding:110px 0}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;
+    border-bottom:1px solid var(--line);padding-bottom:34px;margin-bottom:64px}
+  .sec-head h2{font-size:clamp(30px,3.6vw,46px);margin-top:18px;font-weight:400;max-width:16ch}
+  .sec-head h2 em{color:var(--gold)}
+  .sec-head .note{max-width:34ch;color:var(--paper-dim);font-size:13.5px}
+  .sec-num{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--paper-faint)}
+
+  /* ---------- features ---------- */
+  .feat-grid{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--line-soft);border-bottom:none;border-right:none}
+  .feat{border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft);
+    padding:38px 34px 42px;grid-column:span 2;position:relative;transition:background .25s}
+  .feat:hover{background:var(--ink-2)}
+  .feat.wide{grid-column:span 3}
+  .feat .num{font-size:10.5px;letter-spacing:.3em;color:var(--gold);opacity:.85}
+  .feat h3{font-size:23px;margin:18px 0 12px;font-weight:500}
+  .feat p{color:var(--paper-dim);font-size:13.5px}
+  .feat .fig{margin-top:26px}
+
+  /* ---------- ledger / stats ---------- */
+  .ledger{background:var(--ink-2);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:64px 0}
+  .ledger-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .stat{padding:8px 26px;border-left:1px solid var(--line-soft)}
+  .stat:first-child{border-left:none;padding-left:0}
+  .stat .n{font-family:var(--serif);font-size:clamp(34px,4vw,52px);color:var(--gold);font-weight:400;line-height:1}
+  .stat .l{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);margin-top:12px}
+
+  /* ---------- testimonials ---------- */
+  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .quote{border:1px solid var(--line-soft);padding:34px 30px;background:var(--ink-2);position:relative;border-radius:3px}
+  .quote::before{content:"“";position:absolute;top:6px;right:20px;font-family:var(--serif);
+    font-size:76px;color:var(--gold);opacity:.22;line-height:1}
+  .quote .stars{color:var(--gold);letter-spacing:4px;font-size:12px;margin-bottom:16px}
+  .quote p{font-size:14px;color:var(--paper);font-family:var(--serif);font-weight:300;font-size:17px;line-height:1.5}
+  .quote .who{display:flex;gap:13px;align-items:center;margin-top:26px;padding-top:20px;border-top:1px dashed var(--line-soft)}
+  .avatar{width:40px;height:40px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;letter-spacing:.05em;border:1px solid var(--gold);color:var(--gold)}
+  .who .name{font-size:13px}
+  .who .role{font-size:11.5px;color:var(--paper-faint)}
+
+  /* ---------- pricing ---------- */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .plan{padding:42px 34px 46px;border-right:1px solid var(--line);background:var(--ink-2)}
+  .plan:last-child{border-right:none}
+  .plan.feature{background:linear-gradient(180deg,rgba(217,164,65,.09),rgba(217,164,65,.02));position:relative}
+  .plan .tag{position:absolute;top:0;right:0;background:var(--gold);color:var(--ink);font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase;padding:6px 14px;font-weight:600}
+  .plan h3{font-size:21px;font-weight:500}
+  .plan .price{font-family:var(--serif);font-size:46px;color:var(--gold);margin:20px 0 4px;font-weight:400}
+  .plan .price small{font-family:var(--mono);font-size:12px;color:var(--paper-faint)}
+  .plan .desc{font-size:12.5px;color:var(--paper-dim);min-height:44px;margin-bottom:22px}
+  .plan ul{list-style:none;font-size:13px;color:var(--paper-dim);margin-bottom:30px}
+  .plan li{padding:9px 0 9px 24px;border-top:1px dashed var(--line-soft);position:relative}
+  .plan li::before{content:"✦";position:absolute;left:2px;color:var(--gold);font-size:10px;top:11px}
+  .plan .btn{display:block;text-align:center}
+
+  /* ---------- CTA band ---------- */
+  .cta-band{border-top:1px solid var(--line-soft);text-align:center;padding:120px 0;position:relative;overflow:hidden}
+  .cta-band::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(ellipse 60% 70% at 50% 115%,rgba(217,164,65,.14),transparent 65%)}
+  .cta-band h2{font-size:clamp(34px,5vw,60px);font-weight:400;max-width:20ch;margin:20px auto 18px;position:relative}
+  .cta-band h2 em{color:var(--gold)}
+  .cta-band p{color:var(--paper-dim);position:relative}
+  .cta-band .btn{margin-top:34px;position:relative}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);background:var(--ink-2);padding:74px 0 34px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:44px;margin-bottom:60px}
+  footer h4{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-faint);margin-bottom:18px;font-weight:400;font-family:var(--mono)}
+  footer ul{list-style:none}
+  footer ul li{margin-bottom:11px}
+  footer ul a{text-decoration:none;color:var(--paper-dim);font-size:13.5px;transition:color .2s}
+  footer ul a:hover{color:var(--gold)}
+  .foot-about p{font-size:13px;color:var(--paper-dim);max-width:34ch;margin:16px 0 22px}
+  .signup{display:flex;border:1px solid var(--line);border-radius:2px;overflow:hidden;max-width:320px}
+  .signup input{flex:1;background:none;border:none;color:var(--paper);padding:11px 14px;font-family:var(--mono);font-size:13px;outline:none}
+  .signup input::placeholder{color:var(--paper-faint)}
+  .signup button{background:var(--gold);border:none;color:var(--ink);font-family:var(--mono);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;padding:0 18px;cursor:pointer;font-weight:600}
+  .signup button:hover{background:#eec06a}
+  .foot-bottom{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line-soft);padding-top:26px;font-size:11.5px;color:var(--paper-faint);letter-spacing:.05em}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .hero-inner{grid-template-columns:1fr;padding:76px 0 84px;gap:44px}
+    .feat-grid{grid-template-columns:1fr 1fr}
+    .feat,.feat.wide{grid-column:span 1}
+    .quotes{grid-template-columns:1fr}
+    .plans{grid-template-columns:1fr}
+    .plan{border-right:none;border-bottom:1px solid var(--line)}
+    .plan:last-child{border-bottom:none}
+    .ledger-grid{grid-template-columns:1fr 1fr;gap:34px 0}
+    .stat{padding:0 24px}
+    .stat:nth-child(3){border-left:none;padding-left:0}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:680px){
+    .navlinks,.nav .nav-cta{display:none}
+    .menu-btn{display:block}
+    header.site.open .navlinks{
+      display:flex;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;
+      background:var(--ink-2);border-bottom:1px solid var(--line);padding:8px 24px 16px;
+    }
+    header.site.open .navlinks li{padding:12px 0;border-bottom:1px dashed var(--line-soft)}
+    .navlinks a{font-size:14px}
+    .feat-grid{grid-template-columns:1fr}
+    .ledger-grid{grid-template-columns:1fr 1fr;gap:28px}
+    .stat:nth-child(even){border-left:none;padding-left:0}
+    .sec-head{flex-direction:column;align-items:flex-start;gap:18px}
+    section{padding:78px 0}
+    .foot-grid{grid-template-columns:1fr}
+    .sc-row{grid-template-columns:96px 1fr 40px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header class="site" id="siteHeader">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Noctuary home">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10.2" stroke="#d9a441" stroke-width="1.2"/>
+        <path d="M15.6 4.6a8 8 0 1 0 3.7 10.6A9.2 9.2 0 0 1 15.6 4.6Z" fill="#d9a441"/>
+        <circle cx="8.2" cy="8" r="0.9" fill="#ece4d0"/>
+        <circle cx="6.4" cy="12.6" r="0.6" fill="#ece4d0" opacity=".7"/>
+      </svg>
+      <b>Noctu<span>ary</span></b>
+    </a>
+    <ul class="navlinks">
+      <li><a href="#instrument">The Instrument</a></li>
+      <li><a href="#dispatches">Dispatches</a></li>
+      <li><a href="#plans">Plans</a></li>
+      <li><a href="#fieldkit">Field Kit</a></li>
+    </ul>
+    <a class="nav-cta" href="#plans">Start observing free</a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist">MENU +</button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<div class="hero" id="top">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="wrap hero-inner">
+    <div>
+      <p class="kicker">Field Almanac · Est. 2021 · Bar Harbor, ME</p>
+      <h1>The sky clears on its own schedule. <em>Noctuary</em> knows it.</h1>
+      <p class="lede">A planning instrument for amateur astronomers and astrophotographers.
+      Noctuary folds seeing, transparency, moonlight and your exact rig into one answer:
+      <b>tonight — go, or don't — and what to point at first.</b></p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="#plans">Plan my first night — free</a>
+        <a class="btn btn-ghost" href="#instrument">See how it works</a>
+      </div>
+      <p class="hero-meta">No credit card · Works offline in the field · iOS, Android &amp; web</p>
+    </div>
+
+    <!-- Tonight's-sky card -->
+    <aside class="sky-card" aria-label="Sample observing forecast">
+      <div class="sc-head">
+        <span class="place">44.3876° N · 68.2039° W</span>
+        <span class="date">TONIGHT · OCT 14</span>
+      </div>
+      <div class="sc-moon">
+        <svg width="66" height="66" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="45" fill="#e8ddb8"/>
+          <path d="M50 5 A45 45 0 0 0 50 95 A25 45 0 0 1 50 5 Z" fill="#161a26"/>
+          <circle cx="62" cy="38" r="6" fill="#d6c89e" opacity=".55"/>
+          <circle cx="70" cy="60" r="4" fill="#d6c89e" opacity=".45"/>
+          <circle cx="56" cy="72" r="3" fill="#d6c89e" opacity=".4"/>
+        </svg>
+        <div class="moon-txt">
+          <b>Waxing Gibbous · 78%</b>
+          Sets 03:41 — deep-sky window opens after
+        </div>
+      </div>
+      <div class="sc-bars">
+        <div class="sc-row"><span>Seeing</span><div class="bar mid" style="animation-delay:.1s"><i style="width:71%"></i></div><span class="val">Good</span></div>
+        <div class="sc-row"><span>Transparency</span><div class="bar" style="animation-delay:.25s"><i style="width:86%"></i></div><span class="val">High</span></div>
+        <div class="sc-row"><span>Cloud cover</span><div class="bar" style="animation-delay:.4s"><i style="width:9%"></i></div><span class="val">9%</span></div>
+        <div class="sc-row"><span>Wind · 10 m</span><div class="bar low" style="animation-delay:.55s"><i style="width:58%"></i></div><span class="val">14 mph</span></div>
+      </div>
+      <ul class="targets">
+        <li><span class="desig">M31</span><span>Andromeda Galaxy</span><span class="alt">alt 61°</span><span class="tr">23:14</span></li>
+        <li><span class="desig">NGC 869</span><span>Double Cluster</span><span class="alt">alt 54°</span><span class="tr">00:52</span></li>
+        <li><span class="desig">M45</span><span>Pleiades</span><span class="alt">alt 47°</span><span class="tr">01:26</span></li>
+        <li><span class="desig">♂ Mars</span><span>Retorts · Syrtis</span><span class="alt">alt 68°</span><span class="tr">01:48</span></li>
+      </ul>
+      <div class="sc-foot"><span class="pulse"></span>VERDICT: GO NIGHT — SCORE 8.2 / 10</div>
+    </aside>
+  </div>
+</div>
+
+<!-- ticker -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span><b>SKU</b> Sky &amp; Telescope picks</span><span class="star">✦</span>
+    <span>Wanderlost Astro Podcast</span><span class="star">✦</span>
+    <span><b>DARK SKY</b> IDA chapter partner</span><span class="star">✦</span>
+    <span>Astronomy Magazine App of the Month</span><span class="star">✦</span>
+    <span>Roque de los Muchachos field-tested</span><span class="star">✦</span>
+    <span><b>AFR</b> Astronomy Father's Review</span><span class="star">✦</span>
+    <span>SKU</span><span class="star">✦</span>
+    <span><b>Sky &amp; Telescope</b> picks</span><span class="star">✦</span>
+    <span>Wanderlost Astro Podcast</span><span class="star">✦</span>
+    <span><b>DARK SKY</b> IDA chapter partner</span><span class="star">✦</span>
+    <span>Astronomy Magazine App of the Month</span><span class="star">✦</span>
+    <span>Roque de los Muchachos field-tested</span><span class="star">✦</span>
+    <span><b>AFR</b> Astronomy Father's Review</span><span class="star">✦</span>
+    <span>SKU</span><span class="star">✦</span>
+  </div>
+</div>
+
+<!-- ================= FEATURES ================= -->
+<section id="instrument">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="sec-num">№ 01 — THE INSTRUMENT</span>
+        <h2>Four apps won't tell you <em>whether to bother</em>.</h2>
+      </div>
+      <p class="note">Cloud maps, moon calendars, planetariums, mount planners — Noctuary reads all of it
+      so you don't assemble a control panel in a cold driveway at 11 p.m.</p>
+    </div>
+
+    <div class="feat-grid">
+      <article class="feat wide">
+        <span class="num">F·01</span>
+        <h3>The Go / Don't-Go Score</h3>
+        <p>Hour-by-hour blend of seeing (arcsec), transparency, cirrus, wind, dew point and moon separation,
+        collapsed into a single 0–10 score for <em>your</em> horizon. We weight it for aperture, focal length
+        and whether you're on Bortle 2 or Bortle 8.</p>
+        <svg class="fig" width="100%" height="74" viewBox="0 0 320 74" fill="none" aria-hidden="true">
+          <path d="M0 52 C40 50 55 58 80 40 S140 12 180 26 S250 58 320 30" stroke="#8fb3a4" stroke-width="1.6"/>
+          <path d="M0 60 C40 58 55 62 80 52 S140 38 180 46 S250 64 320 44" stroke="#d9a441" stroke-width="1.6" stroke-dasharray="4 4"/>
+          <circle cx="180" cy="26" r="4" fill="#d9a441"/>
+          <text x="192" y="22" fill="#ece4d0" font-size="10" font-family="Spline Sans Mono, monospace">22:40 · 8.2</text>
+          <line x1="0" y1="70" x2="320" y2="70" stroke="rgba(236,228,208,.16)"/>
+          <text x="0" y="68" fill="rgba(236,228,208,.34)" font-size="9" font-family="Spline Sans Mono, monospace">18:00</text>
+          <text x="285" y="68" fill="rgba(236,228,208,.34)" font-size="9" font-family="Spline Sans Mono, monospace">05:00</text>
+        </svg>
+      </article>
+
+      <article class="feat wide">
+        <span class="num">F·02</span>
+        <h3>Moon-aware target lists</h3>
+        <p>No more suggesting M33 to someone under a 92% moon. Every target is ranked by contrast against
+        tonight's actual lunar separation, sky brightness and your light pollution map — narrowbands get
+        a pass under bright skies.</p>
+        <svg class="fig" width="100%" height="74" viewBox="0 0 320 74" fill="none" aria-hidden="true">
+          <circle cx="26" cy="30" r="14" fill="#e8ddb8" opacity=".9"/>
+          <path d="M30 17a12 12 0 1 0 5.5 16A13.5 13.5 0 0 1 30 17Z" fill="#10131c"/>
+          <rect x="60" y="16" width="150" height="9" rx="2" fill="rgba(236,228,208,.25)"/>
+          <rect x="60" y="33" width="112" height="9" rx="2" fill="rgba(217,164,65,.7)"/>
+          <rect x="60" y="50" width="78" height="9" rx="2" fill="rgba(236,228,208,.12)"/>
+          <text x="222" y="24" fill="rgba(236,228,208,.5)" font-size="10" font-family="Spline Sans Mono, monospace">IC 1396</text>
+          <text x="183" y="41" fill="#d9a441" font-size="10" font-family="Spline Sans Mono, monospace">SH2-155 ✓</text>
+          <text x="149" y="58" fill="rgba(236,228,208,.34)" font-size="10" font-family="Spline Sans Mono, monospace">M33 ✗</text>
+        </svg>
+      </article>
+
+      <article class="feat">
+        <span class="num">F·03</span>
+        <h3>Your rig, modeled</h3>
+        <p>Log your scopes, mounts, focal reducers and eyepieces once. Noctuary computes max useful exposure
+        without guiding, meridian flip timing and balance limits before you unpack a single case.</p>
+      </article>
+
+      <article class="feat">
+        <span class="num">F·04</span>
+        <h3>Dew-curve alarms</h3>
+        <p>Forecast dew point vs. ambient tells you when optics will fog — not when the clouds arrive.
+        One notification: “heaters on by 23:10.” Sleep through the rest.</p>
+      </article>
+
+      <article class="feat">
+        <span class="num">F·05</span>
+        <h3>The session logbook</h3>
+        <p>One-tap capture notes: seeing at the eyepiece, gear, sketches, subs. Export as a printable
+        almanac page — because paper still survives a -15°C night.</p>
+      </article>
+
+      <article class="feat">
+        <span class="num">F·06</span>
+        <h3>Dark-sky trip radar</h3>
+        <p>Scans 160,000 candidate sites within range: SQM estimates, drive time, light-domes on the horizon,
+        and cell coverage for the inevitable “is it still clear?” debate.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<div class="ledger">
+  <div class="wrap ledger-grid">
+    <div class="stat"><div class="n">312,481</div><div class="l">Nights planned to date</div></div>
+    <div class="stat"><div class="n">14,900</div><div class="l">Active observers</div></div>
+    <div class="stat"><div class="n">81</div><div class="l">Countries under real skies</div></div>
+    <div class="stat"><div class="n">4.9 ★</div><div class="l">App Store · 2,140 ratings</div></div>
+  </div>
+</div>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section id="dispatches">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="sec-num">№ 02 — DISPATCHES</span>
+        <h2>Field notes from people who <em>stay up late</em>.</h2>
+      </div>
+      <p class="note">Unedited except for length, and yes — we checked with every one of them.</p>
+    </div>
+    <div class="quotes">
+      <figure class="quote">
+        <div class="stars">★★★★★</div>
+        <blockquote>I used to leave the house on a maybe. Now Noctuary says don't, I don't, and the one time
+        I argued with it, it was right about the cirrus.</blockquote>
+        <figcaption class="who">
+          <span class="avatar">PR</span>
+          <span><span class="name">Priya Raman</span><br><span class="role">Astrophotographer · Atacama Sketches</span></span>
+        </figcaption>
+      </figure>
+      <figure class="quote">
+        <div class="stars">★★★★★</div>
+        <blockquote>We run school star parties at 40 sites a year. The trip radar found us three Bortle 2
+        fields inside an hour we never knew existed. One has a herd of llamas. Ten out of ten.</blockquote>
+        <figcaption class="who">
+          <span class="avatar">TW</span>
+          <span><span class="name">Tomás Weller</span><br><span class="role">Volunteer lead · Milwaukee Dark Skies</span></span>
+        </figcaption>
+      </figure>
+      <figure class="quote">
+        <div class="stars">★★★★★</div>
+        <blockquote>The dew alarm alone paid for the year. My corrector plates have been fog-free since March,
+        and my back thanks me for not guessing when to drive home.</blockquote>
+        <figcaption class="who">
+          <span class="avatar">LO</span>
+          <span><span class="name">Dr. Lena Okafor</span><br><span class="role">Backyard observer · Kanab, UT</span></span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="plans" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="sec-num">№ 03 — PLANS</span>
+        <h2>Priced like a good <em>eyepiece</em>. Not like a scope.</h2>
+      </div>
+      <p class="note">Every plan includes the full sky database, 16-night forecast horizon and offline maps. Cancel by tapping one button.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Stargazer</h3>
+        <div class="price">$0<small> / always</small></div>
+        <p class="desc">For front-yard observers and the merely curious.</p>
+        <ul>
+          <li>Go / Don't-Go score, 3 nights</li>
+          <li>Moon phase &amp; rise/set almanac</li>
+          <li>Tonight's target shortlist</li>
+          <li>Manual session logbook</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Start free</a>
+      </div>
+      <div class="plan feature">
+        <span class="tag">Most chosen</span>
+        <h3>Observer</h3>
+        <div class="price">$4<small> / mo, billed yearly</small></div>
+        <p class="desc">For the one who checks the sky from bed.</p>
+        <ul>
+          <li>Full 16-night seeing &amp; transparency</li>
+          <li>Rig profiles + exposure limits</li>
+          <li>Dew-curve &amp; meridian alarms</li>
+          <li>Dark-sky trip radar, 200 saved sites</li>
+          <li>Printable almanac exports</li>
+        </ul>
+        <a class="btn btn-solid" href="#">Try 14 nights free</a>
+      </div>
+      <div class="plan">
+        <h3>Almanac</h3>
+        <div class="price">$9<small> / mo, billed yearly</small></div>
+        <p class="desc">For camps, clubs and seriously equipped nights.</p>
+        <ul>
+          <li>Everything in Observer</li>
+          <li>Team rosters &amp; shared trip boards</li>
+          <li>ASIAIR / N.I.N.A. session hand-off</li>
+          <li>SQM &amp; all-sky camera hooks</li>
+          <li>Priority model feedback line</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta-band" id="fieldkit" style="padding-top:120px">
+  <div class="wrap">
+    <p class="kicker" style="justify-content:center">Twilight is coming</p>
+    <h2>The universe is loud tonight. <em>Be there for it.</em></h2>
+    <p>Free forever for casual observers. Four dollars if you're the one who owns a red headlamp.</p>
+    <a class="btn btn-solid" href="#plans">Plan my first night</a>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a class="logo" href="#top" aria-label="Noctuary home">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10.2" stroke="#d9a441" stroke-width="1.2"/>
+            <path d="M15.6 4.6a8 8 0 1 0 3.7 10.6A9.2 9.2 0 0 1 15.6 4.6Z" fill="#d9a441"/>
+          </svg>
+          <b>Noctu<span>ary</span></b>
+        </a>
+        <p>A field almanac for the night sky, built by three astronomers who were tired of four open apps and a fogged corrector plate.</p>
+        <h4>The Clearing — our weather newsletter</h4>
+        <form class="signup" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('button').textContent='✓ Sent';">
+          <input type="email" placeholder="you@underdarkskies.com" required aria-label="Email address">
+          <button type="submit">Join</button>
+        </form>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#instrument">The Instrument</a></li>
+          <li><a href="#plans">Plans &amp; pricing</a></li>
+          <li><a href="#">iOS · Android · Web</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Field notes</h4>
+        <ul>
+          <li><a href="#">Seeing, explained</a></li>
+          <li><a href="#">Dark-sky site index</a></li>
+          <li><a href="#">Bortle scale primer</a></li>
+          <li><a href="#">Dew survival guide</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About &amp; crew</a></li>
+          <li><a href="#">Chapter program</a></li>
+          <li><a href="#">Press kit</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2025 Noctuary Instruments LLC · Built at 44.3876° N, 68.2039° W</span>
+      <span>Privacy · Terms · “Clear skies” is a promise, not a guarantee.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---- mobile menu ---- */
+  var header=document.getElementById('siteHeader'),btn=document.getElementById('menuBtn');
+  btn.addEventListener('click',function(){
+    var open=header.classList.toggle('open');
+    btn.setAttribute('aria-expanded',open);
+    btn.textContent=open?'CLOSE −':'MENU +';
+  });
+  header.querySelectorAll('.navlinks a').forEach(function(a){
+    a.addEventListener('click',function(){header.classList.remove('open');btn.textContent='MENU +';});
+  });
+
+  /* ---- starfield ---- */
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cv=document.getElementById('stars'),ctx=cv.getContext('2d'),stars=[],shoot=null,W,H,dpr;
+  function resize(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    W=cv.clientWidth;H=cv.clientHeight;
+    cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    stars=[];var n=Math.round(W*H/6500);
+    for(var i=0;i<n;i++){
+      stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.25+.25,
+        p:Math.random()*Math.PI*2,s:.4+Math.random()*1.4,
+        c:Math.random()<.12?'217,164,65':(Math.random()<.15?'143,179,164':'236,228,208')});
+    }
+  }
+  function drawStar(st,a){
+    ctx.beginPath();ctx.fillStyle='rgba('+st.c+','+a+')';
+    ctx.arc(st.x,st.y,st.r,0,6.283);ctx.fill();
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    /* faint milky band */
+    var g=ctx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,'rgba(236,228,208,0)');
+    g.addColorStop(.55,'rgba(180,190,220,.028)');
+    g.addColorStop(1,'rgba(236,228,208,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    for(var i=0;i<stars.length;i++){
+      var st=stars[i],a=reduced?.7:(.35+.55*Math.abs(Math.sin(st.p+t*.001*st.s)));
+      drawStar(st,a);
+    }
+    /* shooting star */
+    if(!reduced){
+      if(!shoot&&Math.random()<.0022){
+        shoot={x:Math.random()*W*.7+W*.15,y:Math.random()*H*.35,l:0,len:90+Math.random()*90,v:7+Math.random()*4};
+      }
+      if(shoot){
+        shoot.x+=shoot.v;shoot.y+=shoot.v*.45;shoot.l+=shoot.v*1.15;
+        if(shoot.l>shoot.len*2.2){shoot=null;}
+        else{
+          var fade=Math.min(1,shoot.l/40)*Math.max(0,1-shoot.l/(shoot.len*2.2));
+          var lg=ctx.createLinearGradient(shoot.x-shoot.len,shoot.y-shoot.len*.45,shoot.x,shoot.y);
+          lg.addColorStop(0,'rgba(236,228,208,0)');
+          lg.addColorStop(1,'rgba(236,228,208,'+(.85*fade)+')');
+          ctx.strokeStyle=lg;ctx.lineWidth=1.3;
+          ctx.beginPath();ctx.moveTo(shoot.x-shoot.len,shoot.y-shoot.len*.45);ctx.lineTo(shoot.x,shoot.y);ctx.stroke();
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+  }
+  resize();
+  if(reduced){draw(0);}else{requestAnimationFrame(draw);}
+  window.addEventListener('resize',function(){resize();if(reduced)draw(0);});
+})();
+</script>
+</body>
+</html>

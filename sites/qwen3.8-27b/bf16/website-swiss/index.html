@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helvetica Transit Archive — Public Text, Est. 1978</title>
+<style>
+/* ============================================================
+   HELVETICA TRANSIT ARCHIVE
+   Swiss International Typographic Style
+   Grid: 12 columns · Module: 8px · Accent: #E30613
+   ============================================================ */
+
+:root{
+  --ink:#111111;
+  --paper:#ffffff;
+  --red:#e30613;
+  --hair:#111111;
+  --rule:#dcdcdc;
+  --mute:#6d6d6d;
+  --wash:#f4f4f4;
+  --col:28px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:15px;
+  line-height:1.55;
+  color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased;
+}
+
+::selection{background:var(--red);color:#fff;}
+
+a{color:inherit;text-decoration:none;}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible{
+  outline:2px solid var(--red);
+  outline-offset:3px;
+}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+.wrap{
+  width:min(1240px, calc(100% - 48px));
+  margin-inline:auto;
+}
+
+/* ---------- micro type ---------- */
+.cap{
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--mute);
+  font-weight:500;
+}
+.cap.red{color:var(--red);}
+.sq{
+  display:inline-block;
+  width:9px;height:9px;
+  background:var(--red);
+  vertical-align:middle;
+}
+
+/* ---------- header ---------- */
+header.top{
+  position:sticky;top:0;z-index:50;
+  background:var(--paper);
+  border-bottom:1px solid var(--hair);
+}
+.top .wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;gap:24px;
+}
+.brand{
+  font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+}
+.brand .sq{width:11px;height:11px;}
+nav.main ul{
+  display:flex;gap:28px;list-style:none;
+}
+nav.main a{
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
+  padding:4px 0;
+  background:linear-gradient(var(--red),var(--red)) left bottom / 0 2px no-repeat;
+  transition:background-size .25s ease;
+}
+nav.main a:hover{background-size:100% 2px;}
+nav.main a .n{color:var(--red);margin-right:5px;}
+
+/* ---------- hero ---------- */
+.hero{
+  border-bottom:1px solid var(--hair);
+  padding:72px 0 64px;
+}
+.hero .wrap{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:0 var(--col);
+  align-items:start;
+}
+.kicker{
+  grid-column:1 / span 12;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  margin-bottom:40px;
+}
+h1{
+  grid-column:1 / span 8;
+  font-size:clamp(44px, 7.2vw, 96px);
+  line-height:.96;
+  font-weight:700;
+  letter-spacing:-.03em;
+  text-transform:uppercase;
+}
+h1 .red{color:var(--red);}
+.hero-sub{
+  grid-column:1 / span 8;
+  margin-top:32px;
+  max-width:52ch;
+  font-size:15px;
+  color:var(--mute);
+}
+.hero-sub strong{color:var(--ink);font-weight:600;}
+
+/* clock column */
+.clockbox{
+  grid-column:9 / span 4;
+  border:1px solid var(--hair);
+  background:var(--paper);
+}
+.clockbar{
+  height:8px;background:var(--red);
+}
+.clockinner{padding:24px;}
+.clockrow{
+  display:flex;align-items:center;gap:20px;
+}
+.analog{flex:0 0 auto;}
+.digital{
+  font-size:clamp(30px,3vw,42px);
+  font-weight:700;
+  letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+.digital .sec{color:var(--red);}
+.clockmeta{
+  margin-top:16px;
+  display:flex;justify-content:space-between;
+  border-top:1px solid var(--rule);
+  padding-top:12px;
+  gap:8px;
+}
+.dep{
+  margin-top:20px;
+  border-top:1px solid var(--hair);
+}
+.dep-row{
+  display:grid;
+  grid-template-columns:56px 34px 1fr auto;
+  gap:12px;align-items:baseline;
+  padding:9px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:12px;
+  font-variant-numeric:tabular-nums;
+}
+.dep-row .t{font-weight:700;}
+.dep-row .l{
+  display:inline-grid;place-items:center;
+  width:20px;height:20px;border:1.5px solid var(--ink);
+  font-size:10px;font-weight:700;
+}
+.dep-row .l.ra{border-color:var(--red);color:var(--red);}
+.dep-row .st{font-size:10px;letter-spacing:.1em;text-transform:uppercase;}
+.dep-row .st.warn{color:var(--red);}
+
+/* ---------- section scaffolding ---------- */
+section{border-bottom:1px solid var(--hair);}
+.sec{
+  padding:88px 0;
+}
+.sec .wrap{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:32px var(--col);
+}
+.sechead{
+  grid-column:1 / -1;
+  display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+  margin-bottom:8px;
+}
+.sechead .sq{flex:0 0 auto;transform:translateY(-2px);}
+h2{
+  font-size:clamp(28px,3.6vw,48px);
+  font-weight:700;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+  line-height:1;
+}
+
+/* ---------- reveal motion ---------- */
+.rv{
+  opacity:0;
+  transform:translateY(18px);
+  transition:opacity .7s ease var(--d,0s), transform .7s ease var(--d,0s);
+}
+.rv.on{opacity:1;transform:none;}
+
+/* ---------- introduction ---------- */
+.intro .lede{
+  grid-column:2 / span 6;
+  font-size:clamp(19px,2vw,24px);
+  line-height:1.5;
+  font-weight:500;
+  letter-spacing:-.01em;
+}
+.intro .body{
+  grid-column:9 / span 4;
+  font-size:14px;
+  color:var(--mute);
+}
+.intro .body p+p{margin-top:16px;}
+.intro .body strong{color:var(--ink);font-weight:600;}
+.intro .stats{
+  grid-column:2 / span 6;
+  margin-top:8px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--hair);
+}
+.intro .stats div{
+  padding:20px 16px 20px 0;
+  border-right:1px solid var(--rule);
+}
+.intro .stats div:last-child{border-right:none;}
+.intro .stats .n{
+  font-size:clamp(28px,3vw,40px);
+  font-weight:700;
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.intro .stats .n em{font-style:normal;color:var(--red);}
+.intro .stats .l{margin-top:6px;}
+
+/* ---------- archive ---------- */
+.filterbar{
+  grid-column:1 / -1;
+  display:flex;flex-wrap:wrap;gap:0;
+  border:1px solid var(--hair);
+  align-items:stretch;
+}
+.fbtn{
+  font:inherit;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
+  background:none;border:none;
+  border-right:1px solid var(--hair);
+  padding:14px 22px;
+  cursor:pointer;
+  color:var(--ink);
+  transition:background .2s ease,color .2s ease;
+}
+.fbtn:last-child{border-right:none;}
+.fbtn:hover{background:var(--wash);}
+.fbtn[aria-pressed="true"]{
+  background:var(--red);color:#fff;
+}
+.countline{
+  grid-column:1 / -1;
+  display:flex;justify-content:space-between;gap:16px;
+  padding:10px 0;
+  border-bottom:1px solid var(--hair);
+  margin-bottom:36px;
+}
+
+.objs{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:48px 28px;
+}
+.obj{cursor:default;}
+.obj.hidden{display:none;}
+.thumb{
+  position:relative;
+  aspect-ratio:4/3;
+  background:var(--wash);
+  border:1px solid var(--rule);
+  display:grid;place-items:center;
+  overflow:hidden;
+  transition:border-color .25s ease;
+}
+.obj:hover .thumb{border-color:var(--ink);}
+.thumb svg{
+  width:74%;height:74%;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1);
+}
+.obj:hover .thumb svg{transform:translateY(-4px) scale(1.02);}
+.thumb .idx{
+  position:absolute;top:0;left:0;
+  width:22px;height:22px;
+  background:var(--red);
+  color:#fff;
+  font-size:10px;font-weight:700;
+  display:grid;place-items:center;
+  opacity:0;transform:translate(-6px,-6px);
+  transition:opacity .25s ease,transform .25s ease;
+}
+.obj:hover .thumb .idx,
+.obj:focus-within .thumb .idx{opacity:1;transform:none;}
+.obj figcaption{
+  padding-top:14px;
+  border-top:1px solid var(--hair);
+  margin-top:14px;
+}
+.obj .t{
+  font-size:14px;font-weight:700;letter-spacing:-.01em;
+  border-bottom:1px solid transparent;
+  width:fit-content;
+}
+.obj:hover .t{border-bottom-color:var(--red);}
+.obj .m{
+  margin-top:6px;
+  display:flex;justify-content:space-between;
+}
+
+/* ---------- map study ---------- */
+.mapframe{
+  grid-column:1 / -1;
+  border:1px solid var(--hair);
+  background:var(--paper);
+  padding:16px;
+}
+.mapframe svg{display:block;width:100%;height:auto;}
+.trace{
+  stroke-dasharray:1;
+  stroke-dashoffset:1;
+  transition:stroke-dashoffset 1.7s cubic-bezier(.4,0,.2,1);
+}
+.map.in .trace.t1{transition-delay:.1s;stroke-dashoffset:0;}
+.map.in .trace.t2{transition-delay:.55s;stroke-dashoffset:0;}
+.map.in .trace.t3{transition-delay:1s;stroke-dashoffset:0;}
+.st{opacity:0;transition:opacity .5s ease;}
+.map.in .st{opacity:1;}
+.map.in .st.d1{transition-delay:1.1s;}
+.map.in .st.d2{transition-delay:1.4s;}
+.map.in .st.d3{transition-delay:1.7s;}
+.map.in .st.d4{transition-delay:2.05s;}
+.map.in .st.d5{transition-delay:2.3s;}
+.maplegend{
+  grid-column:1 / -1;
+  display:flex;flex-wrap:wrap;gap:28px 40px;
+  align-items:center;
+  padding:18px 4px;
+  border-top:1px solid var(--rule);
+}
+.lg{display:flex;align-items:center;gap:10px;}
+.lg .line{width:34px;height:6px;}
+.lg .line.ra{background:var(--red);}
+.lg .line.bk{background:var(--ink);}
+.lg .line.gy{background:#9a9a9a;}
+.lg .x{
+  width:16px;height:16px;border-radius:50%;
+  background:#fff;border:3px solid var(--ink);
+}
+.mapnote{
+  grid-column:1 / -1;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+
+/* ---------- timeline ---------- */
+.tl{
+  grid-column:2 / span 10;
+  list-style:none;
+  border-top:1px solid var(--hair);
+}
+.tl li{
+  display:grid;
+  grid-template-columns:130px 1fr 90px;
+  gap:24px;
+  align-items:baseline;
+  padding:26px 0;
+  border-bottom:1px solid var(--rule);
+}
+.tl li:hover{background:var(--wash);}
+.tl .y{
+  font-size:clamp(22px,2.4vw,30px);
+  font-weight:700;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.tl li:hover .y{color:var(--red);}
+.tl h3{
+  font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  margin-bottom:6px;
+}
+.tl p{font-size:13px;color:var(--mute);max-width:60ch;}
+.tl .no{
+  text-align:right;color:var(--red);
+  font-size:10px;letter-spacing:.14em;font-weight:600;
+}
+
+/* ---------- essay ---------- */
+.essay .quote{
+  grid-column:2 / span 6;
+  font-size:clamp(24px,2.8vw,36px);
+  line-height:1.25;
+  font-weight:600;
+  letter-spacing:-.015em;
+  border-left:4px solid var(--red);
+  padding-left:28px;
+}
+.essay .body{
+  grid-column:9 / span 4;
+  font-size:14px;
+  color:#333;
+}
+.essay .body p+p{margin-top:16px;}
+.essay .byline{
+  grid-column:9 / span 4;
+  margin-top:28px;
+  padding-top:16px;
+  border-top:1px solid var(--hair);
+}
+.essay .byline .nm{font-weight:700;font-size:14px;}
+.essay .foot{
+  grid-column:2 / span 6;
+  margin-top:4px;
+  color:var(--mute);
+  font-size:13px;
+  max-width:52ch;
+}
+
+/* ---------- spec table ---------- */
+.tblwrap{
+  grid-column:1 / -1;
+  overflow-x:auto;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:640px;
+}
+caption{text-align:left;padding-bottom:16px;}
+thead th{
+  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  text-align:left;
+  padding:14px 16px 14px 0;
+  border-top:2px solid var(--hair);
+  border-bottom:1px solid var(--hair);
+}
+thead th:first-child{width:22%;}
+tbody th, tbody td{
+  text-align:left;
+  font-size:13px;
+  padding:12px 16px 12px 0;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top;
+}
+tbody th{
+  font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--mute);
+  white-space:nowrap;
+}
+tbody tr:hover td{background:var(--wash);}
+td .ac{color:var(--red);font-weight:600;font-variant-numeric:tabular-nums;}
+
+/* ---------- exhibition ---------- */
+.exh .det{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--hair);
+}
+.exh .det div{
+  padding:28px 24px;
+  border-right:1px solid var(--rule);
+}
+.exh .det div:last-child{border-right:none;}
+.exh .det .l{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:14px;
+}
+.exh .det .v{
+  font-size:clamp(18px,1.8vw,24px);
+  font-weight:700;letter-spacing:-.015em;line-height:1.25;
+  font-variant-numeric:tabular-nums;
+}
+.exh .det .s{margin-top:8px;font-size:12px;color:var(--mute);line-height:1.6;}
+.exh .note{
+  grid-column:1 / -1;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-top:20px;
+}
+
+/* ---------- footer ---------- */
+footer{
+  padding:56px 0 40px;
+}
+footer .cols{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:32px var(--col);
+  padding-bottom:44px;
+  border-bottom:1px solid var(--hair);
+}
+footer h4{
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--mute);font-weight:600;margin-bottom:14px;
+}
+footer p{font-size:13px;line-height:1.7;}
+footer .addr{grid-column:1 / span 4;}
+footer .hours{grid-column:5 / span 3;}
+footer .colo{grid-column:9 / span 4;color:var(--mute);}
+footer .base{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding-top:24px;flex-wrap:wrap;
+}
+footer .base a{
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
+  background:linear-gradient(var(--red),var(--red)) left bottom / 0 2px no-repeat;
+  transition:background-size .25s ease;padding-bottom:3px;
+}
+footer .base a:hover{background-size:100% 2px;}
+
+/* ---------- responsive ---------- */
+@media (max-width:960px){
+  .objs{grid-template-columns:repeat(2,1fr);}
+  .hero-sub,.clockbox{grid-column:1 / -1;}
+  h1{grid-column:1 / -1;}
+  .clockbox{margin-top:40px;}
+  .intro .lede{grid-column:1 / -1;}
+  .intro .stats{grid-column:1 / -1;}
+  .intro .body{grid-column:1 / -1;}
+  .essay .quote{grid-column:1 / -1;}
+  .essay .body,.essay .byline{grid-column:1 / -1;}
+  .tl li{grid-template-columns:90px 1fr;}
+  .tl .no{display:none;}
+  .exh .det{grid-template-columns:repeat(2,1fr);}
+  .exh .det div:nth-child(2){border-right:none;}
+  .exh .det div:nth-child(-n+2){border-bottom:1px solid var(--rule);}
+  footer .addr,footer .hours,footer .colo{grid-column:1 / -1;}
+  nav.main{display:none;}
+}
+@media (max-width:560px){
+  .objs{grid-template-columns:1fr;}
+  .fbtn{border-right:none;border-bottom:1px solid var(--hair);flex:1 1 45%;}
+  .fbtn:nth-last-child(-n+2){border-bottom:none;}
+  .exh .det{grid-template-columns:1fr;}
+  .exh .det div{border-right:none;border-bottom:1px solid var(--rule);}
+  .exh .det div:last-child{border-bottom:none;}
+  .intro .stats{grid-template-columns:1fr;}
+  .intro .stats div{border-right:none;border-bottom:1px solid var(--rule);}
+  .sec{padding:64px 0;}
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  .rv{opacity:1;transform:none;transition:none;}
+  .trace{stroke-dashoffset:0;transition:none;}
+  .st{opacity:1;transition:none;}
+  .thumb svg,.thumb .idx,.fbtn,nav.main a,footer .base a{transition:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Helvetica Transit Archive — home">
+      <span class="sq" aria-hidden="true"></span>Helvetica&nbsp;Transit&nbsp;Archive
+    </a>
+    <nav class="main" aria-label="Primary">
+      <ul>
+        <li><a href="#archive"><span class="n">02</span>Archive</a></li>
+        <li><a href="#map"><span class="n">03</span>Map Study</a></li>
+        <li><a href="#timeline"><span class="n">04</span>Timeline</a></li>
+        <li><a href="#essay"><span class="n">05</span>Essay</a></li>
+        <li><a href="#visit"><span class="n">07</span>Visit</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap">
+    <div class="kicker cap">
+      <span>International Collection of Transit Information Design — Zürich</span>
+      <span>Est. 1978 · Collection N°041–048</span>
+    </div>
+
+    <h1 id="hero-h">Signage is<br>the city’s<br><span class="red">public text.</span></h1>
+
+    <p class="hero-sub">
+      A museum collection devoted to the diagrams, tickets, signs, clocks and
+      wayfinding systems that move millions of strangers through shared space
+      without a word spoken. <strong>Every station is a sentence; every line is a clause.</strong>
+      We conserve them, we set them in type, we read them aloud.
+    </p>
+
+    <div class="clockbox" role="timer" aria-label="Live station clock">
+      <div class="clockbar" aria-hidden="true"></div>
+      <div class="clockinner">
+        <div class="clockrow">
+          <svg class="analog" width="88" height="88" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="46" fill="#fff" stroke="#111" stroke-width="5"/>
+            <g stroke="#111" stroke-width="3" stroke-linecap="square">
+              <line x1="50" y1="8"  x2="50" y2="17"/>
+              <line x1="92" y1="50" x2="83" y2="50"/>
+              <line x1="50" y1="92" x2="50" y2="83"/>
+              <line x1="8"  y1="50" x2="17" y2="50"/>
+            </g>
+            <line id="hand-h" x1="50" y1="50" x2="50" y2="30" stroke="#111" stroke-width="5" stroke-linecap="square"/>
+            <line id="hand-m" x1="50" y1="50" x2="50" y2="20" stroke="#111" stroke-width="3" stroke-linecap="square"/>
+            <line id="hand-s" x1="50" y1="56" x2="50" y2="16" stroke="#e30613" stroke-width="1.5" stroke-linecap="square"/>
+            <circle cx="50" cy="50" r="3" fill="#111"/>
+          </svg>
+          <div>
+            <div class="digital" id="digital" aria-hidden="true">--:--:<span class="sec">--</span></div>
+            <div class="cap" style="margin-top:8px;">Local time — Hauptbahnhof, Trackside Clock N°4</div>
+          </div>
+        </div>
+        <div class="clockmeta">
+          <span class="cap" id="dateline">—</span>
+          <span class="cap red">Swiss Standard Time</span>
+        </div>
+      </div>
+      <div class="dep" aria-label="Departure board, fictional">
+        <div class="dep-row"><span class="t" id="dep1">—</span><span><span class="l">A</span></span><span>City Centre — Nord</span><span class="st">On time</span></div>
+        <div class="dep-row"><span class="t" id="dep2">—</span><span><span class="l">B</span></span><span>Ring Station — West</span><span class="st">On time</span></div>
+        <div class="dep-row"><span class="t" id="dep3">—</span><span><span class="l ra">C</span></span><span>Port District — Süd</span><span class="st warn">Delayed 4 min</span></div>
+        <div class="dep-row"><span class="t" id="dep4">—</span><span><span class="l">A</span></span><span>Airport Loop — Ost</span><span class="st">On time</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 01 INTRODUCTION ================= -->
+<section class="sec intro" id="intro" aria-labelledby="intro-h">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="sq" aria-hidden="true"></span>
+      <span class="cap">01 / Introduction</span>
+      <h2 id="intro-h">The collection</h2>
+    </div>
+
+    <p class="lede rv">
+      We hold 2,140 objects that answer one question: how does a city
+      tell you where to stand? Maps, tokens, platform clocks, tactile
+      strips, fare tables, departure boards — the silent grammar of
+      public transit, gathered from fifty years of practice.
+    </p>
+
+    <div class="body rv" style="--d:.1s">
+      <p><strong>The Helvetica Transit Archive</strong> was founded in 1978
+      in the former signal works of a decommissioned station building. Its
+      founding principle is that transit information design is typography
+      before it is infrastructure: it is legible at 80&nbsp;km/h, or it does
+      not exist.</p>
+      <p>Nothing in the collection is hotlinked, scanned from official
+      sources, or reproduced without permission. Every facsimile in this
+      digital reading room was redrawn in-house, line by line, on an 8-millimetre
+      grid.</p>
+    </div>
+
+    <div class="stats rv" style="--d:.15s">
+      <div>
+        <div class="n">2<em>1</em>40</div>
+        <div class="l cap">Objects conserved</div>
+      </div>
+      <div>
+        <div class="n">57</div>
+        <div class="l cap">Systems documented</div>
+      </div>
+      <div>
+        <div class="n">8<em>&nbsp;mm</em></div>
+        <div class="l cap">House module, always</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 ARCHIVE ================= -->
+<section class="sec" id="archive" aria-labelledby="archive-h">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="sq" aria-hidden="true"></span>
+      <span class="cap">02 / Archive</span>
+      <h2 id="archive-h">Eight objects</h2>
+    </div>
+
+    <div class="filterbar" role="group" aria-label="Filter archive objects">
+      <button class="fbtn" type="button" data-f="all" aria-pressed="true">All</button>
+      <button class="fbtn" type="button" data-f="maps" aria-pressed="false">Maps</button>
+      <button class="fbtn" type="button" data-f="tickets" aria-pressed="false">Tickets</button>
+      <button class="fbtn" type="button" data-f="signs" aria-pressed="false">Signs</button>
+      <button class="fbtn" type="button" data-f="clocks" aria-pressed="false">Clocks</button>
+    </div>
+
+    <div class="countline">
+      <span class="cap" id="objcount">8 objects displayed</span>
+      <span class="cap">Accession range HTA.1978.001 — HTA.1994.112</span>
+    </div>
+
+    <div class="objs" id="objs">
+
+      <figure class="obj rv" data-c="maps" tabindex="0">
+        <div class="thumb">
+          <span class="idx" aria-hidden="true">01</span>
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <rect width="120" height="90" fill="#f4f4f4"/>
+            <g fill="none" stroke-width="3">
+              <path d="M10 70 H60 L90 40 V15 H110" stroke="#e30613"/>
+              <path d="M10 20 H45 L75 50 H110" stroke="#111"/>
+              <path d="M30 80 V45 H110" stroke="#9a9a9a"/>
+            </g>
+            <circle cx="75" cy="50" r="4.5" fill="#fff" stroke="#111" stroke-width="2.5"/>
+            <circle cx="60" cy="70" r="3" fill="#fff" stroke="#111" stroke-width="2"/>
+            <circle cx="90" cy="40" r="3" fill="#fff" stroke="#111" stroke-width="2"/>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="t">Zone Map, First Schematic Edition</div>
+          <div class="m"><span class="cap">1931 · Lithograph</span><span class="cap red">HTA.1978.001</span></div>
+        </figcaption>
+      </figure>
+
+      <figure class="obj rv" data-c="tickets" tabindex="0" style="--d:.06s">
+        <div class="thumb">
+          <span class="idx" aria-hidden="true">02</span>
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <rect width="120" height="90" fill="#f4f4f4"/>
+            <rect x="14" y="24" width="92" height="42" fill="#fff" stroke="#111" stroke-width="2"/>
+            <line x1="90" y1="24" x2="90" y2="66" stroke="#111" stroke-width="2" stroke-dasharray="4 3"/>
+            <text x="24" y="42" font-size="11" font-weight="700" letter-spacing="1" fill="#111">TRANSIT</text>
+            <text x="24" y="56" font-size="7" letter-spacing="2" fill="#6d6d6d">THROUGH FARE · ZONE 1–3</text>
+            <rect x="96" y="34" width="8" height="8" fill="#e30613"/>
+            <text x="94" y="58" font-size="7" letter-spacing="1" fill="#6d6d6d">N°4471</text>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="t">Through-Fare Ticket, Perforated Stock</div>
+          <div class="m"><span class="cap">1948 · Offset</span><span class="cap red">HTA.1978.014</span></div>
+        </figcaption>
+      </figure>
+
+      <figure class="obj rv" data-c="signs" tabindex="0" style="--d:.12s">
+        <div class="thumb">
+          <span class="idx" aria-hidden="true">03</span>
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <rect width="120" height="90" fill="#f4f4f4"/>
+            <rect x="12" y="22" width="96" height="46" fill="#fff" stroke="#111" stroke-width="2"/>
+            <text x="24" y="46" font-size="13" font-weight="700" letter-spacing="2" fill="#111">CENTRE</text>
+            <path d="M24 58 H82 M76 53 L84 58 L76 63" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="square"/>
+            <rect x="92" y="42" width="8" height="12" fill="#e30613"/>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="t">Concourse Direction Sign, Series IV</div>
+          <div class="m"><span class="cap">1955 · Enamel</span><span class="cap red">HTA.1979.033</span></div>
+        </figcaption>
+      </figure>
+
+      <figure class="obj rv" data-c="clocks" tabindex="0" style="--d:.18s">
+        <div class="thumb">
+          <span class="idx" aria-hidden="true">04</span>
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <rect width="120" height="90" fill="#f4f4f4"/>
+            <circle cx="60" cy="45" r="32" fill="#fff" stroke="#111" stroke-width="4"/>
+            <g stroke="#111" stroke-width="2">
+              <line x1="60" y1="15" x2="60" y2="21"/>
+              <line x1="90" y1="45" x2="84" y2="45"/>
+              <line x1="60" y1="75" x2="60" y2="69"/>
+              <line x1="30" y1="45" x2="36" y2="45"/>
+            </g>
+            <line x1="60" y1="45" x2="60" y2="27" stroke="#111" stroke-width="3.5"/>
+            <line x1="60" y1="45" x2="74" y2="45" stroke="#111" stroke-width="2.5"/>
+            <line x1="60" y1="45" x2="49" y2="31" stroke="#e30613" stroke-width="1.5"/>
+            <circle cx="60" cy="45" r="2.5" fill="#111"/>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="t">Platform Clock, Trackside Type K</div>
+          <div class="m"><span class="cap">1962 · Cast aluminium</span><span class="cap red">HTA.1983.027</span></div>
+        </figcaption>
+      </figure>
+
+      <figure class="obj rv" data-c="maps" tabindex="0">
+        <div class="thumb">
+          <span class="idx" aria-hidden="true">05</span>
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <rect width="120" height="90" fill="#f4f4f4"/>
+            <rect x="18" y="16" width="42" height="26" fill="none" stroke="#111" stroke-width="2"/>
+            <rect x="64" y="16" width="38" height="26" fill="none" stroke="#111" stroke-width="2"/>
+            <rect x="18" y="48" width="84" height="26" fill="none" stroke="#111" stroke-width="2"/>
+            <line x1="39" y1="42" x2="39" y2="48" stroke="#111" stroke-width="2"/>
+            <circle cx="83" cy="29" r="4" fill="#e30613"/>
+            <text x="24" y="66" font-size="7" letter-spacing="1.5" fill="#6d6d6d">LEVEL +1 · CONCOURSE</text>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="t">Wayfinding Diagram, Level +1 Concourse</div>
+          <div class="m"><span class="cap">1969 · Foil on acrylic</span><span class="cap red">HTA.1981.058</span></div>
+        </figcaption>
+      </figure>
+
+      <figure class="obj rv" data-c="signs" tabindex="0" style="--d:.06s">
+        <div class="thumb">
+          <span class="idx" aria-hidden="true">06</span>
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <rect width="120" height="90" fill="#f4f4f4"/>
+            <rect x="14" y="16" width="92" height="58" fill="#fff" stroke="#111" stroke-width="2"/>
+            <line x1="14" y1="32" x2="106" y2="32" stroke="#dcdcdc" stroke-width="1.5"/>
+            <line x1="14" y1="48" x2="106" y2="48" stroke="#dcdcdc" stroke-width="1.5"/>
+            <line x1="14" y1="64" x2="106" y2="64" stroke="#dcdcdc" stroke-width="1.5"/>
+            <circle cx="100" cy="24" r="3.5" fill="#e30613"/>
+            <g fill="#111">
+              <rect x="20" y="21" width="10" height="6"/>
+              <rect x="36" y="21" width="16" height="6"/>
+              <rect x="20" y="37" width="16" height="6"/>
+              <rect x="44" y="37" width="10" height="6"/>
+              <rect x="20" y="53" width="12" height="6"/>
+              <rect x="40" y="53" width="14" height="6"/>
+              <rect x="20" y="69" width="16" height="6"/>
+            </g>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="t">Information Board, Manual Flip-Strip</div>
+          <div class="m"><span class="cap">1974 · Steel, glass</span><span class="cap red">HTA.1978.041</span></div>
+        </figcaption>
+      </figure>
+
+      <figure class="obj rv" data-c="tickets" tabindex="0" style="--d:.12s">
+        <div class="thumb">
+          <span class="idx" aria-hidden="true">07</span>
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <rect width="120" height="90" fill="#f4f4f4"/>
+            <g stroke="#111" stroke-width="1.5" fill="none">
+              <rect x="20" y="18" width="80" height="54"/>
+              <line x1="20" y1="32" x2="100" y2="32"/>
+              <line x1="20" y1="46" x2="100" y2="46"/>
+              <line x1="20" y1="60" x2="100" y2="60"/>
+              <line x1="47" y1="18" x2="47" y2="72"/>
+              <line x1="74" y1="18" x2="74" y2="72"/>
+            </g>
+            <g fill="#111">
+              <rect x="26" y="38" width="10" height="4"/><rect x="53" y="38" width="12" height="4"/>
+              <rect x="80" y="38" width="10" height="4"/><rect x="26" y="52" width="12" height="4"/>
+              <rect x="53" y="52" width="10" height="4"/>
+            </g>
+            <rect x="79" y="52" width="12" height="4" fill="#e30613"/>
+            <text x="26" y="28" font-size="6.5" letter-spacing="1.5" fill="#6d6d6d">ZONE 1</text>
+            <text x="53" y="28" font-size="6.5" letter-spacing="1.5" fill="#6d6d6d">ZONE 2</text>
+            <text x="80" y="28" font-size="6.5" letter-spacing="1.5" fill="#6d6d6d">ZONE 3</text>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="t">Fare Chart, Three-Zone Grid</div>
+          <div class="m"><span class="cap">1981 · Screen print</span><span class="cap red">HTA.1985.077</span></div>
+        </figcaption>
+      </figure>
+
+      <figure class="obj rv" data-c="signs" tabindex="0" style="--d:.18s">
+        <div class="thumb">
+          <span class="idx" aria-hidden="true">08</span>
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <rect width="120" height="90" fill="#f4f4f4"/>
+            <rect x="14" y="24" width="92" height="42" fill="#111"/>
+            <text x="60" y="44" font-size="11" font-weight="700" letter-spacing="3" fill="#fff" text-anchor="middle">EXIT</text>
+            <path d="M30 52 H72 M66 47 L74 52 L66 57" stroke="#e30613" stroke-width="2.5" fill="none" stroke-linecap="square"/>
+            <rect x="82" y="47" width="14" height="10" fill="none" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="t">Exit Sign, Illuminated Unit 220</div>
+          <div class="m"><span class="cap">1990 · Polycarbonate</span><span class="cap red">HTA.1994.112</span></div>
+        </figcaption>
+      </figure>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 MAP STUDY ================= -->
+<section class="sec" id="map" aria-labelledby="map-h">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="sq" aria-hidden="true"></span>
+      <span class="cap">03 / Map Study</span>
+      <h2 id="map-h">Study in three lines</h2>
+    </div>
+
+    <div class="mapframe">
+      <svg class="map" id="mapsvg" viewBox="0 0 960 540" role="img"
+           aria-label="Original abstract transit map study: three schematic lines — red line A, black line B, grey line C — crossing at two interchange stations on a light grid.">
+        <!-- base grid -->
+        <g stroke="#efefef" stroke-width="1">
+          <line x1="60" y1="0" x2="60" y2="540"/><line x1="180" y1="0" x2="180" y2="540"/>
+          <line x1="300" y1="0" x2="300" y2="540"/><line x1="420" y1="0" x2="420" y2="540"/>
+          <line x1="540" y1="0" x2="540" y2="540"/><line x1="660" y1="0" x2="660" y2="540"/>
+          <line x1="780" y1="0" x2="780" y2="540"/><line x1="900" y1="0" x2="900" y2="540"/>
+          <line x1="0" y1="90" x2="960" y2="90"/><line x1="0" y1="210" x2="960" y2="210"/>
+          <line x1="0" y1="330" x2="960" y2="330"/><line x1="0" y1="450" x2="960" y2="450"/>
+        </g>
+
+        <!-- lines -->
+        <g fill="none" stroke-linecap="square" stroke-linejoin="miter">
+          <path class="trace t1" d="M40 360 H200 V320 H400 L560 480 H920" stroke="#9a9a9a" stroke-width="5" pathLength="1"/>
+          <path class="trace t2" d="M40 60 H280 L400 180 H700 L820 340 H920" stroke="#111" stroke-width="6" pathLength="1"/>
+          <path class="trace t3" d="M40 480 H240 L400 320 V120 H640 L720 40 H920" stroke="#e30613" stroke-width="6" pathLength="1"/>
+        </g>
+
+        <!-- regular stations -->
+        <g fill="#fff" stroke="#111" stroke-width="2.5">
+          <circle class="st d1" cx="40"  cy="480" r="5.5"/>
+          <circle class="st d1" cx="240" cy="480" r="5.5"/>
+          <circle class="st d1" cx="640" cy="120" r="5.5"/>
+          <circle class="st d1" cx="920" cy="40"  r="5.5"/>
+          <circle class="st d2" cx="40"  cy="60"  r="5.5"/>
+          <circle class="st d2" cx="280" cy="60"  r="5.5"/>
+          <circle class="st d2" cx="700" cy="220" r="5.5"/>
+          <circle class="st d2" cx="920" cy="340" r="5.5"/>
+          <circle class="st d3" cx="40"  cy="360" r="5.5"/>
+          <circle class="st d3" cx="200" cy="360" r="5.5"/>
+          <circle class="st d3" cx="560" cy="480" r="5.5"/>
+          <circle class="st d3" cx="920" cy="480" r="5.5"/>
+        </g>
+
+        <!-- interchanges -->
+        <g fill="#fff" stroke="#111" stroke-width="4.5">
+          <circle class="st d4" cx="400" cy="320" r="10"/>
+          <circle class="st d4" cx="400" cy="180" r="10"/>
+        </g>
+
+        <!-- labels -->
+        <g fill="#111" font-size="11" font-weight="700" letter-spacing="1.5" style="font-family:inherit">
+          <text class="st d5" x="40" y="512">NORD</text>
+          <text class="st d5" x="40" y="34"  text-anchor="start">WEST</text>
+          <text class="st d5" x="40" y="338">SOUTH GATE</text>
+          <text class="st d5" x="920" y="22"  text-anchor="end">OST</text>
+          <text class="st d5" x="920" y="318" text-anchor="end">SEESTADT</text>
+          <text class="st d5" x="920" y="512" text-anchor="end">SÜDPLATZ</text>
+          <text class="st d5" x="418" y="172" fill="#e30613">KREUZ</text>
+          <text class="st d5" x="418" y="348">MARKTPLATZ</text>
+        </g>
+
+        <!-- compass -->
+        <g class="st d5">
+          <line x1="72" y1="230" x2="72" y2="196" stroke="#111" stroke-width="2"/>
+          <path d="M72 190 L66 202 H78 Z" fill="#e30613"/>
+          <text x="72" y="250" font-size="11" font-weight="700" text-anchor="middle" fill="#111" style="font-family:inherit">N</text>
+        </g>
+
+        <!-- scale bar -->
+        <g class="st d5">
+          <rect x="640" y="508" width="40" height="8" fill="#111"/>
+          <rect x="680" y="508" width="40" height="8" fill="#fff" stroke="#111" stroke-width="1.5"/>
+          <rect x="720" y="508" width="40" height="8" fill="#111"/>
+          <text x="640" y="500" font-size="9" letter-spacing="1" fill="#6d6d6d" style="font-family:inherit">0</text>
+          <text x="752" y="500" font-size="9" letter-spacing="1" text-anchor="end" fill="#6d6d6d" style="font-family:inherit">2 KM</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="maplegend">
+      <div class="lg"><span class="line ra" aria-hidden="true"></span><span class="cap">Line A — Cross-City, 14.2 km</span></div>
+      <div class="lg"><span class="line bk" aria-hidden="true"></span><span class="cap">Line B — Ring, 11.6 km</span></div>
+      <div class="lg"><span class="line gy" aria-hidden="true"></span><span class="cap">Line C — River, 9.8 km</span></div>
+      <div class="lg"><span class="x" aria-hidden="true"></span><span class="cap">Interchange, 2</span></div>
+    </div>
+
+    <div class="mapnote">
+      <span class="cap">Study No. 7 — redrawn in-house, 2024. No geometry derives from any operating system.</span>
+      <span class="cap red">45° / 0° orthographic rule · stroke 6 units · module 60</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 TIMELINE ================= -->
+<section class="sec" id="timeline" aria-labelledby="tl-h">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="sq" aria-hidden="true"></span>
+      <span class="cap">04 / Timeline</span>
+      <h2 id="tl-h">Information design, 1872–2016</h2>
+    </div>
+
+    <ol class="tl">
+      <li class="rv">
+        <span class="y">1872</span>
+        <div>
+          <h3>The first schematic map</h3>
+          <p>London prints a hand-drawn circular diagram of its underground lines — geography abandoned for legibility, eleven years before anyone called it “map design”.</p>
+        </div>
+        <span class="no">N° 01</span>
+      </li>
+      <li class="rv">
+        <span class="y">1933</span>
+        <div>
+          <h3>The 45-degree turn</h3>
+          <p>Diagrammatic mapping is formalised: every route bends at 0° or 45°, every station becomes a dash on a line. Transit information becomes a typographic act.</p>
+        </div>
+        <span class="no">N° 02</span>
+      </li>
+      <li class="rv">
+        <span class="y">1955</span>
+        <div>
+          <h3>Wayfinding as system</h3>
+          <p>Post-war expansion turns single maps into complete wayfinding systems: level diagrams, colour-coded zones, and the first consistent sign families across entire networks.</p>
+        </div>
+        <span class="no">N° 03</span>
+      </li>
+      <li class="rv">
+        <span class="y">1968</span>
+        <div>
+          <h3>The modular sign</h3>
+          <p>An 8-millimetre module governs the platform: clock, timetable, advertisement and warning sign become variants of one grid. The station becomes a page.</p>
+        </div>
+        <span class="no">N° 04</span>
+      </li>
+      <li class="rv">
+        <span class="y">1984</span>
+        <div>
+          <h3>Tactile and universal</h3>
+          <p>Guidance strips, raised lettering and pictographic standards extend the visual grammar to bodies in motion. Information design becomes accessibility law.</p>
+        </div>
+        <span class="no">N° 05</span>
+      </li>
+      <li class="rv">
+        <span class="y">2016</span>
+        <div>
+          <h3>Living information</h3>
+          <p>Dynamic displays replace flip-strips. The grid survives; the ink becomes light. Our collection closes its static chapter and begins conserving software.</p>
+        </div>
+        <span class="no">N° 06</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 05 ESSAY ================= -->
+<section class="sec essay" id="essay" aria-labelledby="essay-h">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="sq" aria-hidden="true"></span>
+      <span class="cap">05 / Featured Essay</span>
+      <h2 id="essay-h">On the grammar of the sign</h2>
+    </div>
+
+    <blockquote class="quote rv">
+      “A platform clock is not a decoration. It is the only promise the
+      architecture makes to every single body on it — and it is kept to
+      the second, or it is a lie in glass.”
+    </blockquote>
+
+    <div class="body rv" style="--d:.1s">
+      <p>When we acquire a ticket, we are not acquiring paper. We are
+      acquiring a sentence with a verb: <em>you may move, for this long,
+      through these zones.</em> The perforation is punctuation. The fare
+      table is a footnote. The collection reads.</p>
+      <p>What unites the archive is not the object but the constraint —
+      legibility at speed, in rain, at a glance, in a language the reader
+      may not speak. These are the conditions under which the Swiss
+      grotesque was born, and they remain the conditions under which it
+      is still the hardest typeface in the world to do justice to.</p>
+    </div>
+
+    <div class="byline rv" style="--d:.15s">
+      <div class="nm">Margrit Keller</div>
+      <div class="cap" style="margin-top:4px;">Chief Curator · Published in the Annual, Vol. XLVII</div>
+    </div>
+
+    <p class="foot rv" style="--d:.2s">
+      Excerpted and condensed for the digital reading room. The full essay,
+      with plates I–XII, is available in the study room on request.
+    </p>
+  </div>
+</section>
+
+<!-- ================= 06 SPECIFICATION ================= -->
+<section class="sec" id="spec" aria-labelledby="spec-h">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="sq" aria-hidden="true"></span>
+      <span class="cap">06 / Specification</span>
+      <h2 id="spec-h">Three objects, compared</h2>
+    </div>
+
+    <div class="tblwrap">
+      <table>
+        <caption class="cap">Comparative specification — catalogued objects, Gallery I &amp; II</caption>
+        <thead>
+          <tr>
+            <th scope="col">Property</th>
+            <th scope="col">Zone Map, 1931</th>
+            <th scope="col">Through-Fare Ticket, 1948</th>
+            <th scope="col">Platform Clock, 1962</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Accession</th>
+            <td><span class="ac">HTA.1978.001</span></td>
+            <td><span class="ac">HTA.1978.014</span></td>
+            <td><span class="ac">HTA.1983.027</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Medium</th>
+            <td>Lithograph on wove paper</td>
+            <td>Offset on cellulose stock</td>
+            <td>Cast aluminium, safety glass</td>
+          </tr>
+          <tr>
+            <th scope="row">Dimensions</th>
+            <td>48 × 34 cm</td>
+            <td>11.8 × 7.4 cm</td>
+            <td>Ø 42 cm</td>
+          </tr>
+          <tr>
+            <th scope="row">Palette</th>
+            <td>2 process + 1 spot (red)</td>
+            <td>1 spot (red) + black</td>
+            <td>3 spot · black / white / red</td>
+          </tr>
+          <tr>
+            <th scope="row">Grid</th>
+            <td>8 mm module</td>
+            <td>Typographic baseline, 3.2 mm</td>
+            <td>12-spoke radial</td>
+          </tr>
+          <tr>
+            <th scope="row">Type</th>
+            <td>Grotesque, 7 sizes, caps only</td>
+            <td>Grotesque, 3 sizes, caps + figures</td>
+            <td>Old-style figures, 1 size, 12 numerals</td>
+          </tr>
+          <tr>
+            <th scope="row">Condition</th>
+            <td>Fair — foxing, edge loss</td>
+            <td>Good — one perforation repaired</td>
+            <td>Excellent — movement serviced 2019</td>
+          </tr>
+          <tr>
+            <th scope="row">On display</th>
+            <td>Gallery II, case 04</td>
+            <td>Gallery I, wall 11</td>
+            <td>Mezzanine, running</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 EXHIBITION ================= -->
+<section class="sec exh" id="visit" aria-labelledby="exh-h">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="sq" aria-hidden="true"></span>
+      <span class="cap">07 / Exhibition</span>
+      <h2 id="exh-h">“The Public Text”, 2025</h2>
+    </div>
+
+    <div class="det">
+      <div class="rv">
+        <div class="l cap"><span class="sq" aria-hidden="true"></span>Dates</div>
+        <div class="v">14 Mar — 11 Oct 2025</div>
+        <div class="s">Opening, 14 March, 18:00.<br>Viewing of the depot archive, last week only.</div>
+      </div>
+      <div class="rv" style="--d:.08s">
+        <div class="l cap"><span class="sq" aria-hidden="true"></span>Venue</div>
+        <div class="v">Hallenbau,<br>Quaianlage 12</div>
+        <div class="s">8004 Zürich — direct from Ost platform, 40 m, one level down.</div>
+      </div>
+      <div class="rv" style="--d:.16s">
+        <div class="l cap"><span class="sq" aria-hidden="true"></span>Hours</div>
+        <div class="v">Tue–Sun 10–18</div>
+        <div class="s">Fridays until 22:00.<br>Closed Mondays and 25 December.</div>
+      </div>
+      <div class="rv" style="--d:.24s">
+        <div class="l cap"><span class="sq" aria-hidden="true"></span>Admission</div>
+        <div class="v">CHF 18 / 12</div>
+        <div class="s">Reduced rate for under-26 and holders of a valid transit pass.<br>Members and under-18: free.</div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="cap">Group visits by appointment · Study-room consultation daily 13:00–16:00</span>
+      <span class="cap red">All facsimiles in this reading room drawn in-house</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div class="addr">
+        <h4>The Archive</h4>
+        <p>Helvetica Transit Archive<br>
+        Hallenbau, Quaianlage 12<br>
+        8004 Zürich, Switzerland</p>
+      </div>
+      <div class="hours">
+        <h4>Contact</h4>
+        <p>curatorial@hta.example<br>
+        +41 44 000 19 78<br>
+        Tue–Sun, 10:00–18:00</p>
+      </div>
+      <div class="colo">
+        <h4>Colophon</h4>
+        <p>Set in the house grotesque. All figures tabular. One red, used sparingly.
+        No artwork of any operating transit system is reproduced here; every
+        diagram, ticket and clock on this page was constructed in-house.</p>
+      </div>
+    </div>
+    <div class="base">
+      <span class="cap">© 2025 Helvetica Transit Archive · A fictional collection, drawn seriously</span>
+      <a href="#top">↑ Back to the departure board</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 1. Station clock (accurate, smooth) ---------- */
+  var handH = document.getElementById("hand-h"),
+      handM = document.getElementById("hand-m"),
+      handS = document.getElementById("hand-s"),
+      digital = document.getElementById("digital"),
+      dateline = document.getElementById("dateline"),
+      reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var DEPTS = [document.getElementById("dep1"), document.getElementById("dep2"),
+               document.getElementById("dep3"), document.getElementById("dep4")];
+  var DEPT_MIN = [3, 7, 12, 18];
+
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+
+  function drawClock(){
+    var d = new Date();
+    var ms = d.getMilliseconds();
+    var s  = d.getSeconds() + (reduce ? 0 : ms / 1000);
+    var m  = d.getMinutes() + s / 60;
+    var h  = (d.getHours() % 12) + m / 60;
+
+    handS.setAttribute("transform", "rotate(" + (s * 6)   + " 50 50)");
+    handM.setAttribute("transform", "rotate(" + (m * 6)   + " 50 50)");
+    handH.setAttribute("transform", "rotate(" + (h * 30)  + " 50 50)");
+
+    digital.innerHTML = pad(d.getHours()) + ":" + pad(d.getMinutes()) +
+                        ':<span class="sec">' + pad(d.getSeconds()) + "</span>";
+
+    var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    dateline.textContent = days[d.getDay()] + ", " + d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+
+    /* fictional departures, always a few minutes ahead */
+    var base = new Date(d.getTime());
+    DEPTS.forEach(function(el, i){
+      var t = new Date(base.getTime() + DEPT_MIN[i] * 60000);
+      el.textContent = pad(t.getHours()) + ":" + pad(t.getMinutes());
+    });
+  }
+
+  if (reduce) {
+    drawClock();
+    setInterval(drawClock, 1000);
+  } else {
+    (function loop(){
+      drawClock();
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  /* ---------- 2. Scroll reveal ---------- */
+  var rvs = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window && !reduce) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+    rvs.forEach(function(el){ io.observe(el); });
+  } else {
+    rvs.forEach(function(el){ el.classList.add("on"); });
+  }
+
+  /* ---------- 3. Map route tracing ---------- */
+  var map = document.getElementById("mapsvg");
+  if ("IntersectionObserver" in window && !reduce) {
+    var mo = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) {
+          map.classList.add("in");
+          mo.unobserve(map);
+        }
+      });
+    }, { threshold: 0.35 });
+    mo.observe(map);
+  } else {
+    map.classList.add("in");
+  }
+
+  /* ---------- 4. Archive filter ---------- */
+  var btns = document.querySelectorAll(".fbtn");
+  var objs = document.querySelectorAll("#objs .obj");
+  var count = document.getElementById("objcount");
+
+  btns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var f = btn.getAttribute("data-f");
+      btns.forEach(function(b){ b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      var shown = 0;
+      objs.forEach(function(o){
+        var match = (f === "all") || (o.getAttribute("data-c") === f);
+        o.classList.toggle("hidden", !match);
+        if (match) shown++;
+      });
+      count.textContent = shown + (shown === 1 ? " object displayed" : " objects displayed");
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

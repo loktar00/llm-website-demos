@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCRETE INDEX — independent archive of remarkable civic architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000;
+  --white:#fff;
+  --orange:#FF5A00;
+  --blue:#00DFFF;
+  --grey:#D9D9D9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:#fff;
+  color:var(--black);
+  font-family:"Barlow Condensed",system-ui,sans-serif;
+  line-height:1.1;
+  overflow-x:hidden;
+}
+.grid-overlay{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(var(--black) 1px, transparent 1px),
+    linear-gradient(90deg, var(--black) 1px, transparent 1px);
+  background-size:40px 40px;
+  opacity:.04;
+  mix-blend-mode:multiply;
+}
+h1,h2{font-family:"Anton",sans-serif;letter-spacing:1px;text-transform:uppercase}
+.mono{font-family:"IBM Plex Mono",monospace}
+.rule{height:6px;background:var(--black);width:100%}
+.rule.blue{background:var(--blue)}
+.rule.orange{background:var(--orange)}
+header{
+  position:sticky;top:0;z-index:10;background:#fff;border-bottom:4px solid #000;
+  display:flex;align-items:flex-start;justify-content:space-between;padding:12px 16px 8px;
+}
+header .brand{font-family:"Anton",sans-serif;font-size:28px;line-height:.9}
+header .meta{font-size:12px}
+header .issue{font-size:14px}
+nav{display:none}
+.hero{
+  position:relative;min-height:100svh;display:grid;place-items:center;text-align:center;padding:40px 16px;
+  border-bottom:4px solid #000;background:
+    repeating-linear-gradient(0deg, #f2f2f2 0 2px, #fff 2px 4px);
+}
+.hero::before{
+  content:"";position:absolute;inset:0;background:
+    radial-gradient(ellipse at 30% 40%, rgba(0,0,0,.06), transparent 60%);
+  pointer-events:none;
+}
+.hero-plan{
+  position:absolute;inset:0;opacity:.25;mix-blend-mode:multiply;
+}
+.hero h1{font-size:clamp(64px,18vw,220px);line-height:.85;margin-bottom:8px}
+.hero .sub{font-size:clamp(14px,2.2vw,22px);text-transform:uppercase;letter-spacing:.12em}
+.ticker{
+  background:var(--black);color:var(--white);white-space:nowrap;overflow:hidden;
+  border-top:4px solid var(--orange);border-bottom:4px solid var(--orange);
+}
+.ticker-inner{display:inline-block;padding:10px 0;animation:marquee 30s linear infinite}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.index{padding:48px 16px;display:grid;gap:24px}
+.index .grid{
+  display:grid;grid-template-columns:repeat(12,1fr);gap:12px
+}
+.record{
+  grid-column:span 12;border:4px solid #000;padding:16px;position:relative;background:#fff;
+}
+.record:nth-child(2){grid-column:span 6;background:var(--orange);color:#000}
+.record:nth-child(3){grid-column:span 6;background:var(--blue)}
+.record:nth-child(4){grid-column:span 8}
+.record:nth-child(5){grid-column:span 4;background:#000;color:#fff}
+.record:nth-child(6){grid-column:span 12;border-color:var(--orange)}
+.record .num{font-family:"Anton",sans-serif;font-size:48px;line-height:1}
+.record .title{font-family:"Anton",sans-serif;font-size:32px;text-transform:uppercase}
+.record .meta{font-size:13px;margin-top:6px}
+.record .label{position:absolute;top:-12px;left:12px;background:#fff;border:3px solid #000;padding:0 6px;font-size:11px;text-transform:uppercase}
+.record svg{width:100%;height:120px;margin-top:12px}
+@media(min-width:900px){
+  .record{grid-column:span 6}
+  .record:nth-child(1){grid-column:span 12}
+  .record:nth-child(4){grid-column:span 8}
+  .record:nth-child(5){grid-column:span 4}
+}
+.feature{
+  display:grid;grid-template-columns:1fr;gap:0;border-top:4px solid #000;border-bottom:4px solid #000;
+}
+.feature .col{background:#fff;padding:28px 16px;border-right:4px solid #000}
+.feature .col.orange{background:var(--orange);border-right:0}
+.feature h2{font-size:clamp(48px,10vw,120px);line-height:.9}
+.feature .kicker{font-size:14px;text-transform:uppercase;letter-spacing:.18em}
+.specs{padding:40px 16px}
+.specs table{width:100%;border-collapse:collapse}
+.specs th,.specs td{border:3px solid #000;padding:10px 8px;text-align:left;font-size:14px}
+.specs th{background:#000;color:#fff;font-family:"Anton",sans-serif;text-transform:uppercase}
+.specs tr:nth-child(even){background:#f5f5f5}
+.manifesto{
+  column-count:1;column-gap:24px;padding:48px 16px;border-top:4px solid var(--blue)
+}
+.manifesto h2{column-span:all;font-size:clamp(48px,12vw,140px);margin-bottom:24px}
+.manifesto p{font-size:18px;margin-bottom:16px;text-transform:uppercase}
+.manifesto .break{background:var(--black);color:#fff;padding:12px;margin:16px 0;display:inline-block}
+.archive{
+  border-top:4px solid #000;border-bottom:4px solid #000;background:#111;color:#fff;padding:24px 0;overflow-x:auto
+}
+.archive-track{display:flex;gap:16px;padding:0 16px;white-space:nowrap}
+.archive-item{min-width:260px;border:3px solid #fff;padding:12px;background:#111}
+.archive-item .num{font-family:"Anton",sans-serif;font-size:36px}
+.archive-item .title{font-size:20px;text-transform:uppercase}
+footer{
+  background:#fff;border-top:8px solid #000;padding:32px 16px;font-size:13px
+}
+footer .doc{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+footer .doc > div{border:2px solid #000;padding:12px}
+footer .stamp{font-family:"Anton",sans-serif;font-size:28px;border:4px solid #000;display:inline-block;padding:4px 12px;margin-bottom:12px}
+.crosshair{
+  position:fixed;top:50%;left:50%;width:200px;height:200px;pointer-events:none;z-index:5;transform:translate(-50%,-50%) scale(.6);
+}
+.crosshair svg{width:100%;height:100%;animation:pulse 4s infinite}
+@keyframes pulse{0%,100%{opacity:.8}50%{opacity:.3}}
+.measure{position:absolute;bottom:8px;right:8px;font-size:11px;border:2px solid #000;background:#fff;padding:2px 6px}
+@media(min-width:900px){.manifesto{column-count:3}}
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+<div class="crosshair">
+  <svg viewBox="0 0 200 200">
+    <line x1="100" y1="0" x2="100" y2="200" stroke="#000" stroke-width="2"/>
+    <line x1="0" y1="100" x2="200" y2="100" stroke="#000" stroke-width="2"/>
+    <circle cx="100" cy="100" r="6" fill="#FF5A00"/>
+  </svg>
+</div>
+
+<header>
+  <div>
+    <div class="brand">CONCRETE INDEX</div>
+    <div class="meta mono">independent archive • civic infrastructure • issue <span id="issue-counter">0017</span></div>
+  </div>
+  <div class="issue mono">EST. 2023 • RAW DATA</div>
+</header>
+
+<div class="ticker"><div class="ticker-inner" id="ticker">RECORD 01 • SALT FLATS ADMINISTRATION BLOCK • RECORD 02 • NORTH RIVER PUMP HOUSE • RECORD 03 • EAST HARBOR COLD STORAGE • RECORD 04 • MIDLAND BRIDGE TOWER • RECORD 05 • SOUTHERN QUAY DESALINATION • RECORD 06 • WESTERN TANK FARM • </div></div>
+
+<section class="hero">
+  <svg class="hero-plan" viewBox="0 0 1000 600" id="plan">
+    <rect x="100" y="120" width="800" height="360" fill="none" stroke="#000" stroke-width="4"/>
+    <line x1="100" y1="300" x2="900" y2="300" stroke="#000" stroke-width="2"/>
+    <line x1="500" y1="120" x2="500" y2="480" stroke="#000" stroke-width="2"/>
+    <polygon points="400,200 600,200 550,260 450,260" fill="none" stroke="#000" stroke-width="3"/>
+    <text x="500" y="340" text-anchor="middle" font-family="IBM Plex Mono" font-size="18">SITE PLAN • 1:500</text>
+  </svg>
+  <div>
+    <div class="sub mono">ARCHIVE // VOL. IV // STRUCTURAL RECORDS</div>
+    <h1>CONCRETE<br>INDEX</h1>
+    <div class="sub mono">CIVIC FORMS • PUBLIC WORKS • DOCUMENTED</div>
+    <div class="measure mono">▲  120M ▲</div>
+  </div>
+</section>
+<div class="rule"></div>
+
+<section class="index">
+  <div class="rule orange"></div>
+  <h2 class="mono" style="text-transform:uppercase;font-size:18px">INDEX // RECENTLY CATALOGUED</h2>
+  <div class="grid">
+    <article class="record">
+      <span class="label mono">RECORD 01</span>
+      <div class="num">01</div>
+      <div class="title">Salt Flats Administration Block</div>
+      <div class="meta mono">NEVADA • 1978 • BRUTALIST OFFICE</div>
+      <svg viewBox="0 0 400 120"><rect x="20" y="40" width="120" height="80" fill="none" stroke="#000" stroke-width="4"/><rect x="160" y="20" width="80" height="100" fill="none" stroke="#000" stroke-width="4"/><rect x="260" y="60" width="120" height="60" fill="none" stroke="#000" stroke-width="4"/></svg>
+    </article>
+    <article class="record">
+      <span class="label mono">RECORD 02</span>
+      <div class="num">02</div>
+      <div class="title">North River Pump House</div>
+      <div class="meta mono">UPSTATE • 1964 • INDUSTRIAL</div>
+    </article>
+    <article class="record">
+      <span class="label mono">RECORD 03</span>
+      <div class="num">03</div>
+      <div class="title">East Harbor Cold Storage</div>
+      <div class="meta mono">MAINE • 1959 • REFRIGERATION</div>
+    </article>
+    <article class="record">
+      <span class="label mono">RECORD 04</span>
+      <div class="num">04</div>
+      <div class="title">Midland Bridge Tower</div>
+      <div class="meta mono">OHIO • 1982 • TRANSPORT</div>
+    </article>
+    <article class="record">
+      <span class="label mono">RECORD 05</span>
+      <div class="num">05</div>
+      <div class="title">Southern Quay Desalination</div>
+      <div class="meta mono">CALIFORNIA • 1971 • WATER</div>
+    </article>
+    <article class="record">
+      <span class="label mono">RECORD 06</span>
+      <div class="num">06</div>
+      <div class="title">Western Tank Farm</div>
+      <div class="meta mono">TEXAS • 1967 • STORAGE</div>
+    </article>
+  </div>
+</section>
+
+<section class="feature">
+  <div class="col">
+    <div class="kicker mono">EDITORIAL FEATURE</div>
+    <h2>COASTAL WATER PLANT</h2>
+    <p style="margin-top:16px;font-size:16px;text-transform:uppercase">monumental intake • 12m reinforced concrete • salt erosion index 9.3 • operational since 1971</p>
+    <svg viewBox="0 0 600 200" style="width:100%;height:200px;margin-top:16px"><rect x="0" y="120" width="600" height="80" fill="#D9D9D9"/><polygon points="0,120 150,40 300,100 450,20 600,120" fill="none" stroke="#000" stroke-width="4"/><circle cx="300" cy="80" r="20" fill="none" stroke="#000" stroke-width="4"/></svg>
+  </div>
+  <div class="col orange">
+    <div class="mono" style="text-transform:uppercase;margin-bottom:12px">SITE NOTES</div>
+    <p style="font-size:18px">EXPOSED AGING. NO CLADDING. DIRECT WEATHER. THE STRUCTURE IS THE INTERFACE.</p>
+    <div class="rule" style="background:#000;height:4px;margin:20px 0"></div>
+    <p class="mono">MATERIAL: CAST IN SITU • REINFORCEMENT: 32MM DEFORMED • FINISH: BOARD MARKED</p>
+  </div>
+</section>
+
+<section class="specs">
+  <div class="rule blue"></div>
+  <h2 class="mono" style="text-transform:uppercase;font-size:18px;margin:16px 0">FACTS // SPECIFICATIONS</h2>
+  <table>
+    <thead><tr><th>RECORD</th><th>NAME</th><th>YEAR</th><th>MATERIAL</th><th>STATUS</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">01</td><td>Salt Flats Administration Block</td><td>1978</td><td>Concrete</td><td>Active</td></tr>
+      <tr><td class="mono">02</td><td>North River Pump House</td><td>1964</td><td>Concrete/Steel</td><td>Active</td></tr>
+      <tr><td class="mono">03</td><td>East Harbor Cold Storage</td><td>1959</td><td>Concrete</td><td>Converted</td></tr>
+      <tr><td class="mono">04</td><td>Midland Bridge Tower</td><td>1982</td><td>Prestressed</td><td>Active</td></tr>
+      <tr><td class="mono">05</td><td>Southern Quay Desalination</td><td>1971</td><td>Concrete</td><td>Active</td></tr>
+      <tr><td class="mono">06</td><td>Western Tank Farm</td><td>1967</td><td>Steel/Concrete</td><td>Decommissioned</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="manifesto">
+  <h2>MANIFESTO</h2>
+  <p>WE DOCUMENT WHAT IS BUILT FOR USE NOT FOR IMAGE.</p>
+  <p class="break mono">NO SOFTENING.</p>
+  <p>STRUCTURES THAT HOLD WATER, POWER, PEOPLE.</p>
+  <p>CONCRETE IS NOT BACKGROUND.</p>
+  <p class="break mono">GRID LINES ARE VISIBLE.</p>
+  <p>ARCHIVE AS EVIDENCE. RECORD AS ACT.</p>
+  <p>THE CITY IS INFRASTRUCTURE.</p>
+</section>
+
+<section class="archive">
+  <div class="archive-track" id="archive-track">
+    <div class="archive-item"><div class="num">A-101</div><div class="title">Intake Chamber</div></div>
+    <div class="archive-item"><div class="num">A-102</div><div class="title">Control Room</div></div>
+    <div class="archive-item"><div class="num">A-103</div><div class="title">Chlorination Bay</div></div>
+    <div class="archive-item"><div class="num">A-104</div><div class="title">Overflow Weir</div></div>
+    <div class="archive-item"><div class="num">A-105</div><div class="title">Service Gantry</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="stamp mono">CONSTRUCTION DOCUMENT</div>
+  <div class="doc">
+    <div>PROJECT: CONCRETE INDEX VOL. IV</div>
+    <div>DATE: 2025-11-21</div>
+    <div>SCALE: 1:1 REALITY</div>
+    <div>NOTES: NO FILTERS • NO STOCK</div>
+    <div style="grid-column:span 4;border-color:var(--orange)">REGISTRATION MARKS • [■] [■] [■] • ALL MEASUREMENTS IN MILLIMETRES</div>
+    <div style="grid-column:span 4;border-color:var(--blue)">DISCLAIMER: STRUCTURES ARE DOCUMENTED NOT ADVERTISED</div>
+    <div style="grid-column:span 4">CONTACT: ARCHIVE@CONCRETE.INDEX</div>
+  </div>
+</footer>
+
+<script>
+const counter=document.getElementById('issue-counter');
+let n=17;
+setInterval(()=>{n++;counter.textContent=n.toString().padStart(4,'0')},3000);
+const plan=document.getElementById('plan');
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY*0.05;
+  plan.style.transform=`translateY(${y}px)`;
+});
+const track=document.getElementById('archive-track');
+setInterval(()=>{track.style.transform=`translateX(${-2}px)`;},50);
+</script>
+</body>
+</html>

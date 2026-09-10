@@ -1,0 +1,2538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INK WEATHER — Independent Print Fair & Risograph Studio Festival</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper: #F5F0E8;
+  --paper-dark: #E8E0D0;
+  --coral: #FF6B6B;
+  --coral-light: #FF8A8A;
+  --cobalt: #2D5BFF;
+  --cobalt-light: #5A7FFF;
+  --sunflower: #FFD23F;
+  --sunflower-dark: #E6BC30;
+  --mint: #7ED4A6;
+  --mint-dark: #5BBF8A;
+  --black: #1A1A1A;
+  --ink-blue: #1E3A5F;
+  --ink-magenta: #E84393;
+  --ink-yellow: #FDCB6E;
+  --ink-cyan: #00B894;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --grain-opacity: 0.04;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--paper);
+  color: var(--black);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ========== PAPER GRAIN OVERLAY ========== */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ========== HALFTONE PATTERN ========== */
+.halftone-bg {
+  background-image: radial-gradient(circle, var(--black) 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--paper-dark); }
+::-webkit-scrollbar-thumb { background: var(--black); border-radius: 5px; }
+
+/* ========== UTILITY ========== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section-pad { padding: 80px 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+/* ========== SCROLL REVEAL ========== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ========== NAVIGATION ========== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: var(--paper);
+  border-bottom: 2px solid var(--black);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.3s ease;
+}
+nav.nav-hidden { transform: translateY(-100%); }
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-logo .ink-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--coral);
+  display: inline-block;
+  position: relative;
+}
+.nav-logo .ink-dot::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--cobalt);
+  opacity: 0.6;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  align-items: center;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  color: var(--black);
+  position: relative;
+  padding: 4px 0;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--coral);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  background: var(--black) !important;
+  color: var(--paper) !important;
+  padding: 8px 16px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  text-decoration: none !important;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nav-cta:hover { background: var(--coral) !important; }
+.nav-cta::after { display: none !important; }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--black);
+  margin: 5px 0;
+  transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+  .nav-links { 
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--paper);
+    border-bottom: 2px solid var(--black);
+    flex-direction: column;
+    padding: 24px;
+    gap: 16px;
+  }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; }
+}
+
+/* ========== HERO POSTER ========== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 24px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-poster {
+  position: relative;
+  max-width: 900px;
+  width: 100%;
+  border: 3px solid var(--black);
+  padding: 48px;
+  background: var(--paper);
+  box-shadow: 8px 8px 0 var(--black);
+}
+
+/* Misregistration effect on hover */
+.hero-poster::before,
+.hero-poster::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+.hero-poster::before {
+  border: 3px solid var(--coral);
+  opacity: 0.4;
+  transform: translate(-3px, -2px);
+}
+.hero-poster::after {
+  border: 3px solid var(--cobalt);
+  opacity: 0.3;
+  transform: translate(3px, 2px);
+}
+.hero-poster:hover::before { transform: translate(-5px, -4px); }
+.hero-poster:hover::after { transform: translate(5px, 4px); }
+
+.hero-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: var(--sunflower);
+  color: var(--black);
+  padding: 6px 14px;
+  margin-bottom: 24px;
+  position: relative;
+  transform: rotate(-2deg);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+  position: relative;
+}
+.hero-title .line {
+  display: block;
+  position: relative;
+}
+.hero-title .line-ink {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  pointer-events: none;
+}
+.hero-title .ink-cyan-layer {
+  color: var(--cobalt);
+  opacity: 0.25;
+  transform: translate(-3px, 2px);
+}
+.hero-title .ink-magenta-layer {
+  color: var(--coral);
+  opacity: 0.2;
+  transform: translate(3px, -1px);
+}
+.hero-title .ink-yellow-layer {
+  color: var(--sunflower);
+  opacity: 0.3;
+  transform: translate(-1px, -3px);
+}
+
+.hero-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 16px;
+  margin-bottom: 32px;
+  color: var(--ink-blue);
+}
+
+.hero-date {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.hero-location {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink-blue);
+  margin-bottom: 32px;
+}
+
+.hero-cta-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 14px 28px;
+  background: var(--coral);
+  color: var(--black);
+  text-decoration: none;
+  border: 2px solid var(--black);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.btn-primary:hover {
+  background: var(--black);
+  color: var(--paper);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--coral);
+}
+.btn-secondary {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--black);
+  text-decoration: none;
+  border: 2px solid var(--black);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  background: var(--sunflower);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--black);
+}
+
+/* Hero decorative elements */
+.hero-deco {
+  position: absolute;
+  pointer-events: none;
+}
+.hero-deco-circle {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 3px solid var(--cobalt);
+  opacity: 0.15;
+  top: -60px; right: -60px;
+}
+.hero-deco-dots {
+  bottom: -30px; left: -30px;
+  width: 120px; height: 120px;
+  background-image: radial-gradient(circle, var(--coral) 2px, transparent 2px);
+  background-size: 16px 16px;
+  opacity: 0.3;
+}
+.hero-deco-stripe {
+  top: 50%; right: -40px;
+  width: 40px; height: 200px;
+  background: repeating-linear-gradient(
+    0deg,
+    var(--mint) 0px,
+    var(--mint) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+  opacity: 0.4;
+  transform: rotate(12deg);
+}
+
+/* Drifting paper scraps */
+.paper-scraps {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+.paper-scrap {
+  position: absolute;
+  opacity: 0.12;
+  animation: drift 20s infinite linear;
+}
+.paper-scrap:nth-child(1) {
+  width: 60px; height: 80px;
+  background: var(--coral);
+  top: 10%; left: 5%;
+  transform: rotate(15deg);
+  animation-duration: 25s;
+  animation-delay: 0s;
+  clip-path: polygon(0 0, 100% 5%, 95% 100%, 5% 95%);
+}
+.paper-scrap:nth-child(2) {
+  width: 40px; height: 50px;
+  background: var(--cobalt);
+  top: 60%; right: 8%;
+  transform: rotate(-20deg);
+  animation-duration: 30s;
+  animation-delay: -5s;
+  clip-path: polygon(10% 0, 100% 10%, 90% 100%, 0 90%);
+}
+.paper-scrap:nth-child(3) {
+  width: 70px; height: 40px;
+  background: var(--sunflower);
+  bottom: 15%; left: 15%;
+  transform: rotate(45deg);
+  animation-duration: 22s;
+  animation-delay: -10s;
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 95%);
+}
+.paper-scrap:nth-child(4) {
+  width: 50px; height: 60px;
+  background: var(--mint);
+  top: 30%; right: 20%;
+  transform: rotate(-35deg);
+  animation-duration: 28s;
+  animation-delay: -15s;
+  clip-path: polygon(0 5%, 95% 0, 100% 95%, 5% 100%);
+}
+.paper-scrap:nth-child(5) {
+  width: 35px; height: 45px;
+  background: var(--ink-magenta);
+  top: 75%; left: 60%;
+  transform: rotate(25deg);
+  animation-duration: 35s;
+  animation-delay: -8s;
+  clip-path: polygon(0 0, 100% 15%, 85% 100%, 15% 85%);
+}
+
+@keyframes drift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(30px, -20px) rotate(5deg); }
+  50% { transform: translate(-20px, 30px) rotate(-3deg); }
+  75% { transform: translate(15px, 15px) rotate(7deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ========== DATE BANNER ========== */
+.date-banner {
+  background: var(--black);
+  color: var(--paper);
+  padding: 20px 24px;
+  overflow: hidden;
+  position: relative;
+}
+.date-banner-track {
+  display: flex;
+  animation: scroll-banner 20s linear infinite;
+  width: max-content;
+}
+.date-banner-item {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.date-banner-item .sep {
+  width: 8px; height: 8px;
+  background: var(--sunflower);
+  display: inline-block;
+  transform: rotate(45deg);
+}
+
+@keyframes scroll-banner {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ========== INK LAYER ANIMATION SECTION ========== */
+.ink-animation-section {
+  padding: 80px 0;
+  background: var(--paper-dark);
+  position: relative;
+  overflow: hidden;
+}
+.ink-animation-section .container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.ink-info h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.ink-info p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  max-width: 480px;
+}
+.ink-info .tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border: 1px solid var(--black);
+}
+
+.ink-canvas-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.ink-canvas-wrap canvas {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--black);
+  box-shadow: 6px 6px 0 var(--black);
+}
+
+@media (max-width: 768px) {
+  .ink-animation-section .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== SCHEDULE ========== */
+.schedule-section {
+  padding: 80px 0;
+  position: relative;
+}
+.schedule-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: radial-gradient(circle, var(--black) 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.section-header .overline {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--coral);
+  margin-bottom: 12px;
+  display: block;
+}
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.section-header p {
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--ink-blue);
+}
+
+.schedule-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.schedule-tab {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 10px 20px;
+  border: 2px solid var(--black);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--black);
+}
+.schedule-tab.active, .schedule-tab:hover {
+  background: var(--black);
+  color: var(--paper);
+}
+
+.schedule-grid {
+  display: grid;
+  gap: 0;
+}
+.schedule-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  border-bottom: 1px solid rgba(26,26,26,0.15);
+  transition: background 0.2s;
+}
+.schedule-row:hover {
+  background: rgba(255,210,63,0.15);
+}
+.schedule-time {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 20px 24px;
+  border-right: 1px solid rgba(26,26,26,0.15);
+  color: var(--ink-blue);
+  display: flex;
+  align-items: center;
+}
+.schedule-content {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.schedule-content .event-type {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+.event-type.workshop { background: var(--mint); }
+.event-type.talk { background: var(--cobalt); color: var(--paper); }
+.event-type.demo { background: var(--sunflower); }
+.event-type.social { background: var(--coral); }
+
+.schedule-content .event-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.schedule-content .event-speaker {
+  font-size: 0.85rem;
+  color: var(--ink-blue);
+}
+
+@media (max-width: 600px) {
+  .schedule-row { grid-template-columns: 1fr; }
+  .schedule-time { border-right: none; border-bottom: 1px solid rgba(26,26,26,0.08); padding: 8px 24px; }
+  .schedule-content { flex-direction: column; align-items: flex-start; gap: 4px; }
+}
+
+/* ========== PRINTERS ========== */
+.printers-section {
+  padding: 80px 0;
+  background: var(--black);
+  color: var(--paper);
+  position: relative;
+  overflow: hidden;
+}
+.printers-section::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(45,91,255,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(255,107,107,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.printers-section .section-header .overline { color: var(--sunflower); }
+.printers-section .section-header h2 { color: var(--paper); }
+.printers-section .section-header p { color: rgba(245,240,232,0.6); }
+
+.printers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.printer-card {
+  position: relative;
+  border: 2px solid rgba(245,240,232,0.2);
+  padding: 32px 24px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+.printer-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  transition: height 0.3s ease;
+}
+.printer-card:nth-child(1)::before { background: var(--coral); }
+.printer-card:nth-child(2)::before { background: var(--cobalt); }
+.printer-card:nth-child(3)::before { background: var(--sunflower); }
+.printer-card:nth-child(4)::before { background: var(--mint); }
+.printer-card:nth-child(5)::before { background: var(--ink-magenta); }
+.printer-card:nth-child(6)::before { background: var(--ink-cyan); }
+
+.printer-card:hover {
+  border-color: rgba(245,240,232,0.5);
+  transform: translateY(-4px);
+}
+.printer-card:hover::before { height: 6px; }
+
+.printer-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(245,240,232,0.3);
+}
+.printer-avatar svg { width: 100%; height: 100%; }
+
+.printer-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.printer-role {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+  margin-bottom: 12px;
+}
+.printer-bio {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: 0.75;
+}
+.printer-tags {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.printer-tag {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border: 1px solid rgba(245,240,232,0.2);
+  border-radius: 2px;
+}
+
+@media (max-width: 900px) {
+  .printers-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .printers-grid { grid-template-columns: 1fr; }
+}
+
+/* ========== VENUE MAP ========== */
+.venue-section {
+  padding: 80px 0;
+  position: relative;
+}
+
+.venue-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.venue-map {
+  position: relative;
+  border: 3px solid var(--black);
+  background: var(--paper);
+  padding: 24px;
+  box-shadow: 6px 6px 0 var(--black);
+}
+.venue-map svg { width: 100%; height: auto; }
+
+.venue-info h3 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+.venue-info p {
+  margin-bottom: 12px;
+  line-height: 1.7;
+}
+.venue-details {
+  list-style: none;
+  margin: 24px 0;
+}
+.venue-details li {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(26,26,26,0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.venue-details li .detail-icon {
+  width: 24px; height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .venue-grid { grid-template-columns: 1fr; }
+}
+
+/* ========== POSTER SHOP ========== */
+.shop-section {
+  padding: 80px 0;
+  background: var(--sunflower);
+  position: relative;
+  overflow: hidden;
+}
+.shop-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: radial-gradient(circle, var(--black) 1px, transparent 1px);
+  background-size: 12px 12px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.shop-section .section-header .overline { color: var(--black); }
+.shop-section .section-header h2 { color: var(--black); }
+.shop-section .section-header p { color: var(--ink-blue); }
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.poster-card {
+  position: relative;
+  background: var(--paper);
+  border: 2px solid var(--black);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.poster-card:hover {
+  transform: translateY(-6px) rotate(-1deg);
+  box-shadow: 8px 8px 0 var(--black);
+}
+
+.poster-art {
+  aspect-ratio: 3/4;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--black);
+}
+.poster-art canvas { width: 100%; height: 100%; }
+
+.poster-info {
+  padding: 16px;
+}
+.poster-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.poster-artist {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-blue);
+  margin-bottom: 8px;
+}
+.poster-price {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+.poster-edition {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--ink-blue);
+}
+
+@media (max-width: 900px) {
+  .shop-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+  .shop-grid { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
+}
+
+/* ========== QUOTES ========== */
+.quotes-section {
+  padding: 80px 0;
+  position: relative;
+}
+
+.quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.quote-card {
+  position: relative;
+  padding: 32px;
+  border: 2px solid var(--black);
+  background: var(--paper);
+  transition: all 0.3s ease;
+}
+.quote-card:nth-child(1) { transform: rotate(-1deg); }
+.quote-card:nth-child(2) { transform: rotate(0.5deg); }
+.quote-card:nth-child(3) { transform: rotate(-0.5deg); }
+.quote-card:hover { transform: rotate(0deg) translateY(-4px); box-shadow: 6px 6px 0 var(--black); }
+
+.quote-mark {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  line-height: 1;
+  opacity: 0.15;
+  position: absolute;
+  top: 16px; left: 20px;
+}
+.quote-text {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+.quote-author {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.quote-role {
+  font-size: 0.8rem;
+  color: var(--ink-blue);
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .quotes-grid { grid-template-columns: 1fr; }
+  .quote-card { transform: none !important; }
+}
+
+/* ========== FAQ ========== */
+.faq-section {
+  padding: 80px 0;
+  background: var(--paper-dark);
+}
+
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.faq-item {
+  border-bottom: 2px solid var(--black);
+}
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 24px 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  color: var(--black);
+  transition: color 0.2s;
+}
+.faq-question:hover { color: var(--coral); }
+.faq-icon {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.faq-item.open .faq-answer {
+  max-height: 300px;
+  padding-bottom: 24px;
+}
+.faq-answer p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--ink-blue);
+}
+
+/* ========== NEWSLETTER ========== */
+.newsletter-section {
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.newsletter-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.newsletter-inner h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+.newsletter-inner p {
+  margin-bottom: 32px;
+  color: var(--ink-blue);
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.newsletter-form input {
+  flex: 1;
+  padding: 14px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  border: 2px solid var(--black);
+  border-right: none;
+  background: var(--paper);
+  color: var(--black);
+  outline: none;
+}
+.newsletter-form input::placeholder { color: rgba(26,26,26,0.4); }
+.newsletter-form input:focus { border-color: var(--coral); }
+.newsletter-form button {
+  padding: 14px 24px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--coral);
+  color: var(--black);
+  border: 2px solid var(--black);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.newsletter-form button:hover {
+  background: var(--black);
+  color: var(--paper);
+}
+
+.newsletter-deco {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.08;
+}
+.newsletter-deco-1 {
+  top: 20px; left: 10%;
+  width: 100px; height: 100px;
+  border: 4px solid var(--cobalt);
+  border-radius: 50%;
+}
+.newsletter-deco-2 {
+  bottom: 20px; right: 10%;
+  width: 80px; height: 80px;
+  background: var(--sunflower);
+  transform: rotate(45deg);
+}
+
+@media (max-width: 500px) {
+  .newsletter-form { flex-direction: column; }
+  .newsletter-form input { border-right: 2px solid var(--black); border-bottom: none; }
+}
+
+/* ========== FOOTER ========== */
+footer {
+  background: var(--black);
+  color: var(--paper);
+  padding: 60px 0 30px;
+  position: relative;
+  overflow: hidden;
+}
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: radial-gradient(circle, rgba(245,240,232,0.05) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.footer-brand .footer-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.footer-brand .footer-logo .ink-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--coral);
+  position: relative;
+}
+.footer-brand .footer-logo .ink-dot::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--cobalt);
+  opacity: 0.6;
+}
+.footer-brand p {
+  font-size: 0.9rem;
+  opacity: 0.6;
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+.footer-col h4 {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 20px;
+  color: var(--sunflower);
+}
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 10px; }
+.footer-col ul a {
+  color: var(--paper);
+  text-decoration: none;
+  font-size: 0.9rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.footer-col ul a:hover { opacity: 1; color: var(--coral); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(245,240,232,0.1);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-bottom p {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  opacity: 0.4;
+}
+.footer-bottom-links {
+  display: flex;
+  gap: 24px;
+}
+.footer-bottom-links a {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--paper);
+  text-decoration: none;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+.footer-bottom-links a:hover { opacity: 1; }
+
+/* Footer roller animation */
+.footer-roller {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 60px;
+  overflow: hidden;
+  opacity: 0.05;
+}
+.footer-roller-inner {
+  display: flex;
+  animation: roller-scroll 10s linear infinite;
+  width: max-content;
+}
+.footer-roller-inner span {
+  font-family: var(--font-display);
+  font-size: 8rem;
+  font-weight: 900;
+  white-space: nowrap;
+  padding: 0 20px;
+  color: var(--paper);
+}
+
+@keyframes roller-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 500px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ========== COLLAGE EDGE DIVIDERS ========== */
+.collage-divider {
+  height: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.collage-divider svg {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+}
+
+/* ========== ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .paper-scrap { animation: none !important; }
+  .date-banner-track { animation: none !important; }
+  .footer-roller-inner { animation: none !important; }
+}
+
+:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+}
+
+/* ========== PRINT ROLLER ========== */
+.print-roller {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  margin: 40px 0;
+  border-top: 2px solid var(--black);
+  border-bottom: 2px solid var(--black);
+}
+.print-roller-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: roller-scroll 15s linear infinite;
+  width: max-content;
+}
+.print-roller-inner span {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 900;
+  white-space: nowrap;
+  padding: 0 30px;
+  position: relative;
+}
+.print-roller-inner span::after {
+  content: '✦';
+  margin-left: 30px;
+  font-size: 1.5rem;
+  vertical-align: middle;
+}
+
+/* ========== MISREGISTRATION HOVER ========== */
+.misreg {
+  position: relative;
+  display: inline-block;
+}
+.misreg::before,
+.misreg::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.misreg::before {
+  color: var(--coral);
+  transform: translate(-2px, 1px);
+}
+.misreg::after {
+  color: var(--cobalt);
+  transform: translate(2px, -1px);
+}
+.misreg:hover::before,
+.misreg:hover::after {
+  opacity: 0.3;
+}
+
+/* ========== RIBBON / STAMP ========== */
+.stamp {
+  display: inline-block;
+  border: 3px solid var(--coral);
+  border-radius: 50%;
+  width: 80px; height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--coral);
+  transform: rotate(-15deg);
+  opacity: 0.7;
+  line-height: 1.3;
+  padding: 12px;
+}
+
+/* ========== SPOT COLOR SEPARATION CYCLING ========== */
+.spot-cycle {
+  animation: spot-cycle 8s ease-in-out infinite;
+}
+@keyframes spot-cycle {
+  0%, 100% { filter: hue-rotate(0deg); }
+  25% { filter: hue-rotate(15deg); }
+  50% { filter: hue-rotate(0deg); }
+  75% { filter: hue-rotate(-15deg); }
+}
+
+/* ========== WASHI TAPE DECORATION ========== */
+.washi {
+  position: absolute;
+  width: 60px;
+  height: 20px;
+  opacity: 0.5;
+  z-index: 10;
+}
+.washi-coral { background: repeating-linear-gradient(45deg, var(--coral), var(--coral) 4px, transparent 4px, transparent 8px); }
+.washi-cobalt { background: repeating-linear-gradient(45deg, var(--cobalt), var(--cobalt) 4px, transparent 4px, transparent 8px); }
+.washi-mint { background: repeating-linear-gradient(45deg, var(--mint), var(--mint) 4px, transparent 4px, transparent 8px); }
+</style>
+</head>
+<body>
+
+<!-- ========== NAVIGATION ========== -->
+<nav id="mainNav" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo" aria-label="INK WEATHER Home">
+    <span class="ink-dot" aria-hidden="true"></span>
+    INK WEATHER
+  </a>
+  <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" onclick="document.querySelector('.nav-links').classList.toggle('open'); this.setAttribute('aria-expanded', document.querySelector('.nav-links').classList.contains('open'))">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="#schedule">Schedule</a></li>
+    <li><a href="#printers">Printers</a></li>
+    <li><a href="#venue">Venue</a></li>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#newsletter" class="nav-cta">Get Tickets</a></li>
+  </ul>
+</nav>
+
+<!-- ========== HERO ========== -->
+<header class="hero" id="hero">
+  <div class="paper-scraps" aria-hidden="true">
+    <div class="paper-scrap"></div>
+    <div class="paper-scrap"></div>
+    <div class="paper-scrap"></div>
+    <div class="paper-scrap"></div>
+    <div class="paper-scrap"></div>
+  </div>
+  <div class="hero-poster">
+    <div class="washi washi-coral" style="top:-10px;left:40px;transform:rotate(-3deg);" aria-hidden="true"></div>
+    <div class="washi washi-cobalt" style="top:-10px;right:60px;transform:rotate(2deg);" aria-hidden="true"></div>
+    <div class="hero-deco hero-deco-circle" aria-hidden="true"></div>
+    <div class="hero-deco hero-deco-dots" aria-hidden="true"></div>
+    <div class="hero-deco hero-deco-stripe" aria-hidden="true"></div>
+    
+    <span class="hero-badge">September 13–14, 2025</span>
+    
+    <h1 class="hero-title">
+      <span class="line" style="position:relative;">
+        <span class="ink-cyan-layer" aria-hidden="true">INK</span>
+        <span class="ink-magenta-layer" aria-hidden="true">INK</span>
+        <span class="ink-yellow-layer" aria-hidden="true">INK</span>
+        INK
+      </span>
+      <span class="line" style="position:relative;">
+        <span class="ink-cyan-layer" aria-hidden="true">WEATHER</span>
+        <span class="ink-magenta-layer" aria-hidden="true">WEATHER</span>
+        <span class="ink-yellow-layer" aria-hidden="true">WEATHER</span>
+        WEATHER
+      </span>
+    </h1>
+    
+    <p class="hero-subtitle">Independent Print Fair &amp; Risograph Studio Festival</p>
+    
+    <p class="hero-date">Two Days of Ink, Paper &amp; Community</p>
+    <p class="hero-location">The Print House Collective — 420 Paper Mill Road, Brooklyn, NY</p>
+    
+    <div class="hero-cta-group">
+      <a href="#schedule" class="btn-primary">Explore the Schedule</a>
+      <a href="#shop" class="btn-secondary">Poster Shop</a>
+    </div>
+    
+    <div class="stamp" style="position:absolute;bottom:20px;right:20px;" aria-hidden="true">Limited<br>Early<br>Bird</div>
+  </div>
+</header>
+
+<!-- ========== DATE BANNER ========== -->
+<div class="date-banner" aria-label="Event details ticker">
+  <div class="date-banner-track">
+    <span class="date-banner-item">September 13–14, 2025 <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">The Print House Collective <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">Brooklyn, New York <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">Workshops · Talks · Print Demos <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">Risograph · Letterpress · Screenprint <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">September 13–14, 2025 <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">The Print House Collective <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">Brooklyn, New York <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">Workshops · Talks · Print Demos <span class="sep" aria-hidden="true"></span></span>
+    <span class="date-banner-item">Risograph · Letterpress · Screenprint <span class="sep" aria-hidden="true"></span></span>
+  </div>
+</div>
+
+<!-- ========== INK LAYER ANIMATION ========== -->
+<section class="ink-animation-section" id="about" aria-labelledby="ink-heading">
+  <div class="container">
+    <div class="ink-info reveal">
+      <h2 id="ink-heading">Where Every Layer<br>Tells a Story</h2>
+      <p>INK WEATHER celebrates the beauty of imperfect registration, the warmth of spot-color inks, and the community that gathers around the press. For two days, our studio fills with the smell of ink and the sound of rollers turning.</p>
+      <p>Whether you're a seasoned printer or picking up a squeegee for the first time, there's a place for you here.</p>
+      <div style="margin-top:20px;">
+        <span class="tag">Risograph</span>
+        <span class="tag">Letterpress</span>
+        <span class="tag">Screenprint</span>
+        <span class="tag">Lithography</span>
+        <span class="tag">Zine Making</span>
+      </div>
+    </div>
+    <div class="ink-canvas-wrap reveal reveal-delay-2">
+      <canvas id="inkCanvas" width="500" height="500" aria-label="Animated ink layer visualization showing overlapping translucent color layers"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SCHEDULE ========== -->
+<section class="schedule-section section-pad" id="schedule" aria-labelledby="schedule-heading">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="overline">What's Happening</span>
+      <h2 id="schedule-heading">Schedule</h2>
+      <p>Two days packed with hands-on workshops, inspiring talks, live print demos, and good company.</p>
+    </div>
+
+    <div class="schedule-tabs reveal" role="tablist">
+      <button class="schedule-tab active" role="tab" aria-selected="true" onclick="switchDay('day1', this)">Day 1 — Saturday</button>
+      <button class="schedule-tab" role="tab" aria-selected="false" onclick="switchDay('day2', this)">Day 2 — Sunday</button>
+    </div>
+
+    <div class="schedule-grid reveal" id="day1">
+      <div class="schedule-row">
+        <div class="schedule-time">9:00 AM</div>
+        <div class="schedule-content">
+          <span class="event-type social">Social</span>
+          <div><div class="event-title">Doors Open &amp; Welcome Coffee</div><div class="event-speaker">Main Hall</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">10:00 AM</div>
+        <div class="schedule-content">
+          <span class="event-type workshop">Workshop</span>
+          <div><div class="event-title">Introduction to Risography</div><div class="event-speaker">with Maya Chen — Studio A</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">11:30 AM</div>
+        <div class="schedule-content">
+          <span class="event-type talk">Talk</span>
+          <div><div class="event-title">The Ghost in the Machine: Imperfection as Aesthetic</div><div class="event-speaker">with Leo Okonkwo — Main Stage</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">1:00 PM</div>
+        <div class="schedule-content">
+          <span class="event-type social">Social</span>
+          <div><div class="event-title">Lunch &amp; Poster Trading</div><div class="event-speaker">Courtyard</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">2:30 PM</div>
+        <div class="schedule-content">
+          <span class="event-type demo">Demo</span>
+          <div><div class="event-title">Live Letterpress: From Plate to Paper</div><div class="event-speaker">with Sam Rivera — Press Room</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">4:00 PM</div>
+        <div class="schedule-content">
+          <span class="event-type workshop">Workshop</span>
+          <div><div class="event-title">Zine Making: Cut, Paste, Print</div><div class="event-speaker">with Aisha Patel — Studio B</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">6:00 PM</div>
+        <div class="schedule-content">
+          <span class="event-type social">Social</span>
+          <div><div class="event-title">Opening Night Party &amp; DJ Set</div><div class="event-speaker">Main Hall — Doors at 5:45 PM</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="schedule-grid reveal" id="day2" style="display:none;">
+      <div class="schedule-row">
+        <div class="schedule-time">10:00 AM</div>
+        <div class="schedule-content">
+          <span class="event-type workshop">Workshop</span>
+          <div><div class="event-title">Screenprinting: One Color, Infinite Possibilities</div><div class="event-speaker">with Jun Park — Studio A</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">11:30 AM</div>
+        <div class="schedule-content">
+          <span class="event-type talk">Talk</span>
+          <div><div class="event-title">Building a Print Practice on a Budget</div><div class="event-speaker">with Rosa Martinez — Main Stage</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">1:00 PM</div>
+        <div class="schedule-content">
+          <span class="event-type social">Social</span>
+          <div><div class="event-title">Community Lunch</div><div class="event-speaker">Courtyard</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">2:30 PM</div>
+        <div class="schedule-content">
+          <span class="event-type demo">Demo</span>
+          <div><div class="event-title">Risograph Color Separation Masterclass</div><div class="event-speaker">with Maya Chen — Press Room</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">4:00 PM</div>
+        <div class="schedule-content">
+          <span class="event-type workshop">Workshop</span>
+          <div><div class="event-title">Hand-Pulled Lithography Basics</div><div class="event-speaker">with Leo Okonkwo — Studio B</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">5:30 PM</div>
+        <div class="schedule-content">
+          <span class="event-type talk">Talk</span>
+          <div><div class="event-title">Panel: The Future of Independent Printing</div><div class="event-speaker">All Featured Printers — Main Stage</div></div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">7:00 PM</div>
+        <div class="schedule-content">
+          <span class="event-type social">Social</span>
+          <div><div class="event-title">Closing Ceremony &amp; Raffle</div><div class="event-speaker">Main Hall</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PRINT ROLLER DIVIDER ========== -->
+<div class="print-roller" aria-hidden="true">
+  <div class="print-roller-inner">
+    <span>INK WEATHER</span><span>PRINT FAIR</span><span>RISO FEST</span><span>INK WEATHER</span><span>PRINT FAIR</span><span>RISO FEST</span>
+  </div>
+</div>
+
+<!-- ========== PRINTERS ========== -->
+<section class="printers-section section-pad" id="printers" aria-labelledby="printers-heading">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="overline">Featured Artists</span>
+      <h2 id="printers-heading">The Printers</h2>
+      <p>Six makers pushing the boundaries of ink and paper.</p>
+    </div>
+
+    <div class="printers-grid">
+      <!-- Printer 1 -->
+      <div class="printer-card reveal reveal-delay-1">
+        <div class="printer-avatar">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="80" fill="#FF6B6B" opacity="0.2"/>
+            <circle cx="40" cy="30" r="14" fill="#1A1A1A" opacity="0.7"/>
+            <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A1A1A" opacity="0.7"/>
+            <circle cx="35" cy="28" r="2" fill="#F5F0E8"/>
+            <circle cx="45" cy="28" r="2" fill="#F5F0E8"/>
+            <path d="M34 35 Q40 40 46 35" stroke="#F5F0E8" stroke-width="1.5" fill="none"/>
+            <rect x="25" y="12" width="30" height="8" rx="4" fill="#FFD23F" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="printer-name">Maya Chen</div>
+        <div class="printer-role">Risograph Alchemist</div>
+        <p class="printer-bio">Maya runs Ghost Frequency Press out of a converted warehouse in Bushwick. Her risograph zines explore urban folklore and the hidden histories of city neighborhoods.</p>
+        <div class="printer-tags">
+          <span class="printer-tag">Risograph</span>
+          <span class="printer-tag">Zines</span>
+          <span class="printer-tag">Editorial</span>
+        </div>
+      </div>
+
+      <!-- Printer 2 -->
+      <div class="printer-card reveal reveal-delay-2">
+        <div class="printer-avatar">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="80" fill="#2D5BFF" opacity="0.2"/>
+            <circle cx="40" cy="30" r="14" fill="#1A1A1A" opacity="0.7"/>
+            <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A1A1A" opacity="0.7"/>
+            <circle cx="35" cy="28" r="2" fill="#F5F0E8"/>
+            <circle cx="45" cy="28" r="2" fill="#F5F0E8"/>
+            <path d="M33 36 Q40 33 47 36" stroke="#F5F0E8" stroke-width="1.5" fill="none"/>
+            <rect x="20" y="8" width="40" height="6" rx="3" fill="#7ED4A6" opacity="0.6"/>
+            <circle cx="40" cy="11" r="3" fill="#FF6B6B" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="printer-name">Leo Okonkwo</div>
+        <div class="printer-role">Letterpress Poet</div>
+        <p class="printer-bio">Leo's letterpress work blends poetry and typography into tactile objects. His small press, Slow Type Studio, has published over 200 limited-edition broadsides since 2018.</p>
+        <div class="printer-tags">
+          <span class="printer-tag">Letterpress</span>
+          <span class="printer-tag">Typography</span>
+          <span class="printer-tag">Poetry</span>
+        </div>
+      </div>
+
+      <!-- Printer 3 -->
+      <div class="printer-card reveal reveal-delay-3">
+        <div class="printer-avatar">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="80" fill="#FFD23F" opacity="0.2"/>
+            <circle cx="40" cy="30" r="14" fill="#1A1A1A" opacity="0.7"/>
+            <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A1A1A" opacity="0.7"/>
+            <circle cx="35" cy="28" r="2" fill="#F5F0E8"/>
+            <circle cx="45" cy="28" r="2" fill="#F5F0E8"/>
+            <path d="M34 35 Q40 39 46 35" stroke="#F5F0E8" stroke-width="1.5" fill="none"/>
+            <polygon points="40,6 48,18 32,18" fill="#E84393" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="printer-name">Sam Rivera</div>
+        <div class="printer-role">Screenprint Storyteller</div>
+        <p class="printer-bio">Sam's hand-pulled screenprints feature bold, narrative illustrations drawn from family history and immigrant experiences. Their studio, Tinta Colectiva, hosts weekly print nights.</p>
+        <div class="printer-tags">
+          <span class="printer-tag">Screenprint</span>
+          <span class="printer-tag">Illustration</span>
+          <span class="printer-tag">Community</span>
+        </div>
+      </div>
+
+      <!-- Printer 4 -->
+      <div class="printer-card reveal reveal-delay-1">
+        <div class="printer-avatar">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="80" fill="#7ED4A6" opacity="0.2"/>
+            <circle cx="40" cy="30" r="14" fill="#1A1A1A" opacity="0.7"/>
+            <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A1A1A" opacity="0.7"/>
+            <circle cx="35" cy="28" r="2" fill="#F5F0E8"/>
+            <circle cx="45" cy="28" r="2" fill="#F5F0E8"/>
+            <path d="M33 34 Q40 38 47 34" stroke="#F5F0E8" stroke-width="1.5" fill="none"/>
+            <rect x="22" y="10" width="36" height="10" rx="5" fill="#2D5BFF" opacity="0.4"/>
+            <circle cx="30" cy="15" r="3" fill="#FFD23F" opacity="0.5"/>
+            <circle cx="50" cy="15" r="3" fill="#FF6B6B" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="printer-name">Aisha Patel</div>
+        <div class="printer-role">Zine Architect</div>
+        <p class="printer-bio">Aisha builds elaborate zine structures that fold, unfold, and surprise. Her "Paper Palaces" series has been exhibited in galleries across three continents. She teaches zine workshops year-round.</p>
+        <div class="printer-tags">
+          <span class="printer-tag">Zines</span>
+          <span class="printer-tag">Bookbinding</span>
+          <span class="printer-tag">Collage</span>
+        </div>
+      </div>
+
+      <!-- Printer 5 -->
+      <div class="printer-card reveal reveal-delay-2">
+        <div class="printer-avatar">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="80" fill="#E84393" opacity="0.2"/>
+            <circle cx="40" cy="30" r="14" fill="#1A1A1A" opacity="0.7"/>
+            <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A1A1A" opacity="0.7"/>
+            <circle cx="35" cy="28" r="2" fill="#F5F0E8"/>
+            <circle cx="45" cy="28" r="2" fill="#F5F0E8"/>
+            <path d="M34 35 Q40 38 46 35" stroke="#F5F0E8" stroke-width="1.5" fill="none"/>
+            <rect x="28" y="6" width="24" height="12" rx="2" fill="#00B894" opacity="0.5"/>
+            <line x1="32" y1="12" x2="48" y2="12" stroke="#F5F0E8" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="printer-name">Jun Park</div>
+        <div class="printer-role">Lithography Dreamer</div>
+        <p class="printer-bio">Jun's stone lithographs capture the liminal spaces between memory and landscape. Working at Moonstone Press, she mentors emerging artists in the ancient art of hand-pulled stone printing.</p>
+        <div class="printer-tags">
+          <span class="printer-tag">Lithography</span>
+          <span class="printer-tag">Landscape</span>
+          <span class="printer-tag">Mentorship</span>
+        </div>
+      </div>
+
+      <!-- Printer 6 -->
+      <div class="printer-card reveal reveal-delay-3">
+        <div class="printer-avatar">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="80" fill="#00B894" opacity="0.2"/>
+            <circle cx="40" cy="30" r="14" fill="#1A1A1A" opacity="0.7"/>
+            <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A1A1A" opacity="0.7"/>
+            <circle cx="35" cy="28" r="2" fill="#F5F0E8"/>
+            <circle cx="45" cy="28" r="2" fill="#F5F0E8"/>
+            <path d="M33 36 Q40 32 47 36" stroke="#F5F0E8" stroke-width="1.5" fill="none"/>
+            <circle cx="40" cy="10" r="8" fill="none" stroke="#FF6B6B" stroke-width="2" opacity="0.5"/>
+            <circle cx="40" cy="10" r="3" fill="#FFD23F" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="printer-name">Rosa Martinez</div>
+        <div class="printer-role">DIY Press Pioneer</div>
+        <p class="printer-bio">Rosa built her entire print studio from salvaged materials and teaches others to do the same. Her "Garage Press" workshops have launched dozens of independent print practices across the tri-state area.</p>
+        <div class="printer-tags">
+          <span class="printer-tag">DIY</span>
+          <span class="printer-tag">Education</span>
+          <span class="printer-tag">Mixed Media</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== VENUE MAP ========== -->
+<section class="venue-section section-pad" id="venue" aria-labelledby="venue-heading">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="overline">Find Us</span>
+      <h2 id="venue-heading">The Venue</h2>
+      <p>A converted textile factory in the heart of Brooklyn's printing district.</p>
+    </div>
+
+    <div class="venue-grid">
+      <div class="venue-map reveal">
+        <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Venue floor plan showing different areas of The Print House Collective">
+          <!-- Background -->
+          <rect width="500" height="400" fill="#F5F0E8"/>
+          
+          <!-- Outer walls -->
+          <rect x="20" y="20" width="460" height="360" fill="none" stroke="#1A1A1A" stroke-width="3"/>
+          
+          <!-- Building label -->
+          <text x="250" y="48" text-anchor="middle" font-family="'Playfair Display', serif" font-weight="900" font-size="14" fill="#1A1A1A">THE PRINT HOUSE COLLECTIVE</text>
+          
+          <!-- Main Hall -->
+          <rect x="40" y="70" width="200" height="160" fill="#FF6B6B" opacity="0.15" stroke="#1A1A1A" stroke-width="1.5"/>
+          <text x="140" y="140" text-anchor="middle" font-family="'DM Sans', sans-serif" font-weight="700" font-size="12" fill="#1A1A1A">MAIN HALL</text>
+          <text x="140" y="158" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#1A1A1A" opacity="0.5">Talks · Parties · Trading</text>
+          <!-- Main Hall dots pattern -->
+          <g opacity="0.1">
+            <circle cx="60" cy="85" r="2" fill="#1A1A1A"/><circle cx="80" cy="85" r="2" fill="#1A1A1A"/><circle cx="100" cy="85" r="2" fill="#1A1A1A"/>
+            <circle cx="60" cy="100" r="2" fill="#1A1A1A"/><circle cx="80" cy="100" r="2" fill="#1A1A1A"/><circle cx="100" cy="100" r="2" fill="#1A1A1A"/>
+            <circle cx="60" cy="115" r="2" fill="#1A1A1A"/><circle cx="80" cy="115" r="2" fill="#1A1A1A"/><circle cx="100" cy="115" r="2" fill="#1A1A1A"/>
+          </g>
+          
+          <!-- Studio A -->
+          <rect x="260" y="70" width="200" height="100" fill="#2D5BFF" opacity="0.12" stroke="#1A1A1A" stroke-width="1.5"/>
+          <text x="360" y="115" text-anchor="middle" font-family="'DM Sans', sans-serif" font-weight="700" font-size="12" fill="#1A1A1A">STUDIO A</text>
+          <text x="360" y="131" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#1A1A1A" opacity="0.5">Risograph · Workshops</text>
+          
+          <!-- Studio B -->
+          <rect x="260" y="180" width="200" height="50" fill="#7ED4A6" opacity="0.15" stroke="#1A1A1A" stroke-width="1.5"/>
+          <text x="360" y="208" text-anchor="middle" font-family="'DM Sans', sans-serif" font-weight="700" font-size="11" fill="#1A1A1A">STUDIO B</text>
+          <text x="360" y="222" text-anchor="middle" font-family="'Space Mono', monospace" font-size="7" fill="#1A1A1A" opacity="0.5">Zine · Collage</text>
+          
+          <!-- Press Room -->
+          <rect x="40" y="250" width="140" height="110" fill="#FFD23F" opacity="0.15" stroke="#1A1A1A" stroke-width="1.5"/>
+          <text x="110" y="300" text-anchor="middle" font-family="'DM Sans', sans-serif" font-weight="700" font-size="12" fill="#1A1A1A">PRESS ROOM</text>
+          <text x="110" y="316" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#1A1A1A" opacity="0.5">Letterpress · Litho</text>
+          
+          <!-- Courtyard -->
+          <rect x="200" y="250" width="120" height="110" fill="#E84393" opacity="0.1" stroke="#1A1A1A" stroke-width="1.5"/>
+          <text x="260" y="300" text-anchor="middle" font-family="'DM Sans', sans-serif" font-weight="700" font-size="12" fill="#1A1A1A">COURTYARD</text>
+          <text x="260" y="316" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#1A1A1A" opacity="0.5">Lunch · Social</text>
+          
+          <!-- Poster Shop -->
+          <rect x="340" y="250" width="120" height="110" fill="#00B894" opacity="0.12" stroke="#1A1A1A" stroke-width="1.5"/>
+          <text x="400" y="300" text-anchor="middle" font-family="'DM Sans', sans-serif" font-weight="700" font-size="12" fill="#1A1A1A">POSTER SHOP</text>
+          <text x="400" y="316" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#1A1A1A" opacity="0.5">Buy · Trade · Sell</text>
+          
+          <!-- Entrance arrow -->
+          <polygon points="250,395 240,380 260,380" fill="#1A1A1A"/>
+          <text x="250" y="392" text-anchor="middle" font-family="'Space Mono', monospace" font-size="7" fill="#1A1A1A">ENTRANCE</text>
+          
+          <!-- Decorative elements -->
+          <circle cx="480" cy="30" r="8" fill="none" stroke="#FF6B6B" stroke-width="1.5" opacity="0.4"/>
+          <circle cx="20" cy="380" r="6" fill="none" stroke="#2D5BFF" stroke-width="1.5" opacity="0.4"/>
+          
+          <!-- Compass rose -->
+          <g transform="translate(460, 360)">
+            <line x1="0" y1="-15" x2="0" y2="15" stroke="#1A1A1A" stroke-width="1"/>
+            <line x1="-15" y1="0" x2="15" y2="0" stroke="#1A1A1A" stroke-width="1"/>
+            <text x="0" y="-18" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#1A1A1A">N</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="venue-info reveal reveal-delay-2">
+        <h3>The Print House Collective</h3>
+        <p>A sprawling 15,000 sq ft converted textile factory on Paper Mill Road, our venue has been home to independent printers since 1987. Exposed brick, skylights, and the ever-present scent of ink make it the perfect setting for INK WEATHER.</p>
+        
+        <ul class="venue-details">
+          <li>
+            <span class="detail-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#1A1A1A" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            September 13–14, 2025 · 9 AM – 9 PM
+          </li>
+          <li>
+            <span class="detail-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C6.13 2 3 5.13 3 9c0 5.25 7 9 7 9s7-3.75 7-9c0-3.87-3.13-7-7-7z" stroke="#1A1A1A" stroke-width="1.5"/><circle cx="10" cy="9" r="2.5" stroke="#1A1A1A" stroke-width="1.5"/></svg>
+            </span>
+            420 Paper Mill Road, Brooklyn, NY 11237
+          </li>
+          <li>
+            <span class="detail-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#1A1A1A" stroke-width="1.5"/><path d="M3 7h14" stroke="#1A1A1A" stroke-width="1.5"/></svg>
+            </span>
+            Nearest subway: L train to Myrtle-Wyckoff
+          </li>
+          <li>
+            <span class="detail-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            Wheelchair accessible · Gender-neutral restrooms
+          </li>
+          <li>
+            <span class="detail-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 15l5-10 5 10" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 11h6" stroke="#1A1A1A" stroke-width="1.5"/></svg>
+            </span>
+            Parking available on Paper Mill &amp; surrounding streets
+          </li>
+        </ul>
+
+        <a href="#" class="btn-primary" style="margin-top:8px;">Get Directions</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== POSTER SHOP ========== -->
+<section class="shop-section section-pad" id="shop" aria-labelledby="shop-heading">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="overline">Limited Edition</span>
+      <h2 id="shop-heading">Poster Shop</h2>
+      <p>Hand-pulled, limited-edition prints from our featured artists. Each one unique.</p>
+    </div>
+
+    <div class="shop-grid">
+      <!-- Poster 1 -->
+      <div class="poster-card reveal reveal-delay-1">
+        <div class="poster-art">
+          <canvas id="poster1" width="300" height="400"></canvas>
+        </div>
+        <div class="poster-info">
+          <div class="poster-title">Urban Frequency #3</div>
+          <div class="poster-artist">Maya Chen</div>
+          <div class="poster-price">$35</div>
+          <div class="poster-edition">Ed. of 50 · Risograph on 120gsm</div>
+        </div>
+      </div>
+
+      <!-- Poster 2 -->
+      <div class="poster-card reveal reveal-delay-2">
+        <div class="poster-art">
+          <canvas id="poster2" width="300" height="400"></canvas>
+        </div>
+        <div class="poster-info">
+          <div class="poster-title">Slow Type No. 47</div>
+          <div class="poster-artist">Leo Okonkwo</div>
+          <div class="poster-price">$45</div>
+          <div class="poster-edition">Ed. of 30 · Letterpress on cotton</div>
+        </div>
+      </div>
+
+      <!-- Poster 3 -->
+      <div class="poster-card reveal reveal-delay-3">
+        <div class="poster-art">
+          <canvas id="poster3" width="300" height="400"></canvas>
+        </div>
+        <div class="poster-info">
+          <div class="poster-title">Raíces / Roots</div>
+          <div class="poster-artist">Sam Rivera</div>
+          <div class="poster-price">$40</div>
+          <div class="poster-edition">Ed. of 40 · Screenprint on newsprint</div>
+        </div>
+      </div>
+
+      <!-- Poster 4 -->
+      <div class="poster-card reveal reveal-delay-4">
+        <div class="poster-art">
+          <canvas id="poster4" width="300" height="400"></canvas>
+        </div>
+        <div class="poster-info">
+          <div class="poster-title">Paper Palace VII</div>
+          <div class="poster-artist">Aisha Patel</div>
+          <div class="poster-price">$50</div>
+          <div class="poster-edition">Ed. of 25 · Risograph + hand-color</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== QUOTES ========== -->
+<section class="quotes-section section-pad" id="quotes" aria-labelledby="quotes-heading">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="overline">Past Attendees Say</span>
+      <h2 id="quotes-heading">The Word on the Street</h2>
+    </div>
+
+    <div class="quotes-grid">
+      <div class="quote-card reveal reveal-delay-1">
+        <span class="quote-mark" aria-hidden="true">"</span>
+        <p class="quote-text">INK WEATHER is the only event where I've seen a complete stranger hand me a risograph zine and genuinely explain every color separation. Magic.</p>
+        <div class="quote-author">Tariq Hassan</div>
+        <div class="quote-role">Graphic Designer, Portland</div>
+      </div>
+
+      <div class="quote-card reveal reveal-delay-2">
+        <span class="quote-mark" aria-hidden="true">"</span>
+        <p class="quote-text">I came for the workshops, stayed for the community. The smell of ink in that space on Saturday night — I'll never forget it. Already got my ticket for next year.</p>
+        <div class="quote-author">Elena Vasquez</div>
+        <div class="quote-role">Zine Maker, Austin</div>
+      </div>
+
+      <div class="quote-card reveal reveal-delay-3">
+        <span class="quote-mark" aria-hidden="true">"</span>
+        <p class="quote-text">The poster trading session alone is worth the admission. I left with a stack of prints from artists I'd never heard of and now can't stop thinking about.</p>
+        <div class="quote-author">Marcus Lee</div>
+        <div class="quote-role">Print Collector, Chicago</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section class="faq-section section-pad" id="faq" aria-labelledby="faq-heading">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="overline">Questions &amp; Answers</span>
+      <h2 id="faq-heading">FAQ</h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+          Do I need any printing experience to attend?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><p>Not at all! INK WEATHER is designed for everyone from complete beginners to seasoned printers. Our workshops are structured to welcome first-timers, and our community is known for being incredibly supportive and patient.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+          Are materials included in the ticket price?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><p>Yes! All workshop materials — paper, ink, screens, risograph runs — are included. You'll leave with your own printed pieces. We ask that you bring any personal tools you prefer, but everything essential is provided.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+          Can I sell my own prints at the fair?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><p>Vendor applications open in June! We have 20 vendor tables available for independent printers, zine makers, and paper suppliers. Apply through our website — we review applications on a rolling basis.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+          Is the venue accessible?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><p>Yes. The Print House Collective is fully wheelchair accessible with ramp access, wide doorways, and gender-neutral accessible restrooms. Please contact us with any specific accessibility needs and we'll make sure you're taken care of.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+          What's the refund policy?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><p>Full refunds are available up to 30 days before the event. Within 30 days, tickets can be transferred to another person. If we cancel the event, all tickets will be refunded in full. No questions asked.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+          Can kids attend?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer"><p>Kids under 12 are free when accompanied by an adult. We'll have a dedicated kids' print area with age-appropriate activities. Some workshops are 16+ due to equipment, but most are all-ages friendly.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== NEWSLETTER ========== -->
+<section class="newsletter-section section-pad" id="newsletter" aria-labelledby="newsletter-heading">
+  <div class="newsletter-deco newsletter-deco-1" aria-hidden="true"></div>
+  <div class="newsletter-deco newsletter-deco-2" aria-hidden="true"></div>
+  <div class="container">
+    <div class="newsletter-inner reveal">
+      <h2 id="newsletter-heading">Stay in the Loop</h2>
+      <p>Get early ticket access, workshop announcements, and ink-stained updates delivered to your inbox.</p>
+      <form class="newsletter-form" onsubmit="handleNewsletter(event)" aria-label="Newsletter signup">
+        <input type="email" placeholder="your@email.com" required aria-label="Email address">
+        <button type="submit">Subscribe</button>
+      </form>
+      <p id="newsletter-msg" style="margin-top:16px;font-family:var(--font-mono);font-size:0.8rem;color:var(--mint-dark);display:none;">✓ You're in! Watch your inbox for ink-stained updates.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer role="contentinfo">
+  <div class="footer-roller" aria-hidden="true">
+    <div class="footer-roller-inner">
+      <span>INK WEATHER</span><span>INK WEATHER</span><span>INK WEATHER</span><span>INK WEATHER</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="ink-dot" aria-hidden="true"></span>
+          INK WEATHER
+        </div>
+        <p>A joyful celebration of independent printing, risograph culture, and the beautiful imperfections of handmade work. Brooklyn, NY.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#schedule">Schedule</a></li>
+          <li><a href="#printers">Printers</a></li>
+          <li><a href="#venue">Venue</a></li>
+          <li><a href="#shop">Poster Shop</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Twitter / X</a></li>
+          <li><a href="#">Newsletter</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="#">Accessibility</a></li>
+          <li><a href="#">Vendor Applications</a></li>
+          <li><a href="#">Press Kit</a></li>
+          <li><a href="#">Volunteer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 INK WEATHER. All rights reserved. Made with ink, paper &amp; love.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Code of Conduct</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+// ===== SCROLL REVEAL =====
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ===== NAV HIDE/SHOW ON SCROLL =====
+let lastScroll = 0;
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  const current = window.pageYOffset;
+  if (current > lastScroll && current > 100) {
+    nav.classList.add('nav-hidden');
+  } else {
+    nav.classList.remove('nav-hidden');
+  }
+  lastScroll = current;
+});
+
+// ===== SCHEDULE TABS =====
+function switchDay(day, btn) {
+  document.querySelectorAll('.schedule-grid').forEach(g => g.style.display = 'none');
+  document.getElementById(day).style.display = 'grid';
+  document.querySelectorAll('.schedule-tab').forEach(t => {
+    t.classList.remove('active');
+    t.setAttribute('aria-selected', 'false');
+  });
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
+}
+
+// ===== FAQ TOGGLE =====
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  
+  // Close all
+  document.querySelectorAll('.faq-item').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+  });
+  
+  if (!isOpen) {
+    item.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+// ===== NEWSLETTER =====
+function handleNewsletter(e) {
+  e.preventDefault();
+  document.getElementById('newsletter-msg').style.display = 'block';
+  e.target.querySelector('input').value = '';
+}
+
+// ===== INK CANVAS ANIMATION =====
+(function() {
+  const canvas = document.getElementById('inkCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+  
+  const colors = [
+    { r: 45, g: 91, b: 255 },   // cobalt
+    { r: 255, g: 107, b: 107 },  // coral
+    { r: 255, g: 210, b: 63 },   // sunflower
+    { r: 126, g: 212, b: 166 },  // mint
+  ];
+  
+  let time = 0;
+  const layers = colors.map((c, i) => ({
+    color: c,
+    offsetX: Math.sin(i * 1.5) * 30,
+    offsetY: Math.cos(i * 1.5) * 30,
+    scale: 0.8 + i * 0.08,
+    rotation: i * 0.15,
+    shapes: []
+  }));
+  
+  // Generate shapes for each layer
+  layers.forEach((layer, li) => {
+    const numShapes = 8 + li * 3;
+    for (let j = 0; j < numShapes; j++) {
+      layer.shapes.push({
+        type: Math.random() > 0.5 ? 'circle' : 'rect',
+        x: Math.random() * w,
+        y: Math.random() * h,
+        size: 30 + Math.random() * 120,
+        rotation: Math.random() * Math.PI * 2,
+        speed: 0.2 + Math.random() * 0.5,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  });
+  
+  // Add some halftone dots
+  const dots = [];
+  for (let i = 0; i < 200; i++) {
+    dots.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 1 + Math.random() * 3,
+      opacity: 0.1 + Math.random() * 0.3
+    });
+  }
+  
+  function draw() {
+    time += 0.005;
+    ctx.clearRect(0, 0, w, h);
+    
+    // Paper background
+    ctx.fillStyle = '#F5F0E8';
+    ctx.fillRect(0, 0, w, h);
+    
+    // Draw halftone dots
+    dots.forEach(d => {
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(26,26,26,${d.opacity * 0.3})`;
+      ctx.fill();
+    });
+    
+    // Draw each ink layer with slight offset animation
+    layers.forEach((layer, li) => {
+      const ox = Math.sin(time * layer.shapes[0].speed + li) * 8;
+      const oy = Math.cos(time * layer.shapes[0].speed + li * 0.7) * 8;
+      
+      ctx.save();
+      ctx.globalAlpha = 0.25 + Math.sin(time + li) * 0.05;
+      
+      layer.shapes.forEach(shape => {
+        const sx = shape.x + ox + Math.sin(time * shape.speed + shape.phase) * 15;
+        const sy = shape.y + oy + Math.cos(time * shape.speed + shape.phase) * 15;
+        
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.rotate(shape.rotation + time * 0.1 * (li % 2 === 0 ? 1 : -1));
+        
+        ctx.fillStyle = `rgb(${layer.color.r},${layer.color.g},${layer.color.b})`;
+        
+        if (shape.type === 'circle') {
+          ctx.beginPath();
+          ctx.arc(0, 0, shape.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-shape.size / 2, -shape.size / 2, shape.size, shape.size * 0.7);
+        }
+        
+        ctx.restore();
+      });
+      
+      ctx.restore();
+    });
+    
+    // Draw some text-like elements
+    ctx.save();
+    ctx.globalAlpha = 0.08;
+    ctx.font = 'bold 60px "Playfair Display", serif';
+    ctx.fillStyle = '#1A1A1A';
+    ctx.translate(w/2 + Math.sin(time) * 10, h/2 + Math.cos(time * 0.7) * 10);
+    ctx.rotate(Math.sin(time * 0.3) * 0.05);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('INK', 0, -30);
+    ctx.fillText('WEATHER', 0, 40);
+    ctx.restore();
+    
+    // Border
+    ctx.strokeStyle = '#1A1A1A';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(0, 0, w, h);
+    
+    requestAnimationFrame(draw);
+  }
+  
+  draw();
+})();
+
+// ===== POSTER ART GENERATION =====
+function generatePoster(canvasId, config) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+  
+  // Paper background
+  ctx.fillStyle = '#F5F0E8';
+  ctx.fillRect(0, 0, w, h);
+  
+  // Halftone overlay
+  for (let x = 0; x < w; x += 8) {
+    for (let y = 0; y < h; y += 8) {
+      ctx.beginPath();
+      ctx.arc(x, y, 1, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(26,26,26,0.06)';
+      ctx.fill();
+    }
+  }
+  
+  // Background color layer
+  ctx.fillStyle = config.bgColor;
+  ctx.globalAlpha = 0.15;
+  ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = 1;
+  
+  // Draw shapes
+  config.shapes.forEach(shape => {
+    ctx.save();
+    ctx.translate(shape.x, shape.y);
+    if (shape.rotation) ctx.rotate(shape.rotation);
+    ctx.fillStyle = shape.color;
+    ctx.globalAlpha = shape.opacity || 0.5;
+    
+    if (shape.type === 'circle') {
+      ctx.beginPath();
+      ctx.arc(0, 0, shape.r, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (shape.type === 'rect') {
+      ctx.fillRect(-shape.w/2, -shape.h/2, shape.w, shape.h);
+    } else if (shape.type === 'line') {
+      ctx.strokeStyle = shape.color;
+      ctx.lineWidth = shape.lineWidth || 3;
+      ctx.beginPath();
+      ctx.moveTo(shape.x1 || -shape.w/2, shape.y1 || 0);
+      ctx.lineTo(shape.x2 || shape.w/2, shape.y2 || 0);
+      ctx.stroke();
+    } else if (shape.type === 'dots') {
+      for (let i = 0; i < shape.count; i++) {
+        ctx.beginPath();
+        ctx.arc(
+          (Math.random() - 0.5) * shape.spread,
+          (Math.random() - 0.5) * shape.spread,
+          shape.dotR, 0, Math.PI * 2
+        );
+        ctx.fill();
+      }
+    }
+    
+    ctx.restore();
+  });
+  
+  // Text
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#1A1A1A';
+  ctx.font = `bold ${config.titleSize || 36}px "Playfair Display", serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(config.title, w/2, config.titleY || h/2);
+  
+  if (config.subtitle) {
+    ctx.font = `${config.subtitleSize || 14}px "Space Mono", monospace`;
+    ctx.globalAlpha = 0.6;
+    ctx.fillText(config.subtitle, w/2, config.subtitleY || h/2 + 30);
+  }
+  
+  // Border
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = '#1A1A1A';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(0, 0, w, h);
+  
+  // Misregistration effect - offset colored borders
+  ctx.globalAlpha = 0.2;
+  ctx.strokeStyle = config.regColor1 || '#FF6B6B';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(-2, -1, w, h);
+  
+  ctx.globalAlpha = 0.15;
+  ctx.strokeStyle = config.regColor2 || '#2D5BFF';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(2, 1, w, h);
+}
+
+// Poster 1: Urban Frequency
+generatePoster('poster1', {
+  bgColor: '#2D5BFF',
+  title: 'URBAN\nFREQUENCY',
+  titleSize: 32,
+  titleY: 180,
+  subtitle: 'RISO ZINE #003',
+  subtitleSize: 12,
+  subtitleY: 210,
+  regColor1: '#FF6B6B',
+  regColor2: '#FFD23F',
+  shapes: [
+    { type: 'circle', x: 150, y: 100, r: 80, color: '#2D5BFF', opacity: 0.4 },
+    { type: 'circle', x: 180, y: 130, r: 60, color: '#FF6B6B', opacity: 0.3 },
+    { type: 'rect', x: 100, y: 280, w: 100, h: 4, color: '#1A1A1A', opacity: 0.8 },
+    { type: 'rect', x: 120, y: 290, w: 60, h: 3, color: '#FFD23F', opacity: 0.6 },
+    { type: 'dots', x: 150, y: 320, count: 30, spread: 120, dotR: 2, color: '#2D5BFF', opacity: 0.3 },
+    { type: 'circle', x: 50, y: 350, r: 20, color: '#FFD23F', opacity: 0.5 },
+    { type: 'circle', x: 250, y: 50, r: 15, color: '#FF6B6B', opacity: 0.4 },
+  ]
+});
+
+// Poster 2: Slow Type
+generatePoster('poster2', {
+  bgColor: '#FFD23F',
+  title: 'SLOW\nTYPE',
+  titleSize: 40,
+  titleY: 170,
+  subtitle: 'NO. 47 — COTTON STOCK',
+  subtitleSize: 11,
+  subtitleY: 205,
+  regColor1: '#7ED4A6',
+  regColor2: '#E84393',
+  shapes: [
+    { type: 'rect', x: 150, y: 100, w: 200, h: 2, color: '#1A1A1A', opacity: 0.6 },
+    { type: 'rect', x: 150, y: 240, w: 200, h: 2, color: '#1A1A1A', opacity: 0.6 },
+    { type: 'circle', x: 150, y: 170, r: 50, color: '#2D5BFF', opacity: 0.15 },
+    { type: 'rect', x: 80, y: 300, w: 40, h: 40, color: '#FF6B6B', opacity: 0.3 },
+    { type: 'rect', x: 220, y: 300, w: 40, h: 40, color: '#7ED4A6', opacity: 0.3 },
+    { type: 'line', x: 150, y: 340, x1: -80, x2: 80, y1: 0, y2: 0, color: '#1A1A1A', opacity: 0.4, lineWidth: 2 },
+    { type: 'dots', x: 150, y: 350, count: 20, spread: 100, dotR: 1.5, color: '#1A1A1A', opacity: 0.2 },
+  ]
+});
+
+// Poster 3: Raíces
+generatePoster('poster3', {
+  bgColor: '#E84393',
+  title: 'RAÍCES',
+  titleSize: 44,
+  titleY: 160,
+  subtitle: 'ROOTS — SCREENPRINT',
+  subtitleSize: 12,
+  subtitleY: 195,
+  regColor1: '#FFD23F',
+  regColor2: '#2D5BFF',
+  shapes: [
+    { type: 'circle', x: 150, y: 120, r: 100, color: '#E84393', opacity: 0.2 },
+    { type: 'circle', x: 150, y: 120, r: 70, color: '#FFD23F', opacity: 0.25 },
+    { type: 'circle', x: 150, y: 120, r: 40, color: '#2D5BFF', opacity: 0.2 },
+    { type: 'rect', x: 150, y: 250, w: 140, h: 3, color: '#1A1A1A', opacity: 0.7 },
+    { type: 'rect', x: 150, y: 260, w: 80, h: 2, color: '#1A1A1A', opacity: 0.5 },
+    { type: 'circle', x: 60, y: 340, r: 25, color: '#7ED4A6', opacity: 0.4 },
+    { type: 'circle', x: 240, y: 340, r: 25, color: '#FF6B6B', opacity: 0.4 },
+    { type: 'dots', x: 150, y: 350, count: 40, spread: 140, dotR: 2, color: '#E84393', opacity: 0.2 },
+  ]
+});
+
+// Poster 4: Paper Palace
+generatePoster('poster4', {
+  bgColor: '#7ED4A6',
+  title: 'PAPER\nPALACE',
+  titleSize: 36,
+  titleY: 170,
+  subtitle: 'VII — HAND-COLORED RISO',
+  subtitleSize: 11,
+  subtitleY: 205,
+  regColor1: '#FF6B6B',
+  regColor2: '#FFD23F',
+  shapes: [
+    { type: 'rect', x: 150, y: 80, w: 60, h: 80, color: '#7ED4A6', opacity: 0.3, rotation: 0.2 },
+    { type: 'rect', x: 120, y: 100, w: 50, h: 60, color: '#FFD23F', opacity: 0.3, rotation: -0.15 },
+    { type: 'rect', x: 180, y: 90, w: 55, h: 70, color: '#2D5BFF', opacity: 0.25, rotation: 0.1 },
+    { type: 'rect', x: 150, y: 250, w: 120, h: 2, color: '#1A1A1A', opacity: 0.6 },
+    { type: 'circle', x: 80, y: 320, r: 30, color: '#FF6B6B', opacity: 0.25 },
+    { type: 'circle', x: 220, y: 320, r: 25, color: '#2D5BFF', opacity: 0.25 },
+    { type: 'dots', x: 150, y: 350, count: 25, spread: 120, dotR: 2, color: '#7ED4A6', opacity: 0.3 },
+    { type: 'line', x: 150, y: 340, x1: -60, x2: 60, y1: 0, y2: 0, color: '#1A1A1A', opacity: 0.3, lineWidth: 1 },
+  ]
+});
+
+// ===== SMOOTH SCROLL FOR NAV LINKS =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Close mobile nav if open
+      document.querySelector('.nav-links').classList.remove('open');
+    }
+  });
+});
+
+// ===== CLOSE MOBILE NAV ON OUTSIDE CLICK =====
+document.addEventListener('click', (e) => {
+  const nav = document.querySelector('.nav-links');
+  const toggle = document.querySelector('.nav-toggle');
+  if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+    nav.classList.remove('open');
+  }
+});
+</script>
+
+</body>
+</html>

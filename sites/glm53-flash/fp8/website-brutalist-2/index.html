@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCRETE INDEX — Civic Architecture, Indexed</title>
+<meta name="description" content="CONCRETE INDEX — an independent archive of remarkable civic architecture and public infrastructure. Drawings only. No photographs. No sponsors.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ FOUNDATION ============ */
+:root{
+  --ink:#12110F; --paper:#EAE6DD; --paper2:#DDD8CB; --orange:#FF4D00; --blue:#1B36FF;
+  --pad:clamp(18px,4vw,52px);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  --disp:'Anton',Impact,'Arial Narrow',sans-serif;
+  --body:'Archivo',Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);color:var(--ink);
+  font:400 16px/1.55 var(--body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip;padding-top:56px;
+}
+/* exposed structural grid over the whole document */
+.gridlines{position:fixed;inset:0;z-index:60;pointer-events:none;
+  background-image:linear-gradient(90deg,rgba(18,17,15,.07) 1px,transparent 1px);
+  background-size:calc(100%/12) 100%;}
+/* concrete grain, everywhere */
+body::after{content:"";position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.34;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");}
+::selection{background:var(--orange);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{display:block}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+section{scroll-margin-top:70px;position:relative;border-bottom:3px solid var(--ink)}
+.px{padding-inline:var(--pad)}
+.mono{font-family:var(--mono)}
+
+/* ============ MASTHEAD ============ */
+.hazard{position:fixed;top:0;left:0;right:0;height:8px;z-index:101;
+  background:repeating-linear-gradient(-45deg,var(--orange) 0 14px,var(--ink) 14px 28px)}
+.mast{position:fixed;top:8px;left:0;right:0;z-index:100;background:var(--paper);border-bottom:2px solid var(--ink)}
+.mast-in{display:flex;align-items:stretch;height:46px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 16px;border-right:2px solid var(--ink);
+  font-family:var(--disp);font-size:19px;letter-spacing:.02em;white-space:nowrap}
+.bsq{width:12px;height:12px;background:var(--orange);flex:none}
+.mnav{flex:1;display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none}
+.mnav::-webkit-scrollbar{display:none}
+.mnav a{display:flex;align-items:center;padding:0 15px;border-right:1px solid rgba(18,17,15,.25);
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;white-space:nowrap}
+@media(hover:hover){.mnav a:hover{background:var(--ink);color:var(--paper)}}
+.mmeta{display:flex}
+.mbox{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 14px;border-left:2px solid var(--ink);
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;line-height:1.3;white-space:nowrap}
+.mbox b{font-size:12px;letter-spacing:.05em}
+.m-issue{background:var(--ink);color:var(--paper)}
+.m-issue b{color:var(--orange)}
+.flip{animation:flip .3s steps(2,end) 1}
+@keyframes flip{0%{background:var(--orange);color:var(--ink)}100%{background:transparent}}
+@media(max-width:900px){.brand{font-size:16px}.mbox{padding:0 9px}}
+@media(max-width:640px){.m-rec{display:none}}
+@media(max-width:480px){.m-clock{display:none}}
+
+/* ============ HERO ============ */
+.hero{min-height:calc(100vh - 56px);min-height:calc(100svh - 56px);border-bottom:0;
+  display:flex;flex-direction:column;justify-content:flex-end;cursor:crosshair;overflow:hidden}
+.hero-layer{position:absolute;inset:0;pointer-events:none;will-change:transform}
+.l-plan{opacity:.8}
+.l-plan svg{width:100%;height:100%}
+.l-struct{top:auto;height:min(66vh,560px);bottom:118px;right:0;width:min(760px,96vw)}
+.l-struct svg{width:100%;height:100%}
+.l-marks .reg{position:absolute;width:22px;height:22px;color:var(--ink)}
+.reg-tl{top:16px;left:16px}.reg-tr{top:16px;right:16px}.reg-bl{bottom:16px;left:16px}.reg-br{bottom:16px;right:16px}
+.sheet-tag{position:absolute;top:52px;left:16px;border:1.5px solid var(--ink);background:var(--paper);
+  padding:5px 9px;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.16em}
+.blink-sq{display:inline-block;width:8px;height:8px;background:var(--orange);vertical-align:middle;animation:blk 1.1s steps(2,end) infinite}
+@keyframes blk{50%{opacity:0}}
+.axis{position:absolute;top:90px;right:64px;bottom:180px;width:0;border-left:2px dashed var(--orange)}
+.axis span{position:absolute;top:-2px;left:8px;font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--orange);font-weight:700}
+/* crosshair */
+.xh{position:absolute;inset:0;z-index:4;pointer-events:none}
+.xh-v,.xh-h{position:absolute;background:rgba(18,17,15,.65)}
+.xh-v{top:0;bottom:0;left:0;width:1px}
+.xh-h{left:0;right:0;top:0;height:1px}
+.xh-tag{position:absolute;top:0;left:0;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);
+  padding:3px 8px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;white-space:nowrap}
+/* hero content */
+.hero-in{position:relative;z-index:5;padding:calc(56px + clamp(14px,3vw,40px)) var(--pad) 0}
+.kick{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.22em}
+.ksq{width:9px;height:9px;background:var(--orange);flex:none}
+.hero h1{font-family:var(--disp);font-size:clamp(4.1rem,16.5vw,15.5rem);line-height:.84;text-transform:uppercase;margin-top:14px}
+.hero h1 span{display:block}
+.t2{-webkit-text-stroke:2.5px var(--ink);color:transparent;transition:none}
+@supports not (-webkit-text-stroke:1px #000){.t2{color:var(--ink)}}
+@media(hover:hover){.hero h1:hover .t2{color:var(--orange);-webkit-text-stroke-color:var(--ink)}}
+.tsq{display:inline-block;width:.13em;height:.13em;background:var(--orange);margin-left:.06em}
+.hero-sub{max-width:62ch;margin-top:20px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;line-height:1.7;text-transform:uppercase}
+.hero-data{position:relative;z-index:5;margin-top:clamp(26px,5vh,54px);border-top:2px solid var(--ink);display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper)}
+.hero-data .hd{padding:13px 18px 15px;border-left:1px solid var(--ink)}
+.hero-data .hd:first-child{border-left:0}
+.hero-data span{display:block;font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.2em;opacity:.65}
+.hero-data b{display:block;margin-top:5px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.04em}
+#bigCount{font-family:var(--disp);font-size:clamp(24px,3vw,34px);letter-spacing:.02em;line-height:1}
+.hd-scroll b{display:flex;align-items:center;justify-content:space-between}
+.hd-scroll svg{width:17px;height:17px;animation:nod 1.6s steps(3,end) infinite}
+@keyframes nod{50%{transform:translateY(5px)}}
+.side-tag{position:absolute;z-index:5;right:6px;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;
+  font-family:var(--mono);font-size:9px;letter-spacing:.34em;opacity:.6;font-weight:600}
+@media(max-width:760px){
+  .hero-data{grid-template-columns:1fr 1fr}
+  .hero-data .hd{border-top:1px solid var(--ink)}
+  .hero-data .hd:nth-child(-n+2){border-top:0}
+  .hero-data .hd:nth-child(3){border-left:0}
+  .axis,.side-tag{display:none}
+  .l-struct{bottom:200px;opacity:.9}
+}
+
+/* ============ TICKER ============ */
+.ticker{display:flex;align-items:stretch;background:var(--ink);color:var(--paper);border-top:3px solid var(--ink)}
+.t-label{display:flex;align-items:center;gap:9px;padding:11px 16px;background:var(--orange);color:var(--ink);flex:none;z-index:1;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.18em;border-right:2px solid var(--ink)}
+.t-win{overflow:hidden;flex:1;display:flex;align-items:center}
+.t-track{display:flex;width:max-content;animation:mq 46s linear infinite}
+.ticker:hover .t-track{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.t-group{display:flex;align-items:center}
+.ti{white-space:nowrap;padding:11px 0;font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.07em}
+.ti b{color:var(--orange)}
+.tsq2{width:7px;height:7px;background:var(--orange);margin:0 22px;flex:none}
+
+/* ============ SECTION HEADS ============ */
+.sec-head{display:grid;grid-template-columns:auto 1fr minmax(0,320px);align-items:end;gap:8px 24px;
+  padding:26px var(--pad) 18px;border-bottom:2px solid var(--ink)}
+.sec-no{justify-self:start;background:var(--orange);border:2px solid var(--ink);padding:4px 10px;
+  font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.14em}
+.sec-title{font-family:var(--disp);font-size:clamp(2.3rem,6vw,5.4rem);line-height:.9;text-transform:uppercase;letter-spacing:.005em}
+.sec-meta{justify-self:end;text-align:right;font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.12em;line-height:1.7;max-width:360px;opacity:.85;text-transform:uppercase}
+.ruler{height:14px;opacity:.45;border-bottom:2px solid var(--ink);
+  background-image:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 10px);background-size:auto 9px;background-repeat:repeat-x;background-position:bottom}
+.caret{display:inline-block;width:.4em;height:.82em;background:var(--orange);margin-left:.12em;animation:blk 1.2s steps(2,end) infinite}
+
+/* ============ SEC.01 INDEX ============ */
+.cols{display:grid;grid-template-columns:92px minmax(0,1.35fr) 300px minmax(0,1.05fr) 92px 56px;
+  padding:9px var(--pad);border-bottom:2px solid var(--ink);
+  font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.22em;opacity:.6}
+.recs{border-bottom:0}
+.rec{border-bottom:1px solid var(--ink)}
+.rec-row{position:relative;display:grid;width:100%;text-align:left;cursor:pointer;
+  grid-template-columns:92px minmax(0,1.35fr) 300px minmax(0,1.05fr) 92px 56px;
+  grid-template-areas:"no name svg meta yr go";min-height:118px}
+.c-no{grid-area:no;padding:16px 0 0 0;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em}
+.c-no em{display:block;font-style:normal;font-weight:500;font-size:8.5px;letter-spacing:.2em;opacity:.6;margin-top:3px}
+.c-name{grid-area:name;padding:16px 18px 16px 0;display:flex;flex-direction:column;gap:9px;justify-content:center}
+.c-name .chip{align-self:flex-start}
+.chip{display:inline-block;border:1.5px solid var(--ink);padding:2px 7px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.16em}
+.c-name strong{font-family:var(--disp);font-weight:400;font-size:clamp(1.5rem,3vw,2.3rem);line-height:.95;text-transform:uppercase;letter-spacing:.01em}
+.c-svg{grid-area:svg;padding:12px 14px;border-left:1px solid var(--ink);display:flex;align-items:center;overflow:hidden}
+.c-svg svg{width:100%;height:132px;color:var(--ink)}
+.prof text{font-family:var(--mono);font-weight:600}
+.scan{position:absolute;left:0;right:0;top:0;height:3px;background:var(--orange);opacity:0}
+.c-meta{grid-area:meta;padding:16px 0 16px 18px;border-left:1px solid var(--ink);align-self:center;
+  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.05em;line-height:1.85;text-transform:uppercase}
+.st{border:1.5px solid currentColor;padding:0 5px;font-weight:700}
+.st.ok{color:var(--blue)} .st.th{color:var(--orange)}
+.c-yr{grid-area:yr;align-self:center;font-family:var(--disp);font-size:24px;padding:0 8px}
+.c-go{grid-area:go;border-left:1px solid var(--ink);display:grid;place-items:center}
+.c-go svg{width:18px;height:18px;transition:none}
+.rec.open .c-go svg{transform:rotate(45deg)}
+@media(hover:hover){
+  .rec:hover .rec-row{background:var(--ink);color:var(--paper)}
+  .rec:hover .scan{opacity:1;animation:scan .5s steps(7) 1}
+  .rec:hover .st.ok{color:#8fa2ff}
+}
+@keyframes scan{from{top:0}to{top:100%}}
+.rec-detail{display:none;border-top:1px solid var(--ink);background:var(--paper2)}
+.rec.open .rec-detail{display:grid;grid-template-columns:repeat(12,1fr)}
+.dc{padding:12px 16px;border-left:1px solid var(--ink)}
+.dc:first-child{border-left:0}
+.dc span{display:block;font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.2em;opacity:.6;margin-bottom:4px}
+.dc p{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase}
+.d-eng{grid-column:span 3}.d-yr{grid-column:span 2}.d-ref{grid-column:span 3}.d-note{grid-column:span 4;border-left-width:2px;border-left-color:var(--orange)}
+.sec-foot{padding:15px var(--pad);font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.sec-foot a{border-bottom:2px solid var(--orange);font-weight:700}
+@media(max-width:1100px){
+  .cols,.rec-row{grid-template-columns:80px minmax(0,1.3fr) 220px minmax(0,1fr) 64px 44px}
+  .c-name strong{font-size:clamp(1.2rem,2.4vw,1.8rem)}
+}
+@media(max-width:860px){
+  .cols{display:none}
+  .rec-row{grid-template-columns:1fr auto;grid-template-areas:"no go" "name name" "svg svg" "meta meta";min-height:0}
+  .c-no{padding:14px 0 0}
+  .c-name{padding:10px 0}
+  .c-svg{border-left:0;padding:6px 0 14px}
+  .c-svg svg{height:120px}
+  .c-meta{border-left:0;padding:0 0 16px}
+  .c-yr{display:none}
+  .rec-detail{grid-template-columns:1fr 1fr}
+  .dc{border-left:0;border-top:1px solid var(--ink)}
+  .dc:first-child,.dc:nth-child(2){border-top:0}
+  .d-eng,.d-yr,.d-ref,.d-note{grid-column:span 1}
+}
+
+/* ============ SEC.02 FEATURE ============ */
+.concrete{position:relative;border-bottom:3px solid var(--ink);
+  background-color:#D9D5C9;
+  background-image:
+    radial-gradient(circle,rgba(18,17,15,.34) 0 4.5px,rgba(18,17,15,0) 5.6px),
+    radial-gradient(circle,rgba(18,17,15,.34) 0 4.5px,rgba(18,17,15,0) 5.6px),
+    repeating-linear-gradient(0deg,transparent 0 128px,rgba(18,17,15,.17) 128px 130px),
+    repeating-linear-gradient(90deg,transparent 0 214px,rgba(18,17,15,.15) 214px 217px);
+  background-size:288px 192px,288px 192px,auto,auto;
+  background-position:24px 34px,168px 130px,0 0,0 0;
+  padding:clamp(34px,6vw,72px) var(--pad) clamp(40px,6vw,84px)}
+.f-kick{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center;
+  font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+.f-kick .chip{border-width:2px;padding:4px 10px}
+.concrete h2{font-family:var(--disp);font-size:clamp(2.9rem,9.6vw,8.6rem);line-height:.88;text-transform:uppercase;margin-top:22px;max-width:14ch}
+.concrete h2 .out{-webkit-text-stroke:2px var(--ink);color:transparent}
+@supports not (-webkit-text-stroke:1px #000){.concrete h2 .out{color:var(--ink)}}
+.f-deck{margin-top:22px;max-width:70ch;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.05em;line-height:1.75;text-transform:uppercase}
+.f-rec{position:absolute;right:calc(var(--pad) + 6px);bottom:34px;width:118px;height:118px;background:var(--orange);border:2px solid var(--ink);
+  display:grid;place-content:center;text-align:center;font-family:var(--disp);font-size:26px;line-height:1.02}
+.f-rec small{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.2em;margin-bottom:6px}
+@media(max-width:820px){.f-rec{display:none}}
+.feat-body{display:grid;grid-template-columns:300px minmax(0,1fr)}
+.f-aside{border-right:3px solid var(--ink);padding:26px 26px 26px var(--pad)}
+.f-aside h3{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.24em;border-bottom:2px solid var(--ink);padding-bottom:9px}
+.arow{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--ink);
+  font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+.arow span{font-weight:700;letter-spacing:.14em;font-size:9px;opacity:.65;padding-top:2px;flex:none}
+.arow b{text-align:right;font-weight:600}
+.f-text{padding:30px var(--pad) 44px}
+.f-text p{max-width:70ch;font-size:16.5px;line-height:1.72;margin-bottom:1.35em;font-weight:400}
+.f-text p:first-of-type::first-letter{font-family:var(--disp);font-size:4.7em;float:left;line-height:.8;padding:4px 12px 0 0}
+.pull{background:var(--blue);color:var(--paper);padding:clamp(24px,4vw,44px);margin:38px 0;max-width:820px}
+.pull p{font-family:var(--disp);font-size:clamp(1.7rem,4.4vw,3.2rem);line-height:1;text-transform:uppercase;margin:0}
+.pull cite{display:block;margin-top:16px;font-family:var(--mono);font-style:normal;font-size:9.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;opacity:.85}
+.sheet{margin:10px var(--pad) 0;border:2px solid var(--ink);position:relative;background:var(--paper)}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  border-bottom:2px solid var(--ink);padding:10px 14px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.sheet-head .chip{border-width:2px;padding:3px 8px}
+.plate-scroll{overflow-x:auto}
+.plate-scroll svg{width:100%;min-width:920px;height:auto}
+.sheet-cap{border-top:2px solid var(--ink);padding:9px 14px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.sheet .reg{position:absolute;width:18px;height:18px;color:var(--ink);opacity:.75;z-index:2}
+.next-line{display:flex;justify-content:flex-end;padding:26px var(--pad) 34px}
+.next-link{display:inline-flex;align-items:center;gap:12px;border:2px solid var(--ink);padding:12px 18px;
+  font-size:11px;font-weight:700;letter-spacing:.16em;background:var(--paper)}
+.next-link svg{width:15px;height:15px}
+@media(hover:hover){.next-link:hover{background:var(--ink);color:var(--paper)}}
+@media(max-width:900px){.feat-body{grid-template-columns:1fr}.f-aside{border-right:0;border-bottom:3px solid var(--ink);padding-inline:var(--pad)}}
+
+/* ============ SEC.03 SPECS ============ */
+.tablewrap{overflow-x:auto}
+table.spec{width:100%;border-collapse:collapse;min-width:780px}
+.spec th{background:var(--ink);color:var(--paper);text-align:left;padding:11px 16px;
+  font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--ink)}
+.spec td{border:1px solid var(--ink);padding:10px 16px;vertical-align:top}
+.spec td:first-child{width:70px}
+.spec .sn{display:inline-block;background:var(--orange);border:1.5px solid var(--ink);padding:1px 6px;
+  font-family:var(--mono);font-size:10px;font-weight:700}
+.spec .par{font-weight:600;font-size:15px;letter-spacing:.01em}
+.spec .val{font-family:var(--mono);font-size:14px;font-weight:700;white-space:nowrap}
+.spec .rem{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;opacity:.78;text-transform:uppercase}
+@media(hover:hover){.spec tbody tr{transition:none}.spec tbody tr:hover{background:var(--ink);color:var(--paper)}}
+.spec tr.threat td{background:var(--orange);color:var(--ink)}
+@media(hover:hover){.spec tr.threat:hover td{background:var(--ink);color:var(--paper)}}
+.spec-note{padding:16px var(--pad);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.8;border-top:2px solid var(--ink)}
+
+/* ============ SEC.04 MANIFESTO ============ */
+.mani{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;background:var(--ink);border-top:2px solid var(--ink)}
+.mcell{background:var(--paper);padding:clamp(18px,3vw,34px);position:relative;display:flex;flex-direction:column;gap:12px}
+.mno{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.26em;opacity:.6}
+.mtxt{font-family:var(--disp);font-size:clamp(1.25rem,2.4vw,2rem);line-height:1.04;text-transform:uppercase;max-width:24ch}
+.mbig{font-family:var(--disp);font-size:clamp(2.6rem,6vw,5rem);line-height:.92;text-transform:uppercase}
+.m-orange{background:var(--orange)}
+.m-ink{background:var(--ink);color:var(--paper)}
+.m-blue{background:var(--blue);color:var(--paper)}
+.m-blue .mno,.m-ink .mno{opacity:.75}
+.spinfig{width:72px;height:72px;align-self:flex-end;color:inherit}
+.spin{transform-origin:40px 40px;animation:rot 9s steps(14) infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+@media(hover:hover){
+  .mcell{transition:none}
+  .mcell:not(.m-orange):not(.m-ink):not(.m-blue):hover{background:var(--ink);color:var(--paper);box-shadow:inset 0 0 0 2px var(--paper)}
+  .m-orange:hover,.m-blue:hover{box-shadow:inset 0 0 0 3px var(--paper)}
+}
+@media(max-width:900px){
+  .mani{grid-template-columns:1fr 1fr}
+  .w7,.w8,.w12{grid-column:span 2}.w5,.w4,.w3,.w6{grid-column:span 1}
+}
+@media(max-width:560px){
+  .mani{grid-template-columns:1fr}
+  .mani .mcell{grid-column:span 1!important}
+}
+
+/* ============ SEC.05 ARCHIVE STRIP ============ */
+.strip-bar{display:flex;align-items:center;gap:14px;padding:16px var(--pad);
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;flex-wrap:wrap}
+.hbtn{border:2px solid var(--ink);background:var(--paper);padding:9px 16px;cursor:pointer;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;box-shadow:4px 4px 0 var(--ink)}
+.hbtn:active{transform:translate(4px,4px);box-shadow:none}
+@media(hover:hover){.hbtn:hover{background:var(--ink);color:var(--paper)}}
+.s-count{border:1.5px solid var(--ink);padding:8px 12px}
+.s-prog{flex:1;min-width:120px;height:12px;border:1.5px solid var(--ink);position:relative}
+.s-prog i{position:absolute;inset:0;width:0;background:var(--orange)}
+.s-hint{opacity:.65;letter-spacing:.2em;font-weight:600}
+.strip{display:flex;overflow-x:auto;background:var(--paper2);cursor:grab;user-select:none;-webkit-user-select:none;
+  border-top:2px solid var(--ink);scroll-snap-type:x proximity}
+.strip.drag{cursor:grabbing;scroll-snap-type:none}
+.plate{flex:0 0 300px;border-right:2px solid var(--ink);scroll-snap-align:start;background:var(--paper)}
+@media(max-width:600px){.plate{flex-basis:262px}}
+.p-top{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--ink);
+  padding:9px 12px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em}
+.p-chip{background:var(--orange);border:1.5px solid var(--ink);padding:2px 6px}
+.p-body{position:relative;color:var(--ink);padding:12px;background:var(--paper)}
+.p-body>svg{width:100%;height:172px}
+.preg{position:absolute;width:14px;height:14px;opacity:.7}
+.preg.tl{top:6px;left:6px}.preg.br{bottom:6px;right:6px}
+@media(hover:hover){.plate:hover .p-body{background:var(--ink);color:var(--paper)}}
+.p-cap{border-top:2px solid var(--ink);padding:8px 12px;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;opacity:.85;text-transform:uppercase}
+.endcap{flex:0 0 230px;background:var(--ink);color:var(--paper);display:grid;place-content:center;gap:14px;text-align:center;
+  font-family:var(--disp);font-size:26px;text-transform:uppercase;line-height:1}
+.endcap a{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--orange)}
+.strip::-webkit-scrollbar{height:10px}
+.strip::-webkit-scrollbar-track{background:var(--paper2)}
+.strip::-webkit-scrollbar-thumb{background:var(--ink)}
+
+/* ============ FOOTER / COLOPHON ============ */
+.footer{border-bottom:0}
+.tb{margin:0 var(--pad) 26px;border:3px solid var(--ink);background:var(--paper)}
+.tb-top{display:flex;flex-wrap:wrap;border-bottom:2px solid var(--ink)}
+.tb-cell{padding:16px 20px;border-right:2px solid var(--ink);flex:1 1 auto}
+.tb-cell:last-child{border-right:0}
+.tb-cell span{display:block;font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.22em;opacity:.6;margin-bottom:5px;text-transform:uppercase}
+.tb-cell b{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.tb-brand{flex:2 1 260px!important}
+.tb-brand strong{font-family:var(--disp);font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:.95;display:block;text-transform:uppercase}
+.tb-brand em{display:block;font-family:var(--mono);font-style:normal;font-size:9px;font-weight:600;letter-spacing:.2em;margin-top:8px;text-transform:uppercase}
+.tb-mid{display:grid;grid-template-columns:1.25fr .9fr .85fr .9fr;border-bottom:2px solid var(--ink)}
+.tb-mid .tb-cell{border-right:2px solid var(--ink);border-bottom:0}
+.tb-mid .tb-cell:last-child{border-right:0}
+table.rev{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:10px}
+.rev td,.rev th{border:1px solid var(--ink);padding:5px 8px;text-align:left;font-weight:500;letter-spacing:.03em}
+.rev th{background:var(--paper2);font-size:8.5px;letter-spacing:.18em;font-weight:700}
+.rev td:first-child{font-weight:700;background:var(--orange)}
+.tb-people p{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;padding:6px 0;border-bottom:1px solid rgba(18,17,15,.3);text-transform:uppercase}
+.tb-people p:last-child{border-bottom:0}
+.tb-people b{font-weight:700}
+.stampcell{display:grid;place-content:center}
+.stamp{border:3px solid var(--orange);color:var(--orange);padding:12px 16px;text-align:center;position:relative;transform:rotate(-6deg);max-width:200px}
+.stamp::after{content:"";position:absolute;inset:3px;border:1px solid var(--orange)}
+.stamp span{display:block;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.2em}
+.stamp em{display:block;font-family:var(--mono);font-style:normal;font-size:8.5px;font-weight:600;letter-spacing:.16em;margin-top:5px}
+#barcode{color:var(--ink)}
+.bcode-txt{margin-top:8px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.3em}
+.tb-bot{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 20px;
+  font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.tb-bot a{font-weight:700;border-bottom:2px solid var(--orange)}
+.tb-bot .top{display:inline-flex;align-items:center;gap:9px;border:2px solid var(--ink);padding:8px 13px;cursor:pointer;
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;background:var(--paper)}
+@media(hover:hover){.tb-bot .top:hover{background:var(--ink);color:var(--paper)}}
+@media(max-width:1000px){.tb-mid{grid-template-columns:1fr 1fr}.tb-mid .tb-cell{border-bottom:2px solid var(--ink)!important}}
+@media(max-width:600px){.tb-mid{grid-template-columns:1fr}.tb-mid .tb-cell{border-right:0!important}}
+
+/* ============ REVEAL / MISC ============ */
+.reveal{opacity:0;transform:translateY(16px)}
+.reveal.in{opacity:1;transform:none;transition:transform .32s steps(4),opacity .32s steps(4)}
+.edge-tag{position:absolute;top:20px;left:7px;writing-mode:vertical-rl;transform:rotate(180deg);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;opacity:.5;font-weight:600}
+@media(max-width:1150px){.edge-tag{display:none}}
+.nomot .t-track,.nomot .spin,.nomot .hd-scroll svg,.nomot .caret{animation:none}
+.nomot .xh{display:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- shared drawing symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="hx" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#12110F" stroke-width="1" stroke-opacity=".45"/>
+    </pattern>
+    <pattern id="waves" width="36" height="14" patternUnits="userSpaceOnUse">
+      <path d="M0 7 Q9 2 18 7 T36 7" fill="none" stroke="#12110F" stroke-width="1" stroke-opacity=".35"/>
+    </pattern>
+    <pattern id="gp" width="25" height="25" patternUnits="userSpaceOnUse">
+      <path d="M25 0 H0 V25" fill="none" stroke="#12110F" stroke-opacity=".1"/>
+    </pattern>
+    <marker id="arrK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#12110F"/>
+    </marker>
+    <symbol id="regmark" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M16 1v9M16 22v9M1 16h9M22 16h9" stroke="currentColor" stroke-width="1.6"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="gridlines" aria-hidden="true"></div>
+
+<!-- ============ MASTHEAD ============ -->
+<div class="hazard" aria-hidden="true"></div>
+<header class="mast">
+  <div class="mast-in">
+    <a class="brand" href="#top"><span class="bsq" aria-hidden="true"></span>CONCRETE INDEX</a>
+    <nav class="mnav" aria-label="Sections">
+      <a href="#index">01·INDEX</a><a href="#feature">02·FEATURE</a><a href="#specs">03·SPECS</a><a href="#manifesto">04·MANIFESTO</a><a href="#archive">05·ARCHIVE</a>
+    </nav>
+    <div class="mmeta">
+      <div class="mbox m-clock"><span>UTC</span><b id="clock">--:--:--</b></div>
+      <div class="mbox m-issue"><span>ISSUE</span><b>Nº 047</b></div>
+      <div class="mbox m-rec"><span>RECORDS</span><b id="mastCount">4,192</b></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-layer l-plan" data-depth="9" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <g stroke="#12110F" fill="none">
+        <path d="M120 -20V920M300 -20V920M480 -20V920M660 -20V920M840 -20V920M1020 -20V920M1200 -20V920M1320 -20V920" stroke-opacity=".22"/>
+        <path d="M-20 150H1460M-20 330H1460M-20 510H1460M-20 690H1460M-20 820H1460" stroke-opacity=".28"/>
+        <circle cx="1080" cy="250" r="72" stroke-width="2"/>
+        <circle cx="1080" cy="250" r="26" stroke-opacity=".6"/>
+        <path d="M1008 250H930M1152 250h80M1080 178v-70M1080 322v70" stroke-width="1.5"/>
+        <rect x="330" y="360" width="160" height="120" stroke-dasharray="7 5"/>
+        <rect x="700" y="560" width="200" height="110" stroke-dasharray="7 5"/>
+        <rect x="1200" y="560" width="150" height="120" stroke-dasharray="7 5"/>
+        <rect x="120" y="560" width="120" height="110" stroke-dasharray="7 5"/>
+        <path d="M880 760q130 -44 260 0t300 -18" stroke-opacity=".5"/>
+        <path d="M960 800q120 -36 240 4t250 -10" stroke-opacity=".4"/>
+        <path d="M200 205h18M209 196v18M612 405h18M621 396v18M1240 430h18M1249 421v18M430 706h18M439 697v18" stroke-opacity=".7"/>
+        <rect x="480" y="150" width="540" height="360" stroke-dasharray="16 9" stroke-width="1.5"/>
+      </g>
+      <g fill="#12110F" font-family="'IBM Plex Mono',monospace" font-size="12" font-weight="600" opacity=".6">
+        <text x="340" y="348">PLOT K-11</text>
+        <text x="706" y="548">SERVICE EASEMENT 6.0 M</text>
+        <text x="1214" y="140"> datum ±0.000</text>
+        <text x="128" y="676">N 57°41′ E 10°32′</text>
+        <text x="1104" y="360">RND-ABOUT Ø 144</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-layer l-struct" data-depth="24" aria-hidden="true">
+    <svg viewBox="0 0 900 460" preserveAspectRatio="xMax yMax meet">
+      <g stroke="#12110F" fill="none" stroke-linecap="square">
+        <path d="M0 400H900" stroke-width="3"/>
+        <rect x="70" y="250" width="470" height="150" stroke-width="2.5"/>
+        <path d="M70 250l46-18v18M162 250l46-18v18M254 250l46-18v18M346 250l46-18v18M438 250l46-18v18" stroke-width="1.6"/>
+        <rect x="90" y="286" width="430" height="26" fill="#12110F" stroke="none"/>
+        <path d="M144 286v26M198 286v26M252 286v26M306 286v26M360 286v26M414 286v26M468 286v26" stroke="#EAE6DD"/>
+        <rect x="500" y="330" width="26" height="70" fill="#FF4D00" stroke-width="1.5"/>
+        <path d="M640 400L700 120M790 400L730 120" stroke-width="2.5"/>
+        <rect x="652" y="58" width="116" height="64" stroke-width="3"/>
+        <path d="M652 80h116M652 102h116" stroke-width="1.4"/>
+        <rect x="706" y="122" width="28" height="278" stroke-width="1.5"/>
+        <path d="M653 340L777 300M777 340L653 300" stroke-width="1.2"/>
+        <path d="M714 140v250M724 140v250M714 164h10M714 192h10M714 220h10M714 248h10M714 276h10M714 304h10M714 332h10M714 360h10" stroke-width="1.1"/>
+        <path d="M710 58V12" stroke-width="1.6"/>
+        <rect x="703" y="0" width="14" height="14" fill="#FF4D00" stroke-width="1.5"/>
+        <path d="M60 400v-14M120 400v-10M180 400v-14M240 400v-10M300 400v-14M600 400v-12M660 400v-12" stroke-width="1.2" stroke-opacity=".7"/>
+        <path d="M500 58V440" stroke="#FF4D00" stroke-width="1.6" stroke-dasharray="10 7"/>
+        <path d="M862 250v150M856 250h12M856 400h12" stroke-width="1.2"/>
+        <path d="M858 244v-190M852 250h12M852 58h12" stroke-width="1.2"/>
+      </g>
+      <g fill="#12110F" font-family="'IBM Plex Mono',monospace" font-weight="600">
+        <text x="78" y="392" font-size="11">GALLERY ±0.000</text>
+        <text x="652" y="48" font-size="11">TANK — 2 × 900 M³</text>
+        <text x="872" y="332" font-size="11" transform="rotate(-90 872 332)">96.0 M</text>
+        <text x="512" y="80" font-size="10" fill="#FF4D00" font-weight="700">SURVEY AXIS 04</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-layer l-marks" data-depth="38" aria-hidden="true">
+    <svg class="reg reg-tl"><use href="#regmark"/></svg>
+    <svg class="reg reg-tr"><use href="#regmark"/></svg>
+    <svg class="reg reg-bl"><use href="#regmark"/></svg>
+    <svg class="reg reg-br"><use href="#regmark"/></svg>
+    <span class="sheet-tag sheet-tag" style="position:absolute;top:52px;left:16px;border:1.5px solid var(--ink);background:var(--paper);padding:5px 9px;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.16em">SHEET A-000 · REV C · CI ARCHIVE</span>
+    <div class="axis"><span>AXIS 04 — ORANGE</span></div>
+  </div>
+
+  <div class="xh" aria-hidden="true">
+    <i class="xh-v"></i><i class="xh-h"></i>
+    <span class="xh-tag" id="xhTag">X 0000 · Y 0000</span>
+  </div>
+
+  <div class="hero-in">
+    <p class="kick mono"><span class="ksq" aria-hidden="true"></span>FIELD FILE A-000 — OPENED 2019 — UPDATED LIVE</p>
+    <h1><span>CONCRETE</span><span class="t2">INDEX<i class="tsq" aria-hidden="true"></i></span></h1>
+    <p class="hero-sub">An independent, self-funded archive of remarkable civic architecture and public infrastructure. We measure, we redraw, we publish — and we don't ask permission. Issue 047: six structures, one water works, one demolition case.</p>
+  </div>
+
+  <div class="hero-data">
+    <div class="hd"><span>RECORDS ON FILE — LIVE</span><b id="bigCount">004,192</b></div>
+    <div class="hd"><span>ISSUE</span><b>Nº 047 / SPRING</b></div>
+    <div class="hd"><span>LAST ENTRY</span><b>REC-4192 · NORDHAVN EL-3</b></div>
+    <div class="hd hd-scroll"><span>SCROLL FOR SURVEY</span><b><span>BEGIN</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v10M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="2"/></svg></b></div>
+  </div>
+  <span class="side-tag" aria-hidden="true">CI—047 · CIVIC WORKS ONLY · NO SPONSORS · NO PHOTOGRAPHS</span>
+</section>
+
+<!-- ============ LIVE FEED TICKER ============ -->
+<div class="ticker" aria-label="Live index feed">
+  <div class="t-label"><i class="blink-sq" aria-hidden="true"></i>LIVE FEED</div>
+  <div class="t-win">
+    <div class="t-track" id="tickTrack">
+      <div class="t-group">
+        <span class="ti">REC-3721 · SALT GORGE SIPHON · 1938 · <b>LISTED</b></span><i class="tsq2"></i>
+        <span class="ti">REC-3455 · GRAVITY MAIN CHAMBER 12 · 1934 · <b>OPERATIONAL</b></span><i class="tsq2"></i>
+        <span class="ti">NO PHOTOGRAPHS — DRAWINGS ONLY</span><i class="tsq2"></i>
+        <span class="ti">REC-4088 · TIDAL SLUICE GATE 7 · 1961 · <b>OPERATIONAL</b></span><i class="tsq2"></i>
+        <span class="ti">REC-2861 · VESTBRO INCINERATOR STACK · 1969 · <b>DECOMMISSIONED</b></span><i class="tsq2"></i>
+        <span class="ti">NEW CASE: DEMOLITION FILE KLY-2025-0117 — HAVSVÄRKET</span><i class="tsq2"></i>
+        <span class="ti">REC-4108 · MARKET HALL COLUMN GRID · 1992 · <b>LISTED</b></span><i class="tsq2"></i>
+        <span class="ti">REC-3944 · SEWAGE LIFT STATION Ø · 1955 · <b>OPERATIONAL</b></span><i class="tsq2"></i>
+        <span class="ti">THE ARCHIVE HOLDS 4,192 STRUCTURES AND ONE GRUDGE</span><i class="tsq2"></i>
+        <span class="ti">REC-4187 · OTTENBY GRAVITY DAM · 1931 · <b>OPERATIONAL</b></span><i class="tsq2"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SEC.01 INDEX ============ -->
+<section id="index" class="sec">
+  <span class="edge-tag" aria-hidden="true">SEC.01 — THE INDEX — FILE A</span>
+  <header class="sec-head reveal">
+    <span class="sec-no">SEC.01</span>
+    <h2 class="sec-title">THE INDEX<span class="caret" aria-hidden="true"></span></h2>
+    <span class="sec-meta">SIX RECORDS, ISSUE 047 · QUARTERLY FIELD SURVEY · EVERY PROFILE REDRAWN IN-BROWSER — NO PHOTOGRAPHS, EVER</span>
+  </header>
+  <div class="ruler" aria-hidden="true"></div>
+
+  <div class="cols" aria-hidden="true">
+    <span>REC Nº</span><span>STRUCTURE / TYPE</span><span>PROFILE</span><span>FIELD DATA</span><span>YEAR</span><span>FILE</span>
+  </div>
+
+  <div class="recs">
+
+    <article class="rec">
+      <button class="rec-row" aria-expanded="false" aria-controls="d4187">
+        <span class="c-no">REC-4187<em>INDEXED 047</em></span>
+        <span class="c-name"><span class="chip">GRAVITY DAM</span><strong>OTTENBY GRAVITY DAM</strong></span>
+        <span class="c-svg"><svg class="prof" viewBox="0 0 260 160" aria-hidden="true"><g stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="square"><path d="M10 132H250"/><path d="M46 132L96 34h60v98z"/><path d="M96 27h60v7H96z" stroke-width="1.6"/><path d="M86 116h10M78 100h10M70 84h10M62 68h10M54 52h10" stroke-width="1.3"/><path d="M10 120q6-5 12 0t12 0M14 128q6-5 12 0" stroke-width="1.2"/><path d="M172 34v98M166 34h12M166 132h12" stroke-width="1.2"/></g><rect x="100" y="18" width="9" height="9" fill="#FF4D00" stroke="currentColor"/><text x="180" y="88" font-size="11" fill="currentColor">46.0</text></svg><i class="scan" aria-hidden="true"></i></span>
+        <span class="c-meta">ØSTMARK RIDGE · 61°N<br>CONCRETE 412,000 M³ · H 46.0 M<br><span class="st ok">OPERATIONAL</span></span>
+        <span class="c-yr">1931</span>
+        <span class="c-go"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="2.4"/></svg></span>
+      </button>
+      <div class="rec-detail" id="d4187">
+        <div class="dc d-eng"><span>ENGINEER</span><p>K. RASK / STATE WATER BOARD</p></div>
+        <div class="dc d-yr"><span>COMPLETED</span><p>1931</p></div>
+        <div class="dc d-ref"><span>DIMENSIONS</span><p>CREST 218 M · BASE 41.4 M</p></div>
+        <div class="dc d-note"><span>FIELD NOTE</span><p>Crest walk closed 1998. The signs are ignored by everyone, including the postman.</p></div>
+      </div>
+    </article>
+
+    <article class="rec">
+      <button class="rec-row" aria-expanded="false" aria-controls="d4188">
+        <span class="c-no">REC-4188<em>INDEXED 047</em></span>
+        <span class="c-name"><span class="chip">VENT SHAFT</span><strong>HALDE 9 VENT TOWER</strong></span>
+        <span class="c-svg"><svg class="prof" viewBox="0 0 260 160" aria-hidden="true"><g stroke="currentColor" fill="none" stroke-linecap="square"><path d="M10 138H250" stroke-width="2.5"/><rect x="118" y="44" width="28" height="94" stroke-width="2.5"/><rect x="112" y="32" width="40" height="12" stroke-width="1.6"/><rect x="108" y="24" width="48" height="8" stroke-width="1.4"/><path d="M118 62h28M118 78h28M118 94h28M118 110h28" stroke-width="1.2"/><rect x="104" y="126" width="56" height="12" stroke-width="1.6"/><path d="M152 60v66M158 60v66M152 68h6M152 80h6M152 92h6M152 104h6M152 116h6" stroke-width="1.1"/><path d="M132 24V8" stroke-width="1.4"/><path d="M30 138l9 9M62 138l9 9M94 138l9 9M190 138l9 9M222 138l9 9" stroke-width="1" stroke-opacity=".7"/><path d="M182 24v114M176 24h12M176 138h12" stroke-width="1.1"/></g><rect x="127" y="1" width="10" height="9" fill="#FF4D00" stroke="currentColor"/><text x="190" y="86" font-size="11" fill="currentColor">74.0</text></svg><i class="scan" aria-hidden="true"></i></span>
+        <span class="c-meta">KOHLSTADT NORTH COLLIERY<br>STEEL SHAFT ON CONCRETE BASE · Ø 3.2 M<br><span class="st">LISTED</span></span>
+        <span class="c-yr">1966</span>
+        <span class="c-go"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="2.4"/></svg></span>
+      </button>
+      <div class="rec-detail" id="d4188">
+        <div class="dc d-eng"><span>ENGINEER</span><p>E. MARX / BERGBAU-AMT NORD</p></div>
+        <div class="dc d-yr"><span>COMPLETED</span><p>1966</p></div>
+        <div class="dc d-ref"><span>DIMENSIONS</span><p>SHAFT 74 M · PLINTH 5.6 M</p></div>
+        <div class="dc d-note"><span>FIELD NOTE</span><p>It vented a mine for 31 years. It vents nothing now. We drew it anyway. Especially anyway.</p></div>
+      </div>
+    </article>
+
+    <article class="rec">
+      <button class="rec-row" aria-expanded="false" aria-controls="d4189">
+        <span class="c-no">REC-4189<em>INDEXED 047</em></span>
+        <span class="c-name"><span class="chip">BUS TERMINAL</span><strong>TERMINAL ØST</strong></span>
+        <span class="c-svg"><svg class="prof" viewBox="0 0 260 160" aria-hidden="true"><g stroke="currentColor" fill="none" stroke-linecap="square"><path d="M10 128H250" stroke-width="2.5"/><path d="M30 92V58l40 34V58l40 34V58l40 34V58l40 34V58l40 34" stroke-width="2.5"/><rect x="26" y="122" width="208" height="6" stroke-width="1.6"/><path d="M34 92v30M74 92v30M114 92v30M154 92v30M194 92v30" stroke-width="1.6"/><rect x="40" y="98" width="160" height="20" stroke-width="1" stroke-dasharray="5 4"/><path d="M30 146h200M30 142v8M230 142v8" stroke-width="1.1"/></g><path d="M232 128V96" stroke="currentColor" stroke-width="1.6"/><rect x="226" y="86" width="13" height="10" fill="#FF4D00" stroke="currentColor"/><text x="104" y="156" font-size="11" fill="currentColor">SPAN 43.0</text></svg><i class="scan" aria-hidden="true"></i></span>
+        <span class="c-meta">VESTERBY HARBOUR FRONT<br>FOLDED-PLATE ROOF · 9 BAYS<br><span class="st ok">OPERATIONAL — 41K PAX/D</span></span>
+        <span class="c-yr">1974</span>
+        <span class="c-go"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="2.4"/></svg></span>
+      </button>
+      <div class="rec-detail" id="d4189">
+        <div class="dc d-eng"><span>ENGINEER</span><p>STUDIO VEST / MUNICIPAL WORKS</p></div>
+        <div class="dc d-yr"><span>COMPLETED</span><p>1974</p></div>
+        <div class="dc d-ref"><span>DIMENSIONS</span><p>CANOPY 118 M · BAY 24.0 M</p></div>
+        <div class="dc d-note"><span>FIELD NOTE</span><p>The timetable is painted directly onto the concrete and repainted whenever the council changes its mind.</p></div>
+      </div>
+    </article>
+
+    <article class="rec">
+      <button class="rec-row" aria-expanded="false" aria-controls="d4190">
+        <span class="c-no">REC-4190<em>INDEXED 047</em></span>
+        <span class="c-name"><span class="chip">CENTRAL LIBRARY</span><strong>KLYDE MERIDIAN LIBRARY</strong></span>
+        <span class="c-svg"><svg class="prof" viewBox="0 0 260 160" aria-hidden="true"><g stroke="currentColor" fill="none" stroke-linecap="square"><path d="M10 136H250" stroke-width="2.5"/><rect x="70" y="100" width="120" height="36" stroke-width="2.5"/><rect x="84" y="64" width="92" height="36" stroke-width="2.5"/><rect x="98" y="34" width="64" height="30" stroke-width="2.5"/><path d="M74 112h112M74 124h112M88 76h84M88 88h84M102 44h56M102 56h56" stroke-width="1" stroke-opacity=".75"/><rect x="124" y="112" width="13" height="24" fill="#FF4D00" stroke="currentColor" stroke-width="1.2"/><circle cx="216" cy="120" r="2.6" fill="currentColor"/><path d="M216 123v13" stroke-width="1.6"/><path d="M58 34v102M52 34h12M52 136h12" stroke-width="1.1"/></g><text x="30" y="30" font-size="11" fill="currentColor">18.0</text></svg><i class="scan" aria-hidden="true"></i></span>
+        <span class="c-meta">KLYDE · CIVIC QUARTER<br>STEPPED MASS · 6 LEVELS · RC<br><span class="st">LISTED — REFURB 2019</span></span>
+        <span class="c-yr">1982</span>
+        <span class="c-go"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="2.4"/></svg></span>
+      </button>
+      <div class="rec-detail" id="d4190">
+        <div class="dc d-eng"><span>ENGINEER</span><p>H. ÖST &amp; PARTNERS</p></div>
+        <div class="dc d-yr"><span>COMPLETED</span><p>1982</p></div>
+        <div class="dc d-ref"><span>DIMENSIONS</span><p>FOOTPRINT 64 × 41 M</p></div>
+        <div class="dc d-note"><span>FIELD NOTE</span><p>The reading-room ceiling still carries the 1982 formwork marks. The librarians give tours. Ask for Inge.</p></div>
+      </div>
+    </article>
+
+    <article class="rec">
+      <button class="rec-row" aria-expanded="false" aria-controls="d4191">
+        <span class="c-no">REC-4191<em>INDEXED 047</em></span>
+        <span class="c-name"><span class="chip">CABLE PYLON</span><strong>SKER CROSSING PYLON N°2</strong></span>
+        <span class="c-svg"><svg class="prof" viewBox="0 0 260 160" aria-hidden="true"><g stroke="currentColor" fill="none" stroke-linecap="square"><path d="M10 100H250" stroke-width="3"/><path d="M10 108H250" stroke-width="1.1"/><path d="M78 108L118 20M158 108L118 20" stroke-width="2.5"/><path d="M92 80h52M105 52h26" stroke-width="1.4"/><path d="M118 22 26 104M118 22 50 104M118 22 74 104M118 22 98 104M118 22 138 104M118 22 162 104M118 22 166 104M118 22 194 104M118 22 226 104" stroke-width="1"/><path d="M22 118q6-5 12 0t12 0M180 118q6-5 12 0t12 0" stroke-width="1.1"/><path d="M214 20v88M208 20h12M208 108h12" stroke-width="1.1"/></g><rect x="111" y="8" width="15" height="10" fill="#FF4D00" stroke="currentColor" stroke-width="1.2"/><text x="222" y="70" font-size="11" fill="currentColor" transform="rotate(-90 222 70)">86.0</text></svg><i class="scan" aria-hidden="true"></i></span>
+        <span class="c-meta">SKER SOUND · MID-CHANNEL<br>CABLE-STAYED · DECK CLR 31.0 M<br><span class="st ok">27,400 VEH/DAY</span></span>
+        <span class="c-yr">1988</span>
+        <span class="c-go"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="2.4"/></svg></span>
+      </button>
+      <div class="rec-detail" id="d4191">
+        <div class="dc d-eng"><span>ENGINEER</span><p>NORDSTRÖM &amp; KO</p></div>
+        <div class="dc d-yr"><span>COMPLETED</span><p>1988</p></div>
+        <div class="dc d-ref"><span>DIMENSIONS</span><p>H 86.0 M · 2 × 22 STAYS</p></div>
+        <div class="dc d-note"><span>FIELD NOTE</span><p>Its aviation light blinks orange. The archive considers this the only justified decoration in the archipelago.</p></div>
+      </div>
+    </article>
+
+    <article class="rec">
+      <button class="rec-row" aria-expanded="false" aria-controls="d4192">
+        <span class="c-no">REC-4192<em>INDEXED 047</em></span>
+        <span class="c-name"><span class="chip">WASTE-TO-ENERGY</span><strong>NORDHAVN ENERGY LINE 3</strong></span>
+        <span class="c-svg"><svg class="prof" viewBox="0 0 260 160" aria-hidden="true"><g stroke="currentColor" fill="none" stroke-linecap="square"><path d="M10 132H250" stroke-width="2.5"/><rect x="40" y="78" width="170" height="54" stroke-width="2.5"/><path d="M56 68h20M96 68h20M136 68h20M136 68h20" stroke-width="1.4"/><path d="M56 68h20M96 68h20M136 68h20M176 68h20" stroke-width="1.5"/><rect x="184" y="22" width="16" height="56" stroke-width="2.2"/><path d="M184 34h16M184 46h16M184 58h16" stroke-width="1.1"/><path d="M12 126l48-48M28 126v-14M44 126v-30" stroke-width="1.8"/><path d="M70 96h24v36H70z" stroke-width="1.5"/><path d="M226 22v110M220 22h12M220 132h12" stroke-width="1.1"/></g><rect x="92" y="58" width="26" height="9" fill="#FF4D00" stroke="currentColor" stroke-width="1.2"/><text x="234" y="86" font-size="11" fill="currentColor" transform="rotate(-90 234 86)">96.0</text></svg><i class="scan" aria-hidden="true"></i></span>
+        <span class="c-meta">NORDHAVN INDUSTRIAL QUAY<br>HALL 214 M · STACK 96 M<br><span class="st ok">OPERATIONAL</span></span>
+        <span class="c-yr">2016</span>
+        <span class="c-go"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="2.4"/></svg></span>
+      </button>
+      <div class="rec-detail" id="d4192">
+        <div class="dc d-eng"><span>ENGINEER</span><p>KRAFTVERK NORD CONSORTIUM</p></div>
+        <div class="dc d-yr"><span>COMPLETED</span><p>2016</p></div>
+        <div class="dc d-ref"><span>DIMENSIONS</span><p>HALL 214 M · 4 TIPPING LANES</p></div>
+        <div class="dc d-note"><span>FIELD NOTE</span><p>The stack is striped 40 m of safety orange by law and 56 m of plain concrete by choice. Correct ratio.</p></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="sec-foot">
+    <span>END OF ISSUE INDEX — 4,186 EARLIER RECORDS SLEEP IN THE STACKS.</span>
+    <a href="#archive">CONTINUE TO THE STRIP ↓</a>
+  </div>
+</section>
+
+<!-- ============ SEC.02 FEATURE ============ -->
+<section id="feature" class="sec">
+  <span class="edge-tag" aria-hidden="true">SEC.02 — FEATURE — FILE B</span>
+  <div class="concrete">
+    <div class="f-kick reveal">
+      <span><span class="bsq" style="display:inline-block;vertical-align:middle;margin-right:9px"></span>SEC.02 · FEATURE / FIELD FILE 07 — DRAWINGS, NOT PHOTOGRAPHS</span>
+      <span>KLYDE SOUND — 57°41′ N · 10°32′ E</span>
+    </div>
+    <h2 class="reveal">A CATHEDRAL<br><span class="out">FOR DIRTY WATER</span></h2>
+    <p class="f-deck reveal">HAVSVÄRKET COASTAL TREATMENT WORKS — SIX YEARS OF POURING, ONE SENTENCE OF ARCHITECTURE: NOTHING HERE IS DECORATED, AND NOTHING HERE IS DECIDED TWICE.</p>
+    <div class="f-rec" aria-hidden="true">REC<br>0007<small style="font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;margin-top:8px">Havsvärket</small></div>
+  </div>
+
+  <div class="feat-body">
+    <aside class="f-aside reveal">
+      <h3>RECORD CARD — REC-0007</h3>
+      <div class="arow"><span>BUILT</span><p>1974 – 1979</p></div>
+      <div class="arow"><span>ENGINEER</span><p>B. HALLORAN / KLYDE WATER</p></div>
+      <div class="arow"><span>LENGTH</span><p>618.40 M INTO THE SOUND</p></div>
+      <div class="arow"><span>CONCRETE</span><p>96,500 M³ · BOARD-MARKED</p></div>
+      <div class="arow"><span>LISTED</span><p>GRADE II — 1998</p></div>
+      <div class="arow"><span>STATUS</span><p><span class="st th">PARTIAL DEMOLITION FILED</span></p></div>
+      <div class="arow"><span>CASE N°</span><p>KLY-2025-0117</p></div>
+    </aside>
+
+    <div class="f-text reveal">
+      <p>Approach Havsvärket from the water and it does not look like architecture. It looks like intent — a 618-metre finger of board-marked concrete pushed into the Klyde Sound, its deck held two metres above the highest recorded tide, as if the sea had been served a written warning. There is no cladding because there is nothing to hide. The formwork was built by carpenters who signed each panel in pencil, and the signatures are still legible sixty metres offshore, where nobody was ever expected to read them.</p>
+      <p>The plan is a sentence: screens, pumps, air, settlement, contact, sea. Four caissons of 2,600 tonnes each were sunk into the seabed in the spring of 1976, and the sinking took eleven days because the crew refused to rush a pour. Two raw-water galleries fall toward the diffusers at a gradient so slight that the survey team argued about it for a month, then engraved the number into the gallery wall, where it remains. The diffusion heads sit a kilometre offshore in eleven metres of water; the plant's own engineers call the rising plume "the weather."</p>
+      <blockquote class="pull">
+        <p>"NOTHING HERE IS DECORATED. EVERYTHING HERE IS DECIDED."</p>
+        <cite>— SITE NOTICE, PUMP ROOM DOOR. PAINTED 1979. REPAINTED ELEVEN TIMES. NEVER REWORDED.</cite>
+      </blockquote>
+      <p>Inside, the pump room is a basilica. Nine line-shaft pumps stand in a colonnade beneath a clerestory of north-facing glass; the floor is painted the orange of the plant's own safety code, the only colour on the entire site. The room's acoustics are such that a dropped spanner files a report to every corner of the building at once. Chief engineer Brigitte Halloran called it "the argument-settler." She was right, and the minutes of every meeting held there agree with her.</p>
+      <p>This spring the municipality filed for partial demolition of the contact tanks, to make room for a "flexible waterfront platform." The archive's position is printed beneath the drawings, as always: redraw it, measure it, publish it, refuse to lose it. Sheet S-101 below carries the numbers. The numbers are not sentimental. That is precisely why they are dangerous.</p>
+    </div>
+  </div>
+
+  <figure class="sheet reveal">
+    <svg class="reg reg-tl" aria-hidden="true"><use href="#regmark"/></svg>
+    <svg class="reg reg-tr" aria-hidden="true"><use href="#regmark"/></svg>
+    <svg class="reg reg-bl" aria-hidden="true"><use href="#regmark"/></svg>
+    <svg class="reg reg-br" aria-hidden="true"><use href="#regmark"/></svg>
+    <figcaption class="sheet-head">
+      <span><span class="chip">PLATE 01</span>&nbsp;&nbsp;GENERAL ARRANGEMENT — INTAKE &amp; PROCESS GALLERY</span>
+      <span>SCALE 1:1250 · GRID 25 M · REDRAWN 2024 FROM 1978 LINEN</span>
+    </figcaption>
+    <div class="plate-scroll">
+      <svg viewBox="0 0 1240 620" role="img" aria-label="General plan of the Havsvärket coastal treatment works">
+        <rect x="0" y="0" width="1240" height="620" fill="url(#gp)"/>
+        <rect x="436" y="0" width="804" height="620" fill="url(#waves)" opacity=".8"/>
+        <path d="M470 -10 L458 80 L472 150 L447 240 L460 330 L441 420 L456 500 L436 560 L446 630 L-10 630 L-10 -10 Z" fill="url(#hx)" opacity=".55"/>
+        <path d="M470 -10 L458 80 L472 150 L447 240 L460 330 L441 420 L456 500 L436 560 L446 630" fill="none" stroke="#12110F" stroke-width="2.5"/>
+        <g stroke="#12110F" stroke-opacity=".45" stroke-width="1.5">
+          <path d="M0 110H452M0 205H447M0 405H440M120 0V620M250 0V620"/>
+        </g>
+        <g stroke="#12110F" fill="none">
+          <rect x="60" y="40" width="90" height="52" stroke-dasharray="6 5"/>
+          <rect x="170" y="130" width="120" height="60" stroke-dasharray="6 5"/>
+          <rect x="60" y="330" width="110" height="66" stroke-dasharray="6 5"/>
+          <circle cx="80" cy="470" r="7"/><path d="M80 463v14M73 470h14"/>
+          <circle cx="110" cy="500" r="7"/><path d="M110 493v14M103 500h14"/>
+          <circle cx="70" cy="540" r="7"/><path d="M70 533v14M63 540h14"/>
+          <path d="M452 150L600 118" stroke-width="2"/>
+          <path d="M455 470H560" stroke-dasharray="8 5" stroke-width="1.5"/>
+          <path d="M553 463l14 14M567 463l-14 14" stroke-width="1.8"/>
+          <path d="M250 250h830v84H250z" stroke-width="3" fill="#EAE6DD"/>
+          <rect x="258" y="258" width="814" height="68" stroke-width="1"/>
+          <path d="M370 250v84M500 250v84M630 250v84M850 250v84M1000 250v84" stroke-width="2"/>
+          <path d="M150 270H250M150 314H250" stroke-width="1.8" marker-end="url(#arrK)"/>
+          <path d="M262 292H1076" stroke-width="1.8" stroke-dasharray="9 6" class="flow" marker-end="url(#arrK)"/>
+          <path d="M1080 292H1128" stroke-width="1.6" stroke-dasharray="8 6" class="flow"/>
+          <path d="M1140 262V346" stroke-width="1.6" stroke-dasharray="6 5"/>
+          <path d="M1140 272h26M1140 296h28M1140 320h22M1140 338h22" stroke-width="1.4"/>
+          <circle cx="1172" cy="272" r="8"/><circle cx="1174" cy="296" r="8"/><circle cx="1176" cy="320" r="8"/><circle cx="1168" cy="338" r="8"/>
+          <path d="M630 205V470" stroke-dasharray="18 5 3 5" stroke-width="1.6"/>
+          <path d="M250 340v58M1080 340v58" stroke-width="1"/>
+          <path d="M250 398H1080" stroke-width="1.4" marker-start="url(#arrK)" marker-end="url(#arrK)"/>
+          <path d="M447 414v16M447 430h-197" stroke-width="1"/>
+          <path d="M1106 250v84M1100 250h12M1100 334h12" stroke-width="1"/>
+          <path d="M1106 250V334" stroke-width="1.1" marker-start="url(#arrK)" marker-end="url(#arrK)"/>
+          <circle cx="1170" cy="72" r="24" stroke-width="1.8"/>
+          <path d="M1170 58l10 26-10-7-10 7z" fill="#12110F"/>
+        </g>
+        <g fill="#12110F" font-family="'IBM Plex Mono',monospace" font-weight="600">
+          <text x="30" y="70" font-size="15" font-weight="700" letter-spacing="2">KLYDE — CITY SIDE</text>
+          <text x="300" y="366" font-size="11">SCREEN HOUSE</text>
+          <text x="392" y="366" font-size="11">PUMP ROOM · 9 UNITS</text>
+          <text x="516" y="366" font-size="11">AERATION</text>
+          <text x="686" y="366" font-size="11">SETTLING BASINS ×4</text>
+          <text x="880" y="366" font-size="11">CONTACT TANK</text>
+          <text x="1008" y="366" font-size="11">OUTFALL</text>
+          <text x="30" y="262" font-size="10">FROM CITY</text>
+          <text x="30" y="336" font-size="10">2 × 2.4 M BORE</text>
+          <text x="628" y="388" font-size="16" font-weight="700" text-anchor="middle">618.40 M</text>
+          <text x="352" y="430" font-size="10" text-anchor="middle">SHOREFACE 197.0 M</text>
+          <text x="1120" y="296" font-size="10" transform="rotate(-90 1120 296)">24.00 M</text>
+          <text x="608" y="200" font-size="11" font-weight="700">SEC. A-A → SHEET S-101</text>
+          <text x="576" y="474" font-size="9.5">1954 OUTFALL — SEALED</text>
+          <text x="1096" y="404" font-size="10">DIFFUSER HEADS ×4 · BED −11.0 M</text>
+          <text x="476" y="206" font-size="10">MHW +3.75 M</text>
+          <text x="1170" y="42" font-size="12" text-anchor="middle" font-weight="700">N</text>
+          <text x="470" y="600" font-size="10">HAVSVÄRKET CIVIC WASTE-WATER WORKS — GENERAL PLAN</text>
+        </g>
+        <g>
+          <rect x="60" y="548" width="150" height="10" fill="#12110F"/>
+          <rect x="90" y="548" width="30" height="10" fill="#EAE6DD" stroke="#12110F"/>
+          <rect x="150" y="548" width="30" height="10" fill="#EAE6DD" stroke="#12110F"/>
+          <g fill="#12110F" font-family="'IBM Plex Mono',monospace" font-size="9" font-weight="600">
+            <text x="58" y="542">0</text><text x="112" y="542">25</text><text x="172" y="542">50</text><text x="226" y="542">75</text><text x="270" y="542">100 M</text>
+          </g>
+          <rect x="1000" y="556" width="222" height="50" fill="#EAE6DD" stroke="#12110F" stroke-width="2"/>
+          <g fill="#12110F" font-family="'IBM Plex Mono',monospace">
+            <text x="1012" y="576" font-size="12" font-weight="700">HAVSVÄRKET C.W.W.T.P.</text>
+            <text x="1012" y="592" font-size="9">CI ARCHIVE · PLATE 01 · GRID 25 M</text>
+            <text x="1012" y="606" font-size="9">CHECKED R.I. · NOT FOR CONSTRUCTION</text>
+          </g>
+        </g>
+        <g fill="none" stroke="#12110F">
+          <circle cx="1088" cy="292" r="5" fill="#FF4D00" stroke="none" class="blink-o"/>
+        </g>
+        <g class="bub" fill="none" stroke="#12110F" stroke-width="1.2">
+          <circle cx="1172" cy="260" r="3"/><circle cx="1176" cy="284" r="3"/><circle cx="1168" cy="308" r="3"/>
+        </g>
+        <g id="sweep" transform="translate(640 260)">
+          <line x1="0" y1="-238" x2="0" y2="238" stroke="#1B36FF" stroke-width="1"/>
+          <line x1="-596" y1="0" x2="596" y2="0" stroke="#1B36FF" stroke-width="1"/>
+          <rect x="-4" y="-4" width="8" height="8" fill="#1B36FF"/>
+          <text id="sweepTxt" x="8" y="-8" font-size="11" fill="#1B36FF" font-family="'IBM Plex Mono',monospace" font-weight="700">0400 / 0163</text>
+        </g>
+        <rect x="5" y="5" width="1230" height="610" fill="none" stroke="#12110F" stroke-width="2.5"/>
+      </svg>
+    </div>
+    <figcaption class="sheet-cap">PLATE 01 — REDRAWN AT 1:1250 FROM THE 1978 AS-BUILT ISSUE. DIMENSIONS IN METRES UNLESS NOTED. THE BLUE CROSSHAIR IS A LIVE SURVEY PROBE — ITS READOUT IS COMPUTED IN THIS PAGE, NOT IN THE DRAWING.</figcaption>
+  </figure>
+
+  <div class="next-line">
+    <a class="next-link mono" href="#specs">CONTINUED — SHEET S-101 · SPECIFICATIONS <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v10M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
+  </div>
+</section>
+
+<!-- ============ SEC.03 SPECS ============ -->
+<section id="specs" class="sec">
+  <span class="edge-tag" aria-hidden="true">SEC.03 — SPECIFICATIONS — SHEET S-101</span>
+  <header class="sec-head reveal">
+    <span class="sec-no">SEC.03</span>
+    <h2 class="sec-title">SPECIFICATIONS</h2>
+    <span class="sec-meta">SHEET S-101 · HAVSVÄRKET REC-0007 · ISSUED FOR RECORD · 14 LINES, NO PADDING</span>
+  </header>
+  <div class="ruler" aria-hidden="true"></div>
+  <div class="tablewrap reveal">
+    <table class="spec">
+      <thead><tr><th>SPEC</th><th>PARAMETER</th><th>VALUE</th><th>REMARK</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sn">S-01</span></td><td class="par">Total structure length</td><td class="val">618.40 m</td><td class="rem">Shore wall to diffuser valve</td></tr>
+        <tr><td><span class="sn">S-02</span></td><td class="par">Design return capacity</td><td class="val">3.2 m³/s peak</td></tr>
+        <tr><td><span class="sn">S-03</span></td><td class="par">Average daily throughput</td><td class="val">148,000 m³/day</td><td class="rem">1967 census projection — still holding</td></tr>
+        <tr><td><span class="sn">S-04</span></td><td class="par">Concrete poured</td><td class="val">96,500 m³</td><td class="rem">Sulphate-resistant, board-marked vertical</td></tr>
+        <tr><td><span class="sn">S-05</span></td><td class="par">Reinforcement steel</td><td class="val">11,300 t</td><td class="rem">118 kg/m³ average</td></tr>
+        <tr><td><span class="sn">S-06</span></td><td class="par">Formwork cycles</td><td class="val">2,140</td><td class="rem">One signing carpenter per panel</td></tr>
+        <tr><td><span class="sn">S-07</span></td><td class="par">Intake screens</td><td class="val">6 panels</td><td class="rem">24 m² each · 12 mm raked bar</td></tr>
+        <tr><td><span class="sn">S-08</span></td><td class="par">Line-shaft pumps</td><td class="val">9 units</td><td class="rem">4 duty / 3 assist / 2 standby</td></tr>
+        <tr><td><span class="sn">S-09</span></td><td class="par">Settling basins</td><td class="val">4 × 88.0 × 24.0 m</td><td class="rem">Depth 3.4 m · longitudinal scrapers</td></tr>
+        <tr><td><span class="sn">S-10</span></td><td class="par">Contact tank</td><td class="val">1 × 40 × 18 m</td><td class="rem">T10 retention 32 min</td></tr>
+        <tr><td><span class="sn">S-11</span></td><td class="par">Diffuser heads</td><td class="val">4</td><td class="rem">Bed level −11.0 m · 1 km offshore</td></tr>
+        <tr><td><span class="sn">S-12</span></td><td class="par">Design high water</td><td class="val">+3.75 m</td><td class="rem">1:200-year surge — deck cleared it in 1994</td></tr>
+        <tr><td><span class="sn">S-13</span></td><td class="par">Heritage listing</td><td class="val">Grade II · 1998</td><td class="rem">Exterior + pump hall interior</td></tr>
+        <tr class="threat"><td><span class="sn">S-14</span></td><td class="par">Open case</td><td class="val">PARTIAL DEMOLITION PROPOSED</td><td class="rem">Case KLY-2025-0117 · the archive objects</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="spec-note">S-14 IS THE ONLY LINE THE COUNCIL WOULD PREFER READ BLANK. THE ARCHIVE DOES NOT PROVIDE THAT SERVICE. — VERIFIED AGAINST THE 1978 AS-BUILT ISSUE, APRIL 2025.</p>
+</section>
+
+<!-- ============ SEC.04 MANIFESTO ============ -->
+<section id="manifesto" class="sec">
+  <span class="edge-tag" aria-hidden="true">SEC.04 — MANIFESTO — NINE FRAGMENTS</span>
+  <header class="sec-head reveal">
+    <span class="sec-no">SEC.04</span>
+    <h2 class="sec-title">MANIFESTO</h2>
+    <span class="sec-meta">NINE FRAGMENTS · SOME ASSEMBLED · REV C · READ ALOUD FOR MAXIMUM EFFECT</span>
+  </header>
+  <div class="mani">
+    <div class="mcell w7 reveal"><span class="mno">01</span><p class="mtxt">The index is a form of care. A city that cannot name its own structures will not defend them.</p></div>
+    <div class="mcell m-orange w5 reveal"><span class="mno">M-02</span><p class="mbig">WEIGH.</p></div>
+    <div class="mcell m-ink w4 reveal"><span class="mno">02</span><p class="mtxt">Demolition is a decision made in a room with windows that don't open.</p></div>
+    <div class="mcell w8 reveal"><span class="mno">03</span><p class="mtxt">If a sewage plant can be beautiful, a shopping mall has no excuse.</p></div>
+    <div class="mcell m-blue w3 reveal"><span class="mno">M-05</span><p class="mbig">PROVE.</p></div>
+    <div class="mcell w5 reveal"><span class="mno">04</span><p class="mtxt">Concrete is not grey. It is every colour the city has ever been.</p></div>
+    <div class="mcell m-ink w4 reveal"><span class="mno">05</span><p class="mtxt">We index what the postcards ignore.</p></div>
+    <div class="mcell w6 reveal"><span class="mno">06</span><p class="mtxt">Record. Redraw. Refuse to forget.</p>
+      <svg class="spinfig" viewBox="0 0 80 80" aria-hidden="true"><g class="spin"><circle cx="40" cy="40" r="26" fill="none" stroke="currentColor" stroke-dasharray="10 7" stroke-width="1.6"/><line x1="40" y1="40" x2="40" y2="9" stroke="currentColor" stroke-width="1.6"/><rect x="60" y="34" width="11" height="11" fill="#FF4D00"/></g><circle cx="40" cy="40" r="3.4" fill="currentColor"/></svg>
+    </div>
+    <div class="mcell w6 reveal"><span class="mno">07</span><p class="mtxt">Public buildings are the only monuments nobody claps for. That is exactly why someone must keep the file.</p></div>
+  </div>
+</section>
+
+<!-- ============ SEC.05 ARCHIVE STRIP ============ -->
+<section id="archive" class="sec">
+  <span class="edge-tag" aria-hidden="true">SEC.05 — ARCHIVE STRIP — DRAWING SET</span>
+  <header class="sec-head reveal">
+    <span class="sec-no">SEC.05</span>
+    <h2 class="sec-title">ARCHIVE STRIP</h2>
+    <span class="sec-meta">TEN PLATES PULLED FROM THE FLAT FILES · ELEVATIONS, SECTIONS, PLANS, DETAILS · GENERATED IN-PAGE, NEVER THE SAME TWICE</span>
+  </header>
+  <div class="strip-bar reveal">
+    <button class="hbtn" id="pPrev" type="button">← PREV</button>
+    <button class="hbtn" id="pNext" type="button">NEXT →</button>
+    <span class="s-count" id="sCount">01 / 10</span>
+    <div class="s-prog" aria-hidden="true"><i id="sBar"></i></div>
+    <span class="s-hint">DRAG / SCROLL →</span>
+  </div>
+  <div class="strip reveal" id="strip" tabindex="0" aria-label="Archive plates, horizontally scrollable"></div>
+</section>
+
+<!-- ============ FOOTER / COLOPHON ============ -->
+<section id="colophon" class="sec footer">
+  <span class="edge-tag" aria-hidden="true">SEC.06 — COLOPHON — SHEET G-001</span>
+  <header class="sec-head reveal">
+    <span class="sec-no">SEC.06</span>
+    <h2 class="sec-title">COLOPHON</h2>
+    <span class="sec-meta">CONSTRUCTION DOCUMENTATION FORMAT · SHEET G-001 · ISSUED FOR RECORD, NOT FOR CONSTRUCTION</span>
+  </header>
+  <div class="tb reveal">
+    <div class="tb-top">
+      <div class="tb-cell tb-brand"><strong>CONCRETE INDEX</strong><em>INDEPENDENT CIVIC ARCHIVE — FOUNDED 2019 — NO SPONSORS</em></div>
+      <div class="tb-cell"><span>PROJECT</span><b>INDEX OF CIVIC WORKS</b></div>
+      <div class="tb-cell"><span>SHEET</span><b>G-001</b></div>
+      <div class="tb-cell"><span>REV</span><b>C</b></div>
+      <div class="tb-cell"><span>ISSUE</span><b>Nº 047</b></div>
+      <div class="tb-cell"><span>DATE</span><b id="fdate">—</b></div>
+      <div class="tb-cell"><span>SCALE</span><b>NTS</b></div>
+    </div>
+    <div class="tb-mid">
+      <div class="tb-cell">
+        <span>REVISIONS</span>
+        <table class="rev"><thead><tr><th>REV</th><th>DATE</th><th>DESCRIPTION</th></tr></thead>
+          <tbody><tr><td>A</td><td>2023-11</td><td>Six new field records indexed</td></tr>
+          <tr><td>B</td><td>2024-09</td><td>Plate 01 redrawn from 1978 linen</td></tr>
+          <tr><td>C</td><td>2025-04</td><td>Demolition case KLY-2025-0117 added</td></tr></tbody></table>
+      </div>
+      <div class="tb-cell tb-people">
+        <span>DRAWN / CHECKED</span>
+        <p>DRAWN — <b>A. VOSS · FIELD TEAM 2</b></p>
+        <p>CHECKED — <b>R. ILVES</b></p>
+        <p>APPROVED — <b>NOBODY, EVER</b></p>
+        <p>SURVEYED — <b>ON FOOT, IN ALL WEATHER</b></p>
+      </div>
+      <div class="tb-cell stampcell">
+        <div class="stamp"><span>ISSUED FOR RECORD</span><em>NOT FOR CONSTRUCTION</em></div>
+      </div>
+      <div class="tb-cell">
+        <span>DOCUMENT CODE</span>
+        <div id="barcode" aria-hidden="true"></div>
+        <p class="bcode">CI-047-G-001</p>
+      </div>
+    </div>
+    <div class="tb-bot">
+      <span>© 2019–2025 CONCRETE INDEX · ALL STRUCTURES FICTIONAL, ALL DRAWINGS REDRAWN · NO AFFILIATION, NO SPONSORS, NO ADS</span>
+      <span><a href="#index">INDEX</a>&nbsp;&nbsp;<a href="#feature">FEATURE</a>&nbsp;&nbsp;<a href="#specs">SPECS</a>&nbsp;&nbsp;<a href="#manifesto">MANIFESTO</a></span>
+      <button class="top" id="toTop" type="button">RETURN TO SHEET A-000 ↑</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<style>
+/* spec table helper (kept last so row styles above stay readable) */
+.sn{display:inline-block;background:var(--orange);border:1.5px solid var(--ink);padding:1px 6px;font-family:var(--mono);font-size:10px;font-weight:700}
+.spec .par{font-weight:600}
+.spec .val{font-family:var(--mono);font-weight:700;white-space:nowrap}
+.flow{animation:dash 1.1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-30}}
+.blink-o{animation:blk 1s steps(2,end) infinite}
+.bub circle{animation:rise 2.8s steps(10,end) infinite}
+.bub circle:nth-child(2){animation-delay:.9s}
+.bub circle:nth-child(3){animation-delay:1.8s}
+@keyframes rise{0%{transform:translateY(6px);opacity:0}20%{opacity:1}100%{transform:translateY(-22px);opacity:0}}
+.sheet-cap{border-top:2px solid var(--ink);padding:10px 14px;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.82}
+.spec-note{padding:16px var(--pad);font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.bcode{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.3em;margin-top:8px}
+</style>
+
+<script>
+(function(){
+"use strict";
+const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>Array.from(c.querySelectorAll(s));
+const motionOK=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!motionOK)document.documentElement.classList.add('nomot');
+
+/* ---------- masthead clock ---------- */
+const clockEl=$('#clock');
+function tickClock(){
+  if(!clockEl)return;
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  clockEl.textContent=p(d.getUTCHours())+':'+p(d.getUTCMinutes())+':'+p(d.getUTCSeconds());
+}
+tickClock(); setInterval(tickClock,1000);
+
+/* ---------- ticking issue / records counter ---------- */
+let recs=4192;
+const bigEl=$('#bigCount'),mastEl=$('#mastCount');
+const fmt=n=>{const s=String(n).padStart(6,'0');return s.slice(0,3)+','+s.slice(3);};
+function paint(){ if(bigEl)bigEl.textContent=fmt(recs); if(mastEl)mastEl.textContent=recs.toLocaleString('en-US'); }
+paint();
+function schedule(){setTimeout(()=>{recs++;paint();
+  [bigEl,mastEl].forEach(el=>{if(!el)return;el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip');});
+  schedule();
+},3400+Math.random()*4400);}
+if(motionOK)schedule();
+
+/* ---------- ticker: duplicate group for seamless loop ---------- */
+const track=$('#tickTrack');
+if(track){const g=track.firstElementChild.cloneNode(true);g.setAttribute('aria-hidden','true');track.appendChild(g);}
+
+/* ---------- hero: crosshair + parallax ---------- */
+const hero=$('.hero'),xhV=$('.xh-v'),xhH=$('.xh-h'),xhTag=$('#xhTag'),layers=$$('.hero-layer');
+let tX=.5,tY=.5,cX=.5,cY=.5,lastMove=-9999,seenMouse=false;
+if(hero){
+  hero.addEventListener('pointermove',e=>{
+    const r=hero.getBoundingClientRect();
+    tX=(e.clientX-r.left)/r.width; tY=(e.clientY-r.top)/r.height;
+    lastMove=performance.now(); seenMouse=(e.pointerType==='mouse');
+  },{passive:true});
+}
+const sweep=$('#sweep'),sweepTxt=$('#sweepTxt');
+let plateVisible=false;
+if(sweep&&'IntersectionObserver' in window){
+  new IntersectionObserver(en=>{plateVisible=en[0].isIntersecting;},{threshold:.12}).observe(sweep);
+}
+function frame(t){
+  if(!document.hidden){
+    if(hero){
+      let gx=tX,gy=tY;
+      if(!seenMouse||t-lastMove>3600){ gx=.5+.4*Math.sin(t*.00021); gy=.5+.32*Math.sin(t*.00013+1.2); }
+      cX+=(gx-cX)*.1; cY+=(gy-cY)*.1;
+      const r=hero.getBoundingClientRect();
+      const px=cX*r.width, py=cY*r.height;
+      if(xhV)xhV.style.transform='translateX('+px.toFixed(1)+'px)';
+      if(xhH)xhH.style.transform='translateY('+py.toFixed(1)+'px)';
+      if(xhTag){
+        xhTag.textContent='X '+String(Math.round(px*2.4)).padStart(4,'0')+' · Y '+String(Math.round(py*2.4)).padStart(4,'0');
+        const tx=Math.min(px+14,r.width-170), ty=Math.min(py+12,r.height-42);
+        xhTag.style.transform='translate('+tx.toFixed(0)+'px,'+ty.toFixed(0)+'px)';
+      }
+      const nx=(cX-.5)*2, ny=(cY-.5)*2;
+      layers.forEach(l=>{
+        const d=parseFloat(l.dataset.depth)||10;
+        l.style.transform='translate3d('+(-nx*d).toFixed(1)+'px,'+(-ny*d*.55).toFixed(1)+'px,0)';
+      });
+    }
+    if(sweep&&plateVisible){
+      const p=(t*.05)%1, x=40+p*1160, y=250+Math.sin(t*.00035)*170;
+      sweep.setAttribute('transform','translate('+x.toFixed(1)+' '+y.toFixed(1)+')');
+      if(sweepTxt)sweepTxt.textContent=(x*0.625).toFixed(1).padStart(6,'0')+' / '+(y*0.625).toFixed(1).padStart(6,'0');
+    }
+  }
+  requestAnimationFrame(frame);
+}
+if(motionOK&&xhV){requestAnimationFrame(frame);}else if(xhV){xhV.parentElement.style.display='none';}
+
+/* ---------- scroll reveals ---------- */
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+  }),{threshold:.12});
+  $$('.reveal').forEach(el=>io.observe(el));
+}else{$$('.reveal').forEach(el=>el.classList.add('in'));}
+
+/* ---------- index record expanders ---------- */
+$$('.rec-row').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const rec=btn.closest('.rec');
+    const open=rec.classList.toggle('open');
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  });
+});
+
+/* ---------- archive strip: generated plates ---------- */
+const strip=$('#strip');
+function mul(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const RC=(x,y,w,h,sw,ex)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="none" stroke="currentColor" stroke-width="'+(sw||1)+'" '+(ex||'')+'/>';
+const RL=(x1,y1,x2,y2,sw,ex)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="currentColor" stroke-width="'+(sw||1)+'" '+(ex||'')+'/>';
+const RT=(x,y,s,sz,an)=>'<text x="'+x+'" y="'+y+'" font-size="'+(sz||9)+'" font-weight="600" fill="currentColor" text-anchor="'+(an||'start')+'" font-family="IBM Plex Mono,monospace">'+s+'</text>';
+const DIMH=(x1,x2,y,lab)=>RL(x1,y-6,x1,y+6)+RL(x2,y-6,x2,y+6)+RL(x1,y,x2,y,1,'marker-start="url(#arrK)" marker-end="url(#arrK)"')+RT((x1+x2)/2,y-6,lab,8,'middle');
+function ground(){return RL(10,122,210,122,2.5)+'<rect x="10" y="122" width="200" height="11" fill="url(#hx)" stroke="none"/>';}
+function elev(r){
+  const cols=4+Math.floor(r()*3), rows=3+Math.floor(r()*2);
+  const fx=45,fy=40,fw=124,fh=80; let s=ground()+RC(fx,fy,fw,fh,2.5);
+  const gw=(fw-16)/cols, gh=(fh-26)/rows;
+  for(let i=0;i<cols;i++)for(let j=0;j<rows;j++)s+=RC(fx+8+i*gw+2,fy+10+j*gh,gw-6,gh-6,1);
+  s+=RL(fx-5,fy,fx+fw+5,fy,2)+RL(fx+12,fy,fx+12,fy-13,1.4);
+  s+='<rect x="'+(fx+8)+'" y="'+(fy-21)+'" width="9" height="9" fill="#FF4D00" stroke="currentColor"/>';
+  s+='<rect x="'+(fx+fw/2-8)+'" y="'+(fy+fh-22)+'" width="16" height="22" fill="#FF4D00" stroke="currentColor"/>';
+  return s+DIMH(fx,fx+fw,136,'GRID 6.0 TYP');
+}
+function saw(r){
+  let s=ground()+'<path d="M30 92V58l40 34V58l40 34V58l40 34V58l40 34" fill="none" stroke="currentColor" stroke-width="2.5"/>';
+  s+=RL(34,92,34,120,1.5)+RL(114,92,114,120,1.5)+RL(190,92,190,120,1.5);
+  s+='<rect x="26" y="120" width="188" height="6" fill="none" stroke="currentColor" stroke-width="1.6"/>';
+  s+='<rect x="196" y="84" width="13" height="10" fill="#FF4D00" stroke="currentColor"/>';
+  return s+DIMH(30,230,138,'43.0 M');
+}
+function sect(r){
+  let s=ground()+'<path d="M40 122V70H80V40H120V78H170V122" fill="none" stroke="currentColor" stroke-width="2.5"/>';
+  s+=RL(40,92,170,92,1,'stroke-opacity=".55"')+RL(80,58,170,58,1,'stroke-opacity=".4"');
+  s+='<path d="M182 122h6v-6h6v-6h6v-6h6v-6h6" fill="none" stroke="currentColor"/>';
+  s+='<circle cx="28" cy="110" r="2.6" fill="currentColor"/>'+RL(28,113,28,122,1.5);
+  s+='<rect x="86" y="30" width="18" height="10" fill="#FF4D00" stroke="currentColor"/>';
+  return s+DIMH(40,170,138,'SPAN 31.4 M');
+}
+function dam(r){
+  let s=ground()+ '<path d="M46 122L96 30h60v92z" fill="none" stroke="currentColor" stroke-width="2.5"/>';
+  s+=RL(96,23,156,23,1.5)+RL(96,30,96,23,1)+RL(156,30,156,23,1);
+  ['112','98','84','70'].forEach(y=>s+=RL(96-(122-y)*.5,y,96-(122-y)*.5+11,y,1.2));
+  s+='<path d="M14 112q6-5 12 0t12 0M18 120q6-5 12 0" fill="none" stroke="currentColor" stroke-width="1.2"/>';
+  s+=RL(176,30,176,122,1.1,'marker-start="url(#arrK)" marker-end="url(#arrK)"');
+  s+='<rect x="100" y="14" width="9" height="9" fill="#FF4D00" stroke="currentColor"/>';
+  return s+RT(184,80,'46.0',9);
+}
+function plan(r){
+  let s=RC(28,22,164,100,2.5)+RL(96,22,96,122,1.3)+RL(96,72,192,72,1.3);
+  s+='<path d="M96 42a17 17 0 0 1 17 17" fill="none" stroke="#FF4D00" stroke-width="1.6"/>'+RL(96,42,113,42,1.2);
+  for(let k=0;k<8;k++)s+=RL(150,84+k*4.5,186,84+k*4.5,1);
+  [[40,34],[40,110],[176,32],[178,110]].forEach(p=>s+='<rect x="'+p[0]+'" y="'+p[1]+'" width="6" height="6" fill="currentColor"/>');
+  s+=RT(40,52,'A')+RT(104,52,'B')+RT(40,102,'C')+RT(112,102,'D');
+  return s+DIMH(28,192,138,'64.0 M');
+}
+function bridge(r){
+  let s=RL(10,60,210,60,3)+RL(10,68,210,68,1.1);
+  s+='<path d="M100 68l14-20 14 20" fill="none" stroke="currentColor" stroke-width="2.4"/>';
+  [[26],[52],[78],[140],[166],[192]].forEach(p=>s+=RL(114,48,p[0],60,1));
+  s+=RC(108,68,14,18,1.6)+RC(160,68,14,18,1.6,'stroke-dasharray="4 3"');
+  s+='<path d="M20 84q7-5 14 0t14 0M120 92q7-5 14 0t14 0" fill="none" stroke="currentColor" stroke-width="1.1"/>';
+  s+='<rect x="104" y="40" width="9" height="9" fill="#FF4D00" stroke="currentColor"/>';
+  return s+RT(14,40,'DECK ±0.0 · PYLON N°2')+DIMH(10,210,138,'174.0 M');
+}
+function detail(r){
+  let s='<rect x="86" y="18" width="44" height="104" fill="url(#hx)"/>'+RC(86,18,44,104,2.5);
+  s+='<circle cx="108" cy="72" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/>'+RL(100,72,116,72,1.2)+RL(108,64,108,80,1.2);
+  s+=RL(136,18,150,18,1)+RL(136,122,150,122,1)+RL(150,18,150,122,1,'marker-start="url(#arrK)" marker-end="url(#arrK)"');
+  s+='<text x="160" y="74" font-size="8" font-weight="600" fill="currentColor" font-family="IBM Plex Mono,monospace" transform="rotate(90 160 74)">280 TYP</text>';
+  s+=RL(64,40,78,40,1.4,'marker-end="url(#arrK)")').replace(')"',')')+RL(64,58,78,58,1.4,'marker-end="url(#arrK)"');
+  return s+RT(40,136,'WALL SEC — HATCH 45°');
+}
+function joint(r){
+  let s=ground()+RC(70,34,34,88,2.4)+RC(112,34,34,88,2.4);
+  s+='<polyline points="104,40 112,48 104,56 112,64 104,72 112,80 104,88 112,96 104,104" fill="none" stroke="#FF4D00" stroke-width="1.8"/>';
+  s+=RC(78,58,18,18,1.2)+RC(120,66,18,18,1.2);
+  s+='<path d="M20 132h70" stroke="currentColor" stroke-dasharray="8 5" marker-end="url(#arrK)"/>';
+  return s+RT(20,26,'MOVEMENT JOINT — 40 MM',9);
+}
+function axo(r){
+  let s='<path d="M60 96l46-26 46 26-46 26z" fill="none" stroke="currentColor" stroke-width="2"/>';
+  s+=RL(60,96,60,122,1.6)+RL(152,96,152,122,1.6)+RL(106,122,106,148,1.6);
+  s+='<path d="M60 120l46 26 46-26" fill="none" stroke="currentColor"/>';
+  s+='<path d="M106 148l46-26 0 14-46 26z" fill="#FF4D00" stroke="currentColor"/>';
+  s+='<path d="M84 70l22-12 22 12-22 12z" fill="none" stroke="currentColor" stroke-width="1.6"/>';
+  s+=RL(84,70,84,96,1.3)+RL(128,70,128,96,1.3)+RL(106,82,106,108,1.3,'stroke-dasharray="4 3"');
+  return s+RT(30,144,'EL. +24.6');
+}
+function site(r){
+  let s=RC(50,34,120,78,1.5,'stroke-dasharray="7 5"');
+  for(let i=0;i<4;i++)s+='<path d="M10 '+(126-i*16)+' q40 -'+(6+Math.floor(r()*9))+' 90 0 t100 '+(Math.floor(r()*10)-5)+'" fill="none" stroke="currentColor" stroke-opacity=".55"/>';
+  s+='<path d="M186 12l4 9h-8z" fill="#FF4D00" stroke="currentColor"/>'+RL(188,22,188,32,1.4);
+  s+='<rect x="58" y="42" width="10" height="10" fill="#FF4D00" stroke="currentColor"/>';
+  s+='<path d="M120 96h16M128 88v16" stroke="currentColor"/>';
+  return s+RT(52,28,'PLOT 114/K · SITE',9);
+}
+const PLATES=[
+  ['A-114','ELEVATION',elev,'REC-4190',2024],['S-007','SECTION',dam,'REC-4187',2023],
+  ['P-220','PLAN',plan,'REC-4189',2023],['D-042','DETAIL',detail,'REC-4187',2025],
+  ['A-131','ELEVATION',saw,'REC-4188',2023],['X-009','AXONOMETRIC',axo,'REC-4192',2025],
+  ['S-015','SECTION',sect,'REC-4191',2025],['P-231','PLAN',bridge,'REC-4191',2024],
+  ['A-167','ELEVATION',elev,'REC-4192',2025],['D-051','DETAIL',joint,'REC-4189',2024]
+];
+if(strip){
+  let html='';
+  PLATES.forEach((p,i)=>{
+    const r=mul(97+i*13);
+    html+='<figure class="plate"><figcaption class="p-top"><span class="p-chip">PLATE '+p[0]+'</span><span>'+p[1]+'</span></figcaption>'
+        +'<div class="p-body"><svg viewBox="0 0 220 150" role="img" aria-label="'+p[1]+' drawing '+p[0]+'">'+p[2](r)+'</svg>'
+        +'<svg class="preg tl" aria-hidden="true"><use href="#regmark"/></svg><svg class="preg br" aria-hidden="true"><use href="#regmark"/></svg></div>'
+        +'<p class="p-cap">'+p[3]+' · REDRAWN '+p[4]+' · 1:200</p></figure>';
+  });
+  html+='<div class="endcap">END OF<br>STRIP<a href="#top">↑ RETURN TO TOP</a></div>';
+  strip.innerHTML=html;
+}
+const sBar=$('#sBar'),sCount=$('#sCount');
+function stripStep(){const p=strip&&strip.querySelector('.plate');return p?p.getBoundingClientRect().width+2:320;}
+function stripUI(){
+  if(!strip)return;
+  const max=strip.scrollWidth-strip.clientWidth;
+  if(sBar)sBar.style.width=(max>0?(strip.scrollLeft/max)*100:0)+'%';
+  if(sCount){const n=Math.min(PLATES.length,Math.round(strip.scrollLeft/stripStep())+1);
+    sCount.textContent=String(n).padStart(2,'0')+' / '+PLATES.length;}
+}
+if(strip){
+  stripUI();
+  strip.addEventListener('scroll',stripUI,{passive:true});
+  $('#pNext')&&$('#pNext').addEventListener('click',()=>strip.scrollBy({left:stripStep()*2,behavior:motionOK?'smooth':'auto'}));
+  $('#pPrev')&&$('#pPrev').addEventListener('click',()=>strip.scrollBy({left:-stripStep()*2,behavior:motionOK?'smooth':'auto'}));
+  strip.addEventListener('wheel',e=>{
+    if(Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;
+    const max=strip.scrollWidth-strip.clientWidth;
+    if((e.deltaY>0&&strip.scrollLeft<max-1)||(e.deltaY<0&&strip.scrollLeft>1)){e.preventDefault();strip.scrollLeft+=e.deltaY;}
+  },{passive:false});
+  let down=false,sx=0,sl=0;
+  strip.addEventListener('pointerdown',e=>{down=true;sx=e.clientX;sl=strip.scrollLeft;strip.classList.add('drag');try{strip.setPointerCapture(e.pointerId);}catch(_){}});
+  strip.addEventListener('pointermove',e=>{if(down)strip.scrollLeft=sl-(e.clientX-sx);});
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>strip.addEventListener(ev,()=>{down=false;strip.classList.remove('drag');}));
+}
+
+/* ---------- footer: date + barcode ---------- */
+const fd=$('#fdate'); if(fd)fd.textContent=new Date().toISOString().slice(0,10);
+const bc=$('#barcode');
+if(bc){let x=3,s='';
+  while(x<203){const w=1+Math.floor(Math.random()*4);s+='<rect x="'+x+'" y="3" width="'+w+'" height="46" fill="currentColor"/>';x+=w+1+Math.floor(Math.random()*4);}
+  bc.innerHTML='<svg viewBox="0 0 206 52" width="100%" height="52" preserveAspectRatio="none" aria-hidden="true">'+s+'</svg>';
+}
+
+/* ---------- back to top ---------- */
+const toTop=$('#toTop');
+if(toTop)toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:motionOK?'smooth':'auto'}));
+})();
+</script>
+</body>
+</html>

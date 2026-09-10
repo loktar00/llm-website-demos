@@ -1,0 +1,14 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/deepseek-v41-flash/api/website-hand-drawn-2/index.html",
+  "pass": true,
+  "notes": [],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": null,
+  "canvas_count": 0,
+  "canvas_kinds": [],
+  "served_by": "base",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 13688,
+  "scroll_height": 13740
+}

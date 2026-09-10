@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Moss Notebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f0e1;
+  --cream-dark: #e8e0cc;
+  --ink: #2c2416;
+  --ink-light: #5a4a36;
+  --pencil: #8a7e6b;
+  --pencil-light: #b5aa96;
+  --wash-green: rgba(107, 142, 85, 0.15);
+  --wash-blue: rgba(90, 120, 150, 0.12);
+  --wash-ochre: rgba(190, 155, 70, 0.12);
+  --wash-rose: rgba(170, 100, 90, 0.1);
+  --wash-sage: rgba(130, 155, 110, 0.1);
+  --tape: rgba(220, 210, 180, 0.6);
+  --margin-line: rgba(180, 100, 100, 0.25);
+  --handwritten: 'Caveat', cursive;
+  --serif: 'Lora', Georgia, serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--serif);
+  line-height: 1.7;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(0,0,0,0.015) 28px, rgba(0,0,0,0.015) 29px),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Margin lines */
+body::after {
+  content: '';
+  position: fixed;
+  left: 72px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--margin-line);
+  z-index: 999;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+}
+
+/* ===== HERO / COVER ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: 60px 20px;
+}
+
+.hero-border {
+  position: absolute;
+  inset: 20px;
+  border: 2px solid var(--pencil-light);
+  border-radius: 2px 8px 3px 6px;
+  pointer-events: none;
+}
+
+.hero-border::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(138, 126, 107, 0.2);
+  border-radius: 4px 2px 7px 3px;
+}
+
+.hero-title-group {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-subtitle-top {
+  font-family: var(--handwritten);
+  font-size: 1.1rem;
+  color: var(--pencil);
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+
+.hero h1 {
+  font-family: var(--handwritten);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.hero h1 .underline-sketch {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hero-year {
+  font-family: var(--handwritten);
+  font-size: 1.4rem;
+  color: var(--pencil);
+  margin-top: 16px;
+  letter-spacing: 4px;
+}
+
+.hero-tagline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink-light);
+  margin-top: 24px;
+  max-width: 400px;
+}
+
+.hero-illustration {
+  margin-top: 40px;
+  position: relative;
+}
+
+/* Watercolor wash behind hero */
+.hero-wash {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.6;
+  pointer-events: none;
+  animation: washShift 20s ease-in-out infinite alternate;
+}
+
+.hero-wash-1 {
+  background: var(--wash-green);
+  top: 10%;
+  left: -10%;
+}
+
+.hero-wash-2 {
+  background: var(--wash-blue);
+  bottom: 5%;
+  right: -15%;
+  animation-delay: -7s;
+}
+
+@keyframes washShift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -15px) scale(1.05); }
+  100% { transform: translate(-10px, 10px) scale(0.95); }
+}
+
+/* ===== SECTION STYLES ===== */
+section {
+  padding: 80px 0;
+  position: relative;
+}
+
+.section-title {
+  font-family: var(--handwritten);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--ink);
+  margin-top: 4px;
+  border-radius: 2px;
+  opacity: 0.3;
+}
+
+.section-date {
+  font-family: var(--handwritten);
+  font-size: 1rem;
+  color: var(--pencil);
+  margin-bottom: 32px;
+}
+
+/* Hand-drawn dividers */
+.divider {
+  margin: 48px 0;
+  text-align: center;
+}
+
+.divider svg {
+  display: inline-block;
+}
+
+/* ===== SEASONAL ENTRIES ===== */
+.seasonal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+@media (max-width: 680px) {
+  .seasonal-grid { grid-template-columns: 1fr; }
+  .container { padding: 0 20px; }
+  body::after { display: none; }
+}
+
+.season-card {
+  position: relative;
+  padding: 28px 24px;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(138, 126, 107, 0.2);
+  border-radius: 3px 8px 4px 6px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.season-card:hover {
+  transform: rotate(-0.5deg) translateY(-2px);
+  box-shadow: 2px 4px 12px rgba(0,0,0,0.06);
+}
+
+.season-card::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 16px;
+  background: var(--tape);
+  border-radius: 1px;
+  opacity: 0.7;
+}
+
+.season-label {
+  font-family: var(--handwritten);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.season-dates {
+  font-family: var(--handwritten);
+  font-size: 0.85rem;
+  color: var(--pencil);
+  margin-bottom: 12px;
+}
+
+.season-card p {
+  font-size: 0.95rem;
+  color: var(--ink-light);
+  line-height: 1.65;
+}
+
+.season-card .marginal-note {
+  font-family: var(--handwritten);
+  font-size: 0.85rem;
+  color: var(--pencil);
+  margin-top: 12px;
+  padding-left: 12px;
+  border-left: 1px dashed var(--pencil-light);
+}
+
+/* ===== HABITAT MAP ===== */
+.map-container {
+  position: relative;
+  margin: 40px 0;
+  padding: 20px;
+  background: rgba(255,255,255,0.25);
+  border: 1px solid rgba(138, 126, 107, 0.15);
+  border-radius: 4px;
+}
+
+.map-container svg {
+  width: 100%;
+  height: auto;
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  font-family: var(--handwritten);
+  font-size: 0.9rem;
+  color: var(--pencil);
+}
+
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.map-legend-item .swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  border: 1px solid var(--pencil-light);
+}
+
+/* ===== SPECIMEN NOTES ===== */
+.specimens {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 32px;
+  margin-top: 40px;
+}
+
+.specimen {
+  position: relative;
+  padding: 24px 20px 20px;
+  background: rgba(255,255,255,0.35);
+  border: 1px solid rgba(138, 126, 107, 0.15);
+  border-radius: 2px 6px 3px 5px;
+  transition: transform 0.3s ease;
+}
+
+.specimen:hover {
+  transform: rotate(0.5deg) scale(1.01);
+}
+
+.specimen::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 14px;
+  background: var(--tape);
+  border-radius: 1px;
+  opacity: 0.6;
+}
+
+.specimen-number {
+  font-family: var(--handwritten);
+  font-size: 0.8rem;
+  color: var(--pencil);
+  position: absolute;
+  top: 8px;
+  right: 12px;
+}
+
+.specimen svg {
+  width: 100%;
+  height: auto;
+  margin-bottom: 12px;
+}
+
+.specimen-name {
+  font-family: var(--handwritten);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.specimen-latin {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--pencil);
+  margin-bottom: 8px;
+}
+
+.specimen-desc {
+  font-size: 0.88rem;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+
+.specimen-meta {
+  font-family: var(--handwritten);
+  font-size: 0.8rem;
+  color: var(--pencil);
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--pencil-light);
+}
+
+/* ===== FEATURED OBSERVATION ===== */
+.featured {
+  position: relative;
+  padding: 48px 40px;
+  margin: 40px 0;
+  background: rgba(255,255,255,0.2);
+  border-left: 3px solid var(--pencil-light);
+  border-radius: 0 4px 4px 0;
+}
+
+.featured-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.featured-header h2 {
+  font-family: var(--handwritten);
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+}
+
+.featured-header .obs-date {
+  font-family: var(--handwritten);
+  font-size: 0.95rem;
+  color: var(--pencil);
+}
+
+.featured-body p {
+  margin-bottom: 16px;
+  font-size: 0.98rem;
+  color: var(--ink-light);
+}
+
+.featured-body .pull-quote {
+  font-family: var(--handwritten);
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin: 24px 0;
+  padding: 16px 20px;
+  border-left: 2px solid var(--ink);
+  opacity: 0.85;
+  line-height: 1.5;
+}
+
+.featured-illustration {
+  margin: 24px 0;
+  text-align: center;
+}
+
+.featured-illustration svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== WEATHER LEDGER ===== */
+.weather-ledger {
+  margin: 40px 0;
+  overflow-x: auto;
+}
+
+.weather-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.weather-table th {
+  font-family: var(--handwritten);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--ink);
+  color: var(--ink);
+}
+
+.weather-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(138, 126, 107, 0.15);
+  color: var(--ink-light);
+  font-family: var(--handwritten);
+  font-size: 0.95rem;
+}
+
+.weather-table tr:hover td {
+  background: rgba(138, 126, 107, 0.04);
+}
+
+.weather-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+/* ===== SOUNDSCAPE ===== */
+.soundscape-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.sound-card {
+  padding: 20px;
+  background: rgba(255,255,255,0.25);
+  border: 1px solid rgba(138, 126, 107, 0.12);
+  border-radius: 3px;
+  position: relative;
+}
+
+.sound-card .sound-time {
+  font-family: var(--handwritten);
+  font-size: 0.85rem;
+  color: var(--pencil);
+  margin-bottom: 6px;
+}
+
+.sound-card .sound-name {
+  font-family: var(--handwritten);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.sound-card p {
+  font-size: 0.9rem;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+
+.sound-wave {
+  margin-top: 12px;
+  height: 30px;
+}
+
+/* ===== SUPPLIES ===== */
+.supplies-list {
+  columns: 2;
+  column-gap: 40px;
+  margin-top: 32px;
+  list-style: none;
+}
+
+@media (max-width: 500px) {
+  .supplies-list { columns: 1; }
+}
+
+.supplies-list li {
+  font-family: var(--handwritten);
+  font-size: 1.05rem;
+  padding: 6px 0;
+  padding-left: 24px;
+  position: relative;
+  color: var(--ink-light);
+  break-inside: avoid;
+}
+
+.supplies-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 2px;
+  background: var(--pencil);
+  border-radius: 1px;
+}
+
+.supplies-list li .note {
+  font-size: 0.85rem;
+  color: var(--pencil);
+  display: block;
+  margin-top: 2px;
+}
+
+/* ===== ABOUT ===== */
+.about-section {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+  margin-top: 40px;
+  align-items: start;
+}
+
+@media (max-width: 600px) {
+  .about-section {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.about-portrait {
+  position: relative;
+}
+
+.about-portrait svg {
+  width: 100%;
+  height: auto;
+}
+
+.about-text p {
+  font-size: 0.95rem;
+  color: var(--ink-light);
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+.about-text .signature {
+  font-family: var(--handwritten);
+  font-size: 1.6rem;
+  color: var(--ink);
+  margin-top: 20px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 60px 0 40px;
+  text-align: center;
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: var(--pencil-light);
+}
+
+.footer-text {
+  font-family: var(--handwritten);
+  font-size: 1rem;
+  color: var(--pencil);
+  line-height: 1.8;
+}
+
+.footer-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--pencil-light);
+  margin-top: 20px;
+}
+
+.footer-doodles {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  opacity: 0.4;
+}
+
+/* ===== ANIMATED BIRD ===== */
+.flying-bird {
+  position: fixed;
+  top: 15%;
+  right: -60px;
+  z-index: 998;
+  pointer-events: none;
+  animation: flyAcross 25s linear infinite;
+  opacity: 0.35;
+}
+
+@keyframes flyAcross {
+  0% { right: -60px; top: 15%; }
+  25% { top: 12%; }
+  50% { top: 18%; }
+  75% { top: 14%; }
+  100% { right: calc(100% + 60px); top: 16%; }
+}
+
+/* ===== SWAYING STEMS ===== */
+.sway {
+  animation: sway 4s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+.sway-alt {
+  animation: sway 5s ease-in-out infinite alternate-reverse;
+  transform-origin: bottom center;
+}
+
+@keyframes sway {
+  0% { transform: rotate(-2deg); }
+  100% { transform: rotate(2deg); }
+}
+
+/* ===== INK DRAW ANIMATION ===== */
+.ink-draw {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: inkDraw 3s ease forwards;
+}
+
+@keyframes inkDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ===== PINNED NOTE HOVER ===== */
+.pinned-note {
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.pinned-note:hover {
+  transform: rotate(-1deg) translateY(-3px);
+  box-shadow: 3px 5px 15px rgba(0,0,0,0.08);
+  z-index: 10;
+}
+
+/* ===== MARGINAL ARROW ===== */
+.marginal-arrow {
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  width: 50px;
+  height: 40px;
+  opacity: 0.4;
+}
+
+/* ===== WATERCOLOR BLOOM ===== */
+.watercolor-bloom {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+  animation: bloomShift 15s ease-in-out infinite alternate;
+}
+
+@keyframes bloomShift {
+  0% { opacity: 0.15; transform: scale(1) translate(0,0); }
+  50% { opacity: 0.25; transform: scale(1.1) translate(10px, -5px); }
+  100% { opacity: 0.15; transform: scale(0.95) translate(-5px, 8px); }
+}
+
+/* ===== STAMP ===== */
+.stamp {
+  display: inline-block;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: var(--handwritten);
+  font-size: 0.85rem;
+  transform: rotate(-3deg);
+  opacity: 0.6;
+  position: relative;
+}
+
+.stamp::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  opacity: 0.4;
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== NOTEBOOK BINDING ===== */
+.binding-line {
+  position: fixed;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--pencil-light) 0px,
+    var(--pencil-light) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  opacity: 0.3;
+  z-index: 998;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .binding-line { display: none; }
+}
+
+/* ===== COORDINATE STAMP ===== */
+.coord-stamp {
+  font-family: var(--handwritten);
+  font-size: 0.75rem;
+  color: var(--pencil-light);
+  letter-spacing: 1px;
+  transform: rotate(-2deg);
+  display: inline-block;
+}
+
+/* ===== PAGE NUMBER ===== */
+.page-num {
+  font-family: var(--handwritten);
+  font-size: 0.85rem;
+  color: var(--pencil-light);
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* ===== ARROW ANNOTATION ===== */
+.annotation-arrow {
+  display: inline-block;
+  margin: 0 4px;
+  vertical-align: middle;
+}
+
+/* ===== STAIN ===== */
+.coffee-stain {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 90, 43, 0.08);
+  pointer-events: none;
+}
+
+.coffee-stain::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 90, 43, 0.05);
+}
+</style>
+</head>
+<body>
+
+<div class="binding-line"></div>
+
+<!-- Flying bird -->
+<svg class="flying-bird" width="40" height="20" viewBox="0 0 40 20" fill="none">
+  <path d="M2 10 Q10 2 20 10 Q30 2 38 10" stroke="var(--pencil)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M2 10 Q10 18 20 10 Q30 18 38 10" stroke="var(--pencil)" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.5"/>
+</svg>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-wash hero-wash-1"></div>
+  <div class="hero-wash hero-wash-2"></div>
+  <div class="hero-border"></div>
+
+  <div class="hero-title-group">
+    <p class="hero-subtitle-top">a naturalist's field journal</p>
+    <h1>
+      The Moss<br>Notebook
+      <svg class="underline-sketch" width="300" height="12" viewBox="0 0 300 12" fill="none">
+        <path d="M10 8 Q50 3 100 7 Q150 11 200 6 Q250 2 290 8" stroke="var(--ink)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.3"/>
+      </svg>
+    </h1>
+    <p class="hero-year">— 2024 —</p>
+  </div>
+
+  <p class="hero-tagline">
+    A year of forests, fungi, streams, birds, and tiny discoveries — observed, sketched, and held gently.
+  </p>
+
+  <div class="hero-illustration">
+    <svg width="420" height="280" viewBox="0 0 420 280" fill="none">
+      <!-- Forest scene -->
+      <!-- Distant hills -->
+      <path d="M0 180 Q60 140 120 160 Q180 130 240 155 Q300 125 360 150 Q400 135 420 145 L420 280 L0 280Z" fill="var(--wash-green)" opacity="0.5"/>
+      <path d="M0 200 Q80 170 160 190 Q240 165 320 185 Q380 170 420 180 L420 280 L0 280Z" fill="var(--wash-sage)" opacity="0.4"/>
+
+      <!-- Tree 1 - left -->
+      <g class="sway">
+        <path d="M80 260 Q78 220 75 180 Q73 150 80 120 Q85 100 80 80" stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M80 120 Q50 100 40 110 Q30 120 45 130 Q60 135 80 120" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.6"/>
+        <path d="M80 100 Q55 80 45 90 Q35 100 50 110 Q65 115 80 100" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+        <path d="M80 80 Q60 60 50 70 Q40 80 55 90 Q70 95 80 80" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.4"/>
+        <path d="M80 110 Q110 90 120 100 Q130 110 115 120 Q100 125 80 110" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+        <path d="M80 90 Q105 70 115 80 Q125 90 110 100 Q95 105 80 90" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.4"/>
+      </g>
+
+      <!-- Tree 2 - center -->
+      <g class="sway-alt">
+        <path d="M210 260 Q208 210 210 160 Q212 120 210 90 Q208 70 210 50" stroke="var(--ink)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M210 90 Q170 60 155 75 Q140 90 160 105 Q180 115 210 90" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+        <path d="M210 70 Q175 40 160 55 Q145 70 165 85 Q185 95 210 70" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.4"/>
+        <path d="M210 50 Q180 20 165 35 Q150 50 170 65 Q190 75 210 50" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.3"/>
+        <path d="M210 80 Q250 50 265 65 Q280 80 260 95 Q240 105 210 80" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+        <path d="M210 60 Q245 30 260 45 Q275 60 255 75 Q235 85 210 60" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.4"/>
+        <path d="M210 40 Q240 10 255 25 Q270 40 250 55 Q230 65 210 40" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.3"/>
+      </g>
+
+      <!-- Tree 3 - right -->
+      <g class="sway">
+        <path d="M340 260 Q342 220 340 180 Q338 140 340 110" stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M340 110 Q310 90 300 100 Q290 110 305 120 Q320 125 340 110" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+        <path d="M340 90 Q315 70 305 80 Q295 90 310 100 Q325 105 340 90" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.4"/>
+        <path d="M340 100 Q370 80 380 90 Q390 100 375 110 Q360 115 340 100" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+        <path d="M340 80 Q365 60 375 70 Q385 80 370 90 Q355 95 340 80" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.4"/>
+      </g>
+
+      <!-- Mushrooms -->
+      <g transform="translate(150, 230)">
+        <path d="M10 30 L10 10" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M0 10 Q10 0 20 10" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-ochre)" opacity="0.7"/>
+        <circle cx="7" cy="7" r="1" fill="var(--ink)" opacity="0.3"/>
+        <circle cx="13" cy="6" r="0.8" fill="var(--ink)" opacity="0.3"/>
+      </g>
+
+      <g transform="translate(170, 240)">
+        <path d="M8 25 L8 8" stroke="var(--ink)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M-2 8 Q8 0 18 8" stroke="var(--ink)" stroke-width="1" fill="var(--wash-rose)" opacity="0.5"/>
+      </g>
+
+      <!-- Fern frond -->
+      <g transform="translate(280, 220)">
+        <path d="M0 40 Q5 20 15 0" stroke="var(--ink)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M3 35 Q10 30 12 25" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M5 30 Q12 25 14 20" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M7 25 Q14 20 16 15" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M9 20 Q16 15 18 10" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M11 15 Q18 10 20 5" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M2 35 Q-5 30 -7 25" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M4 30 Q-3 25 -5 20" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M6 25 Q-1 20 -3 15" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M8 20 Q1 15 -1 10" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+        <path d="M10 15 Q3 10 1 5" stroke="var(--ink)" stroke-width="0.8" fill="none"/>
+      </g>
+
+      <!-- Small bird -->
+      <g transform="translate(260, 60)">
+        <path d="M0 5 Q5 0 10 5 Q15 0 20 5" stroke="var(--ink)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M0 5 Q5 10 10 5 Q15 10 20 5" stroke="var(--ink)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.5"/>
+        <path d="M18 5 L22 3" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+      </g>
+
+      <!-- Ground line -->
+      <path d="M0 265 Q50 262 100 266 Q150 270 200 264 Q250 258 300 265 Q350 272 420 263" stroke="var(--pencil)" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.4"/>
+
+      <!-- Grass tufts -->
+      <g opacity="0.5">
+        <path d="M50 265 Q48 255 52 248" stroke="var(--ink)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <path d="M54 265 Q56 252 58 246" stroke="var(--ink)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <path d="M200 264 Q198 254 202 247" stroke="var(--ink)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <path d="M204 264 Q206 251 208 245" stroke="var(--ink)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <path d="M350 265 Q348 255 352 248" stroke="var(--ink)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+      </g>
+
+      <!-- Leaf on ground -->
+      <g transform="translate(120, 258)" opacity="0.6">
+        <path d="M0 0 Q8 -8 16 -2 Q12 4 0 0Z" stroke="var(--ink)" stroke-width="0.8" fill="var(--wash-ochre)" opacity="0.5"/>
+        <path d="M0 0 Q8 -2 16 -2" stroke="var(--ink)" stroke-width="0.5" fill="none"/>
+      </g>
+    </svg>
+  </div>
+
+  <div style="margin-top:30px;">
+    <span class="stamp">FIELD NOTES VOL. VII</span>
+  </div>
+</section>
+
+<!-- ===== SEASONAL ENTRIES ===== -->
+<section id="seasons">
+  <div class="container">
+    <h2 class="section-title reveal">Seasonal Observations</h2>
+    <p class="section-date reveal">Four turns of the wheel</p>
+
+    <div class="seasonal-grid">
+      <div class="season-card pinned-note reveal">
+        <div class="season-label" style="color: #6b8e55;">Spring</div>
+        <div class="season-dates">March 20 — June 20</div>
+        <p>The forest floor awakens in soft greens. Morel mushrooms push through last autumn's leaf litter. Wood warblers return with their frantic, seed-like songs. The stream swells with snowmelt, running brown and eager.</p>
+        <div class="marginal-note">→ first trillium spotted April 3rd, near the cedar grove</div>
+      </div>
+
+      <div class="season-card pinned-note reveal">
+        <div class="season-label" style="color: #4a7a5a;">Summer</div>
+        <div class="season-dates">June 21 — September 22</div>
+        <p>Canopy closes overhead. Humidity wraps the trails in a warm blanket. Dragonflies patrol the pond like tiny helicopters. The air hums with cicadas at dusk. Ferns unfurl their fiddleheads into full, lacey fronds.</p>
+        <div class="marginal-note">→ hottest day: July 18, 94°F. Sat by the stream all afternoon.</div>
+      </div>
+
+      <div class="season-card pinned-note reveal">
+        <div class="season-label" style="color: #b08830;">Autumn</div>
+        <div class="season-dates">September 23 — December 21</div>
+        <p>The maples ignite. Jack-o'-lantern mushrooms glow faintly in the twilight. Pileated woodpeckers drum their unmistakable rhythm. The forest floor becomes a mosaic of russet and gold. First frost silvers the spiderwebs.</p>
+        <div class="marginal-note">→ collected 14 leaf specimens before the big wind</div>
+      </div>
+
+      <div class="season-card pinned-note reveal">
+        <div class="season-label" style="color: #6a7a8a;">Winter</div>
+        <div class="section-dates">December 22 — March 19</div>
+        <p>Snow mutes all sound. The world becomes a study in white and gray. Pine branches bow under their burden. Tracks in the snow tell stories: fox, deer, the occasional raccoon. Bare branches reveal the forest's skeleton.</p>
+        <div class="marginal-note">→ ice fishing at Miller's Pond. Caught nothing but silence.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <svg width="200" height="20" viewBox="0 0 200 20" fill="none">
+    <path d="M10 10 Q30 5 50 10 Q70 15 90 10 Q110 5 130 10 Q150 15 170 10 Q190 5 200 10" stroke="var(--pencil)" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.4"/>
+    <circle cx="100" cy="10" r="2" fill="var(--pencil)" opacity="0.3"/>
+  </svg>
+</div>
+
+<!-- ===== HABITAT MAP ===== -->
+<section id="map">
+  <div class="container">
+    <h2 class="section-title reveal">Habitat Map</h2>
+    <p class="section-date reveal">Cedar Ridge &amp; surrounding watershed</p>
+
+    <div class="map-container reveal">
+      <svg viewBox="0 0 600 400" fill="none">
+        <!-- Background -->
+        <rect width="600" height="400" fill="rgba(255,255,255,0.15)" rx="4"/>
+
+        <!-- Topographic contours -->
+        <g opacity="0.25" stroke="var(--pencil)" stroke-width="0.8" fill="none">
+          <path d="M50 350 Q100 300 150 320 Q200 280 250 310 Q300 270 350 290 Q400 260 450 280 Q500 250 550 270"/>
+          <path d="M30 330 Q80 280 130 300 Q180 260 230 290 Q280 250 330 270 Q380 240 430 260 Q480 230 530 250"/>
+          <path d="M60 310 Q110 260 160 280 Q210 240 260 270 Q310 230 360 250 Q410 220 460 240 Q510 210 560 230"/>
+          <path d="M80 290 Q130 240 180 260 Q230 220 280 250 Q330 210 380 230 Q430 200 480 220"/>
+          <path d="M100 270 Q150 220 200 240 Q250 200 300 230 Q350 190 400 210 Q450 180 500 200"/>
+          <path d="M120 250 Q170 200 220 220 Q270 180 320 210 Q370 170 420 190"/>
+          <path d="M140 230 Q190 180 240 200 Q290 160 340 190 Q390 150 440 170"/>
+          <path d="M160 210 Q210 160 260 180 Q310 140 360 170"/>
+          <path d="M180 190 Q230 140 280 160 Q330 120 380 150"/>
+          <path d="M200 170 Q250 120 300 140 Q350 100 400 130"/>
+          <path d="M220 150 Q270 100 320 120 Q370 80 420 110"/>
+          <path d="M240 130 Q290 80 340 100 Q390 60 440 90"/>
+          <path d="M260 110 Q310 60 360 80 Q410 40 460 70"/>
+          <path d="M280 90 Q330 40 380 60 Q430 20 480 50"/>
+        </g>
+
+        <!-- Contour labels -->
+        <g font-family="var(--handwritten)" font-size="8" fill="var(--pencil)" opacity="0.3">
+          <text x="150" y="340">400</text>
+          <text x="200" y="290">500</text>
+          <text x="250" y="240">600</text>
+          <text x="300" y="190">700</text>
+          <text x="350" y="140">800</text>
+        </g>
+
+        <!-- Stream -->
+        <path d="M50 200 Q100 180 150 200 Q200 220 250 200 Q300 180 350 190 Q400 200 450 180 Q500 160 550 170" stroke="var(--wash-blue)" stroke-width="4" fill="none" opacity="0.6"/>
+        <path d="M50 200 Q100 180 150 200 Q200 220 250 200 Q300 180 350 190 Q400 200 450 180 Q500 160 550 170" stroke="rgba(90,120,150,0.3)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <text x="280" y="195" font-family="var(--handwritten)" font-size="11" fill="rgba(90,120,150,0.5)" transform="rotate(-5, 280, 195)">Cedar Creek</text>
+
+        <!-- Forest areas -->
+        <path d="M100 100 Q150 80 200 90 Q250 70 300 85 Q350 70 400 80 Q450 90 480 100 L480 180 Q450 170 400 180 Q350 170 300 185 Q250 170 200 180 Q150 170 100 180Z" fill="var(--wash-green)" opacity="0.3"/>
+        <text x="250" y="140" font-family="var(--handwritten)" font-size="13" fill="var(--ink)" opacity="0.5" text-anchor="middle">Cedar Ridge Forest</text>
+
+        <!-- Meadow -->
+        <path d="M30 300 Q80 280 130 290 Q180 270 230 285 Q280 275 330 290 L330 350 Q280 340 230 355 Q180 345 130 360 Q80 350 30 360Z" fill="var(--wash-ochre)" opacity="0.25"/>
+        <text x="180" y="330" font-family="var(--handwritten)" font-size="11" fill="var(--ink)" opacity="0.4" text-anchor="middle">Wild Meadow</text>
+
+        <!-- Pond -->
+        <ellipse cx="480" cy="280" rx="50" ry="35" fill="var(--wash-blue)" opacity="0.3"/>
+        <ellipse cx="480" cy="280" rx="45" ry="30" stroke="rgba(90,120,150,0.2)" stroke-width="1" fill="none"/>
+        <text x="480" y="284" font-family="var(--handwritten)" font-size="10" fill="rgba(90,120,150,0.5)" text-anchor="middle">Miller's Pond</text>
+
+        <!-- Trail -->
+        <path d="M30 360 Q80 340 130 320 Q180 300 200 260 Q220 220 250 200 Q280 180 320 170 Q360 160 400 150 Q440 140 480 130" stroke="var(--pencil)" stroke-width="1.5" fill="none" stroke-dasharray="6,4" stroke-linecap="round" opacity="0.4"/>
+        <text x="350" y="165" font-family="var(--handwritten)" font-size="9" fill="var(--pencil)" opacity="0.4" transform="rotate(-8, 350, 165)">— trail —</text>
+
+        <!-- Observation points -->
+        <g>
+          <circle cx="200" cy="260" r="4" fill="none" stroke="var(--ink)" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="200" cy="260" r="1.5" fill="var(--ink)" opacity="0.5"/>
+          <text x="210" y="255" font-family="var(--handwritten)" font-size="9" fill="var(--ink)" opacity="0.5">A</text>
+
+          <circle cx="320" cy="170" r="4" fill="none" stroke="var(--ink)" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="320" cy="170" r="1.5" fill="var(--ink)" opacity="0.5"/>
+          <text x="330" y="165" font-family="var(--handwritten)" font-size="9" fill="var(--ink)" opacity="0.5">B</text>
+
+          <circle cx="480" cy="280" r="4" fill="none" stroke="var(--ink)" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="480" cy="280" r="1.5" fill="var(--ink)" opacity="0.5"/>
+          <text x="490" y="275" font-family="var(--handwritten)" font-size="9" fill="var(--ink)" opacity="0.5">C</text>
+        </g>
+
+        <!-- Compass rose -->
+        <g transform="translate(540, 40)">
+          <line x1="0" y1="15" x2="0" y2="-15" stroke="var(--pencil)" stroke-width="1" stroke-linecap="round"/>
+          <line x1="-15" y1="0" x2="15" y2="0" stroke="var(--pencil)" stroke-width="1" stroke-linecap="round"/>
+          <polygon points="0,-15 -3,-5 3,-5" fill="var(--ink)" opacity="0.4"/>
+          <text x="0" y="-20" font-family="var(--handwritten)" font-size="10" fill="var(--pencil)" text-anchor="middle" opacity="0.5">N</text>
+        </g>
+
+        <!-- Scale bar -->
+        <g transform="translate(30, 375)">
+          <line x1="0" y1="0" x2="80" y2="0" stroke="var(--pencil)" stroke-width="1"/>
+          <line x1="0" y1="-4" x2="0" y2="4" stroke="var(--pencil)" stroke-width="1"/>
+          <line x1="40" y1="-3" x2="40" y2="3" stroke="var(--pencil)" stroke-width="0.8"/>
+          <line x1="80" y1="-4" x2="80" y2="4" stroke="var(--pencil)" stroke-width="1"/>
+          <text x="0" y="14" font-family="var(--handwritten)" font-size="8" fill="var(--pencil)" opacity="0.5">0</text>
+          <text x="33" y="14" font-family="var(--handwritten)" font-size="8" fill="var(--pencil)" opacity="0.5">0.5</text>
+          <text x="70" y="14" font-family="var(--handwritten)" font-size="8" fill="var(--pencil)" opacity="0.5">1 mi</text>
+        </g>
+
+        <!-- Small tree symbols -->
+        <g opacity="0.3" stroke="var(--ink)" stroke-width="0.8" fill="none">
+          <g transform="translate(160, 120)"><circle cx="0" cy="0" r="5"/><line x1="0" y1="5" x2="0" y2="10"/></g>
+          <g transform="translate(280, 110)"><circle cx="0" cy="0" r="5"/><line x1="0" y1="5" x2="0" y2="10"/></g>
+          <g transform="translate(380, 120)"><circle cx="0" cy="0" r="5"/><line x1="0" y1="5" x2="0" y2="10"/></g>
+          <g transform="translate(220, 130)"><circle cx="0" cy="0" r="4"/><line x1="0" y1="4" x2="0" y2="9"/></g>
+          <g transform="translate(340, 130)"><circle cx="0" cy="0" r="4"/><line x1="0" y1="4" x2="0" y2="9"/></g>
+        </g>
+      </svg>
+
+      <div class="map-legend">
+        <div class="map-legend-item"><span class="swatch" style="background: var(--wash-green);"></span> Forest</div>
+        <div class="map-legend-item"><span class="swatch" style="background: var(--wash-ochre);"></span> Meadow</div>
+        <div class="map-legend-item"><span class="swatch" style="background: var(--wash-blue);"></span> Water</div>
+        <div class="map-legend-item"><span class="swatch" style="background: repeating-linear-gradient(90deg, var(--pencil) 0, var(--pencil) 4px, transparent 4px, transparent 8px);"></span> Trail</div>
+        <div class="map-legend-item"><span class="swatch" style="border-radius: 50%; border: 1.5px solid var(--ink); background: transparent;"></span> Observation point</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <svg width="160" height="16" viewBox="0 0 160 16" fill="none">
+    <path d="M10 8 L30 8 M40 8 L60 8 M70 8 L90 8 M100 8 L120 8 M130 8 L150 8" stroke="var(--pencil)" stroke-width="0.8" stroke-linecap="round" opacity="0.3"/>
+  </svg>
+</div>
+
+<!-- ===== SPECIMEN NOTES ===== -->
+<section id="specimens">
+  <div class="container">
+    <h2 class="section-title reveal">Specimen Notes</h2>
+    <p class="section-date reveal">Seven collected through the year</p>
+
+    <div class="specimens">
+
+      <!-- Specimen 1: Oak Leaf -->
+      <div class="specimen pinned-note reveal">
+        <span class="specimen-number">No. 1</span>
+        <svg viewBox="0 0 200 180" fill="none">
+          <!-- Oak leaf -->
+          <path d="M100 160 Q95 130 90 100 Q85 70 90 50 Q95 30 100 20 Q105 30 110 50 Q115 70 110 100 Q105 130 100 160" stroke="var(--ink)" stroke-width="1.5" fill="var(--wash-green)" opacity="0.6"/>
+          <!-- Leaf lobes -->
+          <path d="M90 100 Q70 95 60 85 Q65 75 80 80 Q85 75 90 70" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+          <path d="M90 80 Q65 75 55 60 Q62 50 78 55 Q83 50 90 45" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+          <path d="M110 100 Q130 95 140 85 Q135 75 120 80 Q115 75 110 70" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+          <path d="M110 80 Q135 75 145 60 Q138 50 122 55 Q117 50 110 45" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-green)" opacity="0.5"/>
+          <!-- Vein -->
+          <path d="M100 160 L100 20" stroke="var(--ink)" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <!-- Stem -->
+          <path d="M100 160 L100 175" stroke="var(--ink)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="specimen-name">White Oak Leaf</div>
+        <div class="specimen-latin">Quercus alba</div>
+        <div class="specimen-desc">Collected October 12 beneath a mature specimen near the ridge trail. Deeply lobed margins, pale underside with silvery fuzz. Acorns were abundant this year.</div>
+        <div class="specimen-meta">Oct 12 · Point A · 42.3°N</div>
+      </div>
+
+      <!-- Specimen 2: Chanterelle -->
+      <div class="specimen pinned-note reveal">
+        <span class="specimen-number">No. 2</span>
+        <svg viewBox="0 0 200 180" fill="none">
+          <!-- Chanterelle mushroom -->
+          <path d="M85 160 Q82 130 80 100 Q78 80 82 60 Q85 50 90 45 Q95 40 100 38 Q105 40 110 45 Q115 50 118 60 Q122 80 120 100 Q118 130 115 160" stroke="var(--ink)" stroke-width="1.5" fill="var(--wash-ochre)" opacity="0.6"/>
+          <!-- Gills running down stem -->
+          <path d="M82 60 Q80 80 82 100" stroke="var(--ink)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <path d="M86 55 Q84 80 86 105" stroke="var(--ink)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <path d="M90 50 Q88 80 90 110" stroke="var(--ink)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <path d="M94 47 Q92 80 94 115" stroke="var(--ink)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <path d="M106 47 Q108 80 106 115" stroke="var(--ink)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <path d="M110 50 Q112 80 110 110" stroke="var(--ink)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <path d="M114 55 Q116 80 114 105" stroke="var(--ink)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <path d="M118 60 Q120 80 118 100" stroke="var(--ink)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <!-- Cap edge wavy -->
+          <path d="M80 55 Q85 48 90 50 Q95 45 100 44 Q105 45 110 50 Q115 48 120 55" stroke="var(--ink)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="specimen-name">Golden Chanterelle</div>
+        <div class="specimen-latin">Cantharellus cibarius</div>
+        <div class="specimen-desc">Found in a cluster of six under beech trees. Rich apricot hue, funnel-shaped cap. The scent — faintly of apricots, as described. A September treasure.</div>
+        <div class="specimen-meta">Sep 8 · Point B · under beech</div>
+      </div>
+
+      <!-- Specimen 3: Feather -->
+      <div class="specimen pinned-note reveal">
+        <span class="specimen-number">No. 3</span>
+        <svg viewBox="0 0 200 180" fill="none">
+          <!-- Feather -->
+          <g transform="rotate(-30, 100, 90)">
+            <path d="M100 170 Q98 140 95 110 Q92 80 95 50 Q97 30 100 15 Q103 30 105 50 Q108 80 105 110 Q102 140 100 170" stroke="var(--ink)" stroke-width="1.2" fill="rgba(180,170,150,0.3)"/>
+            <!-- Barbs -->
+            <g opacity="0.3" stroke="var(--ink)" stroke-width="0.5" fill="none">
+              <path d="M98 150 L80 145"/>
+              <path d="M97 140 L78 135"/>
+              <path d="M96 130 L76 125"/>
+              <path d="M95 120 L75 115"/>
+              <path d="M94 110 L74 105"/>
+              <path d="M93 100 L73 95"/>
+              <path d="M93 90 L73 85"/>
+              <path d="M94 80 L74 75"/>
+              <path d="M95 70 L76 65"/>
+              <path d="M96 60 L78 55"/>
+              <path d="M97 50 L80 45"/>
+              <path d="M98 40 L82 35"/>
+              <path d="M99 30 L84 25"/>
+              <path d="M102 150 L120 145"/>
+              <path d="M103 140 L122 135"/>
+              <path d="M104 130 L124 125"/>
+              <path d="M105 120 L125 115"/>
+              <path d="M106 110 L126 105"/>
+              <path d="M107 100 L127 95"/>
+              <path d="M107 90 L127 85"/>
+              <path d="M106 80 L126 75"/>
+              <path d="M105 70 L124 65"/>
+              <path d="M104 60 L122 55"/>
+              <path d="M103 50 L120 45"/>
+              <path d="M102 40 L118 35"/>
+              <path d="M101 30 L116 25"/>
+            </g>
+            <!-- Rachis -->
+            <line x1="100" y1="170" x2="100" y2="15" stroke="var(--ink)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+          </g>
+        </svg>
+        <div class="specimen-name">Barred Owl Feather</div>
+        <div class="specimen-latin">Strix varia</div>
+        <div class="specimen-desc">Found on the forest floor, likely molted rather than shed. Soft, muffled texture — silent flight made tangible. The barring pattern is unmistakable.</div>
+        <div class="specimen-meta">Nov 3 · near creek · soft rain</div>
+      </div>
+
+      <!-- Specimen 4: Fern -->
+      <div class="specimen pinned-note reveal">
+        <span class="specimen-number">No. 4</span>
+        <svg viewBox="0 0 200 180" fill="none">
+          <!-- Fern frond -->
+          <path d="M100 170 Q98 140 95 110 Q92 80 95 50 Q97 30 100 10" stroke="var(--ink)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- Pinnae pairs -->
+          <g stroke="var(--ink)" stroke-width="0.8" fill="none" opacity="0.6">
+            <path d="M99 155 Q85 148 70 145 Q80 152 98 150"/>
+            <path d="M101 155 Q115 148 130 145 Q120 152 102 150"/>
+            <path d="M98 140 Q82 132 65 128 Q78 136 97 134"/>
+            <path d="M102 140 Q118 132 135 128 Q122 136 103 134"/>
+            <path d="M97 125 Q78 116 60 112 Q75 120 96 119"/>
+            <path d="M103 125 Q122 116 140 112 Q125 120 104 119"/>
+            <path d="M96 110 Q75 100 55 96 Q72 104 95 104"/>
+            <path d="M104 110 Q125 100 145 96 Q128 104 105 104"/>
+            <path d="M95 95 Q72 84 52 80 Q70 88 94 89"/>
+            <path d="M105 95 Q128 84 148 80 Q130 88 106 89"/>
+            <path d="M95 80 Q70 68 50 64 Q68 72 94 74"/>
+            <path d="M105 80 Q130 68 150 64 Q132 72 106 74"/>
+            <path d="M96 65 Q72 52 55 48 Q70 56 95 58"/>
+            <path d="M104 65 Q128 52 145 48 Q130 56 105 58"/>
+            <path d="M97 50 Q78 36 65 32 Q76 40 96 42"/>
+            <path d="M103 50 Q122 36 135 32 Q124 40 104 42"/>
+            <path d="M98 35 Q85 22 78 18 Q84 26 98 28"/>
+            <path d="M102 35 Q115 22 122 18 Q116 26 102 28"/>
+          </g>
+        </svg>
+        <div class="specimen-name">Christmas Fern</div>
+        <div class="specimen-latin">Polystichum acrostichoides</div>
+        <div class="specimen-desc">Evergreen fronds, leathery and persistent through winter. Sori visible on the underside in neat rows. One of the first greens to greet you in January.</div>
+        <div class="specimen-meta">Jan 15 · north slope · snow</div>
+      </div>
+
+      <!-- Specimen 5: Dragonfly -->
+      <div class="specimen pinned-note reveal">
+        <span class="specimen-number">No. 5</span>
+        <svg viewBox="0 0 200 180" fill="none">
+          <!-- Dragonfly body -->
+          <g transform="translate(100, 90)">
+            <!-- Abdomen -->
+            <path d="M0 30 Q-1 60 -2 90" stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M0 30 Q1 60 2 90" stroke="var(--ink)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Segments -->
+            <g opacity="0.3" stroke="var(--ink)" stroke-width="0.5">
+              <line x1="-1.5" y1="40" x2="1.5" y2="40"/>
+              <line x1="-1.5" y1="50" x2="1.5" y2="50"/>
+              <line x1="-1.5" y1="60" x2="1.5" y2="60"/>
+              <line x1="-1.5" y1="70" x2="1.5" y2="70"/>
+              <line x1="-1.5" y1="80" x2="1.5" y2="80"/>
+            </g>
+            <!-- Thorax -->
+            <ellipse cx="0" cy="20" rx="6" ry="12" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-blue)" opacity="0.4"/>
+            <!-- Head -->
+            <circle cx="0" cy="6" r="5" stroke="var(--ink)" stroke-width="1" fill="var(--wash-blue)" opacity="0.3"/>
+            <!-- Eyes -->
+            <ellipse cx="-3" cy="4" rx="2.5" ry="3" fill="var(--wash-blue)" opacity="0.3"/>
+            <ellipse cx="3" cy="4" rx="2.5" ry="3" fill="var(--wash-blue)" opacity="0.3"/>
+            <!-- Wings - left -->
+            <path d="M-4 15 Q-30 5 -55 10 Q-60 15 -50 20 Q-30 22 -4 20" stroke="var(--ink)" stroke-width="0.8" fill="rgba(180,200,220,0.15)"/>
+            <path d="M-4 18 Q-25 12 -45 16 Q-50 20 -40 24 Q-25 26 -4 23" stroke="var(--ink)" stroke-width="0.8" fill="rgba(180,200,220,0.1)"/>
+            <!-- Wings - right -->
+            <path d="M4 15 Q30 5 55 10 Q60 15 50 20 Q30 22 4 20" stroke="var(--ink)" stroke-width="0.8" fill="rgba(180,200,220,0.15)"/>
+            <path d="M4 18 Q25 12 45 16 Q50 20 40 24 Q25 26 4 23" stroke="var(--ink)" stroke-width="0.8" fill="rgba(180,200,220,0.1)"/>
+            <!-- Wing veins -->
+            <g opacity="0.2" stroke="var(--ink)" stroke-width="0.4">
+              <path d="M-4 16 Q-25 12 -50 15"/>
+              <path d="M-4 19 Q-20 16 -40 19"/>
+              <path d="M4 16 Q25 12 50 15"/>
+              <path d="M4 19 Q20 16 40 19"/>
+            </g>
+          </g>
+        </svg>
+        <div class="specimen-name">Eastern Pondhawk</div>
+        <div class="specimen-latin">Erythemis simplicicollis</div>
+        <div class="specimen-desc">Male, observed patrolling the pond's eastern edge. Iridescent green thorax, clear wings with dark stigmas. Hovered for a full minute before darting off.</div>
+        <div class="specimen-meta">Jul 22 · Miller's Pond · sunny</div>
+      </div>
+
+      <!-- Specimen 6: Pine Cone -->
+      <div class="specimen pinned-note reveal">
+        <span class="specimen-number">No. 6</span>
+        <svg viewBox="0 0 200 180" fill="none">
+          <!-- Pine cone -->
+          <g transform="translate(100, 90) rotate(-10)">
+            <!-- Scales - outer -->
+            <path d="M0 -50 Q-20 -40 -25 -20 Q-28 0 -20 20 Q-15 40 0 50" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-ochre)" opacity="0.4"/>
+            <path d="M0 -50 Q20 -40 25 -20 Q28 0 20 20 Q15 40 0 50" stroke="var(--ink)" stroke-width="1.2" fill="var(--wash-ochre)" opacity="0.4"/>
+            <!-- Scale lines -->
+            <g opacity="0.25" stroke="var(--ink)" stroke-width="0.6" fill="none">
+              <path d="M0 -40 Q-15 -30 -18 -15"/>
+              <path d="M0 -40 Q15 -30 18 -15"/>
+              <path d="M0 -25 Q-18 -15 -20 0"/>
+              <path d="M0 -25 Q18 -15 20 0"/>
+              <path d="M0 -10 Q-20 0 -18 15"/>
+              <path d="M0 -10 Q20 0 18 15"/>
+              <path d="M0 5 Q-18 15 -15 30"/>
+              <path d="M0 5 Q18 15 15 30"/>
+              <path d="M0 20 Q-12 30 -10 40"/>
+              <path d="M0 20 Q12 30 10 40"/>
+            </g>
+            <!-- Center ridge -->
+            <line x1="0" y1="-50" x2="0" y2="50" stroke="var(--ink)" stroke-width="0.8" opacity="0.2"/>
+          </g>
+        </svg>
+        <div class="specimen-name">Eastern White Pine Cone</div>
+        <div class="specimen-latin">Pinus strobus</div>
+        <div class="specimen-desc">Long and slender, 5 inches in length. Soft, flexible scales — unlike the harder cones of red pine. Found beneath the great white pine on the south ridge.</div>
+        <div class="specimen-meta">Dec 5 · south ridge · clear</div>
+      </div>
+
+      <!-- Specimen 7: Spider Web -->
+      <div class="specimen pinned-note reveal">
+        <span class="specimen-number">No. 7</span>
+        <svg viewBox="0 0 200 180" fill="none">
+          <!-- Spider web -->
+          <g transform="translate(100, 90)" opacity="0.5">
+            <!-- Radial threads -->
+            <g stroke="var(--ink)" stroke-width="0.5" fill="none">
+              <line x1="0" y1="0" x2="0" y2="-70"/>
+              <line x1="0" y1="0" x2="60" y2="-35"/>
+              <line x1="0" y1="0" x2="70" y2="0"/>
+              <line x1="0" y1="0" x2="60" y2="35"/>
+              <line x1="0" y1="0" x2="0" y2="70"/>
+              <line x1="0" y1="0" x2="-60" y2="35"/>
+              <line x1="0" y1="0" x2="-70" y2="0"/>
+              <line x1="0" y1="0" x2="-60" y2="-35"/>
+            </g>
+            <!-- Spiral -->
+            <path d="M0 -10 Q10 -10 10 0 Q10 10 0 10 Q-10 10 -10 0 Q-10 -10 0 -10" stroke="var(--ink)" stroke-width="0.5" fill="none"/>
+            <path d="M0 -20 Q20 -20 20 0 Q20 20 0 20 Q-20 20 -20 0 Q-20 -20 0 -20" stroke="var(--ink)" stroke-width="0.5" fill="none"/>
+            <path d="M0 -30 Q30 -30 30 0 Q30 30 0 30 Q-30 30 -30 0 Q-30 -30 0 -30" stroke="var(--ink)" stroke-width="0.5" fill="none"/>
+            <path d="M0 -40 Q40 -40 40 0 Q40 40 0 40 Q-40 40 -40 0 Q-40 -40 0 -40" stroke="var(--ink)" stroke-width="0.5" fill="none"/>
+            <path d="M0 -55 Q55 -55 55 0 Q55 55 0 55 Q-55 55 -55 0 Q-55 -55 0 -55" stroke="var(--ink)" stroke-width="0.5" fill="none"/>
+            <!-- Dew drops -->
+            <circle cx="0" cy="-30" r="2" fill="var(--wash-blue)" opacity="0.4"/>
+            <circle cx="20" cy="-20" r="1.5" fill="var(--wash-blue)" opacity="0.3"/>
+            <circle cx="-20" cy="15" r="1.8" fill="var(--wash-blue)" opacity="0.3"/>
+            <circle cx="35" cy="10" r="1.2" fill="var(--wash-blue)" opacity="0.25"/>
+            <circle cx="-30" cy="-25" r="1.5" fill="var(--wash-blue)" opacity="0.3"/>
+          </g>
+        </svg>
+        <div class="specimen-name">Orb Weaver Web</div>
+        <div class="specimen-latin">Araneidae (family)</div>
+        <div class="specimen-desc">Strung between two hemlocks at dawn. Every intersection jeweled with frost. The spider waited patiently at the hub, a tiny dark heart in the silver geometry.</div>
+        <div class="specimen-meta">Oct 28 · dawn · first frost</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <svg width="180" height="20" viewBox="0 0 180 20" fill="none">
+    <path d="M10 10 Q25 5 40 10 Q55 15 70 10 Q85 5 100 10 Q115 15 130 10 Q145 5 160 10 Q170 12 175 10" stroke="var(--pencil)" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.3"/>
+  </svg>
+</div>
+
+<!-- ===== FEATURED OBSERVATION ===== -->
+<section id="featured">
+  <div class="container">
+    <div class="featured reveal">
+      <div class="featured-header">
+        <h2>The Salamander Crossing</h2>
+        <span class="obs-date">March 14, 2024 · 6:42 AM</span>
+      </div>
+
+      <div class="featured-body">
+        <p>The rain had just stopped. The air smelled of wet stone and turned earth — that particular perfume of early spring when the ground is still thawing, still remembering winter. I was walking the lower trail, the one that follows Cedar Creek, when I saw it: a line of small, dark shapes moving across the muddy path.</p>
+
+        <p>Spotted salamanders. Dozens of them. Perhaps a hundred. Moving with that strange, determined waddle from the saturated woods toward the vernal pool half a mile downstream. They emerge like this only a few nights a year, during the brief window when the soil is warm enough and the rain has made the crossing possible.</p>
+
+        <div class="pull-quote">
+          "They move with the urgency of creatures who know the window is narrow. Each one a small, black arrow pointing toward the water."
+        </div>
+
+        <p>I knelt beside the path and watched them pass. Their skin glistened in the flat morning light — jet black with yellow spots, the spots arranged in two irregular rows down each side. Some were large, nearly six inches. Others were smaller, perhaps in their first breeding migration.</p>
+
+        <p>A few had already reached the creek's edge and were working their way down the bank, slipping between wet leaves and stones. One paused at my boot, considered it for a long moment, then continued on its way as if my presence were merely another obstacle in the landscape.</p>
+
+        <div class="featured-illustration">
+          <svg width="380" height="200" viewBox="0 0 380 200" fill="none">
+            <!-- Ground -->
+            <path d="M0 140 Q50 135 100 138 Q150 142 200 136 Q250 132 300 138 Q350 142 380 135 L380 200 L0 200Z" fill="var(--wash-green)" opacity="0.15"/>
+            <path d="M0 155 Q80 150 160 155 Q240 160 320 152 Q360 148 380 150 L380 200 L0 200Z" fill="var(--wash-sage)" opacity="0.1"/>
+
+            <!-- Salamander 1 -->
+            <g transform="translate(60, 130)">
+              <path d="M0 0 Q5 -8 15 -10 Q25 -12 35 -10 Q45 -8 50 0 Q55 8 50 12 Q45 16 35 16 Q25 16 15 14 Q5 12 0 0Z" stroke="var(--ink)" stroke-width="1.2" fill="rgba(40,35,25,0.3)"/>
+              <!-- Spots -->
+              <circle cx="12" cy="-4" r="1.5" fill="var(--wash-ochre)" opacity="0.6"/>
+              <circle cx="20" cy="-5" r="1.2" fill="var(--wash-ochre)" opacity="0.6"/>
+              <circle cx="28" cy="-4" r="1.5" fill="var(--wash-ochre)" opacity="0.6"/>
+              <circle cx="36" cy="-3" r="1.2" fill="var(--wash-ochre)" opacity="0.6"/>
+              <!-- Legs -->
+              <path d="M10 8 L6 16" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M15 10 L12 18" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M35 10 L38 18" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M40 8 L44 16" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+              <!-- Tail -->
+              <path d="M50 0 Q60 -2 70 2 Q75 4 72 6" stroke="var(--ink)" stroke-width="1" fill="none" stroke-linecap="round"/>
+              <!-- Eye -->
+              <circle cx="5" cy="-2" r="1" fill="var(--ink)" opacity="0.5"/>
+            </g>
+
+            <!-- Salamander 2 -->
+            <g transform="translate(140, 138)">
+              <path d="M0 0 Q5 -7 14 -9 Q24 -11 32 -9 Q40 -7 45 0 Q48 7 45 10 Q40 14 32 14 Q24 14 14 13 Q5 11 0 0Z" stroke="var(--ink)" stroke-width="1" fill="rgba(40,35,25,0.25)"/>
+              <circle cx="10" cy="-3" r="1.2" fill="var(--wash-ochre)" opacity="0.5"/>
+              <circle cx="18" cy="-4" r="1" fill="var(--wash-ochre)" opacity="0.5"/>
+              <circle cx="26" cy="-3" r="1.2" fill="var(--wash-ochre)" opacity="0.5"/>
+              <circle cx="33" cy="-2" r="1" fill="var(--wash-ochre)" opacity="0.5"/>
+              <path d="M8 7 L5 14" stroke="var(--ink)" stroke-width="0.7" stroke-linecap="round"/>
+              <path d="M13 9 L10 16" stroke="var(--ink)" stroke-width="0.7" stroke-linecap="round"/>
+              <path d="M31 9 L34 16" stroke="var(--ink)" stroke-width="0.7" stroke-linecap="round"/>
+              <path d="M36 7 L39 14" stroke="var(--ink)" stroke-width="0.7" stroke-linecap="round"/>
+              <path d="M45 0 Q53 -2 60 2" stroke="var(--ink)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+              <circle cx="4" cy="-1" r="0.8" fill="var(--ink)" opacity="0.4"/>
+            </g>
+
+            <!-- Salamander 3 -->
+            <g transform="translate(220, 132)">
+              <path d="M0 0 Q5 -8 15 -10 Q25 -12 35 -10 Q45 -8 50 0 Q55 8 50 12 Q45 16 35 16 Q25 16 15 14 Q5 12 0 0Z" stroke="var(--ink)" stroke-width="1.2" fill="rgba(40,35,25,0.3)"/>
+              <circle cx="12" cy="-4" r="1.5" fill="var(--wash-ochre)" opacity="0.6"/>
+              <circle cx="20" cy="-5" r="1.2" fill="var(--wash-ochre)" opacity="0.6"/>
+              <circle cx="28" cy="-4" r="1.5" fill="var(--wash-ochre)" opacity="0.6"/>
+              <circle cx="36" cy="-3" r="1.2" fill="var(--wash-ochre)" opacity="0.6"/>
+              <path d="M10 8 L6 16" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M15 10 L12 18" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M35 10 L38 18" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M40 8 L44 16" stroke="var(--ink)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M50 0 Q60 -2 70 2 Q75 4 72 6" stroke="var(--ink)" stroke-width="1" fill="none" stroke-linecap="round"/>
+              <circle cx="5" cy="-2" r="1" fill="var(--ink)" opacity="0.5"/>
+            </g>
+
+            <!-- Salamander 4 (smaller, further back) -->
+            <g transform="translate(300, 140) scale(0.8)">
+              <path d="M0 0 Q5 -7 14 -9 Q24 -11 32 -9 Q40 -7 45 0 Q48 7 45 10 Q40 14 32 14 Q24 14 14 13 Q5 11 0 0Z" stroke="var(--ink)" stroke-width="1" fill="rgba(40,35,25,0.2)"/>
+              <circle cx="10" cy="-3" r="1" fill="var(--wash-ochre)" opacity="0.4"/>
+              <circle cx="18" cy="-4" r="0.8" fill="var(--wash-ochre)" opacity="0.4"/>
+              <circle cx="26" cy="-3" r="1" fill="var(--wash-ochre)" opacity="0.4"/>
+              <path d="M8 7 L5 13" stroke="var(--ink)" stroke-width="0.6" stroke-linecap="round"/>
+              <path d="M31 9 L34 15" stroke="var(--ink)" stroke-width="0.6" stroke-linecap="round"/>
+              <path d="M36 7 L39 13" stroke="var(--ink)" stroke-width="0.6" stroke-linecap="round"/>
+              <path d="M45 0 Q53 -2 58 2" stroke="var(--ink)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+            </g>
+
+            <!-- Arrow annotation -->
+            <path d="M100 120 L130 120 L128 116 L135 120 L128 124" stroke="var(--pencil)" stroke-width="0.8" fill="none" opacity="0.4"/>
+            <text x="100" y="115" font-family="var(--handwritten)" font-size="9" fill="var(--pencil)" opacity="0.4">direction of pool →</text>
+
+            <!-- Mud tracks -->
+            <g opacity="0.2" stroke="var(--ink)" stroke-width="0.5" fill="none">
+              <ellipse cx="50" cy="160" rx="3" ry="2"/>
+              <ellipse cx="55" cy="163" rx="3" ry="2"/>
+              <ellipse cx="60" cy="158" rx="3" ry="2"/>
+              <ellipse cx="65" cy="161" rx="3" ry="2"/>
+            </g>
+          </svg>
+        </div>
+
+        <p>I sat there for nearly an hour, watching them cross. A deer stepped carefully around the procession. A red-tailed hawk circled overhead but seemed uninterested — these creatures are too small, too slow, too deeply committed to their ancient migration to be worth the effort.</p>
+
+        <p>By the time I left, the path was quiet again. But the mud bore witness: tiny parallel tracks leading from the woods to the creek, a temporary highway that would be gone by tomorrow. I made a note in my margin: <em>"The forest has its own roads, and its own schedules. We are merely passing through."</em></p>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <span class="stamp">OBSERVATION #47</span>
+        <span class="coord-stamp" style="margin-left: 16px;">42.3156°N, 71.5301°W</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WEATHER LEDGER ===== -->
+<section id="weather">
+  <div class="container">
+    <h2 class="section-title reveal">Weather Ledger</h2>
+    <p class="section-date reveal">Selected days, noted for their character</p>
+
+    <div class="weather-ledger reveal">
+      <table class="weather-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Conditions</th>
+            <th>High / Low</th>
+            <th>Wind</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Jan 17</td>
+            <td>☁ Overcast, light snow</td>
+            <td>18° / 8°</td>
+            <td>NW 12 mph</td>
+            <td>First snow of the year. Deer tracks deep in the drifts.</td>
+          </tr>
+          <tr>
+            <td>Feb 28</td>
+            <td>⛅ Partly cloudy</td>
+            <td>34° / 22°</td>
+            <td>S 5 mph</td>
+            <td>Ice cracking on the pond. Sounds like gunshots.</td>
+          </tr>
+          <tr>
+            <td>Mar 14</td>
+            <td>🌧 Rain, then clearing</td>
+            <td>45° / 31°</td>
+            <td>SW 8 mph</td>
+            <td>Salamander migration night. Perfect conditions.</td>
+          </tr>
+          <tr>
+            <td>Apr 3</td>
+            <td>☀ Clear, crisp</td>
+            <td>58° / 35°</td>
+            <td>Calm</td>
+            <td>First trillium. Wood warblers arrived.</td>
+          </tr>
+          <tr>
+            <td>May 21</td>
+            <td>⛈ Thunderstorm</td>
+            <td>72° / 52°</td>
+            <td>Variable 15-25</td>
+            <td>Lightning struck an oak on the ridge. Smelled like ozone.</td>
+          </tr>
+          <tr>
+            <td>Jun 15</td>
+            <td>☀ Hot, still</td>
+            <td>88° / 65°</td>
+            <td>Calm</td>
+            <td>Cicadas began. Dragonflies at the pond.</td>
+          </tr>
+          <tr>
+            <td>Jul 18</td>
+            <td>☀ Hottest day</td>
+            <td>94° / 71°</td>
+            <td>SW 3 mph</td>
+            <td>Sat by the stream all afternoon. Water warm as tea.</td>
+          </tr>
+          <tr>
+            <td>Aug 9</td>
+            <td>🌧 Morning rain</td>
+            <td>78° / 62°</td>
+            <td>N 10 mph</td>
+            <td>Mushrooms appeared overnight. Picked 2 lbs chanterelles.</td>
+          </tr>
+          <tr>
+            <td>Sep 22</td>
+            <td>☀ Clear, cooling</td>
+            <td>68° / 48°</td>
+            <td>NW 7 mph</td>
+            <td>First day of autumn. Maples already showing color.</td>
+          </tr>
+          <tr>
+            <td>Oct 12</td>
+            <td>⛅ Crisp, golden</td>
+            <td>55° / 38°</td>
+            <td>N 6 mph</td>
+            <td>Peak color. Collected oak leaf specimen.</td>
+          </tr>
+          <tr>
+            <td>Oct 28</td>
+            <td>❄ First frost</td>
+            <td>32° / 24°</td>
+            <td>Calm</td>
+            <td>Spiderwebs jeweled with ice. Breath visible.</td>
+          </tr>
+          <tr>
+            <td>Nov 15</td>
+            <td>🌧 Gray, wet</td>
+            <td>41° / 33°</td>
+            <td>SE 12 mph</td>
+            <td>Found the owl feather. Forest floor deeply brown.</td>
+          </tr>
+          <tr>
+            <td>Dec 5</td>
+            <td>☁ Overcast</td>
+            <td>28° / 15°</td>
+            <td>NW 15 mph</td>
+            <td>Collected pine cone. Wind howling through bare branches.</td>
+          </tr>
+          <tr>
+            <td>Dec 21</td>
+            <td>❄ Snow, short day</td>
+            <td>22° / 10°</td>
+            <td>N 8 mph</td>
+            <td>Shortest day. 9 hours of light. World turned white.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <svg width="140" height="14" viewBox="0 0 140 14" fill="none">
+    <path d="M10 7 Q20 3 30 7 Q40 11 50 7 Q60 3 70 7 Q80 11 90 7 Q100 3 110 7 Q120 11 130 7" stroke="var(--pencil)" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.3"/>
+  </svg>
+</div>
+
+<!-- ===== SOUNDSCAPE ===== -->
+<section id="soundscape">
+  <div class="container">
+    <h2 class="section-title reveal">Soundscape</h2>
+    <p class="section-date reveal">What the forest sounds like, by season</p>
+
+    <div class="soundscape-grid">
+      <div class="sound-card reveal">
+        <div class="sound-time">Dawn · Spring</div>
+        <div class="sound-name">The Warbler Chorus</div>
+        <p>A cascade of thin, bright notes — wood warblers, blackthroated green, yellow-rumped. Each voice a different instrument, all playing at once. The sound rises from the canopy like water filling a glass.</p>
+        <svg class="sound-wave" viewBox="0 0 200 30" fill="none">
+          <path d="M0 15 Q10 5 20 15 Q30 25 40 15 Q50 5 60 15 Q70 25 80 15 Q90 5 100 15 Q110 25 120 15 Q130 5 140 15 Q150 25 160 15 Q170 5 180 15 Q190 25 200 15" stroke="var(--wash-green)" stroke-width="1.5" fill="none" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <div class="sound-card reveal">
+        <div class="sound-time">Midday · Summer</div>
+        <div class="sound-name">Cicada Hum</div>
+        <p>A continuous, electric drone that seems to vibrate in your teeth. It's the sound of heat made audible. Beneath it, the occasional jay call, the whisper of wind through pine needles.</p>
+        <svg class="sound-wave" viewBox="0 0 200 30" fill="none">
+          <path d="M0 15 L5 10 L10 20 L15 8 L20 22 L25 10 L30 18 L35 12 L40 20 L45 8 L50 22 L55 10 L60 18 L65 12 L70 20 L75 8 L80 22 L85 10 L90 18 L95 12 L100 20 L105 8 L110 22 L115 10 L120 18 L125 12 L130 20 L135 8 L140 22 L145 10 L150 18 L155 12 L160 20 L165 8 L170 22 L175 10 L180 18 L185 12 L190 20 L195 8 L200 15" stroke="var(--wash-ochre)" stroke-width="1" fill="none" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <div class="sound-card reveal">
+        <div class="sound-time">Dusk · Autumn</div>
+        <div class="sound-name">Woodpecker Drum</div>
+        <p>The pileated woodpecker's call — a raucous, laughing <em>KA-KA-KA-KAH</em> that echoes through thinning wood. Then the drumming: rapid, hollow, like someone tapping on a barrel. A sound that says: <em>I am here, I am here, I am here.</em></p>
+        <svg class="sound-wave" viewBox="0 0 200 30" fill="none">
+          <path d="M0 15 L10 15 L15 5 L20 25 L25 5 L30 25 L35 5 L40 25 L45 5 L50 25 L55 15 L65 15 L70 5 L75 25 L80 5 L85 25 L90 5 L95 25 L100 5 L105 25 L110 15 L120 15 L125 5 L130 25 L135 5 L140 25 L145 5 L150 25 L155 15 L200 15" stroke="var(--wash-rose)" stroke-width="1.2" fill="none" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <div class="sound-card reveal">
+        <div class="sound-time">Night · Winter</div>
+        <div class="sound-name">The Snow Silence</div>
+        <p>Not true silence — the wind still moves through bare branches, a dry rattling. Snow falls on snow with a sound like whispered secrets. An owl calls once, twice. The cold itself has a sound: a faint, high ringing at the edge of hearing.</p>
+        <svg class="sound-wave" viewBox="0 0 200 30" fill="none">
+          <path d="M0 15 Q20 14 40 15 Q60 16 80 15 Q100 14 120 15 Q140 16 160 15 Q180 14 200 15" stroke="var(--wash-blue)" stroke-width="1" fill="none" opacity="0.4"/>
+          <path d="M85 15 L90 8 L95 22 L100 8 L105 22 L110 15" stroke="var(--wash-blue)" stroke-width="0.8" fill="none" opacity="0.3"/>
+        </svg>
+      </div>
+
+      <div class="sound-card reveal">
+        <div class="sound-time">Any time · Any season</div>
+        <div class="sound-name">Stream Over Stone</div>
+        <p>The constant. The baseline. Cedar Creek murmurs over its bed of smooth stones — a sound that changes with the season but never stops. In spring it roars. In summer it chuckles. In autumn it whispers. In winter it sometimes freezes into glass.</p>
+        <svg class="sound-wave" viewBox="0 0 200 30" fill="none">
+          <path d="M0 15 Q5 10 10 15 Q15 20 20 15 Q25 10 30 15 Q35 20 40 15 Q45 10 50 15 Q55 20 60 15 Q65 10 70 15 Q75 20 80 15 Q85 10 90 15 Q95 20 100 15 Q105 10 110 15 Q115 20 120 15 Q125 10 130 15 Q135 20 140 15 Q145 10 150 15 Q155 20 160 15 Q165 10 170 15 Q175 20 180 15 Q185 10 190 15 Q195 20 200 15" stroke="rgba(90,120,150,0.4)" stroke-width="1.2" fill="none"/>
+        </svg>
+      </div>
+
+      <div class="sound-card reveal">
+        <div class="sound-time">Afternoon · Late Summer</div>
+        <div class="sound-name">Fox in the Underbrush</div>
+        <p>The crackle of dry leaves, the snap of a small twig, then silence. A red fox moves through the forest floor with deliberate quiet. You hear it more than you see it — a rustling presence that stops whenever you stop.</p>
+        <svg class="sound-wave" viewBox="0 0 200 30" fill="none">
+          <path d="M0 15 L20 15 L25 10 L30 15 L50 15 L55 8 L60 18 L65 15 L80 15 L85 12 L90 15 L100 15 L105 10 L110 15 L130 15 L135 9 L140 15 L160 15 L165 11 L170 15 L200 15" stroke="var(--wash-rose)" stroke-width="1" fill="none" opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUPPLIES ===== -->
+<section id="supplies">
+  <div class="container">
+    <h2 class="section-title reveal">Field Supplies</h2>
+    <p class="section-date reveal">What I carry, what I use</p>
+
+    <div class="reveal" style="position: relative;">
+      <div class="coffee-stain" style="top: -20px; right: 20px;"></div>
+
+      <ul class="supplies-list">
+        <li>This notebook (Field Notes, blank) <span class="note">— the one you're reading</span></li>
+        <li>Second notebook (for rough sketches) <span class="note">— Moleskine, A5, cream</span></li>
+        <li>Pencils (2H, HB, 2B) <span class="note">— Faber-Castell, sharpened daily</span></li>
+        <li>Fineliner pens <span class="note">— Sakura Pigma, 0.3mm &amp; 0.5mm</span></li>
+        <li>Watercolor set <span class="note">— Cotman half-pans, 12 colors</span></li>
+        <li>Brushes <span class="note">— two round, one flat, all synthetic</span></li>
+        <li>Folding magnifier <span class="note">— 10x, brass frame, leather case</span></li>
+        <li>Binoculars <span class="note">— 8x42, roof prism, well-used</span></li>
+        <li>Field guides <span class="note">— Audubon birds, Peterson fungi, local flora</span></li>
+        <li>Waders <span class="note">— for stream work, spring through fall</span></li>
+        <li>Press &amp; blotting paper <span class="note">— for leaf specimens</span></li>
+        <li>Small trowel <span class="note">— stainless steel, 6 inches</span></li>
+        <li>Collection vials <span class="note">— glass, with cork stoppers</span></li>
+        <li>Weather notebook <span class="note">— separate, for daily conditions</span></li>
+        <li>Warm coat <span class="note">— Patagonia down, for winter mornings</span></li>
+        <li>Thermos <span class="note">— coffee, always coffee</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <svg width="120" height="12" viewBox="0 0 120 12" fill="none">
+    <circle cx="20" cy="6" r="1.5" fill="var(--pencil)" opacity="0.2"/>
+    <circle cx="60" cy="6" r="1.5" fill="var(--pencil)" opacity="0.2"/>
+    <circle cx="100" cy="6" r="1.5" fill="var(--pencil)" opacity="0.2"/>
+  </svg>
+</div>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="container">
+    <h2 class="section-title reveal">About the Naturalist</h2>
+
+    <div class="about-section reveal">
+      <div class="about-portrait">
+        <svg viewBox="0 0 200 240" fill="none">
+          <!-- Simple portrait sketch -->
+          <!-- Head -->
+          <ellipse cx="100" cy="80" rx="40" ry="50" stroke="var(--ink)" stroke-width="1.5" fill="rgba(200,190,170,0.2)"/>
+          <!-- Hair -->
+          <path d="M60 60 Q65 30 100 25 Q135 30 140 60" stroke="var(--ink)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <path d="M65 55 Q70 35 100 30 Q130 35 135 55" stroke="var(--pencil)" stroke-width="0.8" fill="none" opacity="0.5"/>
+          <!-- Eyes -->
+          <ellipse cx="85" cy="75" rx="5" ry="3" stroke="var(--ink)" stroke-width="1" fill="none"/>
+          <ellipse cx="115" cy="75" rx="5" ry="3" stroke="var(--ink)" stroke-width="1" fill="none"/>
+          <circle cx="85" cy="75" r="1.5" fill="var(--ink)" opacity="0.5"/>
+          <circle cx="115" cy="75" r="1.5" fill="var(--ink)" opacity="0.5"/>
+          <!-- Nose -->
+          <path d="M100 80 Q98 90 95 95" stroke="var(--ink)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+          <!-- Mouth -->
+          <path d="M90 105 Q100 110 110 105" stroke="var(--ink)" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <!-- Glasses -->
+          <circle cx="85" cy="75" r="12" stroke="var(--pencil)" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <circle cx="115" cy="75" r="12" stroke="var(--pencil)" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <line x1="97" y1="75" x2="103" y2="75" stroke="var(--pencil)" stroke-width="0.8" opacity="0.4"/>
+          <!-- Neck -->
+          <path d="M90 125 L90 140" stroke="var(--ink)" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M110 125 L110 140" stroke="var(--ink)" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- Shoulders / coat -->
+          <path d="M90 140 Q70 145 50 160 Q45 170 45 200 L45 240 L155 240 L155 200 Q155 170 150 160 Q130 145 110 140" stroke="var(--ink)" stroke-width="1.5" fill="rgba(100,120,100,0.1)"/>
+          <!-- Collar -->
+          <path d="M80 140 Q90 150 100 145 Q110 150 120 140" stroke="var(--ink)" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <!-- Pocket with pencil -->
+          <path d="M120 170 L140 170 L140 190 L120 190Z" stroke="var(--pencil)" stroke-width="0.8" fill="none" opacity="0.3"/>
+          <line x1="130" y1="165" x2="130" y2="175" stroke="var(--pencil)" stroke-width="1" opacity="0.3"/>
+          <!-- Hand holding notebook -->
+          <path d="M50 200 Q40 210 35 220 Q30 230 40 235" stroke="var(--ink)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <!-- Notebook in hand -->
+          <rect x="20" y="210" width="30" height="25" rx="1" stroke="var(--pencil)" stroke-width="0.8" fill="rgba(245,240,225,0.5)" opacity="0.5"/>
+          <line x1="25" y1="218" x2="45" y2="218" stroke="var(--pencil)" stroke-width="0.5" opacity="0.3"/>
+          <line x1="25" y1="223" x2="42" y2="223" stroke="var(--pencil)" stroke-width="0.5" opacity="0.3"/>
+          <line x1="25" y1="228" x2="40" y2="228" stroke="var(--pencil)" stroke-width="0.5" opacity="0.3"/>
+        </svg>
+      </div>
+
+      <div class="about-text">
+        <p>I've been walking these woods for twelve years. Not every day — life, as it does, intervenes — but often enough that the seasons have become a second calendar, marked not by dates but by the first crocus, the last leaf, the moment when the ice cracks on the pond.</p>
+
+        <p>This notebook is the seventh volume. The earlier ones are dog-eared and coffee-stained, filled with sketches that improve slowly, observations that grow more precise, and a growing awareness of how little I truly know.</p>
+
+        <p>I am not a scientist, not in the formal sense. I have no degree in ecology, no research station, no grant funding. What I have is curiosity, a pair of good boots, and the willingness to sit quietly long enough for the forest to reveal itself.</p>
+
+        <p>Each entry here is true to the best of my knowledge. Some identifications may be wrong. Some dates may be approximate. But every observation was made with care, and every sketch was drawn by hand, in the field, with the smell of pine and damp earth still on my clothes.</p>
+
+        <p>The forest doesn't need me to document it. It will continue its slow, magnificent work whether I'm watching or not. But there's something about the act of paying attention — of really <em>looking</em> — that changes both the watcher and the watched. Or at least, it changes me.</p>
+
+        <div class="signature">— E. Whitfield</div>
+        <p style="font-family: var(--handwritten); font-size: 0.9rem; color: var(--pencil); margin-top: 8px;">Cedar Ridge, New England<br>Winter 2024–2025</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-doodles">
+      <!-- Small leaf doodle -->
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <path d="M15 28 Q12 20 10 15 Q8 10 12 5 Q15 2 18 5 Q22 10 20 15 Q18 20 15 28" stroke="var(--pencil)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <line x1="15" y1="28" x2="15" y2="5" stroke="var(--pencil)" stroke-width="0.5" opacity="0.5"/>
+      </svg>
+
+      <!-- Small mushroom doodle -->
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <line x1="15" y1="28" x2="15" y2="15" stroke="var(--pencil)" stroke-width="1" stroke-linecap="round"/>
+        <path d="M5 15 Q15 5 25 15" stroke="var(--pencil)" stroke-width="1" fill="none" stroke-linecap="round"/>
+      </svg>
+
+      <!-- Small bird doodle -->
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <path d="M5 15 Q10 10 15 15 Q20 10 25 15" stroke="var(--pencil)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M5 15 Q10 20 15 15 Q20 20 25 15" stroke="var(--pencil)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.5"/>
+      </svg>
+
+      <!-- Small flower doodle -->
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="12" r="3" stroke="var(--pencil)" stroke-width="0.8" fill="none"/>
+        <path d="M15 9 Q12 5 15 2" stroke="var(--pencil)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <path d="M15 9 Q18 5 15 2" stroke="var(--pencil)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <path d="M12 12 Q8 9 5 12" stroke="var(--pencil)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <path d="M18 12 Q22 9 25 12" stroke="var(--pencil)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <line x1="15" y1="15" x2="15" y2="28" stroke="var(--pencil)" stroke-width="0.8"/>
+      </svg>
+    </div>
+
+    <p class="footer-text">
+      The Moss Notebook · A Year in the Field<br>
+      All observations made with care and respect for the living world.<br>
+      Nothing was harmed in the making of this journal.
+    </p>
+
+    <p class="footer-note">
+      "In every walk with nature one receives far more than he seeks." — John Muir
+    </p>
+
+    <div class="page-num">— end of volume —</div>
+
+    <svg width="200" height="20" viewBox="0 0 200 20" fill="none" style="opacity: 0.3;">
+      <path d="M10 10 Q30 5 50 10 Q70 15 90 10 Q110 5 130 10 Q150 15 170 10 Q185 7 195 10" stroke="var(--pencil)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const revealElements = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+revealElements.forEach(el => observer.observe(el));
+
+// Respect reduced motion
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (prefersReducedMotion) {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/ox-alpha/api/website-swiss/index.html",
+  "pass": true,
+  "notes": [],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": null,
+  "body_text_chars": 9177,
+  "scroll_height": 8207
+}

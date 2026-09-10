@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noctuary — the field almanac for the night sky</title>
+<meta name="description" content="Noctuary plans your observing nights around seeing, transparency, moon phase and your own gear. Stop checking four apps before you haul out the scope.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Spline+Sans+Mono:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+  :root{
+    --ink:#080a10;
+    --ink-2:#0d1018;
+    --ink-3:#141826;
+    --ink-4:#1a1f30;
+    --paper:#efe7d3;
+    --paper-dim:rgba(239,231,211,.64);
+    --paper-faint:rgba(239,231,211,.36);
+    --gold:#e0ab48;
+    --gold-hi:#f4cf82;
+    --gold-soft:rgba(224,171,72,.16);
+    --sage:#93b6a6;
+    --rust:#cf8160;
+    --line:rgba(239,231,211,.14);
+    --line-soft:rgba(239,231,211,.075);
+    --serif:"Fraunces",Georgia,serif;
+    --mono:"Spline Sans Mono",ui-monospace,monospace;
+    --ease:cubic-bezier(.16,1,.3,1);
+    --maxw:1220px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    background:
+      radial-gradient(120% 80% at 50% -10%, #12162400, #080a10 60%),
+      var(--ink);
+    color:var(--paper);
+    font-family:var(--mono);
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  /* film grain */
+  body::after{
+    content:"";position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.05;
+    mix-blend-mode:soft-light;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection{background:var(--gold);color:#0b0d13}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+  ::-webkit-scrollbar{width:11px}
+  ::-webkit-scrollbar-track{background:var(--ink)}
+  ::-webkit-scrollbar-thumb{background:#232838;border:3px solid var(--ink);border-radius:8px}
+  ::-webkit-scrollbar-thumb:hover{background:#33394d}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  h1,h2,h3,.display{font-family:var(--serif);font-weight:400;letter-spacing:-.022em;line-height:1.05;font-optical-sizing:auto}
+  em{font-style:italic}
+  a{color:inherit}
+
+  .kicker{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);
+    display:inline-flex;align-items:center;gap:14px;font-weight:400}
+  .kicker::before{content:"";width:40px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold))}
+
+  /* scroll progress */
+  #progress{position:fixed;top:0;left:0;height:2px;width:100%;z-index:9999;transform:scaleX(0);transform-origin:left;
+    background:linear-gradient(90deg,var(--gold),var(--gold-hi));box-shadow:0 0 14px rgba(224,171,72,.6)}
+
+  /* ---------- nav ---------- */
+  header.site{position:sticky;top:0;z-index:60;
+    background:rgba(8,10,16,.72);backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid transparent;transition:border-color .4s,background .4s}
+  header.site.stuck{border-color:var(--line-soft);background:rgba(8,10,16,.86)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-size:22px;text-decoration:none;letter-spacing:-.01em}
+  .logo svg{flex:none;filter:drop-shadow(0 0 6px rgba(224,171,72,.35))}
+  .logo b{font-weight:600}
+  .logo span{color:var(--gold)}
+  .logo .moon{transform-origin:center;animation:spin 60s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .navlinks{display:flex;gap:34px;list-style:none;font-size:12.5px;letter-spacing:.13em;text-transform:uppercase}
+  .navlinks a{text-decoration:none;color:var(--paper-dim);position:relative;padding:4px 0;transition:color .3s}
+  .navlinks a::after{content:"";position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--gold);
+    transition:width .4s var(--ease)}
+  .navlinks a:hover{color:var(--paper)}
+  .navlinks a:hover::after{width:100%}
+  .nav-cta{position:relative;overflow:hidden;display:inline-block;text-decoration:none;font-size:12px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--gold);padding:11px 20px;border:1px solid var(--line);
+    border-radius:100px;transition:.35s var(--ease);background:transparent}
+  .nav-cta:hover{border-color:var(--gold);box-shadow:0 0 26px -6px rgba(224,171,72,.55)}
+  .nav-cta::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(224,171,72,.16),transparent);
+    transform:translateX(-120%);transition:transform .6s var(--ease)}
+  .nav-cta:hover::before{transform:translateX(120%)}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--paper);font-family:var(--mono);
+    font-size:11px;letter-spacing:.14em;padding:9px 14px;cursor:pointer;border-radius:100px}
+
+  /* ---------- buttons ---------- */
+  .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+    padding:16px 30px;border-radius:100px;font-size:13px;letter-spacing:.11em;text-transform:uppercase;
+    transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s,border-color .3s,color .3s;
+    will-change:transform}
+  .btn::after{content:"";position:absolute;top:0;left:0;height:100%;width:40%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.28),transparent);
+    transform:translateX(-160%) skewX(-18deg);transition:transform .75s var(--ease)}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:hover::after{transform:translateX(280%) skewX(-18deg)}
+  .btn-solid{background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:#160f04;font-weight:600;
+    box-shadow:0 12px 34px -12px rgba(224,171,72,.7),inset 0 1px 0 rgba(255,255,255,.5)}
+  .btn-solid:hover{box-shadow:0 20px 44px -14px rgba(224,171,72,.85),inset 0 1px 0 rgba(255,255,255,.6)}
+  .btn-ghost{border:1px solid var(--line);color:var(--paper)}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .btn .arw{transition:transform .35s var(--ease)}
+  .btn:hover .arw{transform:translateX(4px)}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;
+    background:radial-gradient(140% 100% at 78% 8%, #1a2136 0%, #0d111c 44%, #080a10 100%)}
+  .hero::before{content:"";position:absolute;inset:auto 0 0 0;height:44%;pointer-events:none;
+    background:radial-gradient(80% 130% at 50% 130%, rgba(224,171,72,.16), rgba(207,129,96,.05) 40%, transparent 70%)}
+  .hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(75% 60% at 50% 42%, transparent 45%, rgba(6,8,13,.55) 100%)}
+  #stars{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .hero-inner{position:relative;z-index:3;display:grid;grid-template-columns:1.08fr .92fr;
+    gap:60px;align-items:center;padding:clamp(64px,9vw,118px) 0 clamp(90px,11vw,140px)}
+  .hero .kicker{animation:rise 1s var(--ease) both}
+  .hero h1{font-size:clamp(2.9rem,7.2vw,6rem);margin:26px 0 26px;font-weight:300;letter-spacing:-.03em;
+    line-height:.97;animation:rise 1.1s .06s var(--ease) both}
+  .hero h1 em{color:var(--gold);font-weight:400;
+    text-shadow:0 0 40px rgba(224,171,72,.28)}
+  .hero h1 .thin{font-weight:300;color:var(--paper-faint)}
+  .hero .lede{max-width:50ch;color:var(--paper-dim);font-size:clamp(15px,1.4vw,17px);
+    animation:rise 1.1s .16s var(--ease) both}
+  .hero .lede b{color:var(--paper);font-weight:500}
+  .hero-actions{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;animation:rise 1.1s .26s var(--ease) both}
+  .hero-meta{margin-top:26px;font-size:11.5px;color:var(--paper-faint);letter-spacing:.08em;
+    display:flex;gap:10px;flex-wrap:wrap;animation:rise 1.1s .34s var(--ease) both}
+  .hero-meta span{display:inline-flex;align-items:center;gap:10px}
+  .hero-meta span::before{content:"✦";color:var(--gold);font-size:9px}
+  .hero-meta span:first-child::before{display:none}
+  @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+  /* instrument card */
+  .sky-card{position:relative;background:linear-gradient(180deg,#161b29,#0d1019);
+    border:1px solid var(--line);border-radius:8px;padding:28px 30px 22px;
+    box-shadow:0 50px 110px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05);
+    transform-style:preserve-3d;transition:transform .3s var(--ease)}
+  .sky-card .tick{position:absolute;width:14px;height:14px;border:1px solid var(--gold);opacity:.55}
+  .sky-card .tick.tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
+  .sky-card .tick.tr{top:-1px;right:-1px;border-left:none;border-bottom:none}
+  .sky-card .tick.bl{bottom:-1px;left:-1px;border-right:none;border-top:none}
+  .sky-card .tick.br{bottom:-1px;right:-1px;border-left:none;border-top:none}
+  .sc-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    border-bottom:1px solid var(--line-soft);padding-bottom:16px;font-size:11.5px}
+  .sc-head .place{letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim)}
+  .sc-head .date{color:var(--gold);letter-spacing:.14em}
+  .sc-top{display:flex;gap:20px;align-items:center;padding:20px 0;border-bottom:1px solid var(--line-soft)}
+  .dial{flex:none}
+  .dial .ring{transform-origin:60px 60px;animation:spin 44s linear infinite}
+  .moon-txt{font-size:12.5px;color:var(--paper-dim)}
+  .moon-txt b{display:block;color:var(--paper);font-size:15px;font-weight:500;letter-spacing:.02em;margin-bottom:4px}
+  .moon-txt .lit{color:var(--gold)}
+  .sc-bars{padding:18px 0;border-bottom:1px solid var(--line-soft)}
+  .sc-row{display:grid;grid-template-columns:120px 1fr 52px;align-items:center;gap:14px;
+    font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:13px}
+  .sc-row:last-child{margin-bottom:0}
+  .bar{height:6px;background:rgba(239,231,211,.08);border-radius:6px;overflow:hidden;position:relative;
+    background-image:repeating-linear-gradient(90deg,rgba(239,231,211,.14) 0 1px,transparent 1px 25%)}
+  .bar i{display:block;height:100%;border-radius:6px;transform-origin:left;transform:scaleX(0);
+    background:linear-gradient(90deg,rgba(147,182,166,.6),var(--sage));box-shadow:0 0 12px rgba(147,182,166,.4)}
+  .bar.mid i{background:linear-gradient(90deg,rgba(224,171,72,.6),var(--gold));box-shadow:0 0 12px rgba(224,171,72,.45)}
+  .bar.low i{background:linear-gradient(90deg,rgba(207,129,96,.6),var(--rust));box-shadow:0 0 12px rgba(207,129,96,.45)}
+  .sc-card.in .bar i{animation:grow 1.4s var(--ease) forwards}
+  .sc-row .val{text-align:right;color:var(--paper);letter-spacing:.02em}
+  .targets{list-style:none;padding-top:4px}
+  .targets li{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;
+    padding:11px 6px;border-bottom:1px dashed var(--line-soft);font-size:13px;border-radius:4px;transition:background .25s,padding .25s}
+  .targets li:hover{background:rgba(239,231,211,.03);padding-left:12px}
+  .targets li:last-child{border-bottom:none}
+  .targets .desig{color:var(--gold);font-size:11px;min-width:56px;letter-spacing:.04em}
+  .targets .alt,.targets .tr{color:var(--paper-dim);font-size:11.5px;font-variant-numeric:tabular-nums}
+  .targets .tr{min-width:50px;text-align:right;color:var(--paper)}
+  .sc-foot{margin-top:8px;padding-top:15px;font-size:11px;color:var(--paper-dim);
+    letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+  .sc-foot .score{color:var(--sage);font-weight:500}
+  .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--sage);margin-right:9px;
+    box-shadow:0 0 0 0 rgba(147,182,166,.5);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(147,182,166,.5)}70%{box-shadow:0 0 0 10px rgba(147,182,166,0)}100%{box-shadow:0 0 0 0 rgba(147,182,166,0)}}
+  @keyframes grow{to{transform:scaleX(1)}}
+
+  /* ticker */
+  .ticker{position:relative;border-bottom:1px solid var(--line-soft);background:var(--ink-2);overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .ticker-track{display:flex;gap:56px;white-space:nowrap;padding:16px 0;width:max-content;
+    animation:slide 42s linear infinite;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-faint)}
+  .ticker:hover .ticker-track{animation-play-state:paused}
+  .ticker-track b{color:var(--paper-dim);font-weight:400}
+  .ticker-track .star{color:var(--gold)}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  /* ---------- section frame ---------- */
+  section{padding:clamp(80px,12vh,150px) 0;position:relative}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:44px;position:relative;
+    border-bottom:1px solid var(--line);padding-bottom:40px;margin-bottom:70px}
+  .sec-head .idx{position:absolute;top:-38px;right:0;font-family:var(--serif);font-size:clamp(80px,12vw,180px);
+    line-height:1;color:rgba(239,231,211,.045);font-weight:300;pointer-events:none;letter-spacing:-.04em;z-index:0}
+  .sec-head .lead{position:relative;z-index:1}
+  .sec-head h2{font-size:clamp(2rem,4.4vw,3.7rem);margin-top:20px;font-weight:300;max-width:17ch;letter-spacing:-.028em}
+  .sec-head h2 em{color:var(--gold);font-weight:400}
+  .sec-head .note{position:relative;z-index:1;max-width:36ch;color:var(--paper-dim);font-size:14px}
+  .sec-num{font-size:10.5px;letter-spacing:.34em;color:var(--gold);opacity:.9}
+
+  /* reveal */
+  .js .reveal{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .js .reveal.in{opacity:1;transform:none}
+
+  /* ---------- features ---------- */
+  .feat-grid{display:grid;grid-template-columns:repeat(6,1fr)}
+  .feat{padding:44px 38px 48px;grid-column:span 2;position:relative;overflow:hidden;
+    border-top:1px solid var(--line);transition:background .4s var(--ease)}
+  .feat:nth-child(-n+2){border-top:none}
+  .feat.wide{grid-column:span 3}
+  .feat .glow{position:absolute;inset:0;opacity:0;transition:opacity .5s var(--ease);pointer-events:none;
+    background:radial-gradient(120% 90% at 15% 0%, rgba(224,171,72,.1), transparent 55%)}
+  .feat:hover .glow{opacity:1}
+  .feat:hover{background:rgba(239,231,211,.02)}
+  .feat .fnum{font-size:10.5px;letter-spacing:.34em;color:var(--gold);opacity:.85}
+  .feat h3{font-size:clamp(21px,2vw,25px);margin:20px 0 14px;font-weight:500;letter-spacing:-.015em}
+  .feat p{color:var(--paper-dim);font-size:14px}
+  .feat em{color:var(--paper);font-style:italic}
+  .feat .fig{margin-top:28px;opacity:.92}
+
+  /* ---------- ledger ---------- */
+  .ledger{position:relative;background:linear-gradient(180deg,#0d1019,#0a0c13);border-block:1px solid var(--line-soft);
+    padding:clamp(56px,7vh,90px) 0;overflow:hidden}
+  .ledger::before{content:"✦";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    font-size:340px;color:rgba(224,171,72,.03)}
+  .ledger-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;z-index:1}
+  .stat{padding:6px 30px;border-left:1px solid var(--line-soft)}
+  .stat:first-child{border-left:none;padding-left:0}
+  .stat .n{font-family:var(--serif);font-size:clamp(2.4rem,4.6vw,3.7rem);color:var(--paper);font-weight:300;
+    line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat .n .u{color:var(--gold)}
+  .stat .l{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-top:16px}
+
+  /* ---------- testimonials ---------- */
+  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .quote{position:relative;border:1px solid var(--line-soft);padding:38px 34px 32px;border-radius:6px;
+    background:linear-gradient(180deg,#10141f,#0b0e16);transition:transform .4s var(--ease),border-color .4s,box-shadow .4s var(--ease)}
+  .quote:nth-child(2){transform:translateY(28px)}
+  .quote:hover{border-color:var(--gold-soft);box-shadow:0 34px 70px -40px rgba(0,0,0,.9);transform:translateY(-4px)}
+  .quote:nth-child(2):hover{transform:translateY(22px)}
+  .quote .q{position:absolute;top:14px;right:24px;font-family:var(--serif);font-size:84px;color:var(--gold);opacity:.16;line-height:1}
+  .quote .stars{color:var(--gold);letter-spacing:5px;font-size:13px;margin-bottom:20px;text-shadow:0 0 12px rgba(224,171,72,.4)}
+  .quote blockquote{font-family:var(--serif);font-weight:300;font-size:19px;line-height:1.5;color:var(--paper);letter-spacing:-.01em}
+  .quote blockquote b{color:var(--gold);font-weight:400}
+  .quote .who{display:flex;gap:14px;align-items:center;margin-top:28px;padding-top:22px;border-top:1px dashed var(--line-soft)}
+  .avatar{width:42px;height:42px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;letter-spacing:.03em;border:1px solid var(--gold);color:var(--gold);
+    background:radial-gradient(circle at 40% 30%,rgba(224,171,72,.18),transparent);font-family:var(--mono)}
+  .who .name{font-size:13.5px;font-family:var(--serif)}
+  .who .role{font-size:11.5px;color:var(--paper-faint);letter-spacing:.03em}
+
+  /* ---------- pricing ---------- */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:10px;
+    overflow:hidden;background:rgba(255,255,255,.008)}
+  .plan{padding:46px 38px 48px;border-right:1px solid var(--line);background:linear-gradient(180deg,#0e1119,#0a0c13);
+    position:relative;transition:background .4s var(--ease)}
+  .plan:last-child{border-right:none}
+  .plan:hover{background:linear-gradient(180deg,#141826,#0d1017)}
+  .plan.feature{background:linear-gradient(180deg,rgba(224,171,72,.1),rgba(224,171,72,.02) 55%,rgba(10,12,19,0));
+    box-shadow:inset 0 0 0 1px var(--gold-soft),0 40px 80px -50px rgba(224,171,72,.5)}
+  .plan .tag{position:absolute;top:20px;right:24px;background:var(--gold);color:#160f04;font-size:9.5px;
+    letter-spacing:.22em;text-transform:uppercase;padding:6px 12px;border-radius:100px;font-weight:600}
+  .plan h3{font-size:22px;font-weight:500}
+  .plan .price{font-family:var(--serif);font-size:clamp(2.6rem,4vw,3.4rem);color:var(--gold);margin:22px 0 6px;
+    font-weight:400;letter-spacing:-.02em}
+  .plan .price small{font-family:var(--mono);font-size:12px;color:var(--paper-faint);letter-spacing:.02em}
+  .plan .desc{font-size:13px;color:var(--paper-dim);min-height:48px;margin-bottom:26px}
+  .plan ul{list-style:none;font-size:13.5px;color:var(--paper-dim);margin-bottom:34px}
+  .plan li{padding:12px 0 12px 26px;border-top:1px dashed var(--line-soft);position:relative}
+  .plan li::before{content:"✦";position:absolute;left:2px;color:var(--gold);font-size:9px;top:15px}
+  .plan .btn{width:100%;justify-content:center}
+
+  /* ---------- CTA ---------- */
+  .cta-band{position:relative;text-align:center;padding:clamp(90px,14vh,150px) 0;overflow:hidden;
+    border-top:1px solid var(--line-soft)}
+  .cta-band::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(60% 90% at 50% 128%, rgba(224,171,72,.2), rgba(207,129,96,.06) 40%, transparent 68%)}
+  .cta-band .kicker{justify-content:center}
+  .cta-band h2{font-size:clamp(2.4rem,6vw,4.8rem);font-weight:300;max-width:19ch;margin:24px auto 20px;
+    position:relative;letter-spacing:-.03em;line-height:1.02}
+  .cta-band h2 em{color:var(--gold);font-weight:400;text-shadow:0 0 40px rgba(224,171,72,.3)}
+  .cta-band p{color:var(--paper-dim);position:relative}
+  .cta-band .btn{margin-top:38px;position:relative}
+
+  /* ---------- footer ---------- */
+  footer{position:relative;border-top:1px solid var(--line);background:linear-gradient(180deg,#0a0c13,#070810);
+    padding:84px 0 40px}
+  .foot-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:48px;margin-bottom:64px}
+  footer h4{font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--paper-faint);
+    margin-bottom:20px;font-weight:400;font-family:var(--mono)}
+  footer ul{list-style:none}
+  footer ul li{margin-bottom:13px}
+  footer ul a{text-decoration:none;color:var(--paper-dim);font-size:13.5px;transition:color .3s,padding-left .3s}
+  footer ul a:hover{color:var(--gold);padding-left:5px}
+  .foot-about p{font-size:13px;color:var(--paper-dim);max-width:36ch;margin:18px 0 24px}
+  .signup{display:flex;border:1px solid var(--line);border-radius:100px;overflow:hidden;max-width:340px;
+    transition:border-color .3s;transition:box-shadow .3s}
+  .signup:focus-within{border-color:var(--gold);box-shadow:0 0 22px -6px rgba(224,171,72,.4)}
+  .signup input{flex:1;background:none;border:none;color:var(--paper);padding:13px 18px;font-family:var(--mono);font-size:13px;outline:none}
+  .signup input::placeholder{color:var(--paper-faint)}
+  .signup button{background:linear-gradient(180deg,var(--gold-hi),var(--gold));border:none;color:#160f04;
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:0 22px;cursor:pointer;font-weight:600;transition:.3s}
+  .signup button:hover{filter:brightness(1.08)}
+  .foot-bottom{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    border-top:1px solid var(--line-soft);padding-top:28px;font-size:11.5px;color:var(--paper-faint);letter-spacing:.05em}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1000px){
+    .hero-inner{grid-template-columns:1fr;gap:56px}
+    .sky-card{max-width:460px}
+    .feat-grid{grid-template-columns:1fr 1fr}
+    .feat,.feat.wide{grid-column:span 1;border-right:1px solid var(--line)}
+    .feat:nth-child(-n+2){border-top:none}
+    .feat{border-top:1px solid var(--line)}
+    .feat:nth-child(-n+2){border-top:none}
+    .quotes{grid-template-columns:1fr}
+    .quote:nth-child(2),.quote:nth-child(2):hover{transform:none}
+    .quote:hover{transform:translateY(-4px)}
+    .plans{grid-template-columns:1fr}
+    .plan{border-right:none;border-bottom:1px solid var(--line)}
+    .plan:last-child{border-bottom:none}
+    .ledger-grid{grid-template-columns:1fr 1fr;gap:38px 0}
+    .stat{padding:0 28px}
+    .stat:nth-child(3){border-left:none;padding-left:0}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:680px){
+    .wrap{padding:0 20px}
+    .navlinks,.nav .nav-cta{display:none}
+    .menu-btn{display:block}
+    header.site.open .navlinks{display:flex;position:absolute;top:72px;left:0;right:0;flex-direction:column;gap:0;
+      background:var(--ink-2);border-bottom:1px solid var(--line);padding:8px 22px 18px;backdrop-filter:blur(16px)}
+    header.site.open .navlinks li{padding:14px 0;border-bottom:1px dashed var(--line-soft)}
+    .navlinks a{font-size:15px;color:var(--paper)}
+    .feat-grid{grid-template-columns:1fr}
+    .feat{border-right:none}
+    .feat:first-child{border-top:none}
+    .ledger-grid{grid-template-columns:1fr 1fr;gap:34px}
+    .stat{padding:0 22px}
+    .stat:nth-child(even){border-left:none;padding-left:0}
+    .sec-head{flex-direction:column;align-items:flex-start;gap:22px}
+    .sec-head .idx{top:-24px;opacity:.7}
+    .sc-row{grid-template-columns:96px 1fr 46px}
+    .foot-grid{grid-template-columns:1fr;gap:40px}
+    .hero-actions .btn{flex:1;justify-content:center}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .js .reveal{opacity:1!important;transform:none!important}
+    .sc-card .bar i{transform:scaleX(1)!important}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress" aria-hidden="true"></div>
+
+<header class="site" id="siteHeader">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Noctuary home">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <g class="moon"><circle cx="12" cy="12" r="10.2" stroke="#e0ab48" stroke-width="1.1" stroke-dasharray="1.5 3.4"/></g>
+        <path d="M15.6 4.6a8 8 0 1 0 3.7 10.6A9.2 9.2 0 0 1 15.6 4.6Z" fill="#e0ab48"/>
+        <circle cx="8.2" cy="8" r="0.9" fill="#efe7d3"/>
+        <circle cx="6.4" cy="12.6" r="0.55" fill="#efe7d3" opacity=".7"/>
+      </svg>
+      <b>Noctu<span>ary</span></b>
+    </a>
+    <ul class="navlinks" id="navlist">
+      <li><a href="#instrument">The Instrument</a></li>
+      <li><a href="#dispatches">Dispatches</a></li>
+      <li><a href="#plans">Plans</a></li>
+      <li><a href="#fieldkit">Field Kit</a></li>
+    </ul>
+    <a class="nav-cta" href="#plans">Start observing free</a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist">MENU +</button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<div class="hero" id="top">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="wrap hero-inner">
+    <div>
+      <p class="kicker">Field Almanac · Est. 2021 · Bar Harbor, ME</p>
+      <h1><span class="thin">The sky clears on its own schedule.</span><br><em>Noctuary</em> knows it.</h1>
+      <p class="lede">A planning instrument for amateur astronomers and astrophotographers.
+      Noctuary folds seeing, transparency, moonlight and your exact rig into one answer:
+      <b>tonight — go, or don't — and what to point at first.</b></p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="#plans">Plan my first night <span class="arw">→</span></a>
+        <a class="btn btn-ghost" href="#instrument">See how it works</a>
+      </div>
+      <p class="hero-meta"><span>No credit card</span><span>Works offline in the field</span><span>iOS, Android &amp; web</span></p>
+    </div>
+
+    <aside class="sky-card sc-card" aria-label="Sample observing forecast">
+      <span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>
+      <div class="sc-head">
+        <span class="place">44.3876° N · 68.2039° W</span>
+        <span class="date">TONIGHT · OCT 14</span>
+      </div>
+      <div class="sc-top">
+        <svg class="dial" width="96" height="96" viewBox="0 0 120 120" aria-hidden="true">
+          <g class="ring" stroke="rgba(239,231,211,.18)" fill="none">
+            <circle cx="60" cy="60" r="50"/>
+            <g stroke="#e0ab48" stroke-width="1.4">
+              <line x1="60" y1="6" x2="60" y2="14"/><line x1="60" y1="106" x2="60" y2="114"/>
+              <line x1="6" y1="60" x2="14" y2="60"/><line x1="106" y1="60" x2="114" y2="60"/>
+            </g>
+          </g>
+          <circle cx="60" cy="60" r="34" fill="none" stroke="rgba(239,231,211,.1)"/>
+          <circle cx="60" cy="60" r="34" fill="url(#mng)" opacity=".16"/>
+          <circle cx="60" cy="60" r="26" fill="#e8ddb8"/>
+          <path d="M60 34 A26 26 0 0 0 60 86 A15 26 0 0 1 60 34 Z" fill="#0d1019"/>
+          <circle cx="70" cy="52" r="3.4" fill="#d3c49a" opacity=".55"/>
+          <circle cx="74" cy="68" r="2.2" fill="#d3c49a" opacity=".45"/>
+          <circle cx="79" cy="42" r="2" fill="#e0ab48"/>
+          <circle cx="44" cy="46" r="1.7" fill="#93b6a6"/>
+          <circle cx="47" cy="74" r="1.5" fill="#efe7d3"/>
+          <text x="60" y="9" fill="rgba(224,171,72,.9)" font-size="7" font-family="Spline Sans Mono, monospace" text-anchor="middle">N</text>
+          <text x="60" y="120" fill="rgba(239,231,211,.4)" font-size="7" font-family="Spline Sans Mono, monospace" text-anchor="middle">S</text>
+          <defs><radialGradient id="mng"><stop offset="60%" stop-color="#e0ab48"/><stop offset="100%" stop-color="#e0ab48" stop-opacity="0"/></radialGradient></defs>
+        </svg>
+        <div class="moon-txt">
+          <b>Waxing Gibbous · <span class="lit">78%</span></b>
+          Sets 03:41 — deep-sky window opens after
+        </div>
+      </div>
+      <div class="sc-bars">
+        <div class="sc-row"><span>Seeing</span><div class="bar mid"><i data-w="71" style="animation-delay:.1s"></i></div><span class="val">Good</span></div>
+        <div class="sc-row"><span>Transparency</span><div class="bar"><i data-w="86" style="animation-delay:.25s"></i></div><span class="val">High</span></div>
+        <div class="sc-row"><span>Cloud cover</span><div class="bar"><i data-w="9" style="animation-delay:.4s"></i></div><span class="val">9%</span></div>
+        <div class="sc-row"><span>Wind · 10 m</span><div class="bar low"><i data-w="58" style="animation-delay:.55s"></i></div><span class="val">14 mph</span></div>
+      </div>
+      <ul class="targets">
+        <li><span class="desig">M31</span><span>Andromeda Galaxy</span><span class="alt">alt 61°</span><span class="tr">23:14</span></li>
+        <li><span class="desig">NGC 869</span><span>Double Cluster</span><span class="alt">alt 54°</span><span class="tr">00:52</span></li>
+        <li><span class="desig">M45</span><span>Pleiades</span><span class="alt">alt 47°</span><span class="tr">01:26</span></li>
+        <li><span class="desig">♂ Mars</span><span>Retorts · Syrtis</span><span class="alt">alt 68°</span><span class="tr">01:48</span></li>
+      </ul>
+      <div class="sc-foot"><span><span class="pulse"></span>Verdict: Go night</span><span class="score">Score 8.2 / 10</span></div>
+    </aside>
+  </div>
+</div>
+
+<!-- ticker -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span><b>SKU</b> Sky &amp; Telescope picks</span><span class="star">✦</span>
+    <span>Wanderlost Astro Podcast</span><span class="star">✦</span>
+    <span><b>DARK SKY</b> IDA chapter partner</span><span class="star">✦</span>
+    <span>Astronomy Magazine App of the Month</span><span class="star">✦</span>
+    <span>Roque de los Muchachos field-tested</span><span class="star">✦</span>
+    <span><b>AFR</b> Astronomy Father's Review</span><span class="star">✦</span>
+    <span><b>SKU</b> Sky &amp; Telescope picks</span><span class="star">✦</span>
+    <span>Wanderlost Astro Podcast</span><span class="star">✦</span>
+    <span><b>DARK SKY</b> IDA chapter partner</span><span class="star">✦</span>
+    <span>Astronomy Magazine App of the Month</span><span class="star">✦</span>
+    <span>Roque de los Muchachos field-tested</span><span class="star">✦</span>
+    <span><b>AFR</b> Astronomy Father's Review</span><span class="star">✦</span>
+  </div>
+</div>
+
+<!-- ================= FEATURES ================= -->
+<section id="instrument">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="idx">01</span>
+      <div class="lead">
+        <span class="sec-num">№ 01 — THE INSTRUMENT</span>
+        <h2>Four apps won't tell you <em>whether to bother</em>.</h2>
+      </div>
+      <p class="note">Cloud maps, moon calendars, planetariums, mount planners — Noctuary reads all of it
+      so you don't assemble a control panel in a cold driveway at 11 p.m.</p>
+    </div>
+
+    <div class="feat-grid">
+      <article class="feat wide reveal">
+        <span class="glow"></span>
+        <span class="fnum">F·01</span>
+        <h3>The Go / Don't-Go Score</h3>
+        <p>Hour-by-hour blend of seeing (arcsec), transparency, cirrus, wind, dew point and moon separation,
+        collapsed into a single 0–10 score for <em>your</em> horizon. We weight it for aperture, focal length
+        and whether you're on Bortle 2 or Bortle 8.</p>
+        <svg class="fig" width="100%" height="84" viewBox="0 0 340 84" fill="none" aria-hidden="true">
+          <path d="M0 60 C42 58 58 66 86 46 S152 16 194 32 S266 66 340 36" stroke="#93b6a6" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M0 68 C42 66 58 70 86 60 S152 44 194 52 S266 70 340 50" stroke="#e0ab48" stroke-width="1.6" stroke-dasharray="3 5" opacity=".8"/>
+          <line x1="194" y1="32" x2="194" y2="80" stroke="rgba(224,171,72,.4)" stroke-dasharray="2 3"/>
+          <circle cx="194" cy="32" r="4.5" fill="#e0ab48"/><circle cx="194" cy="32" r="8" fill="none" stroke="#e0ab48" opacity=".4"/>
+          <text x="206" y="26" fill="#efe7d3" font-size="10.5" font-family="Spline Sans Mono, monospace">22:40 · 8.2</text>
+          <line x1="0" y1="80" x2="340" y2="80" stroke="rgba(239,231,211,.14)"/>
+          <text x="0" y="77" fill="rgba(239,231,211,.36)" font-size="9" font-family="Spline Sans Mono, monospace">18:00</text>
+          <text x="300" y="77" fill="rgba(239,231,211,.36)" font-size="9" font-family="Spline Sans Mono, monospace">05:00</text>
+        </svg>
+      </article>
+
+      <article class="feat wide reveal" style="transition-delay:.08s">
+        <span class="glow"></span>
+        <span class="fnum">F·02</span>
+        <h3>Moon-aware target lists</h3>
+        <p>No more suggesting M33 to someone under a 92% moon. Every target is ranked by contrast against
+        tonight's actual lunar separation, sky brightness and your light-pollution map — narrowbands get
+        a pass under bright skies.</p>
+        <svg class="fig" width="100%" height="84" viewBox="0 0 340 84" fill="none" aria-hidden="true">
+          <circle cx="30" cy="34" r="16" fill="#e8ddb8" opacity=".9"/>
+          <path d="M35 19a14 14 0 1 0 6.4 19A15.5 15.5 0 0 1 35 19Z" fill="#10141f"/>
+          <rect x="66" y="18" width="150" height="10" rx="3" fill="rgba(239,231,211,.25)"/>
+          <rect x="66" y="38" width="112" height="10" rx="3" fill="rgba(224,171,72,.75)"/>
+          <rect x="66" y="58" width="78" height="10" rx="3" fill="rgba(239,231,211,.12)"/>
+          <text x="224" y="27" fill="rgba(239,231,211,.5)" font-size="10.5" font-family="Spline Sans Mono, monospace">IC 1396</text>
+          <text x="186" y="47" fill="#e0ab48" font-size="10.5" font-family="Spline Sans Mono, monospace">SH2-155 ✓</text>
+          <text x="152" y="67" fill="rgba(239,231,211,.36)" font-size="10.5" font-family="Spline Sans Mono, monospace">M33 ✗</text>
+        </svg>
+      </article>
+
+      <article class="feat reveal">
+        <span class="glow"></span>
+        <span class="fnum">F·03</span>
+        <h3>Your rig, modeled</h3>
+        <p>Log your scopes, mounts, focal reducers and eyepieces once. Noctuary computes max useful exposure
+        without guiding, meridian-flip timing and balance limits before you unpack a single case.</p>
+      </article>
+
+      <article class="feat reveal" style="transition-delay:.06s">
+        <span class="glow"></span>
+        <span class="fnum">F·04</span>
+        <h3>Dew-curve alarms</h3>
+        <p>Forecast dew point vs. ambient tells you when optics will fog — not when the clouds arrive.
+        One notification: <em>“heaters on by 23:10.”</em> Sleep through the rest.</p>
+      </article>
+
+      <article class="feat reveal" style="transition-delay:.12s">
+        <span class="glow"></span>
+        <span class="fnum">F·05</span>
+        <h3>The session logbook</h3>
+        <p>One-tap capture of notes: seeing at the eyepiece, gear, sketches, subs. Export as a printable
+        almanac page — because paper still survives a -15°C night.</p>
+      </article>
+
+      <article class="feat reveal">
+        <span class="glow"></span>
+        <span class="fnum">F·06</span>
+        <h3>Dark-sky trip radar</h3>
+        <p>Scans 160,000 candidate sites within range: SQM estimates, drive time, light-domes on the horizon,
+        and cell coverage for the inevitable “is it still clear?” debate.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<div class="ledger">
+  <div class="wrap ledger-grid">
+    <div class="stat reveal"><div class="n"><span data-count="312481">0</span></div><div class="l">Nights planned to date</div></div>
+    <div class="stat reveal" style="transition-delay:.08s"><div class="n"><span data-count="14900">0</span></div><div class="l">Active observers</div></div>
+    <div class="stat reveal" style="transition-delay:.16s"><div class="n"><span data-count="81">0</span></div><div class="l">Countries under real skies</div></div>
+    <div class="stat reveal" style="transition-delay:.24s"><div class="n"><span data-count="4.9" data-dec="1">0</span> <span class="u">★</span></div><div class="l">App Store · 2,140 ratings</div></div>
+  </div>
+</div>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section id="dispatches">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="idx">02</span>
+      <div class="lead">
+        <span class="sec-num">№ 02 — DISPATCHES</span>
+        <h2>Field notes from people who <em>stay up late</em>.</h2>
+      </div>
+      <p class="note">Unedited except for length, and yes — we checked with every one of them.</p>
+    </div>
+    <div class="quotes">
+      <figure class="quote reveal">
+        <span class="q">“</span>
+        <div class="stars">★★★★★</div>
+        <blockquote>I used to leave the house on a maybe. Now Noctuary says don't, I don't, and the one time
+        I argued with it, it was <b>right about the cirrus</b>.</blockquote>
+        <figcaption class="who">
+          <span class="avatar">PR</span>
+          <span><span class="name">Priya Raman</span><br><span class="role">Astrophotographer · Atacama Sketches</span></span>
+        </figcaption>
+      </figure>
+      <figure class="quote reveal" style="transition-delay:.1s">
+        <span class="q">“</span>
+        <div class="stars">★★★★★</div>
+        <blockquote>We run school star parties at 40 sites a year. The trip radar found us three Bortle 2
+        fields inside an hour we never knew existed. One has a herd of llamas. <b>Ten out of ten.</b></blockquote>
+        <figcaption class="who">
+          <span class="avatar">TW</span>
+          <span><span class="name">Tomás Weller</span><br><span class="role">Volunteer lead · Milwaukee Dark Skies</span></span>
+        </figcaption>
+      </figure>
+      <figure class="quote reveal" style="transition-delay:.2s">
+        <span class="q">“</span>
+        <div class="stars">★★★★★</div>
+        <blockquote>The dew alarm alone paid for the year. My corrector plates have been fog-free since March,
+        and my back thanks me for <b>not guessing when to drive home</b>.</blockquote>
+        <figcaption class="who">
+          <span class="avatar">LO</span>
+          <span><span class="name">Dr. Lena Okafor</span><br><span class="role">Backyard observer · Kanab, UT</span></span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="plans" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="idx">03</span>
+      <div class="lead">
+        <span class="sec-num">№ 03 — PLANS</span>
+        <h2>Priced like a good <em>eyepiece</em>. Not like a scope.</h2>
+      </div>
+      <p class="note">Every plan includes the full sky database, 16-night forecast horizon and offline maps. Cancel by tapping one button.</p>
+    </div>
+    <div class="plans reveal">
+      <div class="plan">
+        <h3>Stargazer</h3>
+        <div class="price">$0<small> / always</small></div>
+        <p class="desc">For front-yard observers and the merely curious.</p>
+        <ul>
+          <li>Go / Don't-Go score, 3 nights</li>
+          <li>Moon phase &amp; rise/set almanac</li>
+          <li>Tonight's target shortlist</li>
+          <li>Manual session logbook</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Start free</a>
+      </div>
+      <div class="plan feature">
+        <span class="tag">Most chosen</span>
+        <h3>Observer</h3>
+        <div class="price">$4<small> / mo, billed yearly</small></div>
+        <p class="desc">For the one who checks the sky from bed.</p>
+        <ul>
+          <li>Full 16-night seeing &amp; transparency</li>
+          <li>Rig profiles + exposure limits</li>
+          <li>Dew-curve &amp; meridian alarms</li>
+          <li>Dark-sky trip radar, 200 saved sites</li>
+          <li>Printable almanac exports</li>
+        </ul>
+        <a class="btn btn-solid" href="#">Try 14 nights free <span class="arw">→</span></a>
+      </div>
+      <div class="plan">
+        <h3>Almanac</h3>
+        <div class="price">$9<small> / mo, billed yearly</small></div>
+        <p class="desc">For camps, clubs and seriously equipped nights.</p>
+        <ul>
+          <li>Everything in Observer</li>
+          <li>Team rosters &amp; shared trip boards</li>
+          <li>ASIAIR / N.I.N.A. session hand-off</li>
+          <li>SQM &amp; all-sky camera hooks</li>
+          <li>Priority model feedback line</li>
+        </ul>
+        <a class="btn btn-ghost" href="#">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta-band" id="fieldkit">
+  <div class="wrap">
+    <p class="kicker">Twilight is coming</p>
+    <h2 class="reveal">The universe is loud tonight. <em>Be there for it.</em></h2>
+    <p class="reveal" style="transition-delay:.08s">Free forever for casual observers. Four dollars if you're the one who owns a red headlamp.</p>
+    <a class="btn btn-solid reveal" style="transition-delay:.14s" href="#plans">Plan my first night <span class="arw">→</span></a>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a class="logo" href="#top" aria-label="Noctuary home">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <g class="moon"><circle cx="12" cy="12" r="10.2" stroke="#e0ab48" stroke-width="1.1" stroke-dasharray="1.5 3.4"/></g>
+            <path d="M15.6 4.6a8 8 0 1 0 3.7 10.6A9.2 9.2 0 0 1 15.6 4.6Z" fill="#e0ab48"/>
+          </svg>
+          <b>Noctu<span>ary</span></b>
+        </a>
+        <p>A field almanac for the night sky, built by three astronomers who were tired of four open apps and a fogged corrector plate.</p>
+        <h4>The Clearing — our weather newsletter</h4>
+        <form class="signup" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('input').placeholder='Welcome aboard.';this.querySelector('button').textContent='✓';">
+          <input type="email" placeholder="you@underdarkskies.com" required aria-label="Email address">
+          <button type="submit">Join</button>
+        </form>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#instrument">The Instrument</a></li>
+          <li><a href="#plans">Plans &amp; pricing</a></li>
+          <li><a href="#">iOS · Android · Web</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Field notes</h4>
+        <ul>
+          <li><a href="#">Seeing, explained</a></li>
+          <li><a href="#">Dark-sky site index</a></li>
+          <li><a href="#">Bortle scale primer</a></li>
+          <li><a href="#">Dew survival guide</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About &amp; crew</a></li>
+          <li><a href="#">Chapter program</a></li>
+          <li><a href="#">Press kit</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2025 Noctuary Instruments LLC · Built at 44.3876° N, 68.2039° W</span>
+      <span>Privacy · Terms · “Clear skies” is a promise, not a guarantee.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* scroll progress + sticky */
+  var prog=document.getElementById('progress'),head=document.getElementById('siteHeader');
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    prog.style.transform='scaleX('+(h>0?window.scrollY/h:0)+')';
+    head.classList.toggle('stuck',window.scrollY>20);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  /* mobile menu */
+  var btn=document.getElementById('menuBtn');
+  btn.addEventListener('click',function(){
+    var open=head.classList.toggle('open');
+    btn.setAttribute('aria-expanded',open);btn.textContent=open?'CLOSE −':'MENU +';
+  });
+  document.querySelectorAll('#navlist a').forEach(function(a){
+    a.addEventListener('click',function(){head.classList.remove('open');btn.textContent='MENU +';});
+  });
+
+  /* reveal + count up */
+  var fmt=function(n,d){return d?n.toFixed(d):Math.round(n).toLocaleString('en-US');};
+  function countUp(el){
+    var target=parseFloat(el.dataset.count),dec=parseInt(el.dataset.dec||0),dur=1500,t0=null;
+    function step(t){if(!t0)t0=t;var p=Math.min((t-t0)/dur,1);var e=1-Math.pow(1-p,3);
+      el.textContent=fmt(target*e,dec);if(p<1)requestAnimationFrame(step);else el.textContent=fmt(target,dec);}
+    requestAnimationFrame(step);
+  }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting)return;
+      en.target.classList.add('in');
+      en.target.querySelectorAll('[data-count]').forEach(function(c){
+        if(c.dataset.done)return;c.dataset.done=1;
+        if(reduced)c.textContent=fmt(parseFloat(c.dataset.count),parseInt(c.dataset.dec||0));
+        else countUp(c);
+      });
+      io.unobserve(en.target);
+    });
+  },{threshold:.18,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal,.sc-card').forEach(function(el){io.observe(el);});
+
+  /* hero card bar fill on reveal handled by .in class */
+
+  /* hero pointer parallax */
+  var card=document.querySelector('.sky-card');
+  if(card&&!reduced&&window.matchMedia('(pointer:fine)').matches){
+    var hero=document.querySelector('.hero');
+    hero.addEventListener('mousemove',function(e){
+      var r=hero.getBoundingClientRect();
+      var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      card.style.transform='perspective(1000px) rotateY('+(x*5)+'deg) rotateX('+(-y*5)+'deg) translateY('+(y*-8)+'px)';
+    });
+    hero.addEventListener('mouseleave',function(){card.style.transform='';});
+  }
+
+  /* starfield */
+  var cv=document.getElementById('stars'),ctx=cv.getContext('2d'),stars=[],shoot=null,W,H,dpr;
+  function resize(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    W=cv.clientWidth;H=cv.clientHeight;
+    cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    stars=[];var n=Math.round(W*H/6200);
+    for(var i=0;i<n;i++){
+      var layer=Math.random();
+      stars.push({x:Math.random()*W,y:Math.random()*H,r:(.25+Math.random()*1.15)*(layer>.92?1.6:1),
+        p:Math.random()*Math.PI*2,s:.4+Math.random()*1.5,d:.2+layer*.8,
+        c:Math.random()<.1?'224,171,72':(Math.random()<.16?'147,182,166':'239,231,211')});
+    }
+  }
+  var mx=0,my=0,tx=0,ty=0;
+  function draw(t){
+    mx+=(tx-mx)*.05;my+=(ty-my)*.05;
+    ctx.clearRect(0,0,W,H);
+    var g=ctx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,'rgba(150,170,220,0)');g.addColorStop(.5,'rgba(160,175,220,.03)');g.addColorStop(1,'rgba(150,170,220,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    for(var i=0;i<stars.length;i++){
+      var st=stars[i],a=reduced?.7:(.35+.55*Math.abs(Math.sin(st.p+t*.001*st.s)));
+      ctx.beginPath();ctx.fillStyle='rgba('+st.c+','+a+')';
+      ctx.arc(st.x+mx*st.d*22,st.y+my*st.d*22,st.r,0,6.283);ctx.fill();
+      if(st.r>1.1){ctx.beginPath();ctx.strokeStyle='rgba('+st.c+','+(a*.35)+')';ctx.lineWidth=.6;
+        ctx.moveTo(st.x+mx*st.d*22-st.r*3,st.y+my*st.d*22);ctx.lineTo(st.x+mx*st.d*22+st.r*3,st.y+my*st.d*22);
+        ctx.moveTo(st.x+mx*st.d*22,st.y+my*st.d*22-st.r*3);ctx.lineTo(st.x+mx*st.d*22,st.y+my*st.d*22+st.r*3);ctx.stroke();}
+    }
+    if(!reduced){
+      if(!shoot&&Math.random()<.0022){shoot={x:Math.random()*W*.7+W*.15,y:Math.random()*H*.32,l:0,len:100+Math.random()*90,v:8+Math.random()*4};}
+      if(shoot){
+        shoot.x+=shoot.v;shoot.y+=shoot.v*.45;shoot.l+=shoot.v*1.15;
+        if(shoot.l>shoot.len*2.2){shoot=null;}
+        else{var fade=Math.min(1,shoot.l/40)*Math.max(0,1-shoot.l/(shoot.len*2.2));
+          var lg=ctx.createLinearGradient(shoot.x-shoot.len,shoot.y-shoot.len*.45,shoot.x,shoot.y);
+          lg.addColorStop(0,'rgba(239,231,211,0)');lg.addColorStop(1,'rgba(244,207,130,'+(.9*fade)+')');
+          ctx.strokeStyle=lg;ctx.lineWidth=1.4;ctx.beginPath();
+          ctx.moveTo(shoot.x-shoot.len,shoot.y-shoot.len*.45);ctx.lineTo(shoot.x,shoot.y);ctx.stroke();}
+      }
+      requestAnimationFrame(draw);
+    }
+  }
+  resize();
+  if(reduced){draw(0);}else{
+    window.addEventListener('mousemove',function(e){tx=e.clientX/W-.5;ty=e.clientY/innerHeight-.5;},{passive:true});
+    requestAnimationFrame(draw);
+  }
+  var rz;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){resize();if(reduced)draw(0);},150);});
+})();
+</script>
+</body>
+</html>

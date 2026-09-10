@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Aurelian Express — Overnight Coastal Railway</title>
+<meta name="description" content="One train, seven cities, a single night. The Aurelian Express — a fictional luxury overnight railway.">
+<meta name="theme-color" content="#0B0A08">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --lacquer:#0B0A08; --lacquer-2:#12100C;
+  --navy:#0E1C2A; --navy-deep:#0A1520; --navy-ink:#122435;
+  --ivory:#F1E7D0; --ivory-2:#E7DAC0; --ivory-3:#DCCEAC;
+  --ink:#191512; --body-dark:#3B3428; --body-dim:#5A5140;
+  --teal:#2E6B62; --teal-2:#1E4A46; --teal-3:#17403A;
+  --gold:#C2A24E; --gold-2:#E0C583; --gold-ink:#8C6F2F;
+  --rust:#A6492B;
+  --line:rgba(194,162,78,.30); --line-soft:rgba(194,162,78,.16);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --display:'Bodoni Moda',Didot,serif;
+  --sans:'Jost',Futura,sans-serif;
+  --cycle:48s;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:var(--lacquer);color:var(--ivory);font-family:var(--serif);font-size:1.12rem;line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+::selection{background:var(--gold);color:var(--lacquer)}
+img,svg{display:block}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.12;letter-spacing:.02em}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold-2);outline-offset:3px}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(1.2rem,4vw,3rem)}
+section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
+section[id]{scroll-margin-top:84px}
+
+/* reveal */
+.js [data-rv]{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s cubic-bezier(.22,.8,.24,1)}
+.js [data-rv].in{opacity:1;transform:none}
+
+/* ============ ORNAMENT ============ */
+.kicker{font-family:var(--sans);font-weight:500;font-size:.68rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-2)}
+.on-paper .kicker, .paper .kicker{color:var(--gold-ink)}
+.s-head{max-width:760px;margin:0 auto clamp(2.6rem,6vw,4rem);text-align:center}
+.s-head .num{font-family:var(--sans);font-size:.66rem;letter-spacing:.5em;color:var(--gold-2);text-transform:uppercase;display:block;margin-bottom:1rem}
+.on-paper .s-head .num{color:var(--gold-ink)}
+.s-title{font-size:clamp(2rem,4.6vw,3.4rem);margin-bottom:1.1rem}
+.s-head .burst{margin:0 auto 1.2rem;width:150px;height:24px;color:var(--gold)}
+.s-lede{color:inherit;opacity:.82;font-size:1.12rem;font-style:italic}
+.diamond{display:inline-block;width:6px;height:6px;background:currentColor;transform:rotate(45deg);vertical-align:middle}
+.sep-diamonds{display:flex;align-items:center;gap:.9rem;justify-content:center;color:var(--gold)}
+.sep-diamonds::before,.sep-diamonds::after{content:"";height:1px;width:72px;background:var(--line);flex:0 0 auto}
+.paper .sep-diamonds::before,.paper .sep-diamonds::after{background:rgba(140,111,47,.4)}
+.rule{height:1px;background:var(--line);border:none}
+
+/* buttons */
+.btn{display:inline-block;font-family:var(--sans);font-weight:500;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;padding:1em 2.1em;border:1px solid var(--gold);text-decoration:none;transition:background .3s,color .3s,border-color .3s}
+.btn.solid{background:var(--gold);color:#14100A}
+.btn.solid:hover{background:var(--gold-2);border-color:var(--gold-2)}
+.btn.ghost{color:var(--gold-2);background:rgba(11,10,8,.55)}
+.btn.ghost:hover{background:var(--gold);color:#14100A}
+.btn.dark{color:var(--gold-ink);border-color:var(--gold-ink);background:transparent}
+.btn.dark:hover{background:var(--gold-ink);color:var(--ivory)}
+
+/* ============ NAV ============ */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;height:66px;display:flex;align-items:center;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(11,10,8,.9);border-bottom-color:var(--line-soft);backdrop-filter:blur(8px)}
+.nav-in{width:100%;max-width:1280px;margin-inline:auto;padding-inline:clamp(1rem,3vw,2.4rem);display:flex;align-items:center;justify-content:space-between;gap:1.4rem}
+.wordmark{font-family:var(--sans);font-weight:600;font-size:.78rem;letter-spacing:.34em;color:var(--ivory);text-decoration:none;display:flex;align-items:center;gap:.7rem;white-space:nowrap}
+.wordmark i{width:6px;height:6px;background:var(--gold);transform:rotate(45deg)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-family:var(--sans);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(241,231,208,.75);text-decoration:none;transition:color .3s}
+.nav-links a:hover{color:var(--gold-2)}
+.nav .btn{padding:.7em 1.5em;font-size:.64rem}
+.burger{display:none;flex-direction:column;gap:5px;padding:8px}
+.burger span{width:24px;height:1.5px;background:var(--ivory);transition:transform .3s,opacity .3s}
+.menu-ov{position:fixed;inset:0;background:rgba(10,9,7,.97);z-index:70;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .35s}
+.menu-ov.open{opacity:1;pointer-events:auto}
+.menu-ov ul{list-style:none;text-align:center;display:grid;gap:1.6rem}
+.menu-ov a{font-family:var(--display);font-size:1.8rem;color:var(--ivory);text-decoration:none;letter-spacing:.06em}
+.menu-ov a:hover{color:var(--gold-2)}
+.menu-close{position:absolute;top:22px;right:26px;font-family:var(--sans);letter-spacing:.3em;font-size:.7rem;text-transform:uppercase;color:var(--gold-2)}
+
+/* ============ HERO ============ */
+.hero{min-height:100svh;position:relative;display:grid;place-items:center;overflow:hidden;padding-top:70px}
+.hero-scene{position:absolute;inset:0;width:100%;height:100%}
+.hero-copy{position:relative;z-index:2;text-align:center;padding:8rem 1.4rem 14vh;max-width:900px}
+.h-eyebrow{font-family:var(--sans);font-weight:400;font-size:.7rem;letter-spacing:.5em;text-transform:uppercase;color:var(--gold-2);margin-bottom:1.6rem}
+.h-the{display:block;font-family:var(--sans);font-weight:400;font-size:clamp(.8rem,1.6vw,1.05rem);letter-spacing:1.2em;text-transform:uppercase;color:rgba(241,231,208,.85);margin-left:.6em}
+h1 .t-main{display:block;font-size:clamp(3rem,10.5vw,7.6rem);font-weight:600;color:var(--ivory);line-height:1}
+.h-expr{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-top:.4rem;color:var(--gold-2)}
+.h-expr b{font-family:var(--display);font-weight:600;font-style:italic;font-size:clamp(1.4rem,3.6vw,2.5rem);letter-spacing:.14em}
+.h-expr::before,.h-expr::after{content:"";height:1px;width:min(120px,14vw);background:var(--line)}
+.h-rule{display:flex;justify-content:center;margin:1.5rem 0 1.3rem;color:var(--gold)}
+.h-sub{max-width:560px;margin:0 auto 2.2rem;font-size:clamp(1.05rem,2vw,1.25rem);font-style:italic;color:rgba(241,231,208,.88)}
+.h-cta{display:flex;gap:1.1rem;justify-content:center;flex-wrap:wrap}
+.scroll-cue{position:absolute;left:50%;bottom:clamp(26px,5vh,52px);transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:.5rem;font-family:var(--sans);font-size:.6rem;letter-spacing:.4em;text-transform:uppercase;color:rgba(241,231,208,.6)}
+.scroll-cue svg{animation:cue 2.4s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+.h-train-wrap{animation:passby 66s linear infinite}
+@keyframes passby{from{transform:translateX(-980px)}to{transform:translateX(1780px)}}
+.tw{animation:tw 4.5s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.15}to{opacity:.85}}
+.glowP{animation:glowP 5s ease-in-out infinite alternate}
+@keyframes glowP{from{opacity:.5}to{opacity:.85}}
+
+/* ============ TICKER ============ */
+.ticker{border-block:1px solid var(--line-soft);background:var(--lacquer-2);overflow:hidden;padding:.85rem 0}
+.ticker-track{display:flex;gap:0;width:max-content;animation:tick 36s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+.ticker-set{display:flex;align-items:center;gap:2.6rem;padding-right:2.6rem}
+.ticker-set span{font-family:var(--sans);font-weight:400;font-size:.66rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(241,231,208,.72);white-space:nowrap}
+.ticker-set span b{color:var(--gold-2);font-weight:500}
+.ticker-set i{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);flex:0 0 auto}
+
+/* ============ SECTIONS — SHARED ============ */
+.paper{background:var(--ivory);color:var(--body-dark)}
+.paper .s-title{color:var(--ink)}
+.paper .s-lede{color:var(--body-dim, #5A5140)}
+
+/* ============ ROUTE ============ */
+.route-map{position:relative;max-width:940px;margin-inline:auto;aspect-ratio:1000/2000}
+.route-map svg.map{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.r-base{fill:none;stroke:var(--gold);opacity:.22;stroke-width:2.4}
+.r-prog{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round}
+.r-dot{fill:var(--gold);opacity:.35}
+.r-train path{fill:var(--gold-2);stroke:#14100A;stroke-width:.6}
+.r-train circle{fill:#14100A}
+.r-term{font-family:var(--sans);font-size:11px;letter-spacing:.34em;fill:rgba(25,21,18,.55);text-transform:uppercase}
+.stop{position:absolute;left:var(--x);top:var(--y);width:0;display:flex;align-items:flex-start;gap:1.2rem}
+.stop .medal{position:absolute;left:0;top:0;width:clamp(96px,11vw,124px);height:clamp(96px,11vw,124px);transform:translate(-50%,-50%);transition:transform .6s cubic-bezier(.22,.8,.24,1)}
+.m-ticks{transform-origin:60px 60px;animation:spin 44s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.medal .m-outer{fill:none;stroke:var(--gold);stroke-width:1;opacity:.55}
+.medal .m-face{fill:var(--ivory);stroke:var(--gold);stroke-width:1.4}
+.medal .m-mot{fill:none;stroke:#142433;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.stop .s-info{position:absolute;left:clamp(60px,7vw,84px);top:-14px;width:min(252px,30vw)}
+.stop.flip .s-info{left:auto;right:clamp(60px,7vw,84px);text-align:right}
+.stop .s-meta{font-family:var(--sans);font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-ink);margin-bottom:.35rem}
+.stop h3{font-size:1.5rem;color:var(--ink);transition:color .4s}
+.stop .s-time{font-family:var(--sans);font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);margin:.3rem 0 .45rem}
+.stop .s-desc{font-size:1.02rem;font-style:italic;color:var(--body-dim,#5A5140);line-height:1.5}
+.js .stop .medal{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(.82)}
+.js .stop.in .medal{opacity:1;transform:translate(-50%,-50%) rotate(0) scale(1)}
+.stop.passed .medal .m-outer{stroke:var(--gold-ink);opacity:.9}
+.stop.now .medal{transform:translate(-50%,-50%) scale(1.07)}
+#mLine{display:none}
+.route-legend{margin-top:2.6rem;text-align:center;font-family:var(--sans);font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(25,21,18,.5)}
+
+/* ============ WINDOW ============ */
+.window-sec .wrap{max-width:1080px}
+.vp-frame{background:var(--lacquer);border:1px solid rgba(194,162,78,.5);border-radius:min(300px,34vw) min(300px,34vw) 16px 16px;padding:clamp(14px,2.6vw,26px);box-shadow:inset 0 0 0 5px var(--lacquer),inset 0 0 0 6px rgba(194,162,78,.35), 0 30px 60px rgba(0,0,0,.45)}
+.vp-inner{position:relative;overflow:hidden;height:clamp(300px,46vw,520px);border-radius:min(260px,30vw) min(260px,34vw) 8px 8px;background:#0E1C2A}
+.vp-inner svg,.vp-inner .lyr{position:absolute}
+.sky{position:absolute;inset:0;width:100%;height:100%}
+.lyr{left:0;width:200%;height:var(--h);bottom:var(--b);animation:driftX var(--d) linear infinite}
+.lyr svg{width:100%;height:100%}
+@keyframes driftX{to{transform:translateX(-50%)}}
+.sk-dusk{opacity:1;animation:cycDusk var(--cycle) linear infinite}
+.sk-night{opacity:0;animation:cycNight var(--cycle) linear infinite}
+.sk-dawn{opacity:0;animation:cycDawn var(--cycle) linear infinite}
+.sk-day{opacity:0;animation:cycDay var(--cycle) linear infinite}
+@keyframes cycDusk{0%{opacity:1}20%{opacity:1}32%{opacity:0}88%{opacity:0}100%{opacity:1}}
+@keyframes cycNight{0%{opacity:0}20%{opacity:0}30%{opacity:1}56%{opacity:1}66%{opacity:0}100%{opacity:0}}
+@keyframes cycDawn{0%{opacity:0}54%{opacity:0}62%{opacity:1}74%{opacity:1}82%{opacity:0}100%{opacity:0}}
+@keyframes cycDay{0%{opacity:0}72%{opacity:0}80%{opacity:1}90%{opacity:1}100%{opacity:0}}
+.vp-stars{position:absolute;inset:0 0 34% 0;width:100%;animation:cycNight var(--cycle) linear infinite}
+.moon{position:absolute;top:9%;left:16%;width:64px;animation:moonMove var(--cycle) linear infinite;opacity:0}
+@keyframes moonMove{0%{opacity:0;transform:translateY(70px)}24%{opacity:0}34%{opacity:.95;transform:translateY(0)}56%{opacity:.95;transform:translateY(-8px)}66%{opacity:0;transform:translateY(-30px)}100%{opacity:0;transform:translateY(70px)}}
+.sund{position:absolute;top:13%;left:22%;width:52px;opacity:0;animation:cycDay var(--cycle) linear infinite}
+.nw{animation:lampCycle var(--cycle) linear infinite}
+@keyframes lampCycle{0%{opacity:.9}30%{opacity:1}56%{opacity:1}68%{opacity:.55}78%{opacity:0}92%{opacity:0}100%{opacity:.9}}
+.beam{animation:beamOp var(--cycle) linear infinite;transform-origin:766px 44px;animation:beamRot 11s linear infinite, beamOp var(--cycle) linear infinite}
+@keyframes beamRot{to{transform:rotate(360deg)}}
+@keyframes beamOp{0%{opacity:.5}30%{opacity:.65}56%{opacity:.55}72%{opacity:0}90%{opacity:0}100%{opacity:.5}}
+.vp-mull{position:absolute;left:calc(50% - 5px);top:7%;bottom:9%;width:10px;background:#8C6F2F;box-shadow:inset 1px 0 0 rgba(241,231,208,.25),inset -1px 0 0 rgba(0,0,0,.4)}
+.vp-caption{display:flex;justify-content:space-between;gap:1.4rem;margin-top:1.4rem;flex-wrap:wrap}
+.vp-caption p{font-style:italic;color:rgba(241,231,208,.8)}
+.vp-caption .tag{font-family:var(--sans);font-style:normal;font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-2);align-self:center}
+
+/* ============ SUITES ============ */
+.suites-grid{display:grid;grid-template-columns:340px 1fr;gap:clamp(2rem,4.5vw,4rem);align-items:start}
+.stabs{display:flex;flex-direction:column;border-top:1px solid rgba(140,111,47,.35)}
+.stab{display:grid;grid-template-columns:44px 1fr auto;align-items:baseline;gap:.6rem;text-align:left;padding:1.25rem .4rem;border-bottom:1px solid rgba(140,111,47,.35);position:relative;transition:background .3s}
+.stab::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--gold-ink);transition:width .35s}
+.stab .rn{font-family:var(--display);font-style:italic;font-size:1.15rem;color:var(--gold-ink)}
+.stab .nm{font-family:var(--display);font-size:1.28rem;color:var(--ink);letter-spacing:.02em}
+.stab .pr{font-family:var(--sans);font-size:.66rem;letter-spacing:.16em;color:var(--body-dim,#5A5140)}
+.stab small{grid-column:2/4;font-family:var(--sans);font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--body-dim,#5A5140);margin-top:.2rem}
+.stab:hover{background:rgba(140,111,47,.07)}
+.stab[aria-selected="true"]{background:rgba(140,111,47,.1)}
+.stab[aria-selected="true"]::before{width:3px}
+.stab[aria-selected="true"] .nm{color:var(--gold-ink)}
+.suite-panel{border:1px solid rgba(140,111,47,.4);background:var(--ivory-2);padding:clamp(1rem,2.4vw,1.8rem)}
+.suite-pane{display:none}
+.suite-pane.on{display:block;animation:fadeUp .55s cubic-bezier(.22,.8,.24,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.suite-art{width:100%;height:auto;border:1px solid rgba(140,111,47,.35)}
+.suite-foot{display:flex;justify-content:space-between;gap:1.6rem;margin-top:1.3rem;flex-wrap:wrap;align-items:flex-start}
+.suite-foot .desc{max-width:440px;font-size:1.05rem}
+.feat-line{margin-top:.9rem;font-family:var(--sans);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--body-dim,#5A5140);display:flex;flex-wrap:wrap;gap:.55rem .9rem;align-items:center}
+.feat-line i{width:4px;height:4px;background:var(--gold-ink);transform:rotate(45deg)}
+.plan{flex:0 0 auto;text-align:center}
+.plan svg{width:120px;height:auto;border:1px solid rgba(140,111,47,.4);background:var(--ivory)}
+.plan span{display:block;margin-top:.4rem;font-family:var(--sans);font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--body-dim,#5A5140)}
+
+/* ============ DINING ============ */
+.dining-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,4.5vw,4rem);align-items:center}
+.dine-frame{border:1px solid var(--line);padding:clamp(.8rem,1.6vw,1.3rem);background:var(--navy-deep)}
+.dine-frame svg{width:100%;height:auto}
+.menu-card{background:var(--ivory);color:var(--body-dark);padding:clamp(1.6rem,3.4vw,2.8rem);transform:rotate(-1.2deg);box-shadow:0 26px 50px rgba(0,0,0,.5);position:relative}
+.menu-card::before{content:"";position:absolute;inset:9px;border:1px solid rgba(140,111,47,.45);pointer-events:none}
+.menu-card::after{content:"";position:absolute;inset:13px;border:1px solid rgba(140,111,47,.2);pointer-events:none}
+.menu-k{font-family:var(--sans);font-size:.62rem;letter-spacing:.44em;text-transform:uppercase;color:var(--gold-ink);text-align:center}
+.menu-title{font-size:1.9rem;text-align:center;color:var(--ink);margin:.5rem 0 .3rem}
+.menu-sub{text-align:center;font-style:italic;color:var(--body-dim,#5A5140);margin-bottom:1.4rem}
+.menu-list{list-style:none;display:grid;gap:1rem;margin-bottom:1.4rem}
+.menu-list b{display:block;font-family:var(--display);font-weight:600;font-size:1.08rem;color:var(--ink);letter-spacing:.03em}
+.menu-list span{font-style:italic;color:var(--body-dim,#5A5140)}
+.menu-note{border-top:1px solid rgba(140,111,47,.3);padding-top:1rem;font-style:italic;font-size:1rem}
+.menu-foot{text-align:center;font-family:var(--sans);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-ink);margin-top:1.2rem}
+
+/* ============ TIMELINE ============ */
+.tl{position:relative;display:grid;grid-template-columns:repeat(7,1fr);margin-top:1rem}
+.tl-track{position:absolute;left:2%;right:2%;top:150px;height:1.5px;background:rgba(194,162,78,.2)}
+.tl-fill{position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left}
+.tl-item{grid-row:1/span 3;display:grid;grid-template-rows:132px 36px 132px;text-align:center;position:relative}
+.tl-node{grid-row:2;align-self:center;justify-self:center;width:15px;height:15px;transform:rotate(45deg);border:1.5px solid var(--gold);background:var(--lacquer);opacity:.35;transition:opacity .5s,background .5s}
+.tl-item.lit .tl-node{opacity:1;background:var(--gold)}
+.tl-card{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.45rem;padding:0 .6rem}
+.tl-item:nth-child(even) .tl-card{grid-row:3;justify-content:flex-start}
+.tl-item:nth-child(odd) .tl-card{grid-row:1}
+.tl-time{font-family:var(--sans);font-size:.66rem;letter-spacing:.28em;color:var(--gold-2)}
+.tl-ic{color:var(--gold);opacity:.85}
+.tl-what{font-family:var(--display);font-size:1.02rem;color:var(--ivory);line-height:1.25}
+.tl-where{font-size:.92rem;font-style:italic;color:rgba(241,231,208,.6)}
+.tl-card{opacity:.4;transition:opacity .5s}
+.tl-item.lit .tl-card{opacity:1}
+
+/* ============ CONSIST ============ */
+.consist-fig{border:1px solid var(--line-soft);background:var(--lacquer-2);padding:clamp(1rem,2.6vw,2rem);margin-bottom:2.6rem}
+.consist-fig svg{width:100%;height:auto}
+.car{cursor:pointer;outline-offset:4px}
+.car .cbody{fill:#14110C;stroke:rgba(194,162,78,.55);stroke-width:1.2;transition:fill .3s,stroke .3s}
+.car .cw{fill:rgba(241,231,208,.4);transition:fill .3s}
+.car:hover .cbody,.car:focus .cbody{fill:var(--teal-2);stroke:var(--gold-2)}
+.car:hover .cw,.car:focus .cw{fill:rgba(241,231,208,.9)}
+.cnum{font-family:var(--sans);font-size:11px;letter-spacing:.2em;fill:rgba(241,231,208,.5)}
+.rail{stroke:rgba(194,162,78,.4);stroke-width:1.5}
+.car-cap{text-align:center;min-height:3.4em}
+.car-cap b{display:block;font-family:var(--display);font-weight:600;font-size:1.2rem;color:var(--gold-2);letter-spacing:.03em}
+.car-cap span{font-style:italic;color:rgba(241,231,208,.75)}
+.specs{border:1px solid var(--line);background:var(--lacquer-2);padding:clamp(1.4rem,3vw,2.4rem);position:relative;box-shadow:inset 0 0 0 5px var(--lacquer-2),inset 0 0 0 6px rgba(194,162,78,.25)}
+.specs::before,.specs::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#0B0A08;border:1.5px solid rgba(194,162,78,.6);top:10px}
+.specs::before{left:10px}.specs::after{right:10px}
+.specs-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.spec{text-align:center;padding:1.2rem .6rem;border-left:1px solid var(--line-soft)}
+.spec:first-child,.spec:nth-child(5){border-left:none}
+.spec:nth-child(n+5){border-top:1px solid var(--line-soft)}
+.spec b{display:block;font-family:var(--display);font-weight:600;font-size:clamp(1.5rem,2.6vw,2.1rem);color:var(--gold-2)}
+.spec span{font-family:var(--sans);font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(241,231,208,.65)}
+
+/* ============ RITUALS ============ */
+.rituals{list-style:none;counter-reset:r;max-width:860px;margin-inline:auto}
+.rituals li{display:grid;grid-template-columns:110px 1fr;gap:1.6rem;padding:2.1rem 0;border-top:1px solid rgba(140,111,47,.3);align-items:baseline}
+.rituals li:last-child{border-bottom:1px solid rgba(140,111,47,.3)}
+.rituals li:nth-child(even){padding-left:clamp(0px,6vw,84px)}
+.rituals .rn{font-family:var(--display);font-style:italic;font-weight:500;font-size:2.6rem;color:var(--gold-ink);line-height:1}
+.rituals h3{font-size:1.4rem;color:var(--ink);margin-bottom:.5rem}
+.rituals p{font-size:1.08rem}
+
+/* ============ QUOTES ============ */
+.q-stage{position:relative;max-width:840px;margin:0 auto;min-height:270px}
+.q-slide{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;pointer-events:none;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:1.6rem}
+.q-slide.on{opacity:1;pointer-events:auto}
+.q-mark{font-family:var(--display);font-size:4rem;line-height:.4;color:var(--gold);height:.5em}
+.q-slide p{font-size:clamp(1.25rem,2.6vw,1.7rem);font-style:italic;line-height:1.55;color:var(--ivory)}
+.q-attr{font-family:var(--sans);font-size:.64rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-2)}
+.q-nav{display:flex;align-items:center;justify-content:center;gap:1.4rem;margin-top:2.2rem}
+.q-nav button{border:1px solid var(--line);width:44px;height:44px;display:grid;place-items:center;color:var(--gold-2);transition:background .3s,color .3s}
+.q-nav button:hover{background:var(--gold);color:#14100A}
+#qIdx{font-family:var(--sans);font-size:.68rem;letter-spacing:.3em;color:rgba(241,231,208,.7)}
+
+/* ============ FARES ============ */
+.fares-scroll{overflow-x:auto}
+.fares-tbl{width:100%;min-width:640px;border-collapse:collapse;text-align:left}
+.fares-tbl th{font-family:var(--sans);font-weight:500;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-ink);padding:0 1rem .9rem;border-bottom:1.5px solid rgba(140,111,47,.5)}
+.fares-tbl td{padding:1.4rem 1rem;border-bottom:1px solid rgba(140,111,47,.25);vertical-align:top}
+.fares-tbl .no{font-family:var(--display);font-style:italic;color:var(--gold-ink);font-size:1.1rem}
+.fares-tbl .acc{font-family:var(--display);font-weight:600;font-size:1.35rem;color:var(--ink)}
+.fares-tbl .fare{font-family:var(--display);font-size:1.5rem;color:var(--ink);white-space:nowrap}
+.fares-tbl .fare small{font-family:var(--sans);font-size:.56rem;letter-spacing:.24em;color:var(--body-dim,#5A5140);display:block;margin-top:.2rem}
+.fares-tbl .inc{font-style:italic;color:var(--body-dim,#5A5140);max-width:320px}
+tr.feat{background:rgba(140,111,47,.08)}
+tr.feat td:first-child{border-left:3px solid var(--gold-ink)}
+.most{display:inline-block;font-family:var(--sans);font-size:.54rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ivory);background:var(--gold-ink);padding:.35em .8em;margin-left:.7rem;vertical-align:middle}
+.fares-note{margin-top:1.6rem;font-style:italic;color:var(--body-dim,#5A5140);font-size:1rem}
+
+/* ============ BOOK ============ */
+.book-plate{max-width:820px;margin-inline:auto;border:1px solid var(--line);background:var(--navy-deep);padding:clamp(1.8rem,4.5vw,3.4rem);position:relative;box-shadow:inset 0 0 0 6px var(--navy-deep),inset 0 0 0 7px rgba(194,162,78,.22)}
+.bform{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem 1.8rem;margin-top:2.2rem}
+.fld{display:flex;flex-direction:column;gap:.5rem}
+.fld.full{grid-column:1/-1}
+.fld label{font-family:var(--sans);font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-2)}
+.fld input,.fld select{background:transparent;border:none;border-bottom:1px solid rgba(194,162,78,.4);color:var(--ivory);font-family:var(--serif);font-size:1.1rem;padding:.55rem 2px;transition:border-color .3s;border-radius:0;appearance:none;-webkit-appearance:none}
+.fld select option{background:var(--navy-deep);color:var(--ivory)}
+.sel{position:relative}
+.sel::after{content:"";position:absolute;right:6px;bottom:18px;width:8px;height:8px;border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);transform:rotate(45deg);pointer-events:none}
+.fld input:focus,.fld select:focus{border-bottom-color:var(--gold-2);outline:none}
+.ferr{font-family:var(--sans);font-size:.62rem;letter-spacing:.14em;color:#D98A6A;min-height:1em}
+.guest{flex-direction:row;align-items:flex-end;justify-content:space-between}
+.gstep{display:flex;align-items:center;gap:1rem}
+.gstep button{width:34px;height:34px;border:1px solid var(--line);color:var(--gold-2);font-family:var(--sans);font-size:1rem;transition:background .3s,color .3s}
+.gstep button:hover{background:var(--gold);color:#14100A}
+#gCount{font-family:var(--display);font-size:1.4rem;min-width:1.6ch;text-align:center}
+.book-actions{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;margin-top:.4rem}
+.book-fine{font-size:.95rem;font-style:italic;color:rgba(241,231,208,.6)}
+#bookDone{margin-top:2.2rem;text-align:center}
+#bookDone h3{font-size:1.6rem;color:var(--gold-2);margin-bottom:.6rem}
+#bookDone p{font-style:italic;color:rgba(241,231,208,.8);max-width:520px;margin:0 auto 1.6rem}
+#labelBox svg{width:min(620px,100%);height:auto;margin-inline:auto;box-shadow:0 24px 50px rgba(0,0,0,.5)}
+.stampcls{animation:stampIn .5s cubic-bezier(.2,1.4,.4,1) both .25s;transform-origin:center;transform-box:fill-box}
+@keyframes stampIn{from{opacity:0;transform:rotate(-14deg) scale(1.6)}to{opacity:1;transform:rotate(-8deg) scale(1)}}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--line-soft);background:var(--lacquer);padding:3.6rem 0 2.6rem;text-align:center}
+.f-burst{width:120px;margin:0 auto 1.4rem;color:var(--gold)}
+.f-mark{font-family:var(--sans);font-weight:600;font-size:.82rem;letter-spacing:.4em;color:var(--ivory)}
+.f-cities{margin:1.2rem auto 0;font-family:var(--sans);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(241,231,208,.55);max-width:900px;line-height:2.2}
+.f-cities i{width:4px;height:4px;background:var(--gold);display:inline-block;transform:rotate(45deg);margin:0 .8rem .1rem}
+.f-small{margin-top:1.8rem;font-style:italic;color:rgba(241,231,208,.45);font-size:.95rem}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1080px){
+  .suites-grid{grid-template-columns:300px 1fr}
+  .specs-grid{grid-template-columns:repeat(2,1fr)}
+  .spec:nth-child(odd){border-left:none}
+  .spec:nth-child(n+3){border-top:1px solid var(--line-soft)}
+  .spec:nth-child(5){border-left:none}
+}
+@media (max-width:960px){
+  .nav-links{display:none}
+  .burger{display:flex}
+  .suites-grid{grid-template-columns:1fr}
+  .stabs{flex-direction:row;flex-wrap:wrap;border-top:none;gap:.4rem}
+  .stab{grid-template-columns:auto auto;border:1px solid rgba(140,111,47,.35);padding:.8rem 1rem;flex:1 1 200px}
+  .stab::before{display:none}
+  .stab .rn{display:none}.stab small{display:none}
+  .stab .pr{margin-left:.5rem}
+  .dining-grid{grid-template-columns:1fr !important}
+  .menu-card{transform:none}
+  /* route -> vertical list */
+  .route-map{aspect-ratio:auto;padding-left:0;max-width:620px}
+  #routeSvg{display:none}
+  #mLine{display:block;position:absolute;left:41px;top:6px;bottom:6px;width:2px;background:rgba(140,111,47,.2)}
+  #mLine i{position:absolute;inset:0;background:var(--gold-ink);transform:scaleY(var(--p,0));transform-origin:top;display:block}
+  .stop{position:relative;left:auto!important;top:auto!important;width:100%;display:grid;grid-template-columns:82px 1fr;gap:1.2rem;margin-bottom:2.6rem;align-items:start}
+  .stop .medal{position:relative;left:0;top:0;transform:none;width:82px;height:82px}
+  .js .stop .medal{opacity:0;transform:scale(.85) rotate(-10deg)}
+  .js .stop.in .medal{opacity:1;transform:none}
+  .stop .s-info{position:static;width:auto;text-align:left!important}
+  .stop.now .medal{transform:scale(1.06)}
+  /* timeline -> vertical */
+  .tl{grid-template-columns:40px 1fr;row-gap:2.2rem}
+  .tl-track{left:19px;right:auto;top:8px;bottom:8px;width:1.5px;height:auto}
+  .tl-fill{transform:scaleY(var(--p,0));transform-origin:top}
+  .tl-item{grid-row:auto;grid-column:2;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto;gap:1rem;text-align:left}
+  .tl-node{grid-row:1;grid-column:1;justify-self:start;align-self:start;margin-top:.3rem}
+  .tl-card,.tl-item:nth-child(odd) .tl-card,.tl-item:nth-child(even) .tl-card{grid-column:2;grid-row:1;justify-content:flex-start;align-items:flex-start;padding:0}
+}
+@media (max-width:640px){
+  .bform{grid-template-columns:1fr}
+  .hero-copy{padding-bottom:20vh}
+  .h-cta .btn{width:100%;text-align:center}
+  .rituals li{grid-template-columns:64px 1fr;gap:1rem;padding-left:0!important}
+  .rituals .rn{font-size:2rem}
+  .spec{padding:1rem .4rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  html{scroll-behavior:auto}
+  .sk-night,.sk-dawn,.sk-day,.vp-stars{opacity:0}
+  .sk-dusk{opacity:1}
+  .js [data-rv]{opacity:1;transform:none;transition:none}
+  .h-train-wrap{transform:translateX(240px)}
+  .js .stop .medal{opacity:1;transform:translate(-50%,-50%)}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SHARED SVG DEFS ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- streamlined locomotive, baseline y=80 -->
+    <g id="g-loco">
+      <path d="M34,28 L128,24 C165,22 190,38 199,54 L201,60 C201,63 199,65 195,65 L44,65 C38,65 34,61 34,55 Z" fill="#0D0C0A" stroke="rgba(194,162,78,.65)" stroke-width="1.4"/>
+      <path d="M34,28 L34,10 Q34,6 40,6 L78,6 Q84,6 84,12 L84,26" fill="#0D0C0A" stroke="rgba(194,162,78,.65)" stroke-width="1.4"/>
+      <rect x="42" y="11" width="32" height="12" fill="rgba(241,231,208,.85)"/>
+      <rect x="96" y="10" width="28" height="6" rx="2" fill="#0D0C0A" stroke="rgba(194,162,78,.5)" stroke-width="1"/>
+      <rect x="130" y="14" width="20" height="5" rx="2" fill="#0D0C0A" stroke="rgba(194,162,78,.5)" stroke-width="1"/>
+      <line x1="36" y1="33" x2="152" y2="31" stroke="#C2A24E" stroke-width="1.4" opacity=".85"/>
+      <line x1="40" y1="58" x2="196" y2="58" stroke="#C2A24E" stroke-width="1.2" opacity=".6"/>
+      <circle cx="193" cy="46" r="3.4" fill="#E9C583"/>
+      <circle cx="193" cy="46" r="7" fill="#E9C583" opacity=".22"/>
+      <circle cx="58" cy="70" r="7" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1.4"/>
+      <circle cx="92" cy="70" r="7" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1.4"/>
+      <circle cx="126" cy="70" r="7" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1.4"/>
+      <circle cx="172" cy="71" r="5.5" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1.2"/>
+      <path d="M201,60 L217,75 L201,75 Z" fill="#0D0C0A" stroke="rgba(194,162,78,.65)" stroke-width="1.2"/>
+    </g>
+    <!-- carriage, baseline y=78 -->
+    <g id="g-car">
+      <rect x="0" y="22" width="128" height="44" rx="10" fill="#0D0C0A" stroke="rgba(194,162,78,.65)" stroke-width="1.4"/>
+      <rect x="12" y="32" width="13" height="11" rx="2" fill="rgba(241,231,208,.8)"/>
+      <rect x="31" y="32" width="13" height="11" rx="2" fill="rgba(241,231,208,.8)"/>
+      <rect x="50" y="32" width="13" height="11" rx="2" fill="rgba(241,231,208,.8)"/>
+      <rect x="69" y="32" width="13" height="11" rx="2" fill="rgba(241,231,208,.8)"/>
+      <rect x="88" y="32" width="13" height="11" rx="2" fill="rgba(241,231,208,.8)"/>
+      <rect x="107" y="32" width="10" height="11" rx="2" fill="rgba(241,231,208,.55)"/>
+      <line x1="6" y1="56" x2="122" y2="56" stroke="#C2A24E" stroke-width="1.2" opacity=".7"/>
+      <circle cx="24" cy="70" r="6" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1.2"/>
+      <circle cx="44" cy="70" r="6" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1.2"/>
+      <circle cx="84" cy="70" r="6" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1.2"/>
+      <circle cx="104" cy="70" r="6" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1.2"/>
+    </g>
+    <!-- far ridge tile 1200 wide, baseline 120 -->
+    <g id="t-far">
+      <path d="M0,120 L0,74 L90,74 L90,52 L210,52 L210,66 L300,66 L300,40 L390,40 L390,58 L520,58 L520,30 L610,30 L610,54 L700,54 L700,44 L800,44 L800,62 L920,62 L920,34 L1010,34 L1010,56 L1120,56 L1120,74 L1200,74 L1200,120 Z"/>
+    </g>
+    <!-- sea scallop tile -->
+    <g id="t-sea">
+      <path d="M0,140 L0,112 Q40,98 80,112 T160,112 T240,112 T320,112 T400,112 T480,112 T560,112 T640,112 T720,112 T800,112 T880,112 T960,112 T1040,112 T1120,112 T1200,112 L1200,140 Z"/>
+    </g>
+    <!-- near shore tile: rocks, palms, pier, lighthouse, town -->
+    <g id="t-near">
+      <g fill="#07131C">
+        <path d="M0,120 L0,104 Q60,97 140,104 T300,106 T460,101 T620,105 T780,102 T940,106 T1100,101 L1200,104 L1200,120 Z"/>
+        <ellipse cx="185" cy="111" rx="36" ry="10"/>
+        <ellipse cx="905" cy="110" rx="42" ry="11"/>
+        <!-- town -->
+        <rect x="330" y="84" width="38" height="34"/>
+        <rect x="372" y="72" width="30" height="46"/>
+        <rect x="406" y="90" width="30" height="28"/>
+        <path d="M330,84 L349,72 L368,84 Z"/>
+        <path d="M372,72 L387,60 L402,72 Z"/>
+        <!-- pier -->
+        <rect x="470" y="100" width="150" height="4"/>
+        <rect x="478" y="104" width="4" height="8"/><rect x="520" y="104" width="4" height="8"/><rect x="562" y="104" width="4" height="8"/><rect x="604" y="104" width="4" height="8"/>
+        <!-- lighthouse -->
+        <path d="M748,120 L756,50 L776,50 L784,120 Z"/>
+        <rect x="752" y="42" width="28" height="8"/>
+        <path d="M754,42 L766,30 L778,42 Z"/>
+        <!-- palms -->
+        <path d="M58,110 C64,88 60,70 70,52 L78,54 C70,72 74,88 70,110 Z"/>
+        <path d="M74,54 C56,40 36,42 26,54 C42,48 58,50 74,60 Z"/>
+        <path d="M74,54 C92,40 112,44 122,56 C104,48 88,50 74,62 Z"/>
+        <path d="M74,54 C64,34 66,20 76,10 C72,26 76,40 80,54 Z"/>
+        <path d="M1002,110 C1008,90 1004,74 1012,58 L1020,60 C1014,76 1018,90 1014,110 Z"/>
+        <path d="M1016,60 C998,46 978,48 968,60 C984,54 1000,56 1016,66 Z"/>
+        <path d="M1016,60 C1034,46 1054,50 1064,62 C1046,54 1030,56 1016,68 Z"/>
+      </g>
+      <!-- town windows (glow at night) -->
+      <g fill="#E9C583" class="nw">
+        <rect x="338" y="92" width="6" height="8"/><rect x="352" y="92" width="6" height="8"/>
+        <rect x="380" y="82" width="6" height="8"/><rect x="392" y="82" width="6" height="8"/>
+        <rect x="380" y="98" width="6" height="8"/>
+        <rect x="414" y="98" width="6" height="8"/>
+      </g>
+      <!-- lighthouse lamp + rotating beam -->
+      <circle cx="766" cy="44" r="4.5" fill="#E9C583" class="nw"/>
+      <polygon class="beam" points="766,44 1010,4 1010,86" fill="#E9C583" opacity=".45"/>
+    </g>
+    <!-- ornamental sunburst divider -->
+    <symbol id="d-burst" viewBox="0 0 140 26">
+      <g stroke="currentColor" stroke-width="1.2" fill="none">
+        <path d="M70,24 L70,4 M58,24 L46,8 M82,24 L94,8 M46,24 L28,12 M94,24 L112,12 M34,24 L14,18 M106,24 L126,18 M22,24 L4,22 M118,24 L136,22"/>
+      </g>
+      <rect x="66.5" y="20.5" width="7" height="7" transform="rotate(45 70 24)" fill="currentColor"/>
+      <circle cx="2" cy="24" r="1.6" fill="currentColor"/><circle cx="138" cy="24" r="1.6" fill="currentColor"/>
+    </symbol>
+    <!-- stepped corner ornament -->
+    <symbol id="d-corner" viewBox="0 0 60 60">
+      <path d="M1,1 H34 M1,1 V34 M1,10 H18 M10,1 V18" stroke="currentColor" stroke-width="1.4" fill="none"/>
+      <rect x="7" y="7" width="7" height="7" transform="rotate(45 10.5 10.5)" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ===== NAV ===== -->
+<nav class="nav" id="nav" aria-label="Main">
+  <div class="nav-in">
+    <a class="wordmark" href="#top"><i></i>THE AURELIAN EXPRESS</a>
+    <ul class="nav-links">
+      <li><a href="#route">Route</a></li>
+      <li><a href="#suites">Suites</a></li>
+      <li><a href="#dining">Dining</a></li>
+      <li><a href="#timeline">The Night</a></li>
+      <li><a href="#fares">Tariff</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:1rem">
+      <a class="btn solid" href="#book">Reserve</a>
+      <button class="burger" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="menu-ov" id="menuOv">
+  <button class="menu-close" id="menuClose">Close ✕</button>
+  <ul>
+    <li><a href="#route">The Route</a></li>
+    <li><a href="#window">The Saloon Window</a></li>
+    <li><a href="#suites">Suites</a></li>
+    <li><a href="#dining">La Carte</a></li>
+    <li><a href="#timeline">The Night's Progress</a></li>
+    <li><a href="#consist">The Consist</a></li>
+    <li><a href="#fares">Tariff</a></li>
+    <li><a href="#book">Reservations</a></li>
+  </ul>
+</div>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="top">
+  <svg class="hero-scene" id="hScene" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <rect width="1600" height="1000" fill="#0E1C2A"/>
+    <g id="gSky">
+      <g id="hStars"></g>
+      <g id="hRays"></g>
+      <circle cx="800" cy="620" r="112" fill="#C2A24E"/>
+      <circle cx="800" cy="620" r="94" fill="none" stroke="#E0C583" stroke-width="1.4" opacity=".55"/>
+      <circle cx="800" cy="620" r="128" fill="none" stroke="#C2A24E" stroke-width="1" opacity=".3"/>
+    </g>
+    <g id="gCity">
+      <!-- left skyline -->
+      <path fill="#0A141E" d="M20,700 V330 H80 V380 H150 V300 H215 V420 H265 V350 H330 V440 H380 V270 H440 V400 H500 V330 H560 V470 H620 V700 Z"/>
+      <path fill="#0C1826" d="M150,380 H215 V700 H150 Z" opacity=".55"/>
+      <g id="hWinL"></g>
+      <!-- right skyline -->
+      <path fill="#0A141E" d="M1580,700 V300 H1520 V370 H1455 V280 H1390 V430 H1340 V350 H1270 V460 H1220 V330 H1160 V470 H1100 V420 H1040 V700 Z"/>
+      <g id="hWinR"></g>
+      <!-- grand terminal -->
+      <g id="gTerm">
+        <rect x="628" y="608" width="92" height="92" fill="#0B1622"/>
+        <rect x="880" y="608" width="92" height="92" fill="#0B1622"/>
+        <rect x="612" y="662" width="376" height="38" fill="#0A141E"/>
+        <rect x="640" y="676" width="320" height="24" fill="#0B1622"/>
+        <rect x="672" y="586" width="256" height="114" fill="#0A141E"/>
+        <g stroke="#C2A24E" stroke-width="2" opacity=".4">
+          <path d="M690,612 V672 M716,612 V672 M742,612 V672 M858,612 V672 M884,612 V672 M910,612 V672"/>
+        </g>
+        <path d="M772,700 V656 A28,28 0 0 1 828,656 V700 Z" fill="#122435" stroke="#C2A24E" stroke-width="1.4" opacity=".95"/>
+        <rect x="722" y="522" width="156" height="64" fill="#0C1826" stroke="#C2A24E" stroke-width="1" opacity=".95"/>
+        <path d="M740,570 V544 A10,10 0 0 1 760,544 V570 M790,570 V544 A10,10 0 0 1 810,544 V570 M840,570 V544 A10,10 0 0 1 860,544 V570" fill="#E0C583" opacity=".55"/>
+        <path d="M722,522 A78,78 0 0 1 878,522 Z" fill="#0D1B29" stroke="#C2A24E" stroke-width="1.4"/>
+        <path d="M748,522 A52,52 0 0 1 852,522" fill="none" stroke="#C2A24E" stroke-width="1" opacity=".4"/>
+        <line x1="800" y1="446" x2="800" y2="472" stroke="#C2A24E" stroke-width="2"/>
+        <rect x="794" y="424" width="12" height="12" transform="rotate(45 800 430)" fill="#C2A24E"/>
+      </g>
+    </g>
+    <g id="gFront">
+      <!-- sea -->
+      <rect x="0" y="700" width="1600" height="300" fill="#0C1F2B"/>
+      <g stroke="#1C4741" stroke-width="2.4" opacity=".6" fill="none">
+        <path d="M0,726 Q80,718 160,726 T320,726 T480,726 T640,726 T800,726 T960,726 T1120,726 T1280,726 T1440,726 T1600,726"/>
+        <path d="M0,790 Q100,780 200,790 T400,790 T600,790 T800,790 T1000,790 T1200,790 T1400,790 T1600,790" opacity=".7"/>
+        <path d="M0,860 Q120,848 240,860 T480,860 T720,860 T960,860 T1200,860 T1440,860 T1600,860" opacity=".5"/>
+      </g>
+      <g stroke="#C2A24E" stroke-width="1.4" opacity=".35">
+        <path d="M690,742 h60 M780,742 h44 M640,756 h30 M860,756 h38"/>
+      </g>
+      <!-- viaduct -->
+      <rect x="180" y="716" width="1240" height="14" fill="#0A0A09"/>
+      <line x1="180" y1="716" x2="1420" y2="716" stroke="#C2A24E" stroke-width="1.6" opacity=".6"/>
+      <g fill="#0C1F2B">
+        <path d="M236,730 V768 Q274,736 312,768 V730 Z"/>
+        <path d="M352,730 V768 Q390,736 428,768 V730 Z"/>
+        <path d="M468,730 V768 Q506,736 544,768 V730 Z"/>
+        <path d="M584,730 V768 Q622,736 660,768 V730 Z"/>
+        <path d="M700,730 V768 Q738,736 776,768 V730 Z"/>
+        <path d="M816,730 V768 Q854,736 892,768 V730 Z"/>
+        <path d="M932,730 V768 Q892,736 932,768 V730 Z" opacity="0"/>
+        <path d="M932,730 V768 Q970,736 1008,768 V730 Z"/>
+        <path d="M1048,730 V768 Q1086,736 1124,768 V730 Z"/>
+        <path d="M1164,730 V768 Q1202,736 1240,768 V730 Z"/>
+        <path d="M1280,730 V768 Q1318,736 1356,768 V730 Z"/>
+      </g>
+      <!-- the train -->
+      <g class="h-train-wrap">
+        <g transform="translate(0,642) scale(.62)">
+          <use href="#g-loco"/><use href="#g-car" x="230"/><use href="#g-car" x="376"/><use href="#g-car" x="522"/>
+        </g>
+      </g>
+      <!-- parapet -->
+      <rect x="0" y="884" width="1600" height="116" fill="#080706"/>
+      <rect x="0" y="878" width="1600" height="8" fill="#0D0C0A"/>
+      <line x1="0" y1="876" x2="1600" y2="876" stroke="#C2A24E" stroke-width="1.4" opacity=".45"/>
+      <g id="hBal" fill="#0D0C0A"></g>
+      <!-- lamps -->
+      <g id="hLamps"></g>
+    </g>
+  </svg>
+
+  <div class="hero-copy">
+    <p class="h-eyebrow" data-rv>The Coastal Night Line · Season XXXVII</p>
+    <h1 data-rv style="transition-delay:.08s">
+      <span class="h-the">The</span>
+      <span class="t-main">Aurelian</span>
+      <span class="h-expr"><b>Express</b></span>
+    </h1>
+    <div class="h-rule" data-rv style="transition-delay:.16s">
+      <svg width="150" height="14" viewBox="0 0 150 14" aria-hidden="true"><path d="M0,7 H56 M94,7 H150" stroke="currentColor" stroke-width="1"/><rect x="71" y="3" width="8" height="8" transform="rotate(45 75 7)" fill="currentColor"/></svg>
+    </div>
+    <p class="h-sub" data-rv style="transition-delay:.22s">One train, seven cities, a single night. Dinner at twenty past eight; the beacons of Cape Verrier at midnight; coffee in your berth before the fish auction.</p>
+    <div class="h-cta" data-rv style="transition-delay:.3s">
+      <a class="btn solid" href="#book">Reserve a berth</a>
+      <a class="btn ghost" href="#route">Follow the route</a>
+    </div>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <span>Descend to the platform</span>
+    <svg width="14" height="18" viewBox="0 0 14 18" fill="none"><path d="M2,2 L7,9 L12,2 M2,9 L7,16 L12,9" stroke="currentColor" stroke-width="1.4"/></svg>
+  </div>
+</header>
+
+<!-- ===== TICKER ===== -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <div class="ticker-set">
+      <span>Tonight — <b>Aurelia → Port Meridian</b></span><i></i>
+      <span>Departure <b>19:00 · Platform 2</b></span><i></i>
+      <span>Status <b>On time</b></span><i></i>
+      <span>First sitting <b>20:15</b></span><i></i>
+      <span>Sunrise calling <b>06:14</b></span><i></i>
+      <span>Arrival <b>08:41</b></span><i></i>
+      <span>812 km · <b>Seven cities · One night</b></span><i></i>
+    </div>
+  </div>
+</div>
+
+<main>
+<!-- ===== I · ROUTE ===== -->
+<section id="route" class="paper">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. I — The Route</span>
+      <h2 class="s-title">Seven Cities by Morning</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+      <p class="s-lede">The line keeps to the water the whole way. Follow the brass thread south, stop by stop, as the night unfolds.</p>
+    </header>
+
+    <div class="route-map" id="routeMap">
+      <svg class="map" id="routeSvg" viewBox="0 0 1000 2000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <path id="rBase" class="r-base" d=""/>
+        <g id="rDots"></g>
+        <path id="rProg" class="r-prog" d="" style="stroke-dasharray:3400;stroke-dashoffset:3400"/>
+        <g id="rTrain" class="r-train" style="opacity:0">
+          <path d="M0,7 L0,0 L30,0 Q42,0 48,7 L48,12 L0,12 Z"/>
+          <circle cx="10" cy="13" r="2.6"/><circle cx="26" cy="13" r="2.6"/>
+          <rect x="46" y="8" width="4" height="2"/>
+        </g>
+        <text x="170" y="96" text-anchor="middle" class="r-term">AURELIA</text>
+        <text x="430" y="1906" text-anchor="middle" class="r-term">PORT MERIDIAN</text>
+      </svg>
+      <div id="mLine" aria-hidden="true"><i></i></div>
+
+      <article class="stop" style="--x:17%;--y:6%" data-stop="0" data-rv>
+        <div class="medal"><svg viewBox="0 0 120 120"><circle class="m-outer" cx="60" cy="60" r="57"/><g class="m-ticks"><circle cx="60" cy="60" r="52" fill="none" stroke="#C2A24E" stroke-width="3" stroke-dasharray="1.5 7.2"/></g><circle class="m-face" cx="60" cy="60" r="45"/><g class="m-mot"><circle cx="60" cy="60" r="7"/><path d="M72,60 H84 M68.5,68.5 L76.5,76.5 M60,72 V84 M51.5,68.5 L43.5,76.5 M48,60 H36 M51.5,51.5 L43.5,43.5 M60,48 V36 M68.5,51.5 L76.5,43.5"/></g></svg></div>
+        <div class="s-info">
+          <p class="s-meta">Stop I · Km 0</p>
+          <h3>Aurelia</h3>
+          <p class="s-time">Departs 19:00 · Platform 2</p>
+          <p class="s-desc">The gilded concourse, the last gangway, and a glass poured before the wheels turn.</p>
+        </div>
+      </article>
+
+      <article class="stop flip" style="--x:76%;--y:20%" data-stop="1" data-rv>
+        <div class="medal"><svg viewBox="0 0 120 120"><circle class="m-outer" cx="60" cy="60" r="57"/><g class="m-ticks"><circle cx="60" cy="60" r="52" fill="none" stroke="#C2A24E" stroke-width="3" stroke-dasharray="1.5 7.2"/></g><circle class="m-face" cx="60" cy="60" r="45"/><g class="m-mot"><path d="M52,76 L55,52 H65 L68,76 Z"/><path d="M57,52 V46 H63 V52"/><path d="M40,48 L32,44 M80,48 L88,44"/><path d="M38,84 Q44,80 50,84 T62,84 T74,84 T86,84"/></g></svg></div>
+        <div class="s-info">
+          <p class="s-meta">Stop II · Km 142</p>
+          <h3>Solenne</h3>
+          <p class="s-time">21:06 — Water &amp; mail</p>
+          <p class="s-desc">Resort lamps still burning along the promenade; the swimming bugle long since sounded.</p>
+        </div>
+      </article>
+
+      <article class="stop" style="--x:30%;--y:34%" data-stop="2" data-rv>
+        <div class="medal"><svg viewBox="0 0 120 120"><circle class="m-outer" cx="60" cy="60" r="57"/><g class="m-ticks"><circle cx="60" cy="60" r="52" fill="none" stroke="#C2A24E" stroke-width="3" stroke-dasharray="1.5 7.2"/></g><circle class="m-face" cx="60" cy="60" r="45"/><g class="m-mot"><path d="M30,76 H50 C50,58 70,58 70,76 H90"/><path d="M34,86 H50 M70,86 H86"/><circle cx="60" cy="42" r="6"/><path d="M60,30 V26 M70,34 L74,30 M50,34 L46,30"/></g></svg></div>
+        <div class="s-info">
+          <p class="s-meta">Stop III · Km 268</p>
+          <h3>Cape Verrier</h3>
+          <p class="s-time">23:30 — Passing at speed</p>
+          <p class="s-desc">The line hugs the cliffs; from the left-hand berths the beacon sweeps your ceiling twice.</p>
+        </div>
+      </article>
+
+      <article class="stop flip" style="--x:70%;--y:48%" data-stop="2" data-rv>
+        <div class="medal"><svg viewBox="0 0 120 120"><circle class="m-outer" cx="60" cy="60" r="57"/><g class="m-ticks"><circle cx="60" cy="60" r="52" fill="none" stroke="#C2A24E" stroke-width="3" stroke-dasharray="1.5 7.2"/></g><circle class="m-face" cx="60" cy="60" r="45"/><g class="m-mot"><path d="M68,38 A23,23 0 1 0 68,82 A18,18 0 1 1 68,38 Z"/><path d="M44,50 L46,56 52,58 46,60 44,66 42,60 40,58 42,56 Z" fill="#142433" stroke="none"/></g></svg></div>
+        <div class="s-info">
+          <p class="s-meta">Stop IV · Km 415</p>
+          <h3>Mireval</h3>
+          <p class="s-time">02:12 — Passing by moonlight</p>
+          <p class="s-desc">A crescent bay, a sleeping fleet, and the loudest silence on the whole coast.</p>
+        </div>
+      </article>
+
+      <article class="stop" style="--x:28%;--y:62%" data-stop="3" data-rv>
+        <div class="medal"><svg viewBox="0 0 120 120"><circle class="m-outer" cx="60" cy="60" r="57"/><g class="m-ticks"><circle cx="60" cy="60" r="52" fill="none" stroke="#C2A24E" stroke-width="3" stroke-dasharray="1.5 7.2"/></g><circle class="m-face" cx="60" cy="60" r="45"/><g class="m-mot"><path d="M38,78 H82 V70 H38 Z M44,70 H76 V60 H44 Z M50,60 H70 V50 H50 Z M56,50 H64 V42 H56 Z"/><path d="M57,78 V70 H63 V78"/></g></svg></div>
+        <div class="s-info">
+          <p class="s-meta">Stop V · Km 512</p>
+          <h3>Torrenne</h3>
+          <p class="s-time">04:47 — Six quiet minutes</p>
+          <p class="s-desc">Stepped towers against the stars; the night porter trades oranges with the platform man.</p>
+        </div>
+      </article>
+
+      <article class="stop flip" style="--x:74%;--y:76%" data-stop="4" data-rv>
+        <div class="medal"><svg viewBox="0 0 120 120"><circle class="m-outer" cx="60" cy="60" r="57"/><g class="m-ticks"><circle cx="60" cy="60" r="52" fill="none" stroke="#C2A24E" stroke-width="3" stroke-dasharray="1.5 7.2"/></g><circle class="m-face" cx="60" cy="60" r="45"/><g class="m-mot"><path d="M32,62 H88"/><path d="M46,62 A14,14 0 0 1 74,62"/><path d="M60,40 V32 M42,46 L36,40 M78,46 L84,40"/><path d="M40,72 Q46,68 52,72 T64,72 T76,72"/></g></svg></div>
+        <div class="s-info">
+          <p class="s-meta">Stop VI · Km 688</p>
+          <h3>Alba Cove</h3>
+          <p class="s-time">06:30 — The sun comes up</p>
+          <p class="s-desc">Twice a year the sunrise runs exactly down the axis of the line. Tonight is close enough.</p>
+        </div>
+      </article>
+
+      <article class="stop" style="--x:43%;--y:92%" data-stop="5" data-rv>
+        <div class="medal"><svg viewBox="0 0 120 120"><circle class="m-outer" cx="60" cy="60" r="57"/><g class="m-ticks"><circle cx="60" cy="60" r="52" fill="none" stroke="#C2A24E" stroke-width="3" stroke-dasharray="1.5 7.2"/></g><circle class="m-face" cx="60" cy="60" r="45"/><g class="m-mot"><path d="M32,68 Q60,34 88,68"/><path d="M32,68 H88"/><path d="M46,80 H74 L68,88 H52 Z"/><path d="M60,80 V62"/><path d="M56,38 L60,34 L64,38 L60,42 Z" fill="#142433" stroke="none"/></g></svg></div>
+        <div class="s-info">
+          <p class="s-meta">Terminus · Km 812</p>
+          <h3>Port Meridian</h3>
+          <p class="s-time">Arrives 08:41</p>
+          <p class="s-desc">Arcades, the fish auction, and the harbour clock that has never once hurried anyone.</p>
+        </div>
+      </article>
+    </div>
+
+    <p class="route-legend" data-rv>— The brass thread is your night · distances in kilometres of coast —</p>
+  </div>
+</section>
+
+<!-- ===== II · THE SALOON WINDOW ===== -->
+<section id="window" class="window-sec">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. II — The Observation Saloon</span>
+      <h2 class="s-title">Seventy Miles of Lit Window</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+      <p class="s-lede">Twelve chairs face backwards, which is the correct way to leave somewhere. The sky keeps our timetable too — stay a while and watch the whole night pass.</p>
+    </header>
+
+    <div data-rv>
+      <div class="vp-frame">
+        <div class="vp-inner">
+          <!-- sky stack -->
+          <svg class="sky sk-dusk" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="1200" height="260" fill="#12303C"/><rect y="260" width="1200" height="180" fill="#1E4A4C"/><rect y="440" width="1200" height="160" fill="#6E5A2F"/>
+            <circle cx="860" cy="452" r="58" fill="#C2A24E"/>
+          </svg>
+          <svg class="sky sk-night" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="1200" height="260" fill="#070F18"/><rect y="260" width="1200" height="180" fill="#0B1B29"/><rect y="440" width="1200" height="160" fill="#0E2735"/>
+          </svg>
+          <svg class="sky sk-dawn" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="1200" height="260" fill="#1C3A46"/><rect y="260" width="1200" height="180" fill="#2E5F55"/><rect y="440" width="1200" height="160" fill="#8F7533"/>
+          </svg>
+          <svg class="sky sk-day" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="1200" height="260" fill="#9FC0B4"/><rect y="260" width="1200" height="180" fill="#BCD0BC"/><rect y="440" width="1200" height="160" fill="#EFE4C8"/>
+          </svg>
+          <svg class="vp-stars" id="vpStars" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMin slice" aria-hidden="true"></svg>
+          <svg class="moon" viewBox="0 0 100 100" aria-hidden="true"><path d="M63,8 A44,44 0 1 0 63,92 A34,34 0 1 1 63,8 Z" fill="#EFE4C8"/></svg>
+          <svg class="sund" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="26" fill="#C2A24E"/><g stroke="#C2A24E" stroke-width="3"><path d="M50,8 V-2 M50,92 V102 M8,50 H-2 M92,50 H102 M20,20 L13,13 M80,20 L87,13 M20,80 L13,87 M80,80 L87,87"/></g></svg>
+          <!-- landscape layers -->
+          <div class="lyr" style="--h:26%;--b:30%;--d:96s"><svg viewBox="0 0 2400 120" preserveAspectRatio="none"><g fill="#0F2734"><use href="#t-far" x="0"/><use href="#t-far" x="1200"/></g></svg></div>
+          <div class="lyr" style="--h:22%;--b:20%;--d:64s"><svg viewBox="0 0 2400 140" preserveAspectRatio="none"><g fill="#1C4741"><use href="#t-sea" x="0"/><use href="#t-sea" x="1200"/></g></svg></div>
+          <div class="lyr" style="--h:30%;--b:12%;--d:38s"><svg viewBox="0 0 2400 120" preserveAspectRatio="none"><g fill="#08131C"><use href="#t-near" x="0"/><use href="#t-near" x="1200"/></g></svg></div>
+          <div class="vp-mull" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="vp-caption">
+        <p>Cape Verrier at 23:31, seen from seat 12 — the beam crosses the ceiling twice, then the dark takes over.</p>
+        <span class="tag">Dusk → Night → Dawn · 48-second cycle</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== III · SUITES ===== -->
+<section id="suites" class="paper">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. III — Sleeping Cars</span>
+      <h2 class="s-title">Suites Above the Sea</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+      <p class="s-lede">Every berth is made with the window blind half-raised. It seemed the polite thing to do.</p>
+    </header>
+
+    <div class="suites-grid">
+      <div class="stabs" role="tablist" aria-label="Suites" data-rv>
+        <button class="stab" role="tab" aria-selected="true" data-s="1" id="tab1" aria-controls="sp1">
+          <span class="rn">I</span><span class="nm">Meridian Saloon</span><span class="pr">from 1,240</span>
+          <small>Two private saloons · Nos. 1–2</small>
+        </button>
+        <button class="stab" role="tab" aria-selected="false" data-s="2" id="tab2" aria-controls="sp2">
+          <span class="rn">II</span><span class="nm">State Room</span><span class="pr">from 790</span>
+          <small>Six rooms · Car VI</small>
+        </button>
+        <button class="stab" role="tab" aria-selected="false" data-s="3" id="tab3" aria-controls="sp3">
+          <span class="rn">III</span><span class="nm">Classic Berth</span><span class="pr">from 480</span>
+          <small>Forty-eight berths · Cars II &amp; III</small>
+        </button>
+      </div>
+
+      <div class="suite-panel" data-rv style="transition-delay:.1s">
+        <!-- PANES -->
+        <div class="suite-pane on" id="sp1" role="tabpanel" aria-labelledby="tab1">
+          <svg class="suite-art" viewBox="0 0 900 560" role="img" aria-label="Illustration of the Meridian Saloon cabin">
+            <rect width="900" height="560" fill="#10202E"/>
+            <rect width="900" height="560" fill="none"/>
+            <g stroke="#C2A24E" stroke-width="1" opacity=".14">
+              <path d="M-40,80 L40,0 M40,80 L120,0 M120,80 L200,0 M200,80 L280,0 M280,80 L360,0 M360,80 L440,0 M440,80 L520,0 M520,80 L600,0 M600,80 L680,0 M680,80 L760,0 M760,80 L840,0 M840,80 L920,0 M0,120 L80,40 M80,120 L160,40 M160,120 L240,40 M240,120 L320,40 M320,120 L400,40 M400,120 L480,40 M480,120 L560,40 M560,120 L640,40 M640,120 L720,40 M720,120 L800,40 M800,120 L880,40"/>
+            </g>
+            <rect y="330" width="900" height="60" fill="#1E4A46"/>
+            <line x1="0" y1="330" x2="900" y2="330" stroke="#C2A24E" stroke-width="2" opacity=".7"/>
+            <rect y="390" width="900" height="170" fill="#123530"/>
+            <line x1="0" y1="392" x2="900" y2="392" stroke="#C2A24E" stroke-width="1.4" opacity=".5"/>
+            <!-- window -->
+            <g>
+              <clipPath id="swin1"><path d="M310,150 V310 H490 V150 A90,90 0 0 0 310,150 Z"/></clipPath>
+              <g clip-path="url(#swin1)">
+                <rect x="310" y="60" width="180" height="260" fill="#16323E"/>
+                <g transform="translate(310,218) scale(.24)"><g style="animation:driftU 80s linear infinite"><use href="#t-far" x="0"/><use href="#t-far" x="1200"/></g></g>
+                <g transform="translate(310,252) scale(.24)"><g fill="#1C4741" style="animation:driftU 50s linear infinite"><use href="#t-sea" x="0"/><use href="#t-sea" x="1200"/></g></g>
+                <circle cx="430" cy="120" r="14" fill="#EFE4C8" opacity=".9"/>
+              </g>
+              <path d="M310,310 V150 A90,90 0 0 1 490,150 V310" fill="none" stroke="#C2A24E" stroke-width="3"/>
+              <line x1="400" y1="72" x2="400" y2="310" stroke="#C2A24E" stroke-width="3" opacity=".8"/>
+              <line x1="310" y1="240" x2="490" y2="240" stroke="#C2A24E" stroke-width="1.4" opacity=".5"/>
+            </g>
+            <!-- bed with fan headboard -->
+            <g>
+              <path d="M560,340 A125,125 0 0 1 810,340 Z" fill="#1E4A46" stroke="#C2A24E" stroke-width="2"/>
+              <g stroke="#C2A24E" stroke-width="1.2" opacity=".5">
+                <line x1="685" y1="340" x2="685" y2="222"/><line x1="640" y1="340" x2="606" y2="240"/><line x1="730" y1="340" x2="764" y2="240"/><line x1="608" y1="340" x2="576" y2="272"/><line x1="762" y1="340" x2="794" y2="272"/>
+              </g>
+              <rect x="548" y="392" width="320" height="26" fill="#231A12"/>
+              <rect x="556" y="368" width="304" height="30" rx="8" fill="#EFE4C8"/>
+              <rect x="556" y="368" width="304" height="10" rx="5" fill="#DCCEAC"/>
+              <rect x="576" y="346" width="70" height="26" rx="9" fill="#F1E7D0"/>
+              <rect x="660" y="346" width="70" height="26" rx="9" fill="#F1E7D0"/>
+              <rect x="548" y="418" width="320" height="30" fill="#231A12"/>
+              <ellipse cx="708" cy="466" rx="200" ry="16" fill="#0A0A09" opacity=".35"/>
+            </g>
+            <!-- side table + lamp -->
+            <rect x="492" y="382" width="46" height="66" fill="#231A12" stroke="#C2A24E" stroke-width="1"/>
+            <rect x="506" y="360" width="5" height="24" fill="#C2A24E"/>
+            <path d="M494,360 L523,360 L517,342 L500,342 Z" fill="#C2A24E"/>
+            <circle cx="508" cy="352" r="18" fill="#E9C583" opacity=".28" class="nw"/>
+            <!-- armchair -->
+            <g stroke="#C2A24E" stroke-width="1.4">
+              <path d="M96,300 Q84,300 84,316 V392 H200 V336 Q200,318 184,318 H160 V300 Q160,286 142,286 Q96,286 96,300 Z" fill="#1E4A46"/>
+              <rect x="104" y="330" width="66" height="20" rx="8" fill="#F1E7D0"/>
+              <line x1="100" y1="392" x2="100" y2="406"/><line x1="170" y1="392" x2="170" y2="406"/>
+            </g>
+            <ellipse cx="140" cy="414" rx="90" ry="10" fill="#0A0A09" opacity=".3"/>
+            <!-- drinks table -->
+            <ellipse cx="252" cy="380" rx="26" ry="7" fill="#231A12" stroke="#C2A24E" stroke-width="1"/>
+            <line x1="252" y1="386" x2="252" y2="424" stroke="#231A12" stroke-width="5"/>
+            <path d="M244,356 h16 a8,8 0 0 1 -16,0 Z" fill="none" stroke="#C2A24E" stroke-width="1.4"/>
+            <line x1="252" y1="364" x2="252" y2="368" stroke="#C2A24E" stroke-width="1.4"/>
+            <!-- rug -->
+            <ellipse cx="430" cy="480" rx="270" ry="52" fill="#17403A" stroke="#C2A24E" stroke-width="1.2" opacity=".9"/>
+            <ellipse cx="430" cy="480" rx="220" ry="38" fill="none" stroke="#C2A24E" stroke-width="1" opacity=".4"/>
+          </svg>
+          <div class="suite-foot">
+            <div>
+              <p class="desc">A private drawing room that becomes a bedroom: lacquered panels fold away, a king berth descends on brass pistons, and your butler — one to every two saloons — pours until you say when.</p>
+              <div class="feat-line"><span>Private bath</span><i></i><span>Butler's bell</span><i></i><span>Two windows</span><i></i><span>Breakfast at your hour</span><i></i><span>22 m²</span></div>
+            </div>
+            <div class="plan">
+              <svg viewBox="0 0 120 74"><rect x="2" y="2" width="116" height="70" fill="none" stroke="#8C6F2F" stroke-width="1.4"/><rect x="10" y="10" width="60" height="30" fill="#1E4A46"/><rect x="80" y="10" width="30" height="16" fill="none" stroke="#8C6F2F"/><rect x="10" y="50" width="30" height="16" fill="none" stroke="#8C6F2F"/><path d="M100,72 A20,20 0 0 1 120,52" fill="none" stroke="#8C6F2F" stroke-width="1.4"/></svg>
+              <span>Plan · 22 m²</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="suite-pane" id="sp2" role="tabpanel" aria-labelledby="tab2">
+          <svg class="suite-art" viewBox="0 0 900 560" role="img" aria-label="Illustration of the State Room cabin">
+            <rect width="900" height="560" fill="#10202E"/>
+            <g stroke="#C2A24E" stroke-width="1" opacity=".14">
+              <path d="M-40,80 L40,0 M40,80 L120,0 M120,80 L200,0 M200,80 L280,0 M280,80 L360,0 M360,80 L440,0 M440,80 L520,0 M520,80 L600,0 M600,80 L680,0 M680,80 L760,0 M760,80 L840,0 M840,80 L920,0"/>
+            </g>
+            <rect y="330" width="900" height="60" fill="#1E4A46"/>
+            <line x1="0" y1="330" x2="900" y2="330" stroke="#C2A24E" stroke-width="1.2" opacity=".7"/>
+            <rect y="390" width="900" height="170" fill="#123530"/>
+            <line x1="0" y1="392" x2="900" y2="392" stroke="#C2A24E" stroke-width="1.4" opacity=".5"/>
+            <!-- wardrobe -->
+            <rect x="56" y="130" width="120" height="260" fill="#231A12" stroke="#C2A24E" stroke-width="1.4"/>
+            <g stroke="#C2A24E" stroke-width="1" opacity=".55"><line x1="82" y1="140" x2="82" y2="380"/><line x1="112" y1="140" x2="112" y2="380"/><line x1="142" y1="140" x2="142" y2="380"/></g>
+            <circle cx="166" cy="262" r="3" fill="#C2A24E"/>
+            <!-- mirror -->
+            <ellipse cx="252" cy="200" rx="30" ry="42" fill="none" stroke="#C2A24E" stroke-width="2"/>
+            <path d="M240,180 Q234,200 240,222" stroke="#E0C583" stroke-width="2" fill="none" opacity=".7"/>
+            <!-- window -->
+            <g>
+              <clipPath id="swin2"><path d="M360,150 V310 H520 V150 A80,80 0 0 0 360,150 Z"/></clipPath>
+              <g clip-path="url(#swin2)">
+                <rect x="360" y="66" width="160" height="250" fill="#16323E"/>
+                <g transform="translate(360,220) scale(.22)"><g style="animation:driftU 76s linear infinite"><use href="#t-far" x="0"/><use href="#t-far" x="1200"/></g></g>
+                <g transform="translate(360,252) scale(.22)" fill="#1C4741"><g style="animation:driftU 48s linear infinite"><use href="#t-sea" x="0"/><use href="#t-sea" x="1200"/></g></g>
+              </g>
+              <path d="M360,310 V150 A80,80 0 0 1 520,150 V310" fill="none" stroke="#C2A24E" stroke-width="2.4"/>
+              <line x1="440" y1="80" x2="440" y2="310" stroke="#C2A24E" stroke-width="2.6" opacity=".85"/>
+              <line x1="360" y1="238" x2="520" y2="238" stroke="#C2A24E" stroke-width="1.2" opacity=".5"/>
+            </g>
+            <!-- berth -->
+            <ellipse cx="430" cy="452" rx="220" ry="16" fill="#0A0A09" opacity=".35"/>
+            <rect x="300" y="398" width="290" height="28" fill="#231A12"/>
+            <rect x="308" y="372" width="274" height="30" rx="8" fill="#F1E7D0"/>
+            <rect x="308" y="372" width="274" height="10" rx="5" fill="#DCCEAC"/>
+            <rect x="322" y="350" width="72" height="26" rx="9" fill="#F1E7D0"/>
+            <rect x="404" y="384" width="178" height="8" fill="#A6492B"/>
+            <!-- reading lamp -->
+            <circle cx="316" cy="342" r="5" fill="#E9C583" class="nw"/><circle cx="316" cy="342" r="14" fill="#E9C583" opacity=".25" class="nw"/>
+            <!-- desk -->
+            <g>
+              <rect x="656" y="330" width="180" height="14" fill="#231A12" stroke="#C2A24E" stroke-width="1"/>
+              <rect x="666" y="344" width="8" height="98" fill="#231A12"/><rect x="818" y="344" width="8" height="98" fill="#231A12"/>
+              <rect x="688" y="314" width="52" height="16" rx="2" fill="#F1E7D0" transform="rotate(-3 714 322)"/>
+              <path d="M766,308 h18 a6,6 0 0 1 -18,6 Z" fill="none" stroke="#C2A24E" stroke-width="1.4"/>
+              <circle cx="800" cy="318" r="10" fill="#C2A24E"/><circle cx="800" cy="318" r="19" fill="#E9C583" opacity=".25" class="nw"/>
+              <rect x="722" y="344" width="26" height="52" fill="none" stroke="#231A12" stroke-width="4"/>
+              <ellipse cx="470" cy="500" rx="240" ry="40" fill="#17403A" stroke="#C2A24E" stroke-width="1" opacity=".8"/>
+            </g>
+          </svg>
+          <div class="suite-foot">
+            <div>
+              <p class="desc">Our most-booked room, and rightly: a proper double berth, a desk that means it, a shower with genuinely hot water, and the good side of the train for the cliffs at Verrier.</p>
+              <div class="feat-line"><span>Double berth</span><i></i><span>Writing desk</span><i></i><span>Shower room</span><i></i><span>Morning press</span><i></i><span>14 m²</span></div>
+            </div>
+            <div class="plan">
+              <svg viewBox="0 0 120 74"><rect x="2" y="2" width="116" height="70" fill="none" stroke="#8C6F2F" stroke-width="1.4"/><rect x="8" y="8" width="56" height="28" fill="#1E4A46"/><rect x="80" y="8" width="26" height="26" fill="none" stroke="#8C6F2F"/><rect x="74" y="44" width="38" height="22" fill="none" stroke="#8C6F2F"/><path d="M2,58 A14,14 0 0 1 16,72" fill="none" stroke="#8C6F2F" stroke-width="1.4"/></svg>
+              <span>Plan · 14 m²</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="suite-pane" id="sp3" role="tabpanel" aria-labelledby="tab3">
+          <svg class="suite-art" viewBox="0 0 900 560" role="img" aria-label="Illustration of the Classic Berth compartment">
+            <rect width="900" height="560" fill="#10202E"/>
+            <g stroke="#C2A24E" stroke-width="1" opacity=".12">
+              <path d="M-40,80 L40,0 M40,80 L120,0 M120,80 L200,0 M200,80 L280,0 M280,80 L360,0 M360,80 L440,0 M440,80 L520,0 M520,80 L600,0 M600,80 L680,0 M680,80 L760,0 M760,80 L840,0 M840,80 L920,0"/>
+            </g>
+            <rect y="330" width="900" height="60" fill="#1E4A46"/>
+            <line x1="0" y1="330" x2="900" y2="330" stroke="#C2A24E" stroke-width="1.2" opacity=".7"/>
+            <rect y="390" width="900" height="170" fill="#123530"/>
+            <line x1="0" y1="392" x2="900" y2="392" stroke="#C2A24E" stroke-width="1.4" opacity=".5"/>
+            <!-- upper berth -->
+            <ellipse cx="370" cy="286" rx="230" ry="14" fill="#0A0A09" opacity=".3"/>
+            <rect x="196" y="196" width="352" height="74" rx="8" fill="#F1E7D0"/>
+            <rect x="196" y="196" width="352" height="18" rx="9" fill="#DCCEAC"/>
+            <rect x="196" y="270" width="352" height="10" fill="#231A12"/>
+            <line x1="186" y1="270" x2="558" y2="270" stroke="#C2A24E" stroke-width="3"/>
+            <rect x="216" y="172" width="64" height="22" rx="8" fill="#F1E7D0"/>
+            <!-- lower berth -->
+            <rect x="196" y="386" width="352" height="80" rx="8" fill="#F1E7D0"/>
+            <rect x="196" y="386" width="352" height="20" rx="10" fill="#DCCEAC"/>
+            <rect x="196" y="466" width="352" height="12" fill="#231A12"/>
+            <rect x="216" y="358" width="70" height="30" rx="9" fill="#F1E7D0"/>
+            <rect x="300" y="452" width="248" height="10" fill="#A6492B"/>
+            <!-- ladder -->
+            <g stroke="#C2A24E" stroke-width="4"><line x1="566" y1="180" x2="566" y2="470"/><line x1="592" y1="180" x2="592" y2="470"/></g>
+            <g stroke="#C2A24E" stroke-width="3" opacity=".8"><line x1="566" y1="220" x2="592" y2="220"/><line x1="566" y1="280" x2="592" y2="280"/><line x1="566" y1="340" x2="592" y2="340"/><line x1="566" y1="400" x2="592" y2="400"/></g>
+            <!-- curtain -->
+            <line x1="180" y1="150" x2="570" y2="150" stroke="#C2A24E" stroke-width="2"/>
+            <path d="M196,150 Q214,230 198,318 Q222,250 232,150 Z" fill="#7A3A26"/>
+            <path d="M540,150 Q556,236 542,318 Q562,244 570,150 Z" fill="#7A3A26"/>
+            <!-- porthole window -->
+            <g>
+              <clipPath id="swin3"><rect x="672" y="200" width="130" height="150" rx="40"/></clipPath>
+              <g clip-path="url(#swin3)">
+                <rect x="672" y="196" width="130" height="158" fill="#16323E"/>
+                <g transform="translate(672,300) scale(.16)" fill="#1C4741"><g style="animation:driftU 44s linear infinite"><use href="#t-sea" x="0"/><use href="#t-sea" x="1200"/></g></g>
+                <g transform="translate(672,258) scale(.16)"><g style="animation:driftU 70s linear infinite"><use href="#t-far" x="0"/><use href="#t-far" x="1200"/></g></g>
+              </g>
+              <rect x="672" y="200" width="130" height="150" rx="40" fill="none" stroke="#C2A24E" stroke-width="2.6"/>
+              <line x1="737" y1="200" x2="737" y2="350" stroke="#C2A24E" stroke-width="2" opacity=".6"/>
+            </g>
+            <!-- reading lamps -->
+            <circle cx="230" cy="342" r="5" fill="#E9C583" class="nw"/><circle cx="230" cy="342" r="13" fill="#E9C583" opacity=".25" class="nw"/>
+            <circle cx="516" cy="342" r="5" fill="#E9C583" class="nw"/><circle cx="516" cy="342" r="13" fill="#E9C583" opacity=".25" class="nw"/>
+            <!-- suitcase with label -->
+            <g transform="translate(690,420)">
+              <rect x="0" y="0" width="140" height="88" rx="8" fill="#231A12" stroke="#C2A24E" stroke-width="1.4"/>
+              <line x1="34" y1="0" x2="34" y2="88" stroke="#C2A24E" stroke-width="3" opacity=".7"/>
+              <line x1="106" y1="0" x2="106" y2="88" stroke="#C2A24E" stroke-width="3" opacity=".7"/>
+              <rect x="52" y="24" width="36" height="26" fill="#F1E7D0" transform="rotate(-6 70 37)"/>
+              <line x1="58" y1="32" x2="82" y2="29" stroke="#8C6F2F" stroke-width="1.4" transform="rotate(-6 70 37)"/>
+            </g>
+            <ellipse cx="420" cy="512" rx="290" ry="30" fill="#17403A" stroke="#C2A24E" stroke-width="1" opacity=".7"/>
+          </svg>
+          <div class="suite-foot">
+            <div>
+              <p class="desc">The honest heart of the train. Upper or lower, a brass reading lamp apiece, curtains that truly close, and the aisle-side hum that longer travellers come to prefer.</p>
+              <div class="feat-line"><span>Upper or lower</span><i></i><span>Luggage minded</span><i></i><span>Coffee at dawn</span><i></i><span>8 m²</span></div>
+            </div>
+            <div class="plan">
+              <svg viewBox="0 0 120 74"><rect x="2" y="2" width="116" height="70" fill="none" stroke="#8C6F2F" stroke-width="1.4"/><rect x="10" y="12" width="70" height="16" fill="#1E4A46"/><rect x="10" y="42" width="70" height="16" fill="#1E4A46"/><rect x="90" y="12" width="20" height="46" fill="none" stroke="#8C6F2F"/><path d="M2,50 A12,12 0 0 1 14,62" fill="none" stroke="#8C6F2F" stroke-width="1.4"/></svg>
+              <span>Plan · 8 m²</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== IV · DINING ===== -->
+<section id="dining">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. IV — The Restaurant Car</span>
+      <h2 class="s-title">Dinner at Twenty Past Eight</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+      <p class="s-lede">White cloths from 19:30 until the last coffee. The lamps are low, the sea is loud, and nobody checks the time.</p>
+    </header>
+
+    <div class="dining-grid" style="display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,4.5vw,4rem);align-items:center">
+      <div class="dine-frame" data-rv>
+        <svg viewBox="0 0 1000 640" role="img" aria-label="Illustration of the dining saloon at night">
+          <rect width="1000" height="640" fill="#0D1B26"/>
+          <!-- ceiling coves -->
+          <rect width="1000" height="86" fill="#0A141D"/>
+          <g stroke="#C2A24E" stroke-width="1.4" opacity=".5"><line x1="0" y1="30" x2="1000" y2="30"/><line x1="0" y1="52" x2="1000" y2="52"/><line x1="0" y1="74" x2="1000" y2="74"/></g>
+          <!-- chandelier -->
+          <g transform="translate(500,86)">
+            <line x1="0" y1="-86" x2="0" y2="-30" stroke="#C2A24E" stroke-width="2"/>
+            <path d="M-46,-30 L0,-12 L46,-30" fill="none" stroke="#C2A24E" stroke-width="1.6"/>
+            <path d="M-30,-12 L0,2 L30,-12" fill="none" stroke="#C2A24E" stroke-width="1.4"/>
+            <g fill="#E9C583" class="nw"><circle cx="-46" cy="-30" r="3.4"/><circle cx="0" cy="-12" r="3.4"/><circle cx="46" cy="-30" r="3.4"/><circle cx="-30" cy="-12" r="3"/><circle cx="30" cy="-12" r="3"/></g>
+            <g fill="#E9C583" opacity=".18" class="nw"><circle cx="-46" cy="-30" r="12"/><circle cx="46" cy="-30" r="12"/><circle cx="0" cy="-12" r="14"/></g>
+          </g>
+          <!-- three arched windows with drifting views -->
+          <g>
+            <clipPath id="dw1"><path d="M95,310 V170 A80,80 0 0 1 255,170 V310 Z"/></clipPath>
+            <clipPath id="dw2"><path d="M420,310 V160 A80,80 0 0 1 580,160 V310 Z"/></clipPath>
+            <clipPath id="dw3"><path d="M745,310 V170 A80,80 0 0 1 905,170 V310 Z"/></clipPath>
+            <g clip-path="url(#dw1)">
+              <rect x="95" y="86" width="160" height="240" fill="#12303C"/>
+              <g transform="translate(95,268) scale(.21)"><g style="animation:driftU 84s linear infinite"><use href="#t-far" x="0"/><use href="#t-far" x="1200"/></g></g>
+              <g transform="translate(95,292) scale(.21)" fill="#1C4741"><g style="animation:driftU 52s linear infinite"><use href="#t-sea" x="0"/><use href="#t-sea" x="1200"/></g></g>
+            </g>
+            <g clip-path="url(#dw2)">
+              <rect x="420" y="76" width="160" height="240" fill="#0E2735"/>
+              <circle cx="500" cy="130" r="16" fill="#EFE4C8" opacity=".9"/>
+              <g transform="translate(420,268) scale(.21)"><g style="animation:driftU 78s linear infinite"><use href="#t-far" x="0"/><use href="#t-far" x="1200"/></g></g>
+              <g transform="translate(420,292) scale(.21)" fill="#173F44"><g style="animation:driftU 50s linear infinite"><use href="#t-sea" x="0"/><use href="#t-sea" x="1200"/></g></g>
+            </g>
+            <g clip-path="url(#dw3)">
+              <rect x="745" y="86" width="160" height="240" fill="#12303C"/>
+              <g transform="translate(745,268) scale(.21)"><g style="animation:driftU 90s linear infinite"><use href="#t-far" x="0"/><use href="#t-far" x="1200"/></g></g>
+              <g transform="translate(745,292) scale(.21)" fill="#1C4741"><g style="animation:driftU 56s linear infinite"><use href="#t-sea" x="0"/><use href="#t-sea" x="1200"/></g></g>
+            </g>
+            <g fill="none" stroke="#C2A24E" stroke-width="2.4">
+              <path d="M95,310 V170 A80,80 0 0 1 255,170 V310"/>
+              <path d="M420,310 V160 A80,80 0 0 1 580,160 V310"/>
+              <path d="M745,310 V170 A80,80 0 0 1 905,170 V310"/>
+            </g>
+            <line x1="500" y1="86" x2="500" y2="310" stroke="#C2A24E" stroke-width="3" opacity=".9"/>
+            <line x1="420" y1="252" x2="580" y2="252" stroke="#C2A24E" stroke-width="1.4" opacity=".5"/>
+          </g>
+          <!-- sconces -->
+          <g><rect x="336" y="180" width="4" height="60" fill="#8C6F2F"/><circle cx="338" cy="172" r="8" fill="#E9C583" class="nw"/><circle cx="338" cy="172" r="20" fill="#E9C583" opacity=".16" class="nw"/></g>
+          <g><rect x="660" y="180" width="4" height="60" fill="#8C6F2F"/><circle cx="662" cy="172" r="8" fill="#E9C583" class="nw"/><circle cx="662" cy="172" r="20" fill="#E9C583" opacity=".16" class="nw"/></g>
+          <!-- floor -->
+          <rect y="470" width="1000" height="170" fill="#123A34"/>
+          <line x1="0" y1="472" x2="1000" y2="472" stroke="#C2A24E" stroke-width="1.6" opacity=".7"/>
+          <line x1="0" y1="560" x2="1000" y2="560" stroke="#C2A24E" stroke-width="1" opacity=".25"/>
+          <!-- table left -->
+          <g>
+            <path d="M120,470 L360,470 L392,586 L88,586 Z" fill="#EFE4C8"/>
+            <path d="M120,470 L360,470 L352,496 L128,496 Z" fill="#E2D5B4"/>
+            <ellipse cx="196" cy="486" rx="24" ry="6" fill="none" stroke="#8C6F2F" stroke-width="1.6"/>
+            <ellipse cx="286" cy="486" rx="24" ry="6" fill="none" stroke="#8C6F2F" stroke-width="1.6"/>
+            <rect x="236" y="398" width="6" height="72" fill="#8C6F2F"/>
+            <path d="M214,402 L264,402 L254,372 L224,372 Z" fill="#C2A24E"/>
+            <ellipse cx="239" cy="388" rx="34" ry="20" fill="#E9C583" opacity=".22" class="nw"/>
+            <path d="M188,462 h16 a8,8 0 0 1 -16,0 Z" fill="none" stroke="#8C6F2F" stroke-width="1.4"/>
+            <path d="M300,470 v-16 m-6,0 h12" stroke="#8C6F2F" stroke-width="1.4" fill="none"/>
+          </g>
+          <!-- table right -->
+          <g>
+            <path d="M660,470 L900,470 L932,586 L628,586 Z" fill="#EFE4C8"/>
+            <path d="M660,470 L900,470 L892,496 L668,496 Z" fill="#E2D5B4"/>
+            <ellipse cx="736" cy="486" rx="24" ry="6" fill="none" stroke="#8C6F2F" stroke-width="1.6"/>
+            <ellipse cx="826" cy="486" rx="24" ry="6" fill="none" stroke="#8C6F2F" stroke-width="1.6"/>
+            <rect x="776" y="398" width="6" height="72" fill="#8C6F2F"/>
+            <path d="M754,402 L804,402 L744,372 L764,372 Z" fill="#C2A24E"/>
+            <ellipse cx="779" cy="388" rx="34" ry="20" fill="#E9C583" opacity=".22" class="nw"/>
+            <!-- chairs -->
+            <g fill="#0A141D" stroke="#C2A24E" stroke-width="1.2">
+              <path d="M436,420 h64 v130 h-10 v-120 h-44 v120 h-10 Z"/>
+              <path d="M560,420 h64 v130 h-10 v-120 h-44 v120 h-10 Z" transform="translate(-10,0)"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <aside class="menu-card" data-rv style="transition-delay:.12s">
+        <p class="menu-k">The Restaurant Car “Aurelia”</p>
+        <h3 class="menu-title" style="font-family:var(--display)">Carte du Soir</h3>
+        <p class="menu-sub">Served the length of the coast · Second sitting follows the first</p>
+        <ul class="menu-list">
+          <li><b>Hors d'œuvre</b><span>Oysters from the Mireval beds, seaside grape mignonette, lemon thyme</span></li>
+          <li><b>Potage</b><span>Velouté of roasted shallot, chive oil, a heel of dark bread</span></li>
+          <li><b>Poisson</b><span>Turbot in brown butter, smoked roe, samphire off this morning's train</span></li>
+          <li><b>Rôti</b><span>Squab with cherry and bay, potatoes confit in goose fat</span></li>
+          <li><b>Dessert</b><span>Bombe Méridienne — coffee ice, candied orange, a single sheet of gold</span></li>
+        </ul>
+        <p class="menu-note">The cellars lean coastal: whites from the terraces above Mireval, and something brassy for the long tunnel after Torrenne. The cheese trolley knows no schedule.</p>
+        <p class="menu-foot">First sitting 20:15 · Second 21:40 · A jacket is suggested, never demanded</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===== V · TIMELINE ===== -->
+<section id="timeline">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. V — The Night's Progress</span>
+      <h2 class="s-title">From Dusk to the Fish Auction</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+      <p class="s-lede">Everything below happens whether you watch it or not. That is rather the point.</p>
+    </header>
+
+    <div class="tl" id="tl" data-rv>
+      <div class="tl-track" aria-hidden="true"><div class="tl-fill" id="tlFill"></div></div>
+
+      <div class="tl-item">
+        <span class="tl-node"></span>
+        <div class="tl-card">
+          <span class="tl-time">19:00</span>
+          <svg class="tl-ic" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4,19 h18 M6,19 v-5 a7,7 0 0 1 14,0 v5 M13,4 v3"/><circle cx="13" cy="3.4" r="1.4"/></svg>
+          <span class="tl-what">The last gangway</span>
+          <span class="tl-where">Aurelia, Pl. 2</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-node"></span>
+        <div class="tl-card">
+          <span class="tl-time">20:15</span>
+          <svg class="tl-ic" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5,5 h16 a8,8 0 0 1 -16,0 Z M13,13 v7 M9,20 h8"/></svg>
+          <span class="tl-what">First sitting</span>
+          <span class="tl-where">Restaurant Aurelia</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-node"></span>
+        <div class="tl-card">
+          <span class="tl-time">22:30</span>
+          <svg class="tl-ic" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8,4 h10 v6 a5,5 0 0 1 -10,0 Z M10,15 v6 m-3,0 h6"/></svg>
+          <span class="tl-what">Nightcap at the rail</span>
+          <span class="tl-where">Observation saloon</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-node"></span>
+        <div class="tl-card">
+          <span class="tl-time">23:30</span>
+          <svg class="tl-ic" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="16" height="4.6" rx="1.4"/><rect x="5" y="11" width="16" height="4.6" rx="1.4"/><rect x="5" y="17" width="16" height="4.6" rx="1.4"/></svg>
+          <span class="tl-what">The turn-down</span>
+          <span class="tl-where">While you are at dinner</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-node"></span>
+        <div class="tl-card">
+          <span class="tl-time">02:12</span>
+          <svg class="tl-ic" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M16,3 a10,10 0 1 0 7,17 a8,8 0 1 1 -7,-17 Z"/></svg>
+          <span class="tl-what">Mireval, by moonlight</span>
+          <span class="tl-where">Km 415</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-node"></span>
+        <div class="tl-card">
+          <span class="tl-time">06:14</span>
+          <svg class="tl-ic" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="13" cy="13" r="4.2"/><path d="M13,3 v3 M13,20 v3 M3,13 h3 M20,13 h3 M6,6 l2.2,2.2 M17.8,17.8 L20,20 M6,20 l2.2,-2.2 M17.8,8.2 L20,6"/></svg>
+          <span class="tl-what">The sunrise call</span>
+          <span class="tl-where">A knock, then daylight</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-node"></span>
+        <div class="tl-card">
+          <span class="tl-time">08:41</span>
+          <svg class="tl-ic" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="13" cy="6" r="2.6"/><path d="M13,8.6 V20 M7,12 h12 M5.5,16 a7.5,7.5 0 0 0 15,0"/></svg>
+          <span class="tl-what">Arrival</span>
+          <span class="tl-where">Port Meridian</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VI · CONSIST ===== -->
+<section id="consist" style="background:var(--lacquer)">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. VI — The Consist</span>
+      <h2 class="s-title">Aurelia No. 9 &amp; Her Seven</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+      <p class="s-lede">Run your eye — or your pointer — along the formation. Every carriage has a temperament.</p>
+    </header>
+
+    <div class="consist-fig" data-rv>
+      <svg id="consistSvg" viewBox="0 0 1300 180" role="img" aria-label="Formation diagram of the train"></svg>
+      <div class="car-cap" style="margin-top:1.4rem">
+        <p id="carName"><b>Aurelia No. 9 — the locomotive</b></p>
+        <p id="carDesc" style="font-style:italic;color:rgba(241,231,208,.7)">Electric, fifteen thousand volts, and quieter than the sea she runs beside.</p>
+      </div>
+    </div>
+
+    <div class="specs" data-rv>
+      <div class="specs-grid">
+        <div class="spec"><b>212 m</b><span>Length over couplings</span></div>
+        <div class="spec"><b>96 km/h</b><span>Timetabled speed</span></div>
+        <div class="spec"><b>160 km/h</b><span>Capability, unused</span></div>
+        <div class="spec"><b>15 kV</b><span>Overhead traction</span></div>
+        <div class="spec"><b>84</b><span>Guests, never more</span></div>
+        <div class="spec"><b>31</b><span>Crew, all told</span></div>
+        <div class="spec"><b>812 km</b><span>Aurelia → Meridian</span></div>
+        <div class="spec"><b>1929</b><span>In continuous service</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VII · RITUALS ===== -->
+<section id="rituals" class="paper">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. VII — Service Rituals</span>
+      <h2 class="s-title">Four Things We Do Every Night</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+    </header>
+    <ol class="rituals">
+      <li data-rv><span class="rn">I.</span><div><h3>The Welcome Aperitif</h3><p>Champagne is poured on the platform as the porters take your cases. The city begins to slide away before the first glass is finished, and conversation adjusts itself to the rhythm of the rails.</p></div></li>
+      <li data-rv style="transition-delay:.06s"><span class="rn">II.</span><div><h3>The Turn-down</h3><p>While you are at dinner the berth is made in crisp ivory linen, a hot-water bottle is tucked beneath the pillow, and tomorrow's weather card is set on the ledge — written by hand, mostly correctly.</p></div></li>
+      <li data-rv style="transition-delay:.06s"><span class="rn">III.</span><div><h3>The Sunrise Calling</h3><p>A soft knock and the curtain drawn back a hand's width. The lighthouses are behind you and the light on the water is, we find, worth the interruption. Coffee follows whether you rise or not.</p></div></li>
+      <li data-rv style="transition-delay:.06s"><span class="rn">IV.</span><div><h3>The Last Look</h3><p>In the final miles the barman pours something short and local. Nobody speaks much. Port Meridian's arcades rise out of the morning haze, and the fish auction is already shouting.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===== VIII · WORDS ===== -->
+<section id="words">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. VIII — Travellers' Words</span>
+      <h2 class="s-title">From the Bound Volumes</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+    </header>
+    <div class="q-stage" id="qStage" data-rv>
+      <figure class="q-slide on">
+        <div class="q-mark">“</div>
+        <blockquote>We boarded with the gulls still awake and stepped off smelling of tar and coffee. I have slept in palaces. I have not slept like that.</blockquote>
+        <figcaption class="q-attr">V. Ashcombe — Meridian Saloon, the eastbound night</figcaption>
+      </figure>
+      <figure class="q-slide">
+        <div class="q-mark">“</div>
+        <blockquote>The waiter remembered that I take one sugar. I had not travelled the line in nine years, and he had, evidently, been counting.</blockquote>
+        <figcaption class="q-attr">Mme. O. Ferreol — Car Aurelia, seat 7</figcaption>
+      </figure>
+      <figure class="q-slide">
+        <div class="q-mark">“</div>
+        <blockquote>At Cape Verrier the beacon swept the ceiling twice. My daughter counted both. She is twenty-six now and still books the left-hand berth.</blockquote>
+        <figcaption class="q-attr">H. Okonkwo — State Room, thirty-first crossing</figcaption>
+      </figure>
+      <figure class="q-slide">
+        <div class="q-mark">“</div>
+        <blockquote>A night train is a promise that the day will be handled for you. The Aurelian keeps that promise with brass fittings.</blockquote>
+        <figcaption class="q-attr">R. Vandermolen — Classic Berth, upper, every autumn</figcaption>
+      </figure>
+    </div>
+    <div class="q-nav" data-rv>
+      <button id="qPrev" aria-label="Previous quotation"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9,2 L4,7 L9,12"/></svg></button>
+      <span id="qIdx">I / IV</span>
+      <button id="qNext" aria-label="Next quotation"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5,2 L10,7 L5,12"/></svg></button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== IX · FARES ===== -->
+<section id="fares" class="paper">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. IX — The Tariff</span>
+      <h2 class="s-title">Fares for the Coastal Season</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+      <p class="s-lede">Every fare includes all tables d'hôte, the sunrise call, and luggage carried to the door of your carriage.</p>
+    </header>
+
+    <div class="fares-scroll" data-rv>
+      <table class="fares-tbl">
+        <thead><tr><th>No.</th><th>Accommodation</th><th>Berths</th><th>Fare, from</th><th>The arrangement</th></tr></thead>
+        <tbody>
+          <tr data-rv>
+            <td class="no">I.</td>
+            <td class="acc">Classic Berth</td>
+            <td style="font-family:var(--sans);font-size:.8rem;letter-spacing:.1em">48</td>
+            <td class="fare">480<small>per person</small></td>
+            <td class="inc">Upper or lower berth, brass reading lamp, morning coffee brought to the berth.</td>
+          </tr>
+          <tr class="feat" data-rv style="transition-delay:.06s">
+            <td class="no">II.</td>
+            <td class="acc">State Room<span class="most">Most reserved</span></td>
+            <td style="font-family:var(--sans);font-size:.8rem;letter-spacing:.1em">12</td>
+            <td class="fare">790<small>per person</small></td>
+            <td class="inc">Private room, proper double berth, writing desk, shower, and the good side of the train.</td>
+          </tr>
+          <tr data-rv style="transition-delay:.12s">
+            <td class="no">III.</td>
+            <td class="acc">Meridian Saloon</td>
+            <td style="font-family:var(--sans);font-size:.8rem;letter-spacing:.1em">4</td>
+            <td class="fare">1,240<small>per person</small></td>
+            <td class="inc">Private saloon and bath, butler's bell, breakfast at whatever hour you invent.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fares-note" data-rv>Children under nine travel free in a parent's berth. Dogs are first-class passengers in every car and are charged accordingly. The equinox crossings carry a supplement of 60; the aurora is not guaranteed, merely likely.</p>
+  </div>
+</section>
+
+<!-- ===== X · BOOK ===== -->
+<section id="book">
+  <div class="wrap">
+    <header class="s-head" data-rv>
+      <span class="num">No. X — Reservations</span>
+      <h2 class="s-title">Claim a Berth</h2>
+      <svg class="burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+      <p class="s-lede">Departures nightly from Aurelia, Platform 2. Our concierge replies by return of wire — or, more honestly, by email within the day.</p>
+    </header>
+
+    <div class="book-plate" data-rv>
+      <form id="bookForm" class="bform" novalidate>
+        <div class="fld">
+          <label for="fName">Full name</label>
+          <input id="fName" type="text" autocomplete="name" placeholder="e.g. V. Ashcombe">
+          <span class="ferr" data-err="fName"></span>
+        </div>
+        <div class="fld">
+          <label for="fMail">Wire address (email)</label>
+          <input id="fMail" type="email" autocomplete="email" placeholder="you@somewhere.coast">
+          <span class="ferr" data-err="fMail"></span>
+        </div>
+        <div class="fld">
+          <label for="fRoute">The journey</label>
+          <span class="sel" style="display:block">
+          <select id="fRoute">
+            <option value="The Full Night — Aurelia → Port Meridian">The Full Night — Aurelia → Port Meridian</option>
+            <option value="The Western Half — Aurelia → Torrenne">The Western Half — Aurelia → Torrenne</option>
+            <option value="The Morning Half — Torrenne → Port Meridian">The Morning Half — Torrenne → Port Meridian</option>
+          </select></span>
+        </div>
+        <div class="fld">
+          <label for="fSuite">Accommodation</label>
+          <span class="sel" style="display:block">
+          <select id="fSuite">
+            <option>Classic Berth</option>
+            <option selected>State Room</option>
+            <option>Meridian Saloon</option>
+          </select></span>
+        </div>
+        <div class="fld">
+          <label for="fWhen">Departure</label>
+          <span class="sel" style="display:block">
+          <select id="fWhen">
+            <option>The next available evening</option>
+            <option>This Friday — 19:00</option>
+            <option>First Saturday of next month</option>
+            <option>The equinox crossing (limited)</option>
+          </select></span>
+        </div>
+        <div class="fld guest">
+          <label for="gCount" style="margin-bottom:.4rem">Guests</label>
+          <div class="gstep">
+            <button type="button" id="gMinus" aria-label="One guest fewer">−</button>
+            <span id="gCount" aria-live="polite">2</span>
+            <button type="button" id="gPlus" aria-label="One guest more">+</button>
+          </div>
+        </div>
+        <div class="book-dest" style="grid-column:1/-1;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center;margin-top:.6rem">
+          <button class="btn solid" type="submit">Request reservation</button>
+          <p class="book-fine" style="font-style:italic;color:rgba(241,231,208,.6);font-size:.95rem">No payment now — we hold berths for a civil 48 hours.</p>
+        </div>
+      </form>
+
+      <div id="bookDone" hidden>
+        <h3>Request received.</h3>
+        <p id="doneMsg">Our concierge will wire you within the day. Your label is ready — perhaps the cases are, too.</p>
+        <div id="labelBox"></div>
+        <button class="btn ghost" id="amend" style="margin-top:1.6rem">Amend the request</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <svg class="f-burst" viewBox="0 0 140 26" aria-hidden="true"><use href="#d-burst"/></svg>
+    <p class="f-mark">THE AURELIAN EXPRESS</p>
+    <p class="f-cities">Aurelia <i></i> Solenne <i></i> Cape Verrier <i></i> Mireval <i></i> Torrenne <i></i> Alba Cove <i></i> Port Meridian</p>
+    <p class="f-small">Established 1929 — a fictional railway, drawn in SVG and set in type for the love of the night train.<br>No real services, timetables, or tide tables are advertised. Season XXXVII.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+const NS='http://www.w3.org/2000/svg';
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- seeded random ---------- */
+function rnd(seed){let s=seed;return()=>{s=(s*9301+49297)%233280;return s/233280}}
+
+/* ---------- HERO decoration ---------- */
+(function(){
+  const stars=$('#hStars'); if(!stars)return;
+  const r=rnd(7);
+  for(let i=0;i<70;i++){
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',(r()*1600).toFixed(0)); c.setAttribute('cy',(r()*520).toFixed(0));
+    c.setAttribute('r',(0.6+r()*1.3).toFixed(2)); c.setAttribute('fill','#EFE4C8');
+    c.setAttribute('class','tw'); c.style.animationDelay=(-(r()*5)).toFixed(2)+'s';
+    c.style.opacity=.3+r()*.5;
+    stars.appendChild(c);
+  }
+  const rays=$('#hRays'),cx=800,cy=620;
+  for(let i=0;i<26;i++){
+    const a=(i/26)*Math.PI*2 - Math.PI/2;
+    const r2=(i%2?300:470), r1=138;
+    const l=document.createElementNS(NS,'line');
+    l.setAttribute('x1',cx+Math.cos(a)*r1); l.setAttribute('y1',cy+Math.sin(a)*r1);
+    l.setAttribute('x2',cx+Math.cos(a)*r2); l.setAttribute('y2',cy+Math.sin(a)*r2);
+    l.setAttribute('stroke','#C2A24E'); l.setAttribute('stroke-width',i%2?1:1.6);
+    l.setAttribute('opacity',i%2?.1:.2);
+    rays.appendChild(l);
+  }
+  const wl=$('#hWinL'),wr=$('#hWinR'),r2=rnd(21);
+  function lit(g,x0,y0,w,h){
+    for(let x=x0;x<x0+w-8;x+=20)for(let y=y0;y<y0+h-12;y+=26){
+      if(r2()<.42){
+        const rc=document.createElementNS(NS,'rect');
+        rc.setAttribute('x',x);rc.setAttribute('y',y);rc.setAttribute('width',7);rc.setAttribute('height',10);
+        const k=r2(); rc.setAttribute('fill', k<.16?'#E0C583':'rgba(241,231,208,.22)');
+        if(k<.16)rc.setAttribute('class','nw');
+        g.appendChild(rc);
+      }
+    }
+  }
+  lit(wl,40,340,520,300); lit(wr,1060,330,500,360);
+  const bal=$('#hBal');
+  for(let x=18;x<1600;x+=34){
+    const b=document.createElementNS(NS,'rect');
+    b.setAttribute('x',x);b.setAttribute('y',884);b.setAttribute('width',5);b.setAttribute('height',26);
+    bal.appendChild(b);
+  }
+  const lamps=$('#hLamps');
+  [300,1300].forEach(x=>{
+    const g=document.createElementNS(NS,'g');
+    g.innerHTML='<rect x="'+(x-3)+'" y="716" width="6" height="168" fill="#0D0C0A"/>'+
+      '<rect x="'+(x-12)+'" y="872" width="24" height="10" fill="#0D0C0A"/>'+
+      '<path d="M'+(x-14)+',716 L'+(x+14)+',716 L'+(x+9)+',694 L'+(x-9)+',694 Z" fill="#0D0C0A" stroke="#C2A24E" stroke-width="1"/>'+
+      '<circle cx="'+x+'" cy="688" r="10" fill="#E9C583" class="glowP"/>'+
+      '<circle cx="'+x+'" cy="688" r="22" fill="#E9C583" opacity=".2" class="glowP"/>'+
+      '<circle cx="'+x+'" cy="688" r="40" fill="#E9C583" opacity=".08" class="glowP"/>';
+    lamps.appendChild(g);
+  });
+})();
+
+/* ---------- stars in saloon window ---------- */
+(function(){
+  const g=$('#vpStars'); if(!g)return; const r=rnd(99);
+  for(let i=0;i<46;i++){
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',(r()*1200).toFixed(0));c.setAttribute('cy',(r()*380).toFixed(0));
+    c.setAttribute('r',(0.7+r()*1.4).toFixed(2));c.setAttribute('fill','#EFE4C8');
+    c.setAttribute('opacity',(0.3+r()*.6).toFixed(2));
+    g.appendChild(c);
+  }
+})();
+
+/* ---------- nav ---------- */
+const nav=$('#nav');
+$('#menuBtn').addEventListener('click',()=>{$('#menuOv').classList.add('open');$('#menuBtn').setAttribute('aria-expanded','true')});
+$('#menuClose').addEventListener('click',()=>$('#menuOv').classList.remove('open'));
+$$('#menuOv a').forEach(a=>a.addEventListener('click',()=>$('#menuOv').classList.remove('open')));
+
+/* ---------- reveal ---------- */
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})
+},{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+$$('[data-rv]').forEach(el=>io.observe(el));
+
+/* ---------- ROUTE drawing ---------- */
+const P=[[170,120],[760,400],[300,680],[700,960],[280,1240],[740,1520],[430,1840]];
+const routeSvg=$('#routeSvg'), rBase=$('#rBase'), rProg=$('#rProg'), rDots=$('#rDots'), rTrain=$('#rTrain'), routeMap=$('#routeMap'), mLine=$('#mLine');
+let rLen=0, stopLens=[];
+(function buildRoute(){
+  function smooth(pts){
+    let d=`M${pts[0][0]},${pts[0][1]}`;
+    for(let i=0;i<pts.length-1;i++){
+      const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+      const c1x=p1[0]+(p2[0]-p0[0])/6,c1y=p1[1]+(p2[1]-p0[1])/6;
+      const c2x=p2[0]-(p3[0]-p1[0])/6,c2y=p2[1]-(p3[1]-p1[1])/6;
+      d+=`C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2[0]},${p2[1]}`;
+    }
+    return d;
+  }
+  const d=smooth(P);
+  rBase.setAttribute('d',d); rProg.setAttribute('d',d);
+  rLen=rProg.getTotalLength();
+  rProg.style.strokeDasharray=rLen; rProg.style.strokeDashoffset=rLen;
+  const r=rnd(31);
+  for(let i=0;i<=26;i++){
+    const pt=rProg.getPointAtLength(rLen*i/26);
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',pt.x);c.setAttribute('cy',pt.y);c.setAttribute('r',2.1);c.setAttribute('class','r-dot');
+    rDots.appendChild(c);
+  }
+  // find path-length nearest to each stop
+  const SAMP=[];const N=700;
+  for(let i=0;i<=N;i++){const pt=rProg.getPointAtLength(rLen*i/N);SAMP.push([pt.x,pt.y,rLen*i/N])}
+  $$('.stop').forEach(st=>{
+    const x=parseFloat(st.style.getPropertyValue('--x'))/100*1000;
+    const y=parseFloat(st.style.getPropertyValue('--y'))/100*2000;
+    let best=0,bd=1e9;
+    SAMP.forEach(s=>{const dd=(s[0]-x)**2+(s[1]-y)**2;if(dd<bd){bd=dd;best=s[2]}});
+    stopLens.push({el:st,len:best});
+  });
+})();
+
+/* ---------- TIMELINE ---------- */
+const tl=$('#tl'), tlFill=$('#tlFill'), tlItems=$$('.tl-item');
+
+/* ---------- scroll progress ---------- */
+let ticking=false;
+function onScroll(){if(!ticking){requestAnimationFrame(update);ticking=true}}
+function update(){
+  ticking=false;
+  nav.classList.toggle('scrolled',scrollY>40);
+  const vh=innerHeight;
+  // route
+  const rc=routeMap.getBoundingClientRect();
+  const total=Math.max(rc.height - vh*0.55, 1);
+  const p=clamp((vh*0.78 - rc.top)/total,0,1);
+  rProg.style.strokeDashoffset=(rLen*(1-p)).toFixed(1);
+  mLine.style.setProperty('--p',p.toFixed(3));
+  const cur=p*rLen;
+  let nowIdx=-1;
+  stopLens.forEach((s,i)=>{
+    const passed=cur>=s.len-8;
+    s.el.classList.toggle('passed',passed);
+    if(passed)nowIdx=i;
+  });
+  stopLens.forEach((s,i)=>s.el.classList.toggle('now',i===nowIdx&&p>0.005&&p<0.999));
+  if(p>0.01){
+    const pt=rProg.getPointAtLength(cur);
+    const pt2=rProg.getPointAtLength(Math.min(cur+2,rLen));
+    const ang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*180/Math.PI;
+    rTrain.style.opacity=1;
+    rTrain.setAttribute('transform',`translate(${pt.x-26},${pt.y-8}) rotate(${ang.toFixed(1)} 26 8)`);
+  } else rTrain.style.opacity=0;
+  // timeline
+  const tc=tl.getBoundingClientRect();
+  const tp=clamp((vh*0.8 - tc.top)/(tc.height),0,1);
+  tlFill.style.setProperty('--p',tp.toFixed(3));
+  tlFill.style.transform=`scale(${tp})`;
+  tlItems.forEach((it,i)=>it.classList.toggle('lit',tp>=i/(tlItems.length-1)-0.02));
+}
+addEventListener('scroll',onScroll,{passive:true});
+addEventListener('resize',onScroll);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(onScroll);
+onScroll();
+
+/* ---------- hero parallax ---------- */
+(function(){
+  if(reduced||!matchMedia('(pointer:fine)').matches)return;
+  const sky=$('#gSky'),city=$('#gCity'),front=$('#gFront'),hero=$('.hero');
+  let tx=0,ty=0,x=0,y=0;
+  hero.addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+  (function loop(){
+    x+=(tx-x)*.05;y+=(ty-y)*.05;
+    sky.setAttribute('transform',`translate(${(x*14).toFixed(2)},${(y*8).toFixed(2)})`);
+    city.setAttribute('transform',`translate(${(x*24).toFixed(2)},${(y*13).toFixed(2)})`);
+    front.setAttribute('transform',`translate(${(x*38).toFixed(2)},${(y*18).toFixed(2)})`);
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* ---------- consist ---------- */
+(function(){
+  const svg=$('#consistSvg');
+  const cars=[
+    {n:"Aurelia No. 9 — the locomotive",d:"Electric, fifteen thousand volts, and quieter than the sea she runs beside."},
+    {n:"Brake & Luggage",d:"Cases go on here at the platform and are in your saloon before Solenne."},
+    {n:"Sleepers — Classic Berths",d:"Twenty-four berths, upper and lower, true curtains and brass lamps."},
+    {n:"Sleepers — Classic Berths",d:"The same again, seaward side, for the cliffs at Cape Verrier."},
+    {n:"Restaurant “Aurelia”",d:"Forty-two covers, white cloths from 19:30 until the last coffee."},
+    {n:"Bar & Observation Saloon",d:"Twelve chairs facing backwards — the correct way to leave somewhere."},
+    {n:"Sleepers — State Rooms",d:"Six rooms with desks, showers, and the good windows."},
+    {n:"The Meridian Saloons",d:"Two private saloons with baths and a butler's bell answered on the second ring."}
+  ];
+  let x=14, html='';
+  // locomotive (schematic)
+  html+=`<g class="car" data-i="0" tabindex="0" role="button" aria-label="Car: ${cars[0].n}">
+    <path class="cbody" d="M${x},142 L${x},96 Q${x},88 ${x+10},88 L${x+92},84 C${x+130},82 ${x+152},100 ${x+160},116 L${x+156},128 Q${x+154},134 ${x+146},134 L${x+10},134 Q${x},134 ${x},124 Z"/>
+    <rect class="cw" x="${x+10}" y="94" width="26" height="12"/>
+    <line x1="${x+4}" y1="104" x2="${x+116}" y2="102" stroke="#C2A24E" stroke-width="1.2"/>
+    <circle class="cw" cx="${x+142}" cy="112" r="4"/>
+    <circle class="cbody" cx="${x+30}" cy="146" r="9"/><circle class="cbody" cx="${x+66}" cy="146" r="9"/><circle class="cbody" cx="${x+104}" cy="146" r="7"/>
+  </g>`;
+  x+=206;
+  for(let i=1;i<8;i++){
+    html+=`<g class="car" data-i="${i}" tabindex="0" role="button" aria-label="Car ${i}: ${cars[i].n}">
+      <rect class="cbody" x="${x}" y="92" width="124" height="44" rx="9"/>
+      ${[0,1,2,3,4].map(k=>`<rect class="cw" x="${x+12+k*21}" y="102" width="12" height="10"/>`).join('')}
+      <line x1="${x+6}" y1="122" x2="${x+118}" y2="122" stroke="#C2A24E" stroke-width="1.1" opacity=".7"/>
+      <circle class="cbody" cx="${x+24}" cy="146" r="7"/><circle class="cbody" cx="${x+42}" cy="146" r="7"/><circle class="cbody" cx="${x+82}" cy="146" r="7"/><circle class="cbody" cx="${x+100}" cy="146" r="7"/>
+    </g>`;
+    x+=138;
+  }
+  html+=`<line x1="0" y1="158" x2="1300" y2="158" stroke="rgba(194,162,78,.35)" stroke-width="1.5"/>`;
+  for(let i=0;i<8;i++){
+    const cx = i===0? x0=14+60 : 220+(i-1)*138+62;
+    html+=`<text x="${cx}" y="174" text-anchor="middle" class="cnum">${i===0?'№ 9':i}</text>`;
+  }
+  svg.innerHTML=html;
+  const name=$('#carName'),desc=$('#carDesc');
+  function set(i){
+    name.innerHTML=`<b>${cars[i].n}</b>`;
+    desc.textContent=cars[i].d;
+  }
+  svg.addEventListener('mouseover',e=>{const c=e.target.closest('.car');if(c)set(+c.dataset.i)});
+  svg.addEventListener('focusin',e=>{const c=e.target.closest('.car');if(c)set(+c.dataset.i)});
+  svg.addEventListener('mouseleave',()=>set(0));
+})();
+
+/* ---------- suite tabs ---------- */
+$$('.stab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    $$('.stab').forEach(b=>b.setAttribute('aria-selected','false'));
+    btn.setAttribute('aria-selected','true');
+    $$('.suite-pane').forEach(p=>p.classList.remove('on'));
+    $('#sp'+btn.dataset.s).classList.add('on');
+  });
+});
+
+/* ---------- quotes ---------- */
+(function(){
+  const slides=$$('.q-slide'), idx=$('#qIdx'), rom=['I','II','III','IV'];
+  let cur=0,timer;
+  function show(i){
+    cur=(i+slides.length)%slides.length;
+    slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+    idx.textContent=`${rom[cur]} / IV`;
+  }
+  function arm(){clearInterval(timer);if(!reduced)timer=setInterval(()=>show(cur+1),7000)}
+  $('#qPrev').addEventListener('click',()=>{show(cur-1);arm()});
+  $('#qNext').addEventListener('click',()=>{show(cur+1);arm()});
+  $('#qStage').addEventListener('pointerenter',()=>clearInterval(timer));
+  $('#qStage').addEventListener('pointerleave',arm);
+  arm();
+})();
+
+/* ---------- booking ---------- */
+(function(){
+  const form=$('#bookForm'),done=$('#bookDone'),count=$('#gCount');
+  let guests=2;
+  $('#gMinus').addEventListener('click',()=>{guests=Math.max(1,guests-1);count.textContent=guests});
+  $('#gPlus').addEventListener('click',()=>{guests=Math.min(6,guests+1);count.textContent=guests});
+  function err(id,msg){const e=$(`[data-err="${id}"]`);e.textContent=msg||''}
+  function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  form.addEventListener('submit',ev=>{
+    ev.preventDefault();
+    const nm=$('#fName').value.trim(), ml=$('#fMail').value.trim();
+    let ok=true;
+    err('fName','');err('fMail','');
+    if(nm.length<2){err('fName','We shall need a name for the manifest.');ok=false}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ml)){err('fMail','A wire address, however ruinous, is required.');ok=false}
+    if(!ok)return;
+    const route=$('#fRoute').value.split(' — ')[1]||'Aurelia — Port Meridian';
+    const suite=$('#fSuite').value, when=$('#fWhen').value;
+    const car=suite==='Meridian Saloon'?7:(suite==='State Room'?6:(Math.random()<.5?2:3));
+    const berth=Math.floor(1+Math.random()*(suite==='Meridian Saloon'?2:(suite==='State Room'?6:24)));
+    const num=rom[guests-1]||guests;
+    $('#labelBox').innerHTML=`
+    <svg viewBox="0 0 680 360" role="img" aria-label="Personalised luggage label">
+      <rect width="680" height="360" fill="#F1E7D0"/>
+      <rect x="14" y="14" width="652" height="332" fill="none" stroke="#8C6F2F" stroke-width="2"/>
+      <rect x="22" y="22" width="636" height="316" fill="none" stroke="rgba(140,111,47,.35)" stroke-width="1"/>
+      <circle cx="46" cy="46" r="13" fill="#0B0A08"/>
+      <circle cx="46" cy="46" r="6" fill="#F1E7D0"/>
+      <text x="340" y="66" text-anchor="middle" style="font-family:Jost,sans-serif;font-size:12px;letter-spacing:6px" fill="#8C6F2F">THE AURELIAN COAST LINE</text>
+      <text x="340" y="118" text-anchor="middle" style="font-family:'Bodoni Moda',serif;font-weight:600;font-size:40px;letter-spacing:4px" fill="#191512">AURELIAN EXPRESS</text>
+      <line x1="120" y1="138" x2="560" y2="138" stroke="#C2A24E" stroke-width="1.4"/>
+      <text x="340" y="176" text-anchor="middle" style="font-family:'Bodoni Moda',serif;font-style:italic;font-size:26px" fill="#191512">${esc(route)}</text>
+      <g style="font-family:Jost,sans-serif;font-size:10.5px;letter-spacing:3px" fill="#8C6F2F">
+        <text x="90" y="226">PASSENGER</text><text x="90" y="216" opacity="0">.</text>
+        <text x="340" y="228" text-anchor="middle">DEPARTURE</text>
+        <text x="590" y="228" text-anchor="end">ACCOMMODATION</text>
+      </g>
+      <g style="font-family:'Bodoni Moda',serif;font-size:21px" fill="#191512">
+        <text x="90" y="258">${esc(nm.length>24?nm.slice(0,24)+'…':nm)}</text>
+        <text x="340" y="258" text-anchor="middle" style="font-size:17px">${esc(when)}</text>
+        <text x="590" y="258" text-anchor="end">${esc(suite)}</text>
+      </g>
+      <text x="340" y="306" text-anchor="middle" style="font-family:Jost,sans-serif;font-size:12px;letter-spacing:5px" fill="#191512">BERTH ${car} · ${berth} — GUESTS ${num} — PLATFORM 2</text>
+      <g class="stampcls" transform="rotate(-9 556 300)">
+        <circle cx="556" cy="300" r="34" fill="none" stroke="#A6492B" stroke-width="2.4"/>
+        <circle cx="556" cy="300" r="27" fill="none" stroke="#A6492B" stroke-width="1"/>
+        <text x="556" y="296" text-anchor="middle" style="font-family:'Bodoni Moda',serif;font-weight:700;font-size:19px" fill="#A6492B">A·E</text>
+        <text x="556" y="314" text-anchor="middle" style="font-family:Jost,sans-serif;font-size:8px;letter-spacing:2px" fill="#A6492B">19:00 · PL.2</text>
+      </g>
+    </svg>`;
+    $('#doneMsg').textContent=`Thank you, ${nm.split(' ')[0]}. ${guests} guest${guests>1?'s':''}, ${suite.toLowerCase()}, ${when.toLowerCase()}. Our concierge will wire you within the day.`;
+    form.hidden=true;done.hidden=false;
+    done.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});
+  });
+  $('#amend').addEventListener('click',()=>{done.hidden=true;form.hidden=false;$('#fName').focus()});
+})();
+})();
+</script>
+</body>
+</html>

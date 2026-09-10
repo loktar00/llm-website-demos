@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCRETE INDEX — Civic Architecture Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ FOUNDATION ============ */
+:root{
+  --ink:#0b0b0b;
+  --paper:#e9e5db;
+  --orange:#ff4d00;
+  --blue:#1f3bff;
+  --hair:1px solid var(--ink);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  line-height:1.55;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--orange);color:var(--paper);}
+h1,h2,h3,h4,.display{
+  font-family:'Anton',sans-serif;
+  font-weight:400;
+  text-transform:uppercase;
+  letter-spacing:-0.01em;
+  line-height:.92;
+}
+a{color:inherit;text-decoration:none;}
+img,svg{display:block;}
+.mono-xs{font-size:10px;letter-spacing:.08em;text-transform:uppercase;}
+.grain{position:relative;}
+.grain::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+.wrap{max-width:1440px;margin:0 auto;border-left:var(--hair);border-right:var(--hair);}
+@media(max-width:900px){.wrap{border-left:none;border-right:none;}}
+
+.slabel{
+  display:inline-block;background:var(--ink);color:var(--paper);
+  padding:3px 8px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+}
+
+/* ============ TOP BAR ============ */
+.topbar{border-bottom:var(--hair);display:flex;align-items:stretch;background:var(--paper);position:relative;z-index:20;}
+.topbar .cell{padding:10px 16px;border-right:var(--hair);display:flex;align-items:center;gap:10px;}
+.topbar .cell:last-child{border-right:none;margin-left:auto;border-left:var(--hair);}
+.dot{width:8px;height:8px;background:var(--orange);}
+@media(max-width:720px){.topbar .hide-m{display:none;}}
+
+/* ============ HERO ============ */
+.hero{position:relative;min-height:100svh;border-bottom:var(--hair);overflow:hidden;display:flex;flex-direction:column;}
+.plan-layer{position:absolute;inset:-6%;pointer-events:none;will-change:transform;}
+.plan-layer svg{width:100%;height:100%;}
+.hero-inner{position:relative;z-index:5;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:24px;}
+.hero-kicker{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:var(--hair);padding-bottom:12px;margin-bottom:18px;gap:16px;flex-wrap:wrap;}
+.issue-counter{font-family:'Anton',sans-serif;font-size:clamp(28px,4vw,44px);color:var(--orange);font-variant-numeric:tabular-nums;}
+.hero-title{font-size:clamp(64px,14.5vw,220px);letter-spacing:-0.02em;}
+.hero-title .row{display:block;white-space:nowrap;}
+.hero-title .outline{color:transparent;-webkit-text-stroke:2px var(--ink);}
+.hero-title .accent{color:var(--orange);}
+.hero-foot{margin-top:22px;display:grid;grid-template-columns:repeat(12,1fr);border-top:var(--hair);}
+.hero-foot>div{padding:12px 14px 0 0;}
+.hf-1{grid-column:1/4;}.hf-2{grid-column:4/7;}.hf-3{grid-column:7/11;}.hf-4{grid-column:11/13;text-align:right;}
+@media(max-width:720px){
+  .hf-1{grid-column:1/7;}.hf-2{grid-column:7/13;}
+  .hf-3{grid-column:1/7;}.hf-4{grid-column:7/13;text-align:left;}
+}
+.regmark{position:absolute;width:26px;height:26px;z-index:6;}
+
+/* ============ TICKER ============ */
+.ticker{background:var(--ink);color:var(--paper);border-bottom:var(--hair);overflow:hidden;white-space:nowrap;position:relative;z-index:10;}
+.ticker-track{display:inline-block;padding:9px 0;animation:tick 38s linear infinite;will-change:transform;}
+.ticker:hover .ticker-track{animation-play-state:paused;}
+.ticker-track span{margin:0 26px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;}
+.ticker-track b{color:var(--orange);font-weight:500;}
+@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ============ SECTION HEADS ============ */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:var(--hair);padding:14px 24px;gap:16px;flex-wrap:wrap;}
+.sec-head h2{font-size:clamp(30px,5vw,64px);}
+
+/* ============ RECORDS ============ */
+.records{border-bottom:var(--hair);}
+.record{display:grid;grid-template-columns:110px 1fr 380px;border-bottom:var(--hair);min-height:280px;cursor:crosshair;}
+.record:last-child{border-bottom:none;}
+.record:nth-child(even){grid-template-columns:110px 380px 1fr;}
+.record:nth-child(even) .rec-body{order:3;}
+.record:nth-child(even) .rec-fig{order:2;border-right:var(--hair);border-left:none;}
+.rec-no{border-right:var(--hair);padding:16px 12px;display:flex;flex-direction:column;justify-content:space-between;background:var(--paper);}
+.rec-no .num{font-family:'Anton',sans-serif;font-size:clamp(34px,4vw,56px);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.02em;}
+.rec-body{padding:26px 28px;display:flex;flex-direction:column;gap:14px;}
+.rec-body h3{font-size:clamp(30px,3.6vw,54px);}
+.rec-meta{display:flex;flex-wrap:wrap;border-top:var(--hair);margin-top:auto;}
+.rec-meta div{padding:8px 14px 8px 0;margin-right:14px;border-right:var(--hair);font-size:10px;letter-spacing:.1em;text-transform:uppercase;}
+.rec-meta div:last-child{border-right:none;}
+.rec-meta b{display:block;font-weight:700;color:var(--blue);}
+.rec-desc{max-width:52ch;color:#333;}
+.rec-fig{
+  border-left:var(--hair);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 39px,rgba(11,11,11,.07) 39px 40px),
+    repeating-linear-gradient(90deg,transparent 0 39px,rgba(11,11,11,.07) 39px 40px),
+    var(--paper);
+}
+.rec-fig svg{width:78%;height:78%;max-height:230px;}
+.rec-tag{position:absolute;top:10px;left:10px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;border:var(--hair);padding:2px 6px;background:var(--paper);}
+.record:hover{background:var(--ink);color:var(--paper);}
+.record:hover .rec-no{background:var(--orange);color:var(--ink);}
+.record:hover .rec-meta b{color:var(--orange);}
+.record:hover .rec-desc{color:#bbb;}
+.record:hover .rec-fig{background:var(--ink);}
+.record:hover .rec-tag{background:var(--orange);color:var(--ink);border-color:var(--orange);}
+.record:hover .sil-fill{fill:var(--paper);}
+.record:hover .sil-line{stroke:var(--paper);}
+.record:hover .sil-accent{fill:var(--orange);}
+@media(max-width:900px){
+  .record,.record:nth-child(even){grid-template-columns:70px 1fr;}
+  .record:nth-child(even) .rec-body{order:2;}
+  .record:nth-child(even) .rec-fig{order:3;border-left:var(--hair);border-right:none;}
+  .rec-fig{min-height:200px;}
+}
+
+/* ============ FEATURE ============ */
+.feature{border-bottom:var(--hair);display:grid;grid-template-columns:1fr 1fr;}
+.feature-txt{padding:40px 32px;border-right:var(--hair);}
+.feature-txt .kicker{color:var(--orange);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:11px;margin-bottom:14px;display:block;}
+.feature-txt h2{font-size:clamp(38px,5.4vw,84px);margin-bottom:26px;}
+.feature-txt p{max-width:58ch;margin-bottom:18px;}
+.feature-txt p:first-of-type::first-letter{font-family:'Anton',sans-serif;float:left;font-size:74px;line-height:.8;padding:6px 12px 0 0;color:var(--orange);}
+.pull{border-top:var(--hair);border-bottom:var(--hair);margin:26px 0;padding:18px 0;font-family:'Anton',sans-serif;font-size:clamp(20px,2.4vw,30px);text-transform:uppercase;line-height:1.05;}
+.pull em{font-style:normal;color:var(--blue);}
+.feature-diag{position:relative;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;padding:34px 20px;overflow:hidden;}
+.feature-diag svg{width:100%;max-width:520px;height:auto;}
+.diag-label{position:absolute;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);}
+.flowline{stroke-dasharray:6 6;animation:flow 1.2s linear infinite;}
+@keyframes flow{to{stroke-dashoffset:-24;}}
+.clarifier{transform-origin:410px 215px;animation:spin 14s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.piston{animation:pump 1.6s steps(2,end) infinite;}
+.piston.p2{animation-delay:.8s;}
+@keyframes pump{50%{transform:translateY(-14px);}}
+@media(max-width:900px){
+  .feature{grid-template-columns:1fr;}
+  .feature-txt{border-right:none;border-bottom:var(--hair);}
+}
+
+/* ============ SPEC TABLE ============ */
+.specwrap{border-bottom:var(--hair);}
+table.spec{width:100%;border-collapse:collapse;font-size:11px;}
+.spec th{text-align:left;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:10px 14px;border-right:1px solid #333;}
+.spec th:last-child{border-right:none;}
+.spec td{padding:9px 14px;border-bottom:var(--hair);border-right:var(--hair);vertical-align:top;}
+.spec td:last-child{border-right:none;}
+.spec tr:hover td{background:var(--orange);color:var(--ink);}
+.spec tr:hover td .dim{color:var(--ink);}
+.dim{color:var(--blue);font-weight:500;}
+@media(max-width:720px){
+  .spec th:nth-child(4),.spec td:nth-child(4),
+  .spec th:nth-child(6),.spec td:nth-child(6){display:none;}
+}
+
+/* ============ MANIFESTO ============ */
+.manifesto{border-bottom:var(--hair);padding:60px 24px 80px;position:relative;overflow:hidden;}
+.mf-grid{display:grid;grid-template-columns:repeat(12,1fr);row-gap:8px;}
+.mf{font-family:'Anton',sans-serif;text-transform:uppercase;line-height:1;}
+.mf.a{grid-column:1/9;font-size:clamp(36px,6vw,96px);}
+.mf.b{grid-column:4/13;font-size:clamp(30px,5vw,80px);text-align:right;color:transparent;-webkit-text-stroke:2px var(--ink);}
+.mf.c{grid-column:2/8;font-size:clamp(28px,4.4vw,68px);background:var(--orange);padding:6px 14px;}
+.mf.d{grid-column:7/13;font-size:clamp(26px,4vw,60px);text-align:right;}
+.mf.e{grid-column:1/6;font-size:clamp(30px,4.6vw,72px);color:var(--blue);}
+.mf-note{position:absolute;font-size:10px;letter-spacing:.1em;text-transform:uppercase;max-width:190px;line-height:1.6;}
+.mf-note.n1{right:6%;top:90px;border-left:2px solid var(--orange);padding-left:10px;}
+.mf-note.n2{left:4%;bottom:60px;border-left:2px solid var(--blue);padding-left:10px;}
+@media(max-width:720px){
+  .mf.a,.mf.b,.mf.c,.mf.d,.mf.e{grid-column:1/13;text-align:left;}
+  .mf-note{position:static;max-width:none;margin-top:26px;}
+}
+
+/* ============ ARCHIVE STRIP ============ */
+.strip-head{border-bottom:var(--hair);}
+.strip{display:flex;overflow-x:auto;border-bottom:var(--hair);scroll-snap-type:x mandatory;cursor:grab;scrollbar-width:none;}
+.strip::-webkit-scrollbar{display:none;}
+.strip.dragging{cursor:grabbing;}
+.plate{flex:0 0 auto;scroll-snap-align:start;border-right:var(--hair);padding:18px;min-width:250px;display:flex;flex-direction:column;gap:12px;}
+.plate:nth-child(odd){background:var(--ink);color:var(--paper);}
+.plate:nth-child(3n){background:var(--blue);color:var(--paper);}
+.plate-fig{height:150px;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:repeating-linear-gradient(45deg,transparent 0 11px,rgba(128,128,128,.15) 11px 12px);}
+.plate-fig svg{height:82%;}
+.plate:hover .plate-fig{background:var(--orange);}
+.plate:hover .plate-fig .sil-fill{fill:var(--ink);}
+.plate:hover .plate-fig .sil-line{stroke:var(--ink);}
+.plate h4{font-size:19px;line-height:1;}
+.plate .mono-xs{opacity:.75;}
+
+/* ============ FOOTER ============ */
+footer{background:var(--ink);color:var(--paper);}
+.foot-doc{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;border-bottom:1px solid #333;}
+.foot-doc>div{padding:16px;border-right:1px solid #333;font-size:10px;letter-spacing:.1em;text-transform:uppercase;}
+.foot-doc>div:last-child{border-right:none;}
+.foot-doc b{display:block;color:var(--orange);margin-bottom:6px;font-weight:700;}
+.foot-big{padding:40px 24px 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;}
+.foot-big h2{font-size:clamp(48px,9vw,140px);color:var(--paper);}
+.foot-big h2 span{color:var(--orange);}
+.foot-legal{border-top:1px solid #333;padding:12px 24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#888;}
+@media(max-width:900px){
+  .foot-doc{grid-template-columns:1fr 1fr;}
+  .foot-doc>div{border-bottom:1px solid #333;}
+}
+
+/* ============ CROSSHAIR OVERLAY ============ */
+#xhair{position:fixed;left:0;top:0;z-index:99;pointer-events:none;opacity:0;transition:opacity .15s steps(2);}
+#xhair.on{opacity:1;}
+#xhair .xl{position:absolute;background:var(--orange);}
+#xhair .xh{width:34px;height:1px;top:0;left:-17px;}
+#xhair .xv{width:1px;height:34px;left:0;top:-17px;}
+#xhair .xr{position:absolute;left:14px;top:10px;font-size:9px;letter-spacing:.1em;color:var(--orange);white-space:nowrap;text-transform:uppercase;background:var(--ink);padding:2px 5px;}
+
+/* hard-cut reveal */
+.rv{visibility:hidden;}
+.rv.in{visibility:visible;}
+</style>
+</head>
+<body>
+
+<!-- CROSSHAIR -->
+<div id="xhair"><i class="xl xh"></i><i class="xl xv"></i><span class="xr" id="xread">X:000 Y:000</span></div>
+
+<div class="wrap">
+
+<!-- ===== TOP BAR ===== -->
+<header class="topbar">
+  <div class="cell"><span class="dot"></span><strong>CONCRETE&nbsp;INDEX</strong></div>
+  <div class="cell hide-m mono-xs">Independent Archive of Civic Architecture</div>
+  <div class="cell hide-m mono-xs">Est. 2019 — Unaffiliated</div>
+  <div class="cell mono-xs">Vol.IV / <span id="topcount">047</span></div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero grain" id="hero">
+  <div class="plan-layer" data-depth="0.35">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <g stroke="#0b0b0b" stroke-width="1" opacity=".55" fill="none">
+        <path d="M0 620 H1200 M0 300 H1200 M340 0 V800 M820 0 V800"/>
+        <circle cx="820" cy="300" r="130"/><circle cx="820" cy="300" r="86"/>
+        <path d="M340 620 L820 300" stroke-dasharray="8 8"/>
+      </g>
+    </svg>
+  </div>
+  <div class="plan-layer" data-depth="0.7">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <g fill="none" stroke="#ff4d00" stroke-width="1.5">
+        <rect x="360" y="330" width="180" height="290"/>
+        <path d="M360 330 L540 400 V620 H360 Z" fill="#0b0b0b" opacity=".85"/>
+        <path d="M600 620 h160 v-90 h-160 z"/>
+        <path d="M760 530 l60 -60 v150 h-60 z" fill="#1f3bff" opacity=".9" stroke="none"/>
+      </g>
+      <g stroke="#0b0b0b" stroke-width="1" fill="none">
+        <path d="M360 650 H540 M360 642 v16 M540 642 v16"/>
+        <text x="430" y="676" font-family="IBM Plex Mono" font-size="11" fill="#0b0b0b" stroke="none">42.00 m</text>
+        <path d="M320 330 V620 M312 330 h16 M312 620 h16"/>
+        <text x="270" y="480" font-family="IBM Plex Mono" font-size="11" fill="#0b0b0b" stroke="none" transform="rotate(-90 278 480)">29.10 m</text>
+      </g>
+    </svg>
+  </div>
+
+  <svg class="regmark" style="top:14px;left:14px" viewBox="0 0 26 26"><path d="M13 0v26M0 13h26" stroke="#0b0b0b"/><circle cx="13" cy="13" r="6" fill="none" stroke="#0b0b0b"/></svg>
+  <svg class="regmark" style="top:14px;right:14px" viewBox="0 0 26 26"><path d="M13 0v26M0 13h26" stroke="#0b0b0b"/><circle cx="13" cy="13" r="6" fill="none" stroke="#0b0b0b"/></svg>
+
+  <div class="hero-inner">
+    <div class="hero-kicker">
+      <span class="slabel">Fig. 00 — Cover Sheet</span>
+      <span class="mono-xs">Scale 1:500 · Do not scale from screen</span>
+      <div>
+        <span class="mono-xs" style="display:block">Current Issue</span>
+        <div class="issue-counter" id="counter">Nº 000047</div>
+      </div>
+    </div>
+    <h1 class="hero-title">
+      <span class="row">CONCRETE</span>
+      <span class="row outline">INDEX<span class="accent">.</span></span>
+    </h1>
+    <div class="hero-foot mono-xs">
+      <div class="hf-1"><b>A—01</b><br>An open register of public works built without apology: pumping stations, silos, ramps, towers, halls.</div>
+      <div class="hf-2"><b>A—02</b><br>Six new records catalogued this issue. All measurements verified on site, in weather.</div>
+      <div class="hf-3"><b>A—03</b><br>No renders. No renderings of intent. Only what was poured, bolted, and left standing.</div>
+      <div class="hf-4"><a href="#index" style="border-bottom:2px solid var(--orange)">↓ ENTER INDEX</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TICKER ===== -->
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickertrack"></div></div>
+
+<!-- ===== INDEX ===== -->
+<section class="records grain" id="index">
+  <div class="sec-head">
+    <h2>The Index</h2>
+    <span class="mono-xs">Records 001–006 / Revised this issue</span>
+    <span class="slabel" style="background:var(--blue)">Section B</span>
+  </div>
+
+  <!-- REC 001 -->
+  <article class="record rv" data-measure="REC.001">
+    <div class="rec-no"><span class="mono-xs">REC</span><span class="num">001</span></div>
+    <div class="rec-body">
+      <span class="mono-xs" style="color:var(--orange)">Water Tower / Decommissioned</span>
+      <h3>Vestre Knutstad<br>Water Tower</h3>
+      <p class="rec-desc">A single inverted cone balanced on a stem of board-marked concrete. Held 900 m³ above a flat agricultural plain for sixty-one years. Never repainted.</p>
+      <div class="rec-meta">
+        <div>Built<b>1963</b></div><div>Location<b>Knutstad, NO</b></div><div>Material<b>In-situ concrete</b></div><div>Status<b>Sealed</b></div>
+      </div>
+    </div>
+    <figure class="rec-fig">
+      <span class="rec-tag">Elev. A–A</span>
+      <svg viewBox="0 0 200 200">
+        <path class="sil-fill" d="M100 30 L138 62 L62 62 Z" fill="#0b0b0b"/>
+        <rect class="sil-fill" x="88" y="62" width="24" height="96" fill="#0b0b0b"/>
+        <rect class="sil-fill" x="70" y="158" width="60" height="14" fill="#0b0b0b"/>
+        <path class="sil-line" d="M40 172 H160 M40 166 v12 M160 166 v12" stroke="#0b0b0b" fill="none"/>
+        <circle class="sil-accent" cx="100" cy="46" r="5" fill="#ff4d00"/>
+      </svg>
+    </figure>
+  </article>
+
+  <!-- REC 002 -->
+  <article class="record rv" data-measure="REC.002">
+    <div class="rec-no"><span class="mono-xs">REC</span><span class="num">002</span></div>
+    <div class="rec-body">
+      <span class="mono-xs" style="color:var(--orange)">Pedestrian Bridge / Operational</span>
+      <h3>Kalkbreite<br>Footbridge №4</h3>
+      <p class="rec-desc">One span, no ornament, a handrail set deliberately too high. Crosses a freight cutting on a beam of blue-painted steel that the city keeps threatening to repaint grey.</p>
+      <div class="rec-meta">
+        <div>Built<b>1998</b></div><div>Location<b>Zürich, CH</b></div><div>Span<b>47.5 m</b></div><div>Status<b>Operational</b></div>
+      </div>
+    </div>
+    <figure class="rec-fig">
+      <span class="rec-tag">Elev. B–B</span>
+      <svg viewBox="0 0 200 200">
+        <path class="sil-line" d="M10 120 H190 M10 112 H190" stroke="#0b0b0b" stroke-width="4" fill="none"/>
+        <path class="sil-line" d="M10 104 H190" stroke="#0b0b0b" stroke-width="2" fill="none"/>
+        <path class="sil-fill" d="M40 120 L60 190 M160 120 L140 190" stroke="#0b0b0b" stroke-width="10" fill="none"/>
+        <path class="sil-line" d="M20 132 H180 M20 142 H180" stroke="#0b0b0b" stroke-width="1" fill="none" stroke-dasharray="4 4"/>
+        <rect class="sil-accent" x="94" y="98" width="12" height="8" fill="#ff4d00"/>
+      </svg>
+    </figure>
+  </article>
+
+  <!-- REC 003 -->
+  <article class="record rv" data-measure="REC.003">
+    <div class="rec-no"><span class="mono-xs">REC</span><span class="num">003</span></div>
+    <div class="rec-body">
+      <span class="mono-xs" style="color:var(--orange)">Grain Silo Group / Partially Demolished</span>
+      <h3>Hafen Ost<br>Silo Battery</h3>
+      <p class="rec-desc">Fourteen cells, two starved of light since 1974. The surviving battery reads as a single extruded object; the demolition gap is now the most photographed void in the district.</p>
+      <div class="rec-meta">
+        <div>Built<b>1936</b></div><div>Location<b>Duisburg, DE</b></div><div>Cells<b>14 (9 ext.)</b></div><div>Status<b>Listed</b></div>
+      </div>
+    </div>
+    <figure class="rec-fig">
+      <span class="rec-tag">Elev. C–C</span>
+      <svg viewBox="0 0 200 200">
+        <g class="sil-fill" fill="#0b0b0b">
+          <rect x="20" y="50" width="34" height="120"/><rect x="56" y="50" width="34" height="120"/>
+          <rect x="92" y="50" width="34" height="120"/>
+        </g>
+        <path class="sil-line" d="M126 170 V50 h34 v120" stroke="#0b0b0b" stroke-width="2" fill="none" stroke-dasharray="5 5"/>
+        <rect class="sil-fill" x="14" y="164" width="146" height="10" fill="#0b0b0b"/>
+        <rect class="sil-accent" x="92" y="50" width="34" height="6" fill="#ff4d00"/>
+      </svg>
+    </figure>
+  </article>
+
+  <!-- REC 004 -->
+  <article class="record rv" data-measure="REC.004">
+    <div class="rec-no"><span class="mono-xs">REC</span><span class="num">004</span></div>
+    <div class="rec-body">
+      <span class="mono-xs" style="color:var(--orange)">Bus Terminal Canopy / Operational</span>
+      <h3>Periferica<br>Canopy Field</h3>
+      <p class="rec-desc">Ninety-six mushroom columns supporting a thin folded plate roof over an uncovered apron. Passengers navigate by column number. The structure outlasted three transit operators.</p>
+      <div class="rec-meta">
+        <div>Built<b>1971</b></div><div>Location<b>Salerno, IT</b></div><div>Columns<b>96</b></div><div>Status<b>Operational</b></div>
+      </div>
+    </div>
+    <figure class="rec-fig">
+      <span class="rec-tag">Plan 1:200</span>
+      <svg viewBox="0 0 200 200">
+        <g class="sil-fill" fill="#0b0b0b">
+          <circle cx="55" cy="60" r="17"/><circle cx="125" cy="60" r="17"/>
+          <circle cx="55" cy="130" r="17"/><circle cx="125" cy="130" r="17"/>
+        </g>
+        <g class="sil-line" stroke="#0b0b0b" stroke-width="1" fill="none">
+          <circle cx="55" cy="60" r="26"/><circle cx="125" cy="60" r="26"/>
+          <circle cx="55" cy="130" r="26"/><circle cx="125" cy="130" r="26"/>
+          <path d="M55 60 H125 M55 130 H125 M55 60 V130 M125 60 V130" stroke-dasharray="3 4"/>
+        </g>
+        <rect class="sil-accent" x="121" y="126" width="8" height="8" fill="#ff4d00"/>
+      </svg>
+    </figure>
+  </article>
+
+  <!-- REC 005 -->
+  <article class="record rv" data-measure="REC.005">
+    <div class="rec-no"><span class="mono-xs">REC</span><span class="num">005</span></div>
+    <div class="rec-body">
+      <span class="mono-xs" style="color:var(--orange)">Ventilation Stack / Operational</span>
+      <h3>Tunnelportal Nord<br>Exhaust Stack</h3>
+      <p class="rec-desc">A 64-metre chimney that doubles as a lightning mast and a municipal flagpole by legal accident. Its paint schedule is published annually. Nobody reads it. It is always correct.</p>
+      <div class="rec-meta">
+        <div>Built<b>1984</b></div><div>Location<b>Graz, AT</b></div><div>Height<b>64.0 m</b></div><div>Status<b>Operational</b></div>
+      </div>
+    </div>
+    <figure class="rec-fig">
+      <span class="rec-tag">Elev. D–D</span>
+      <svg viewBox="0 0 200 200">
+        <path class="sil-fill" d="M88 20 h24 l6 150 h-36 z" fill="#0b0b0b"/>
+        <rect class="sil-fill" x="70" y="170" width="60" height="10" fill="#0b0b0b"/>
+        <path class="sil-line" d="M100 20 V6 M92 6 h16" stroke="#0b0b0b" stroke-width="2" fill="none"/>
+        <g class="sil-line" stroke="#0b0b0b" stroke-width="1" fill="none">
+          <path d="M80 60 h40 M80 100 h40 M80 140 h40" stroke-dasharray="4 4"/>
+        </g>
+        <rect class="sil-accent" x="88" y="20" width="24" height="8" fill="#ff4d00"/>
+      </svg>
+    </figure>
+  </article>
+
+  <!-- REC 006 -->
+  <article class="record rv" data-measure="REC.006">
+    <div class="rec-no"><span class="mono-xs">REC</span><span class="num">006</span></div>
+    <div class="rec-body">
+      <span class="mono-xs" style="color:var(--orange)">Coastal Water Plant / Operational — see feature</span>
+      <h3>Punta Salina<br>Filtration Hall</h3>
+      <p class="rec-desc">The subject of this issue's editorial. A desalination plant treated as civic architecture — full record in Section C overleaf.</p>
+      <div class="rec-meta">
+        <div>Built<b>2009</b></div><div>Location<b>Las Palmas, ES</b></div><div>Output<b>38,000 m³/d</b></div><div>Status<b>Featured</b></div>
+      </div>
+    </div>
+    <figure class="rec-fig">
+      <span class="rec-tag">Axon. Ref.</span>
+      <svg viewBox="0 0 200 200">
+        <path class="sil-fill" d="M30 150 L100 110 L170 150 L100 190 Z" fill="#0b0b0b"/>
+        <path class="sil-line" d="M30 150 V90 L100 50 L170 90 V150 M100 50 V110" stroke="#0b0b0b" stroke-width="2" fill="none"/>
+        <path class="sil-line" d="M65 130 V70 M135 130 V70" stroke="#0b0b0b" stroke-width="1" stroke-dasharray="4 4" fill="none"/>
+        <rect class="sil-accent" x="96" y="66" width="8" height="8" fill="#ff4d00"/>
+      </svg>
+    </figure>
+  </article>
+</section>
+
+<!-- ===== FEATURE ===== -->
+<section class="feature grain" id="feature">
+  <div class="feature-txt">
+    <span class="kicker">Section C — Editorial / Record 006 Extended</span>
+    <h2>The Plant That<br>Treats Water Like<br>a Public Room</h2>
+    <p>Most infrastructure apologises. It hides behind berms, paints itself the colour of the horizon, asks to be forgotten. Punta Salina does none of this. The filtration hall sits directly on the Atlantic promenade, its intake channel cut into the same basalt as the sea wall, its exhaust stacks painted the exact orange of the port authority's cranes two kilometres south.</p>
+    <div class="pull">"A building that moves 38,000 cubic metres a day owes the street <em>a legible section</em> — and it posts one."</div>
+    <p>The architects — a two-person office that has never built anything else this large — insisted the membrane racks be visible through a continuous ribbon of glass at eye level. The utility resisted for four years. The utility lost. Today school groups stand six metres from reverse-osmosis pressure vessels rated to 80 bar, and the floor they stand on is the same terrazzo as the city hall.</p>
+    <p>Our survey team spent nine days on site. Every dimension in the specification table below was taken with a tape and a laser distometer in February wind. Where the drawings disagreed with the building, we recorded the building.</p>
+    <span class="mono-xs" style="display:block;margin-top:20px;border-top:var(--hair);padding-top:10px">Filed by survey team B. Weather: force 7 SW. Corrections: none accepted.</span>
+  </div>
+  <div class="feature-diag" data-measure="DIAGRAM 06-A">
+    <span class="diag-label" style="top:14px;left:16px">Diagram 06-A / Intake Cycle</span>
+    <span class="diag-label" style="bottom:14px;right:16px">Anim. continuous</span>
+    <svg viewBox="0 0 520 420">
+      <path d="M0 340 H520" stroke="#e9e5db" stroke-width="1"/>
+      <path d="M0 350 q20 -6 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" stroke="#1f3bff" stroke-width="2" fill="none"/>
+      <text x="10" y="372" fill="#e9e5db" font-family="IBM Plex Mono" font-size="10">ATLANTIC / SALINITY 36.4 PSU</text>
+      <path d="M60 340 V260 H180" stroke="#ff4d00" stroke-width="3" fill="none"/>
+      <path class="flowline" d="M60 340 V260 H180" stroke="#e9e5db" stroke-width="1.5" fill="none"/>
+      <rect x="180" y="210" width="90" height="130" fill="none" stroke="#e9e5db" stroke-width="2"/>
+      <rect class="piston" x="205" y="240" width="16" height="40" fill="#ff4d00"/>
+      <rect class="piston p2" x="235" y="240" width="16" height="40" fill="#ff4d00"/>
+      <text x="188" y="200" fill="#e9e5db" font-family="IBM Plex Mono" font-size="10">PUMP HOUSE / 2×640 kW</text>
+      <path d="M270 275 H360" stroke="#ff4d00" stroke-width="3" fill="none"/>
+      <path class="flowline" d="M270 275 H360" stroke="#e9e5db" stroke-width="1.5" fill="none"/>
+      <g class="clarifier">
+        <circle cx="410" cy="215" r="62" fill="none" stroke="#e9e5db" stroke-width="2"/>
+        <circle cx="410" cy="215" r="40" fill="none" stroke="#e9e5db" stroke-width="1" stroke-dasharray="4 4"/>
+        <path d="M410 153 V277 M348 215 H472" stroke="#e9e5db" stroke-width="1"/>
+        <circle cx="410" cy="215" r="6" fill="#ff4d00"/>
+      </g>
+      <text x="352" y="300" fill="#e9e5db" font-family="IBM Plex Mono" font-size="10">CLARIFIER Ø 12.4 m</text>
+      <path d="M410 277 V340" stroke="#1f3bff" stroke-width="3" fill="none"/>
+      <path class="flowline" d="M410 277 V340" stroke="#e9e5db" stroke-width="1.5" fill="none"/>
+      <text x="418" y="332" fill="#1f3bff" font-family="IBM Plex Mono" font-size="10">BRINE</text>
+      <g stroke="#e9e5db" stroke-width="1" fill="none">
+        <path d="M180 370 H360 M180 362 v16 M360 362 v16"/>
+        <text x="240" y="392" fill="#e9e5db" font-family="IBM Plex Mono" font-size="10">HALL 42.00 m</text>
+      </g>
+      <g stroke="#ff4d00" stroke-width="1"><path d="M492 20 v20 M482 30 h20"/></g>
+    </svg>
+  </div>
+</section>
+
+<!-- ===== SPEC TABLE ===== -->
+<section class="specwrap grain" data-measure="SPEC TABLE">
+  <div class="sec-head">
+    <h2>Specifications</h2>
+    <span class="mono-xs">Punta Salina Filtration Hall — Verified On Site</span>
+    <span class="slabel" style="background:var(--orange)">Section D</span>
+  </div>
+  <table class="spec">
+    <thead>
+      <tr><th>Ref</th><th>Element</th><th>Dimension</th><th>Tolerance</th><th>Material</th><th>Note</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>D-01</td><td>Filtration hall, clear span</td><td class="dim">42.00 m</td><td>±5 mm</td><td>Post-tensioned concrete</td><td>Single pour, no joints</td></tr>
+      <tr><td>D-02</td><td>Intake channel depth</td><td class="dim">−6.40 m</td><td>±20 mm</td><td>Basalt cut, raw</td><td>Cut into living rock</td></tr>
+      <tr><td>D-03</td><td>Membrane rack count</td><td class="dim">112 racks</td><td>—</td><td>GRP frames</td><td>Visible from promenade</td></tr>
+      <tr><td>D-04</td><td>Operating pressure</td><td class="dim">80.0 bar</td><td>+0 / −2</td><td>Duplex steel vessels</td><td>Rated 1.5× design</td></tr>
+      <tr><td>D-05</td><td>Clarifier diameter</td><td class="dim">Ø 12.40 m</td><td>±3 mm</td><td>Epoxy-coated steel</td><td>Rotation 0.25 rpm</td></tr>
+      <tr><td>D-06</td><td>Stack height (×2)</td><td class="dim">31.00 m</td><td>±10 mm</td><td>Board-marked concrete</td><td>Paint: RAL 2009</td></tr>
+      <tr><td>D-07</td><td>Public glazing ribbon</td><td class="dim">38.50 m</td><td>±2 mm</td><td>Laminated, 21.5 mm</td><td>Eye-level, unfiltered view</td></tr>
+      <tr><td>D-08</td><td>Daily output</td><td class="dim">38,000 m³</td><td>±4%</td><td>—</td><td>Potable, city standard</td></tr>
+      <tr><td>D-09</td><td>Floor finish, public zone</td><td class="dim">640 m²</td><td>—</td><td>Terrazzo, brass strip</td><td>Matches city hall spec</td></tr>
+      <tr><td>D-10</td><td>Structural concrete volume</td><td class="dim">11,240 m³</td><td>—</td><td>CEM III / 60% GGBS</td><td>Low-carbon mix, batch #7</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== MANIFESTO ===== -->
+<section class="manifesto grain" data-measure="MANIFESTO">
+  <div class="mf-grid">
+    <div class="mf a">Concrete is not a finish.</div>
+    <div class="mf b">It is an argument.</div>
+    <div class="mf c">We record what remains.</div>
+    <div class="mf d">No renders. No apologies.</div>
+    <div class="mf e">Measure everything.</div>
+  </div>
+  <div class="mf-note n1">Manifesto fragment 03 of 11. Full text printed annually, unbound, weatherproof stock.</div>
+  <div class="mf-note n2">This section is typeset against a 12-column structural grid. Deviations are deliberate and numbered.</div>
+</section>
+
+<!-- ===== ARCHIVE STRIP ===== -->
+<section class="strip-head grain" data-measure="ARCHIVE STRIP">
+  <div class="sec-head">
+    <h2>Archive Strip</h2>
+    <span class="mono-xs">Drag / scroll horizontally · Plates 014–021</span>
+    <span class="slabel" style="background:var(--blue)">Section E</span>
+  </div>
+</section>
+<div class="strip" id="strip">
+  <div class="plate">
+    <div class="plate-fig"><svg viewBox="0 0 120 140"><rect class="sil-fill" x="30" y="20" width="60" height="110" fill="#e9e5db"/><path class="sil-line" d="M30 20 l15 -15 h60 v110 h-15" stroke="#e9e5db" fill="none"/><rect class="sil-accent" x="52" y="40" width="16" height="16" fill="#ff4d00"/></svg></div>
+    <h4>Cooling Annex</h4><span class="mono-xs">Plate 014 / 1987 / Rotterdam NL</span>
+  </div>
+  <div class="plate">
+    <div class="plate-fig"><svg viewBox="0 0 120 140"><path class="sil-fill" d="M20 130 L60 20 L100 130 Z" fill="#e9e5db"/><path class="sil-line" d="M45 130 L60 55 L75 130" stroke="#e9e5db" fill="none"/><rect class="sil-accent" x="56" y="80" width="8" height="8" fill="#ff4d00"/></svg></div>
+    <h4>Ramp Structure №2</h4><span class="mono-xs">Plate 015 / 1994 / Bilbao ES</span>
+  </div>
+  <div class="plate">
+    <div class="plate-fig"><svg viewBox="0 0 120 140"><g class="sil-fill" fill="#e9e5db"><rect x="15" y="40" width="25" height="90"/><rect x="48" y="40" width="25" height="90"/><rect x="81" y="40" width="25" height="90"/></g><rect class="sil-accent" x="48" y="40" width="25" height="8" fill="#ff4d00"/></svg></div>
+    <h4>Silo Row West</h4><span class="mono-xs">Plate 016 / 1958 / Aarhus DK</span>
+  </div>
+  <div class="plate">
+    <div class="plate-fig"><svg viewBox="0 0 120 140"><path class="sil-line" d="M10 90 H110" stroke="#e9e5db" stroke-width="6" fill="none"/><path class="sil-fill" d="M30 90 L38 130 M90 90 L82 130" stroke="#e9e5db" stroke-width="8" fill="none"/><rect class="sil-accent" x="54" y="76" width="12" height="8" fill="#ff4d00"/></svg></div>
+    <h4>Viaduct Underpass</h4><span class="mono-xs">Plate 017 / 1966 / Lyon FR</span>
+  </div>
+  <div class="plate">
+    <div class="plate-fig"><svg viewBox="0 0 120 140"><rect class="sil-fill" x="40" y="30" width="40" height="100" fill="#e9e5db"/><path class="sil-line" d="M40 30 L60 10 L80 30" stroke="#e9e5db" fill="none"/><rect class="sil-accent" x="52" y="60" width="16" height="10" fill="#ff4d00"/></svg></div>
+    <h4>Signal Box North</h4><span class="mono-xs">Plate 018 / 1979 / Basel CH</span>
+  </div>
+  <div class="plate">
+    <div class="plate-fig"><svg viewBox="0 0 120 140"><circle class="sil-fill" cx="60" cy="70" r="42" fill="#e9e5db"/><circle class="sil-line" cx="60" cy="70" r="26" fill="none" stroke="#e9e5db" stroke-dasharray="4 4"/><rect class="sil-accent" x="56" y="66" width="8" height="8" fill="#ff4d00"/></svg></div>
+    <h4>Gas Holder Frame</h4><span class="mono-xs">Plate 019 / 1929 / Dublin IE</span>
+  </div>
+  <div class="plate">
+    <div class="plate-fig"><svg viewBox="0 0 120 140"><path class="sil-fill" d="M20 130 V60 L60 30 L100 60 V130 Z" fill="#e9e5db"/><path class="sil-line" d="M20 60 H100 M60 30 V130" stroke="#e9e5db" fill="none"/><rect class="sil-accent" x="56" y="90" width="8" height="8" fill="#ff4d00"/></svg></div>
+    <h4>Market Hall Roof</h4><span class="mono-xs">Plate 020 / 1952 / Porto PT</span>
+  </div>
+  <div class="plate">
+    <div class="plate-fig"><svg viewBox="0 0 120 140"><path class="sil-fill" d="M35 130 h50 l8 -100 h-66 z" fill="#e9e5db"/><path class="sil-line" d="M30 130 h60" stroke="#e9e5db" stroke-width="4"/><rect class="sil-accent" x="53" y="46" width="14" height="8" fill="#ff4d00"/></svg></div>
+    <h4>Chimney Pair East</h4><span class="mono-xs">Plate 021 / 1941 / Charleroi BE</span>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="foot-doc">
+    <div><b>Drawing Register</b>This document is issued as construction documentation. Do not amend. Mark-ups returned to the index office within 14 days or deemed accepted.</div>
+    <div><b>Project</b>CONCRETE INDEX<br>Vol. IV / Issue <span id="footcount">047</span></div>
+    <div><b>Scale</b>NTS<br>Unless noted</div>
+    <div><b>Date</b>Rev. C<br>Current</div>
+    <div><b>Checked</b>Survey Team B<br>Field-verified</div>
+  </div>
+  <div class="foot-big">
+    <h2>END OF<br>ISSUE<span>.</span></h2>
+    <a href="#hero" class="mono-xs" style="border-bottom:2px solid var(--orange);padding-bottom:4px">↑ RETURN TO COVER SHEET</a>
+  </div>
+  <div class="foot-legal">
+    <span>© CONCRETE INDEX — Independent, unaffiliated, unapologetic</span>
+    <span>All structures fictional · All measurements sincere</span>
+    <span>Doc ref CI-047-C · Sheet 1 of 1</span>
+  </div>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- ticking issue counter ---- */
+  var n = 47;
+  function pad(v,l){ v=String(v); while(v.length<l) v="0"+v; return v; }
+  setInterval(function(){
+    n++;
+    var s = "Nº " + pad(n,6);
+    document.getElementById('counter').textContent = s;
+    document.getElementById('topcount').textContent = pad(n,3);
+    document.getElementById('footcount').textContent = pad(n,3);
+  }, 4000);
+
+  /* ---- record ticker ---- */
+  var items = [
+    ["REC.001","Vestre Knutstad Water Tower","SEALED"],
+    ["REC.002","Kalkbreite Footbridge №4","OPERATIONAL"],
+    ["REC.003","Hafen Ost Silo Battery","LISTED"],
+    ["REC.004","Periferica Canopy Field","OPERATIONAL"],
+    ["REC.005","Tunnelportal Nord Exhaust Stack","OPERATIONAL"],
+    ["REC.006","Punta Salina Filtration Hall","FEATURED"],
+    ["PLT.014","Cooling Annex Rotterdam","ARCHIVED"],
+    ["PLT.019","Gas Holder Frame Dublin","ARCHIVED"]
+  ];
+  var half = "";
+  items.forEach(function(it){
+    half += "<span><b>"+it[0]+"</b> "+it[1]+" — STATUS: "+it[2]+"</span>";
+  });
+  document.getElementById('tickertrack').innerHTML = half + half;
+
+  /* ---- hero parallax ---- */
+  var layers = document.querySelectorAll('.plan-layer');
+  var hero = document.getElementById('hero');
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      requestAnimationFrame(function(){
+        var sy = window.scrollY || window.pageYOffset;
+        if(sy < hero.offsetHeight + 100){
+          layers.forEach(function(l){
+            var d = parseFloat(l.getAttribute('data-depth'))||0.5;
+            l.style.transform = 'translateY('+(sy*d)+'px)';
+          });
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, {passive:true});
+
+  /* ---- crosshair overlay ---- */
+  var xh = document.getElementById('xhair');
+  var xr = document.getElementById('xread');
+  document.addEventListener('mousemove', function(e){
+    xh.style.left = e.clientX+'px';
+    xh.style.top = e.clientY+'px';
+    xh.classList.add('on');
+    xr.textContent = 'X:'+pad(Math.round(e.clientX),4)+' Y:'+pad(Math.round(e.clientY),4);
+  });
+  document.addEventListener('mouseleave', function(){ xh.classList.remove('on'); });
+
+  /* ---- hard-cut reveal ---- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+  /* ---- strip drag-to-scroll ---- */
+  var strip = document.getElementById('strip');
+  var down=false, startX=0, startL=0;
+  strip.addEventListener('pointerdown', function(e){
+    down=true; startX=e.clientX; startL=strip.scrollLeft;
+    strip.classList.add('dragging');
+  });
+  window.addEventListener('pointermove', function(e){
+    if(down) strip.scrollLeft = startL - (e.clientX - startX);
+  });
+  window.addEventListener('pointerup', function(){
+    down=false; strip.classList.remove('dragging');
+  });
+
+})();
+</script>
+</body>
+</html>

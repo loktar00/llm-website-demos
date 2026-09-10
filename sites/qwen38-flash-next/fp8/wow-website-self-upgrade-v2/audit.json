@@ -1,0 +1,16 @@
+{
+  "url": "http://127.0.0.1:58381/index.html",
+  "pass": true,
+  "notes": [],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": true,
+  "canvas_count": 1,
+  "canvas_kinds": [
+    "2d"
+  ],
+  "served_by": "local-ephemeral",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 5230,
+  "scroll_height": 5949
+}

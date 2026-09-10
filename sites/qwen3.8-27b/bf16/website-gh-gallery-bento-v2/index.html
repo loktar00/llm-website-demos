@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qwen3.8-27B - Release Day Demos</title>
+<style>
+  /* ============================================================
+     QWEN3.8-27B / RELEASE DAY DEMOS
+     Strict 1-bit: #000 and #fff only. No gray. No opacity.
+     All tones rendered as Bayer dithering.
+     ============================================================ */
+
+  :root{
+    --ink:#fff;
+    --ground:#000;
+    --cell:4px;              /* one dither pixel on screen */
+
+    /* 8x8 Bayer, threshold < 4 (25% density) */
+    --d25:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23000'/%3E%3Cpath d='M0 0h2v2H0zM4 2h2v4H4zM6 6h2v2H6z' fill='%23fff'/%3E%3C/svg%3E");
+
+    /* 8x8 Bayer, threshold < 10 (62.5% density) */
+    --d62:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23000'/%3E%3Cpath d='M0 0h3v2H0zM6 0h2v2H6zM0 2h3v2H0zM4 2h3v2H4zM0 4h1v2H0zM4 4h4v2H4zM2 6h3v2H2zM6 6h2v2H6z' fill='%23fff'/%3E%3C/svg%3E");
+
+    /* 2x2 checker (50%), chunky 4px cells */
+    --d50:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2'%3E%3Crect width='2' height='2' fill='%23000'/%3E%3Cpath d='M0 0h1v1H0zM1 1h1v1H1z' fill='%23fff'/%3E%3C/svg%3E");
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ background:var(--ground); }
+
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    font-size:14px;
+    line-height:1.5;
+    letter-spacing:0.02em;
+    -webkit-font-smoothing:none;
+  }
+
+  ::selection{ background:var(--ink); color:var(--ground); }
+
+  a{ color:var(--ink); text-decoration:none; }
+
+  .wrap{
+    max-width:1200px;
+    margin:0 auto;
+    padding:32px 20px 56px;
+  }
+
+  /* ---------------- header ---------------- */
+
+  header{
+    border:3px solid var(--ink);
+    padding:24px 24px 20px;
+    position:relative;
+  }
+
+  .masthead{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px 32px;
+  }
+
+  .kicker{
+    font-size:11px;
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+
+  h1{
+    font-size:clamp(28px,5.2vw,54px);
+    font-weight:700;
+    line-height:1.05;
+    text-transform:uppercase;
+    letter-spacing:-0.01em;
+  }
+
+  h1 .sub{
+    display:block;
+    font-size:clamp(13px,2vw,18px);
+    font-weight:400;
+    letter-spacing:0.3em;
+    margin-top:10px;
+  }
+
+  .meta{
+    text-align:right;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    line-height:2;
+  }
+
+  .meta b{ font-weight:700; }
+
+  /* 1-bit animated dither strip */
+  .strip{
+    margin:20px -24px -20px;
+    border-top:3px solid var(--ink);
+    padding:6px 0;
+  }
+
+  #dither{
+    display:block;
+    width:100%;
+    height:32px;
+    image-rendering:pixelated;
+    image-rendering:crisp-edges;
+    background:var(--ground);
+  }
+
+  .intro{
+    margin-top:18px;
+    max-width:62ch;
+    font-size:13px;
+  }
+
+  .intro .flag{
+    display:inline-block;
+    border:2px solid var(--ink);
+    padding:1px 6px;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    margin-right:8px;
+    vertical-align:1px;
+  }
+
+  /* ---------------- bento grid ---------------- */
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    grid-auto-rows:118px;
+    grid-auto-flow:dense;
+    gap:14px;
+    margin-top:26px;
+  }
+
+  .card{
+    display:block;
+    border:3px solid var(--ink);
+    padding:11px;
+    background-color:var(--ground);
+    background-image:var(--d25);
+    background-size:32px 32px;       /* 4px dither cells */
+    box-shadow:6px 6px 0 0 var(--ink);
+    transition:box-shadow 90ms steps(2,end);
+  }
+
+  .card:hover,
+  .card:focus-visible{
+    background-image:var(--d62);      /* hover: denser Bayer matrix */
+    box-shadow:8px 8px 0 0 var(--ink);
+  }
+
+  .card:focus-visible{
+    outline:3px dotted var(--ink);
+    outline-offset:5px;
+  }
+
+  .in{
+    position:relative;
+    height:100%;
+    background:var(--ground);
+    border:2px solid var(--ink);
+    padding:12px 14px;
+    display:flex;
+    flex-direction:column;
+    transition:transform 90ms steps(2,end);
+  }
+
+  .card:hover .in{ transform:translate(-2px,-2px); }
+
+  .idx{
+    position:absolute;
+    top:8px;
+    right:10px;
+    font-size:11px;
+    letter-spacing:0.15em;
+  }
+
+  .tag{
+    font-size:10px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+
+  .card h2{
+    font-size:clamp(14px,1.4vw,17px);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    line-height:1.25;
+    margin-bottom:6px;
+  }
+
+  .desc{
+    font-size:12px;
+    line-height:1.55;
+    flex:1;
+  }
+
+  .open{
+    margin-top:10px;
+    font-size:11px;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .arrow{
+    display:inline-block;
+    transition:transform 90ms steps(2,end);
+  }
+
+  .card:hover .arrow{ transform:translateX(6px); }
+
+  /* featured card: pixel pagoda */
+  .card.feature .in{ padding-bottom:0; }
+  .card.feature .desc{ flex:0 1 auto; }
+  .pagoda{
+    margin-top:auto;
+    padding:12px 0 14px;
+  }
+  .pagoda svg{
+    display:block;
+    width:52px;
+    height:36px;
+    image-rendering:pixelated;
+  }
+
+  /* column/row spans, desktop */
+  .s3{ grid-column:span 3; }
+  .s4{ grid-column:span 4; }
+  .s5{ grid-column:span 5; }
+  .s6{ grid-column:span 6; }
+  .r2{ grid-row:span 2; }
+
+  /* ---------------- footer ---------------- */
+
+  footer{ margin-top:44px; }
+
+  .rule{
+    height:8px;
+    background-image:var(--d50);
+    background-size:8px 8px;
+    margin-bottom:18px;
+  }
+
+  .credit{
+    font-size:12px;
+    letter-spacing:0.05em;
+    line-height:1.8;
+    max-width:70ch;
+  }
+
+  .credit b{ font-weight:700; }
+
+  .colophon{
+    margin-top:14px;
+    font-size:10px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+  }
+
+  /* ---------------- responsive ---------------- */
+
+  @media (max-width:999px){
+    .grid{
+      grid-template-columns:repeat(6,1fr);
+      grid-auto-rows:112px;
+    }
+    .s3,.s4{ grid-column:span 3; }
+    .s5,.s6{ grid-column:span 6; }
+    .meta{ text-align:left; }
+  }
+
+  @media (max-width:639px){
+    .wrap{ padding:20px 14px 44px; }
+    header{ padding:18px 16px 16px; }
+    .strip{ margin:16px -16px -16px; }
+    .grid{
+      grid-template-columns:1fr;
+      grid-auto-rows:auto;
+      gap:12px;
+    }
+    .s3,.s4,.s5,.s6{ grid-column:auto; }
+    .r2{ grid-row:auto; }
+    .in{ min-height:150px; }
+    .card{ box-shadow:4px 4px 0 0 var(--ink); }
+    .card:hover,
+    .card:focus-visible{ box-shadow:5px 5px 0 0 var(--ink); }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .card,.in,.arrow{ transition:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="masthead">
+      <div>
+        <p class="kicker">Qwen3.8-27B / Demo Gallery</p>
+        <h1>Release Day Demos<span class="sub">Fifteen builds, one bit</span></h1>
+      </div>
+      <div class="meta">
+        <div><b>15</b> demos</div>
+        <div><b>2</b> values: black, white</div>
+        <div><b>8x8</b> Bayer matrices</div>
+        <div>no gray, ever</div>
+      </div>
+    </div>
+
+    <div class="strip" aria-hidden="true">
+      <canvas id="dither" width="192" height="8"></canvas>
+    </div>
+
+    <p class="intro">
+      <span class="flag">1-BIT</span>
+      Every surface on this page, and the frames around each card, is drawn from Bayer dither matrices in pure black and pure white. Hover a card and its frame shifts to a denser matrix: that is the only decoration. Each card opens a demo generated by the model on the day it shipped.
+    </p>
+  </header>
+
+  <main class="grid" aria-label="Demo gallery">
+
+    <a class="card s5 r2 feature" href="pagoda-voxel/">
+      <div class="in">
+        <span class="idx">01</span>
+        <p class="tag">Featured / Voxel</p>
+        <h2>Voxel Pagoda Garden</h2>
+        <p class="desc">A garden of voxel pagodas you can orbit, bloom, and prune before the lights go out.</p>
+        <div class="pagoda" aria-hidden="true">
+          <svg viewBox="0 0 13 9" shape-rendering="crispEdges">
+            <path fill="#fff" d="M5 0h3v1H5zM3 1h7v1H3zM4 2h5v1H4zM2 3h9v1H2zM5 4h3v1H5zM3 5h7v1H3zM4 6h5v1H4zM1 7h11v1H1z"/>
+          </svg>
+        </div>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s4" href="bento-grid-1bit-dither/">
+      <div class="in">
+        <span class="idx">02</span>
+        <p class="tag">Layout / Spec</p>
+        <h2>Dithered Bento Grid</h2>
+        <p class="desc">The exact design language of this page, published as its own working spec sheet.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s3" href="stationery-retail-catalogue/">
+      <div class="in">
+        <span class="idx">03</span>
+        <p class="tag">Retail / Type</p>
+        <h2>Stationery Retail Catalogue</h2>
+        <p class="desc">Paper, pens, and postage, sold with deadpan catalog charm.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s4" href="virtual-boy-website/">
+      <div class="in">
+        <span class="idx">04</span>
+        <p class="tag">Retro / 1995</p>
+        <h2>Virtual Boy Microsite</h2>
+        <p class="desc">A 1995 handheld fantasy rendered in strict monochrome, sans the headache.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s3" href="website-hand-drawn/">
+      <div class="in">
+        <span class="idx">05</span>
+        <p class="tag">Hand-drawn / Site</p>
+        <h2>The Moss Notebook</h2>
+        <p class="desc">A hand-drawn field notebook that grows, slowly, in your browser.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s3" href="fbm-color-breathing-terrain/">
+      <div class="in">
+        <span class="idx">06</span>
+        <p class="tag">Shader / FBM</p>
+        <h2>Breathing Terrain</h2>
+        <p class="desc">An FBM landscape that inhales and exhales in slow fractal noise.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s6" href="shader-molten-metaballs/">
+      <div class="in">
+        <span class="idx">07</span>
+        <p class="tag">Shader / Goo</p>
+        <h2>Molten Metaballs</h2>
+        <p class="desc">Shader goo that stretches, merges, and drips in a loop that never resolves. Built for staring at.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s3" href="organic-iridescent-blob/">
+      <div class="in">
+        <span class="idx">08</span>
+        <p class="tag">Organic / Shader</p>
+        <h2>Iridescent Blob</h2>
+        <p class="desc">One soft-bodied blob doing its best rainbow impression, one frame at a time.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s4" href="zombie-car-apocalypse/">
+      <div class="in">
+        <span class="idx">09</span>
+        <p class="tag">Game / Chaos</p>
+        <h2>Zombie Car Apocalypse</h2>
+        <p class="desc">Apocalypse traffic sim where every other car is a little bit wrong.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s4" href="zombie-wasteland-driver/">
+      <div class="in">
+        <span class="idx">10</span>
+        <p class="tag">Game / Survival</p>
+        <h2>Wasteland Driver</h2>
+        <p class="desc">Top-down survival driving through an endless, hungry commute.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s4" href="forest-fire/">
+      <div class="in">
+        <span class="idx">11</span>
+        <p class="tag">Simulation / CA</p>
+        <h2>Forest Fire Simulation</h2>
+        <p class="desc">Cell-automata firestorm sweeping across a freshly grown forest floor.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s3" href="website-brutalist/">
+      <div class="in">
+        <span class="idx">12</span>
+        <p class="tag">Site / Brutalist</p>
+        <h2>Brutalist</h2>
+        <p class="desc">Raw concrete, loud type, and zero apologies anywhere on the page.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s3" href="website-risograph/">
+      <div class="in">
+        <span class="idx">13</span>
+        <p class="tag">Site / Print</p>
+        <h2>Risograph</h2>
+        <p class="desc">Two-pass print charm, faked with serious pixel discipline.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s3" href="website-swiss/">
+      <div class="in">
+        <span class="idx">14</span>
+        <p class="tag">Site / Grid</p>
+        <h2>Swiss</h2>
+        <p class="desc">Strict grid, cool neutrality, and nothing left on the page by accident.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+    <a class="card s3" href="saas-pricing-terminal/">
+      <div class="in">
+        <span class="idx">15</span>
+        <p class="tag">SaaS / Terminal</p>
+        <h2>Pricing Terminal</h2>
+        <p class="desc">SaaS pricing you read in a terminal, billed entirely in plain text.</p>
+        <p class="open">Open demo <span class="arrow">&#8594;</span></p>
+      </div>
+    </a>
+
+  </main>
+
+  <footer>
+    <div class="rule" aria-hidden="true"></div>
+    <p class="credit">
+      Credit: this gallery page, and every demo linked from it, was generated by <b>Qwen3.8-27B</b> on release day. One model, one bit, no exceptions.
+    </p>
+    <p class="colophon">Bayer 8x8 &middot; Black &middot; White &middot; 1-bit &middot; No external pixels</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  /* 1-bit animated dither strip: pure black and white pixels only.
+     Scrolling 8x8 Bayer matrix with a slow density "breath". */
+  var canvas = document.getElementById("dither");
+  if(!canvas) return;
+  var ctx = canvas.getContext("2d");
+  var W = canvas.width, H = canvas.height;
+  var img = ctx.createImageData(W, H);
+
+  var BAYER = [
+    [0,2,8,10,12,14,4,6],
+    [1,3,9,11,13,15,5,7],
+    [4,6,12,14,0,2,8,10],
+    [5,7,13,15,1,3,9,11],
+    [8,10,12,14,0,2,4,6],
+    [9,11,13,15,1,3,5,7],
+    [12,14,4,6,8,10,0,2],
+    [13,15,5,7,9,11,1,3]
+  ];
+
+  function draw(offset, threshold){
+    var d = img.data;
+    for(var y=0; y<H; y++){
+      for(var x=0; x<W; x++){
+        var v = BAYER[y][((x + offset) % 8 + 8) % 8];
+        var c = v < threshold ? 255 : 0;
+        var i = (y*W + x) * 4;
+        d[i] = c; d[i+1] = c; d[i+2] = c; d[i+3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  var reduced = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if(reduced){
+    draw(0, 8);
+    return;
+  }
+
+  var t = 0;
+  var last = 0;
+  function frame(now){
+    if(now - last >= 100){          /* 10 ticks per second: chunky, deliberate */
+      t++;
+      var offset = t >> 1;          /* slow leftward scroll, 1 cell per 2 ticks */
+      var breath = Math.round(Math.sin(t * 0.05) * 1.4);  /* 6 to 9: density drifts */
+      draw(offset, 8 + breath);
+      last = now;
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

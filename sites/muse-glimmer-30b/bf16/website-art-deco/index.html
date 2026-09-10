@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Aurelian Express — Luxury Overnight Railway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A1120;
+  --ivory:#F5F1E8;
+  --black:#0A0A0A;
+  --teal:#3A6B6E;
+  --gold:#C9A86A;
+  --gold-dim:#9b7f4a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--navy);
+  color:var(--ivory);
+  font-family:'Montserrat',system-ui,sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:700;letter-spacing:.02em}
+.display{font-family:'Cinzel',serif}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+a{color:inherit;text-decoration:none}
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,17,32,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(201,168,106,.2);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:36px;height:36px}
+.brand-name{font-family:'Cinzel',serif;font-size:18px;letter-spacing:.15em}
+.nav-links{display:flex;gap:24px;font-size:13px;text-transform:uppercase;letter-spacing:.14em}
+.hero{
+  min-height:92vh;display:grid;place-items:center;position:relative;overflow:hidden;
+  background:radial-gradient(1200px 600px at 50% -10%, #1a2440 0%, var(--navy) 60%);
+}
+.sunburst{
+  position:absolute;inset:-20%;opacity:.08;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,transparent 0 20deg,var(--gold) 20deg 22deg);
+}
+.hero-inner{position:relative;z-index:2;text-align:center;padding:80px 20px}
+.eyebrow{color:var(--gold);letter-spacing:.3em;text-transform:uppercase;font-size:12px;margin-bottom:16px}
+.hero h1{font-size:clamp(48px,9vw,104px);line-height:.9;margin:8px 0 16px}
+.hero h1 span{display:block;font-weight:400;font-size:.45em;letter-spacing:.25em;color:rgba(245,241,232,.8)}
+.tagline{max-width:720px;margin:0 auto 32px;font-style:italic;color:#d9d2c0}
+.cta{display:inline-block;border:1px solid var(--gold);padding:14px 28px;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
+.cta:hover{background:var(--gold);color:var(--black)}
+.train-poster{margin-top:40px;width:min(1000px,95vw)}
+.window-frame{position:relative;aspect-ratio:16/6;border:4px solid #1e2a44;box-shadow:inset 0 0 0 1px rgba(201,168,106,.35), 0 30px 80px rgba(0,0,0,.6)}
+.window-inner{position:absolute;inset:12px;background:#0f172a;overflow:hidden}
+.layer{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.85}
+.layer1{animation:drift 60s linear infinite;background:linear-gradient(90deg,#0b1a2a,#123050,#0b1a2a);transform:translateX(0)}
+.layer2{animation:drift 90s linear infinite reverse;opacity:.5;background:linear-gradient(90deg,#1a3a5a,#2a4a6a,#1a3a5a)}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-30%)}}
+.lamps{position:absolute;top:0;left:0;right:0;height:100%;pointer-events:none}
+.lamp{position:absolute;bottom:18%;width:6px;height:6px;background:var(--gold);border-radius:50%;box-shadow:0 0 20px 6px rgba(201,168,106,.5);animation:glow 4s ease-in-out infinite}
+.lamp:nth-child(2){left:30%;animation-delay:.8s}
+.lamp:nth-child(3){left:62%;animation-delay:1.6s}
+@keyframes glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+section{padding:100px 0;border-top:1px solid rgba(201,168,106,.08)}
+.section-head{text-align:center;margin-bottom:56px}
+.section-head h2{font-size:clamp(36px,6vw,56px);margin-bottom:12px}
+.section-head p{color:#c8c0ae;max-width:720px;margin:0 auto}
+.grid{display:grid;gap:28px}
+.grid-7{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(201,168,106,.18);padding:24px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.medallion{width:84px;height:84px;margin:0 auto 16px;position:relative}
+.medallion svg{width:100%;height:100%;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.route{position:relative;padding:40px 0}
+.route-map{width:100%;height:520px}
+.route path{fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 3s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.stop-dot{fill:var(--ivory);stroke:var(--gold);stroke-width:3}
+.suites{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:32px}
+.suite-card{position:relative;border:1px solid rgba(201,168,106,.25);overflow:hidden}
+.suite-media{height:260px;background:#0f172a;position:relative}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:40px}
+.titem{border-left:2px solid var(--gold);padding-left:16px}
+.titem h4{font-family:'Cinzel',serif;color:var(--gold)}
+.spec-table{width:100%;border-collapse:collapse;margin-top:24px}
+.spec-table td{padding:12px 16px;border-bottom:1px solid rgba(201,168,106,.15)}
+.spec-table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.rituals{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px}
+.testimonials{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.quote{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic}
+.fares{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.fare-card{border:1px solid rgba(201,168,106,.3);padding:28px;text-align:center}
+.price{font-family:'Cinzel',serif;font-size:36px;color:var(--gold)}
+.booking{background:linear-gradient(180deg,rgba(201,168,106,.08),transparent);text-align:center;padding:80px 20px;border-top:1px solid rgba(201,168,106,.3);border-bottom:1px solid rgba(201,168,106,.3)}
+.booking h2{font-size:48px;margin-bottom:12px}
+footer{padding:40px 20px;text-align:center;color:#9aa0b0;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.reveal{opacity:0;transform:translateY(24px);transition:.8s ease}
+.reveal.in{opacity:1;transform:none}
+.brass-line{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:40px auto;width:60%}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav container">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M20 50 L50 20 L80 50 L50 80 Z" stroke="#C9A86A" stroke-width="6" fill="none"/></svg>
+      <div class="brand-name">AURELIAN EXPRESS</div>
+    </div>
+    <nav class="nav-links">
+      <a href="#route">Route</a><a href="#suites">Suites</a><a href="#journey">Journey</a><a href="#fares">Fares</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="sunburst"></div>
+  <div class="hero-inner container">
+    <div class="eyebrow">Overnight • Art Deco • Coastal</div>
+    <h1 class="display">The Aurelian Express<span>Seven Cities • One Night</span></h1>
+    <p class="tagline">A midnight navy carriage gliding between seven grand coastal cities. Brass, lacquer, and sea air. No stops for the ordinary.</p>
+    <a href="#booking" class="cta">Reserve a Carriage</a>
+    <div class="train-poster">
+      <div class="window-frame">
+        <div class="window-inner">
+          <div class="layer layer1"></div>
+          <div class="layer layer2"></div>
+          <svg viewBox="0 0 1200 400" style="position:absolute;bottom:0;left:0;width:100%;height:60%">
+            <path d="M0 300 Q200 260 400 300 T800 300 T1200 300 L1200 400 L0 400 Z" fill="#0b1a2a"/>
+            <path d="M0 320 Q200 280 400 320 T800 320 T1200 320 L1200 400 L0 400 Z" fill="#123050"/>
+          </svg>
+        </div>
+        <div class="lamps"><div class="lamp" style="left:12%"></div><div class="lamp" style="left:30%"></div><div class="lamp" style="left:62%"></div><div class="lamp" style="left:85%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="route">
+  <div class="container section-head reveal">
+    <h2>The Coastal Medallion Route</h2>
+    <p>Seven illuminated stops from dusk to dawn. The gold line draws itself each evening at 20:17.</p>
+  </div>
+  <div class="route container reveal">
+    <svg class="route-map" viewBox="0 0 1000 520">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1">
+          <stop offset="0%" stop-color="#3A6B6E"/><stop offset="100%" stop-color="#C9A86A"/>
+        </linearGradient>
+      </defs>
+      <path d="M 80 420 C 200 380, 300 280, 420 260 C 540 240, 660 300, 780 260 C 880 230, 920 180, 940 120" stroke="url(#g)" stroke-width="3" fill="none"/>
+      <g id="stops">
+        <!-- 7 stops -->
+        <g transform="translate(80 420)"><circle class="stop-dot" r="7"/><text y="24" fill="#F5F1E8" font-size="12">Marisol Bay</text></g>
+        <g transform="translate(260 340)"><circle class="stop-dot" r="7"/><text y="24" fill="#F5F1E8" font-size="12">Porto Celeste</text></g>
+        <g transform="translate(420 260)"><circle class="stop-dot" r="7"/><text y="24" fill="#F5F1E8" font-size="12">Aurelia</text></g>
+        <g transform="translate(580 280)"><circle class="stop-dot" r="7"/><text y="24" fill="#F5F1E8" font-size="12">Valdris Cove</text></g>
+        <g transform="translate(720 240)"><circle class="stop-dot" r="7"/><text y="24" fill="#F5F1E8" font-size="12">Lysandra</text></g>
+        <g transform="translate(860 180)"><circle class="stop-dot" r="7"/><text y="24" fill="#F5F1E8" font-size="12">Solmar</text></g>
+        <g transform="translate(940 120)"><circle class="stop-dot" r="7"/><text y="24" fill="#F5F1E8" font-size="12">Nocturne Harbor</text></g>
+      </g>
+    </svg>
+    <div class="brass-line"></div>
+    <div class="grid grid-7">
+      <!-- Destination cards -->
+      <div class="card reveal">
+        <div class="medallion"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#C9A86A" stroke-width="2"/><path d="M50 10 L55 35 L80 35 L60 50 L65 75 L50 60 L35 75 L40 50 L20 35 L45 35 Z" fill="#C9A86A"/></svg></div>
+        <h3>Marisol Bay</h3><p>Departure at 20:17. Salt gardens, white marble promenade. Luggage labels stamped in brass.</p>
+      </div>
+      <div class="card reveal"><div class="medallion"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#C9A86A" stroke-width="2"/><path d="M50 10 L55 35 L80 35 L60 50 L65 75 L50 60 L35 75 L40 50 L20 35 L45 35 Z" fill="#C9A86A" opacity=".9"/></svg></div><h3>Porto Celeste</h3><p>22:04. Azure lighthouse, fish market lanterns. First service of the night.</p></div>
+      <div class="card reveal"><div class="medallion"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#C9A86A" stroke-width="2"/><path d="M50 10 L55 35 L80 35 L60 50 L65 75 L50 60 L35 75 L40 50 L20 35 L45 35 Z" fill="#C9A86A" opacity=".8"/></svg></div><h3>Aurelia</h3><p>23:41. The namesake. Grand station with sunburst mosaics.</p></div>
+      <div class="card reveal"><div class="medallion"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#C9A86A" stroke-width="2"/><path d="M50 10 L55 35 L80 35 L60 50 L65 75 L50 60 L35 75 L40 50 L20 35 L45 35 Z" fill="#C9A86A" opacity=".7"/></svg></div><h3>Valdris Cove</h3><p>01:18. Cliffside villas, oxidized teal shutters.</p></div>
+      <div class="card reveal"><div class="medallion"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#C9A86A" stroke-width="2"/><path d="M50 10 L55 35 L80 35 L60 50 L65 75 L50 60 L35 75 L40 50 L20 35 L45 35 Z" fill="#C9A86A" opacity=".6"/></svg></div><h3>Lysandra</h3><p>02:55. Moonlit gardens, glass conservatory.</p></div>
+      <div class="card reveal"><div class="medallion"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#C9A86A" stroke-width="2"/><path d="M50 10 L55 35 L80 35 L60 50 L65 75 L50 60 L35 75 L40 50 L20 35 L45 35 Z" fill="#C9A86A" opacity=".5"/></svg></div><h3>Solmar</h3><p>04:33. Dawn rehearsal. Tea and citrus.</p></div>
+      <div class="card reveal"><div class="medallion"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#C9A86A" stroke-width="2"/><path d="M50 10 L55 35 L80 35 L60 50 L65 75 L50 60 L35 75 L40 50 L20 35 L45 35 Z" fill="#C9A86A" opacity=".4"/></svg></div><h3>Nocturne Harbor</h3><p>06:07 arrival. First light on lacquer black.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="suites">
+  <div class="container section-head reveal"><h2>Suites & Dining</h2><p>Stepped geometry, brass lines, and geometric windows.</p></div>
+  <div class="suites container reveal">
+    <div class="suite-card card">
+      <div class="suite-media"></div>
+      <h3>Imperial Suite</h3>
+      <p>Two beds, private observation deck, lacquer black vanity with oxidized teal accents. Sunburst headboard.</p>
+    </div>
+    <div class="suite-card card">
+      <div class="suite-media"></div>
+      <h3>Observatory Car</h3>
+      <p>Glass roof, reclining armchairs, curated star chart. Service at 01:00.</p>
+    </div>
+    <div class="suite-card card">
+      <div class="suite-media"></div>
+      <h3>Chef’s Table</h3>
+      <p>Eight seats. Coastal tasting menu, wine cellar curated per city.</p>
+    </div>
+  </div>
+</section>
+
+<section id="journey">
+  <div class="container section-head reveal"><h2>Day to Night</h2><p>Five acts across the rails.</p></div>
+  <div class="container timeline reveal">
+    <div class="titem"><h4>20:17 Departure</h4><p>Dusk champagne, luggage labels affixed.</p></div>
+    <div class="titem"><h4>23:41 Midnight</h4><p>Silk curtains, lamps dim to amber.</p></div>
+    <div class="titem"><h4>02:55 Still</h4><p>Observatory quiet. Sea air through brass vents.</p></div>
+    <div class="titem"><h4>04:33 Dawn</h4><p>Tea service, citrus, linen refreshed.</p></div>
+    <div class="titem"><h4>06:07 Arrival</h4><p>First light, gold route line completes.</p></div>
+  </div>
+  <div class="container reveal" style="margin-top:60px">
+    <h3>Train Specifications</h3>
+    <table class="spec-table">
+      <tr><td>Length</td><td>220 meters, 12 cars</td></tr>
+      <tr><td>Material</td><td>Lacquered steel, brass trim</td></tr>
+      <tr><td>Power</td><td>Electric, silent glide</td></tr>
+      <tr><td>Windows</td><td>Geometric art deco frames</td></tr>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="container section-head reveal"><h2>Service Rituals</h2></div>
+  <div class="container rituals reveal">
+    <div class="card"><h4>Luggage Labeling</h4><p>Hand-stamped brass tags at departure.</p></div>
+    <div class="card"><h4>Evening Dress Code</h4><p>Smart evening. No parody, only poise.</p></div>
+    <div class="card"><h4>Window Service</h4><p>Drifting landscapes visible through layered glass.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="container section-head reveal"><h2>Travelers</h2></div>
+  <div class="container testimonials reveal">
+    <div class="card"><p class="quote">“The gold line drawing across the map felt like a promise.”</p><p>— E. V.</p></div>
+    <div class="card"><p class="quote">“Midnight navy, warm ivory, and the sea. Perfect.”</p><p>— M. R.</p></div>
+  </div>
+</section>
+
+<section id="fares">
+  <div class="container section-head reveal"><h2>Fare Tiers</h2></div>
+  <div class="container fares reveal">
+    <div class="fare-card card"><h3>Standard Carriage</h3><div class="price">€1,240</div><p>Reclining seat, meal included.</p></div>
+    <div class="fare-card card"><h3>Suite</h3><div class="price">€3,850</div><p>Private suite, observation access.</p></div>
+    <div class="fare-card card"><h3>Imperial</h3><div class="price">€8,200</div><p>Full service, Chef’s Table, private car.</p></div>
+  </div>
+</section>
+
+<section id="booking" class="booking reveal">
+  <div class="container">
+    <h2 class="display">Board at 20:17</h2>
+    <p>Limited carriages per night. Select city pair, suite, and service.</p>
+    <a href="#" class="cta" style="margin-top:24px;display:inline-block">Begin Reservation</a>
+  </div>
+</section>
+
+<footer>
+  The Aurelian Express • Fictional Luxury Railway • All artwork generated with SVG & CSS
+</footer>
+
+<script>
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIRTUAL BOY // RED ARCHIVE — 1995</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Press+Start+2P&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+/* ============================================================
+   VIRTUAL BOY // RED ARCHIVE — design tokens
+============================================================ */
+:root{
+  --bg:#050405;
+  --bg2:#0b0708;
+  --panel:#110a0b;
+  --panel2:#160c0e;
+  --red:#ff1f1f;
+  --bright:#ff5454;
+  --deep:#8a0e14;
+  --dim:#4a1416;
+  --line:rgba(255,45,45,.16);
+  --line-strong:rgba(255,60,60,.4);
+  --text:#ece0e0;
+  --muted:#a08a8a;
+  --faint:#6b5a5a;
+  --mono:'Press Start 2P', monospace;
+  --head:'Chakra Petch', sans-serif;
+  --body:'Space Grotesk', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--red);color:#000}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#0a0506}
+::-webkit-scrollbar-thumb{background:var(--dim);border:2px solid #0a0506}
+::-webkit-scrollbar-thumb:hover{background:var(--deep)}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+
+/* ---------- global fx overlays ---------- */
+.scanlines{
+  position:fixed;inset:0;z-index:60;pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.18) 2px 4px);
+  mix-blend-mode:multiply;opacity:.5;
+}
+.noise{
+  position:fixed;inset:-50%;z-index:61;pointer-events:none;opacity:.045;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+  animation:grain 1.2s steps(4) infinite;
+}
+@keyframes grain{
+  0%{transform:translate(0,0)}25%{transform:translate(-2%,1%)}
+  50%{transform:translate(1%,-2%)}75%{transform:translate(-1%,2%)}100%{transform:translate(2%,-1%)}
+}
+.vignette{
+  position:fixed;inset:0;z-index:59;pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+#flash{
+  position:fixed;inset:0;background:var(--red);z-index:200;pointer-events:none;
+  opacity:0;transition:opacity .12s;
+}
+#flash.active{animation:redflash 1s ease-out forwards}
+@keyframes redflash{
+  0%{opacity:0}15%{opacity:.95}45%{opacity:.4}70%{opacity:.7}100%{opacity:0}
+}
+
+/* ---------- layout helpers ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+section{position:relative;padding:110px 0}
+.kicker{
+  font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--red);
+  display:flex;align-items:center;gap:14px;margin-bottom:22px;text-transform:uppercase;
+}
+.kicker::before{content:'';width:34px;height:1px;background:var(--red);display:inline-block;box-shadow:0 0 8px var(--red)}
+h2.title{
+  font-family:var(--head);font-weight:700;font-size:clamp(30px,4.4vw,52px);
+  line-height:1.05;letter-spacing:-.01em;text-transform:uppercase;margin-bottom:18px;
+}
+h2.title em{font-style:normal;color:var(--red);text-shadow:0 0 22px rgba(255,31,31,.55)}
+.lead{color:var(--muted);font-size:17px;line-height:1.75;max-width:640px;font-weight:300}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal[data-d="1"]{transition-delay:.1s}.reveal[data-d="2"]{transition-delay:.2s}
+.reveal[data-d="3"]{transition-delay:.3s}.reveal[data-d="4"]{transition-delay:.4s}
+.reveal[data-d="5"]{transition-delay:.5s}.reveal[data-d="6"]{transition-delay:.6s}
+
+/* ---------- header ---------- */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(5,4,5,.78);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  max-width:1320px;margin:0 auto;padding:0 28px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--head);font-weight:700;font-size:17px;letter-spacing:.12em;text-transform:uppercase}
+.brand .box{
+  width:26px;height:18px;border:1.5px solid var(--red);position:relative;
+  box-shadow:0 0 12px rgba(255,31,31,.4), inset 0 0 8px rgba(255,31,31,.25);
+}
+.brand .box::before,.brand .box::after{
+  content:'';position:absolute;top:5px;width:6px;height:6px;background:var(--red);
+  box-shadow:0 0 6px var(--red);
+}
+.brand .box::before{left:3px}.brand .box::after{right:3px}
+.brand small{font-family:var(--mono);font-size:7px;color:var(--faint);letter-spacing:.2em;display:block;margin-top:2px}
+.nav-links{display:flex;gap:26px;font-family:var(--head);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.nav-links a{color:var(--muted);position:relative;padding:4px 0;transition:color .25s}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--red);box-shadow:0 0 8px var(--red);transition:width .3s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.btn{
+  font-family:var(--head);font-weight:600;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+  border:1px solid var(--red);color:var(--red);background:transparent;padding:11px 22px;cursor:pointer;
+  position:relative;overflow:hidden;transition:color .3s;
+}
+.btn::before{content:'';position:absolute;inset:0;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1);z-index:-1}
+.btn:hover{color:#000}
+.btn:hover::before{transform:scaleX(1)}
+.btn.solid{background:var(--red);color:#000;box-shadow:0 0 24px rgba(255,31,31,.4)}
+.btn.solid::before{background:var(--bright)}
+.btn.solid:hover{color:#000;box-shadow:0 0 40px rgba(255,31,31,.7)}
+@media(max-width:940px){.nav-links{display:none}}
+
+/* ---------- hero ---------- */
+#hero{
+  min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 110%, rgba(138,14,20,.35), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% -10%, rgba(255,31,31,.08), transparent 70%),
+    var(--bg);
+}
+#hero-canvas{position:absolute;inset:0;z-index:0}
+#hero-canvas canvas{display:block}
+.hero-inner{position:relative;z-index:2;width:100%}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:24px}
+.hero-kicker{
+  font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:.32em;
+  display:flex;align-items:center;gap:14px;margin-bottom:26px;
+  text-shadow:0 0 10px rgba(255,31,31,.6);
+}
+.hero-kicker .dot{width:7px;height:7px;background:var(--red);border-radius:50%;box-shadow:0 0 10px var(--red);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1.hero-title{
+  font-family:var(--head);font-weight:700;text-transform:uppercase;
+  font-size:clamp(58px,11vw,148px);line-height:.92;letter-spacing:-.02em;
+  color:var(--text);
+  text-shadow:
+    0 0 12px rgba(255,31,31,.5),
+    0 0 60px rgba(255,31,31,.35),
+    4px 4px 0 rgba(138,14,20,.55);
+}
+h1.hero-title .stroke{
+  color:transparent;-webkit-text-stroke:1.5px rgba(255,80,80,.85);
+  text-shadow:0 0 30px rgba(255,31,31,.35);
+}
+.hero-tag{
+  font-size:clamp(15px,1.7vw,19px);color:var(--muted);max-width:560px;line-height:1.7;
+  margin:28px 0 40px;font-weight:300;
+}
+.hero-tag strong{color:var(--text);font-weight:500}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap}
+.hero-hud{
+  position:absolute;z-index:2;font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--faint);
+  line-height:2.1;
+}
+.hero-hud .hl{color:var(--red)}
+.hud-tl{top:92px;left:28px}
+.hud-tr{top:92px;right:28px;text-align:right}
+.hud-bl{bottom:28px;left:28px}
+.hud-br{bottom:28px;right:28px;text-align:right}
+.hud-corner{position:absolute;z-index:2;width:26px;height:26px;border:1px solid var(--line-strong)}
+.hud-corner.tl{top:140px;left:8px;border-right:none;border-bottom:none}
+.hud-corner.tr{top:140px;right:8px;border-left:none;border-bottom:none}
+.hud-corner.bl{bottom:8px;left:8px;border-right:none;border-top:none}
+.hud-corner.br{bottom:8px;right:8px;border-left:none;border-top:none}
+.scroll-hint{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;
+  font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:var(--faint);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.scroll-hint .bar{width:1px;height:38px;background:linear-gradient(var(--red),transparent);animation:drip 1.8s infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- ticker ---------- */
+.ticker{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:var(--bg2);overflow:hidden;padding:14px 0;white-space:nowrap;
+}
+.ticker-track{display:inline-block;animation:tick 30s linear infinite;font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--muted)}
+.ticker-track span{margin:0 28px}
+.ticker-track b{color:var(--red);font-weight:400}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- story ---------- */
+#story{background:linear-gradient(180deg,var(--bg),var(--bg2) 60%,var(--bg))}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
+.story-copy p{color:var(--muted);line-height:1.85;font-size:16.5px;font-weight:300;margin-bottom:22px}
+.story-copy p strong{color:var(--text);font-weight:500}
+.story-copy .drop::first-letter{
+  font-family:var(--head);font-weight:700;font-size:56px;float:left;line-height:.85;
+  margin:6px 12px 0 0;color:var(--red);text-shadow:0 0 20px rgba(255,31,31,.6);
+}
+.pull-stat{border-left:2px solid var(--red);padding:6px 0 6px 26px;margin-top:36px}
+.pull-stat .num{font-family:var(--head);font-weight:700;font-size:52px;color:var(--red);line-height:1;text-shadow:0 0 24px rgba(255,31,31,.5)}
+.pull-stat .lbl{font-family:var(--mono);font-size:8px;letter-spacing:.28em;color:var(--faint);margin-top:10px}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:30px}
+.stat-cell{background:var(--panel);border:1px solid var(--line);padding:24px;position:relative;transition:border-color .3s, box-shadow .3s}
+.stat-cell:hover{border-color:var(--line-strong);box-shadow:0 0 30px rgba(255,31,31,.12)}
+.stat-cell .n{font-family:var(--head);font-weight:700;font-size:30px;color:var(--text)}
+.stat-cell .n i{font-style:normal;color:var(--red)}
+.stat-cell .l{font-family:var(--mono);font-size:7.5px;letter-spacing:.24em;color:var(--faint);margin-top:8px;text-transform:uppercase}
+@media(max-width:900px){.story-grid{grid-template-columns:1fr;gap:44px}}
+
+/* ---------- hardware overview ---------- */
+.hw-list{margin-top:56px;border-top:1px solid var(--line)}
+.hw-item{
+  display:grid;grid-template-columns:110px 240px 1fr 90px;gap:26px;align-items:center;
+  padding:30px 18px;border-bottom:1px solid var(--line);position:relative;
+  transition:background .35s;cursor:default;
+}
+.hw-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--red);
+  transform:scaleY(0);transition:transform .35s;box-shadow:0 0 14px var(--red);
+}
+.hw-item:hover{background:rgba(255,31,31,.03)}
+.hw-item:hover::before{transform:scaleY(1)}
+.hw-idx{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.2em}
+.hw-name{font-family:var(--head);font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:.04em}
+.hw-name small{display:block;font-family:var(--mono);font-size:7px;color:var(--red);letter-spacing:.24em;margin-top:6px}
+.hw-desc{color:var(--muted);font-size:15px;line-height:1.7;font-weight:300}
+.hw-status{font-family:var(--mono);font-size:7.5px;letter-spacing:.18em;color:var(--red);text-align:right;border:1px solid var(--line);padding:8px 10px;justify-self:end;white-space:nowrap}
+@media(max-width:820px){.hw-item{grid-template-columns:1fr;gap:10px}.hw-status{justify-self:start}}
+
+/* ---------- features ---------- */
+#features{background:var(--bg2)}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:56px}
+.feat{
+  background:var(--panel);padding:34px 26px;position:relative;overflow:hidden;
+  transition:background .35s;
+}
+.feat::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 120%, rgba(255,31,31,.14), transparent 65%);
+  opacity:0;transition:opacity .4s;
+}
+.feat:hover{background:var(--panel2)}
+.feat:hover::after{opacity:1}
+.feat .num{font-family:var(--mono);font-size:8px;color:var(--faint);letter-spacing:.24em}
+.feat .icon{
+  width:44px;height:44px;margin:22px 0 20px;display:grid;place-items:center;
+  border:1px solid var(--line-strong);color:var(--red);font-size:20px;
+  box-shadow:inset 0 0 16px rgba(255,31,31,.12);
+  transition:box-shadow .35s, transform .35s;
+}
+.feat:hover .icon{box-shadow:0 0 22px rgba(255,31,31,.4), inset 0 0 16px rgba(255,31,31,.25);transform:translateY(-3px)}
+.feat h3{font-family:var(--head);font-weight:600;font-size:16.5px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+.feat p{color:var(--muted);font-size:13.5px;line-height:1.7;font-weight:300}
+@media(max-width:1020px){.feat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.feat-grid{grid-template-columns:1fr}}
+
+/* ---------- specs ---------- */
+.spec-table{width:100%;border-collapse:collapse;margin-top:56px;border:1px solid var(--line)}
+.spec-table tr{border-bottom:1px solid var(--line);transition:background .3s}
+.spec-table tr:last-child{border-bottom:none}
+.spec-table tr:hover{background:rgba(255,31,31,.035)}
+.spec-table td{padding:20px 24px;font-size:15px}
+.spec-table td:first-child{
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--red);
+  text-transform:uppercase;width:280px;border-right:1px solid var(--line);
+}
+.spec-table td:last-child{color:var(--text);font-weight:300}
+.spec-table td .alt{color:var(--faint);font-size:13px;display:block;margin-top:4px}
+@media(max-width:680px){.spec-table td:first-child{width:130px;font-size:7.5px}}
+
+/* ---------- games ---------- */
+#games{background:linear-gradient(180deg,var(--bg2),var(--bg))}
+.games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:56px}
+.gcard{
+  background:var(--panel);border:1px solid var(--line);overflow:hidden;position:relative;
+  transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s, border-color .4s;
+}
+.gcard:hover{transform:translateY(-6px);border-color:var(--line-strong);box-shadow:0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(255,31,31,.15)}
+.gthumb{
+  height:170px;background:#0a0506;position:relative;overflow:hidden;
+  border-bottom:1px solid var(--line);
+}
+.gthumb canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
+.gthumb::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent 0 3px, rgba(0,0,0,.35) 3px 6px);
+  pointer-events:none;
+}
+.gthumb .glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%, rgba(255,31,31,.1), transparent 70%);transition:opacity .4s;opacity:.5}
+.gcard:hover .glow{opacity:1}
+.gbody{padding:24px}
+.gtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.gname{font-family:var(--head);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.03em}
+.ggenre{font-family:var(--mono);font-size:7px;letter-spacing:.2em;color:var(--red);border:1px solid var(--line);padding:6px 9px;white-space:nowrap}
+.gdesc{color:var(--muted);font-size:13.5px;line-height:1.65;font-weight:300;margin-bottom:18px}
+.grarity{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:7.5px;letter-spacing:.2em;color:var(--faint)}
+.dots{display:flex;gap:4px}
+.dots i{width:8px;height:8px;background:var(--dim);transform:rotate(45deg)}
+.dots i.on{background:var(--red);box-shadow:0 0 8px rgba(255,31,31,.6)}
+@media(max-width:980px){.games-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.games-grid{grid-template-columns:1fr}}
+
+/* ---------- failed/matters ---------- */
+#matters .cols{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:56px}
+.mcol{background:var(--panel);padding:48px 40px}
+.mcol h3{font-family:var(--head);font-weight:700;font-size:22px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.mcol h3 .sq{width:12px;height:12px;transform:rotate(45deg)}
+.mcol.fail h3 .sq{background:var(--dim)}
+.mcol.win h3 .sq{background:var(--red);box-shadow:0 0 14px var(--red)}
+.mcol ul{list-style:none}
+.mcol li{
+  color:var(--muted);font-size:15px;line-height:1.7;font-weight:300;padding:16px 0 16px 26px;
+  border-bottom:1px solid var(--line);position:relative;
+}
+.mcol li:last-child{border-bottom:none}
+.mcol li::before{content:'//';position:absolute;left:0;font-family:var(--mono);font-size:8px;color:var(--red);top:18px}
+@media(max-width:820px){#matters .cols{grid-template-columns:1fr}}
+
+/* ---------- timeline ---------- */
+#timeline{background:var(--bg2)}
+.tl{position:relative;margin-top:60px;padding-left:44px}
+.tl::before{
+  content:'';position:absolute;left:11px;top:6px;bottom:6px;width:1px;
+  background:linear-gradient(180deg,transparent, var(--line-strong) 8%, var(--line-strong) 92%, transparent);
+}
+.tl-item{position:relative;padding:0 0 52px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:'';position:absolute;left:-40px;top:6px;width:9px;height:9px;background:var(--bg2);
+  border:2px solid var(--red);transform:rotate(45deg);box-shadow:0 0 12px rgba(255,31,31,.5);
+}
+.tl-item:hover::before{background:var(--red)}
+.tl-year{font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:.26em;margin-bottom:10px}
+.tl-item h3{font-family:var(--head);font-weight:600;font-size:20px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px}
+.tl-item p{color:var(--muted);font-size:14.5px;line-height:1.7;font-weight:300;max-width:600px}
+
+/* ---------- red space ---------- */
+#redspace{padding:110px 0;background:var(--bg)}
+.viewport{
+  margin-top:56px;position:relative;border:1px solid var(--line-strong);
+  background:#000;box-shadow:0 0 60px rgba(255,31,31,.12), inset 0 0 80px rgba(255,31,31,.06);
+  overflow:hidden;
+}
+.viewport::before,.viewport::after{
+  content:'';position:absolute;width:22px;height:22px;z-index:5;
+}
+.viewport::before{top:10px;left:10px;border-top:2px solid var(--red);border-left:2px solid var(--red)}
+.viewport::after{bottom:10px;right:10px;border-bottom:2px solid var(--red);border-right:2px solid var(--red)}
+#vp-canvas{display:block;width:100%;height:auto}
+.vp-hud{position:absolute;inset:0;pointer-events:none;font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--red);z-index:4;text-shadow:0 0 8px rgba(255,31,31,.8)}
+.vp-hud .a{top:20px;left:24px}.vp-hud .b{top:20px;right:24px}.vp-hud .c{bottom:20px;left:24px}.vp-hud .d{bottom:20px;right:24px}
+.vp-scan{position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:repeating-linear-gradient(0deg,transparent 0 2px, rgba(0,0,0,.4) 2px 4px)}
+.vp-sweep{position:absolute;left:0;right:0;height:80px;top:-80px;z-index:3;pointer-events:none;
+  background:linear-gradient(180deg,transparent, rgba(255,31,31,.1), transparent);
+  animation:sweep 4s linear infinite}
+@keyframes sweep{from{top:-80px}to{top:110%}}
+.vp-note{margin-top:20px;font-family:var(--mono);font-size:8px;letter-spacing:.22em;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+/* ---------- market ---------- */
+.market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:56px}
+.mcard{
+  background:var(--panel);border:1px solid var(--line);padding:30px 28px;position:relative;
+  transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s, border-color .4s;
+  display:flex;flex-direction:column;
+}
+.mcard:hover{transform:translateY(-5px);border-color:var(--line-strong);box-shadow:0 0 44px rgba(255,31,31,.14)}
+.mtag{
+  align-self:flex-start;font-family:var(--mono);font-size:7px;letter-spacing:.22em;
+  border:1px solid var(--line);color:var(--red);padding:6px 10px;margin-bottom:18px;
+}
+.mtag.hot{background:var(--red);color:#000;border-color:var(--red)}
+.mname{font-family:var(--head);font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
+.mcond{color:var(--faint);font-size:12.5px;font-family:var(--mono);letter-spacing:.12em;margin-bottom:20px}
+.mprice{font-family:var(--head);font-weight:700;font-size:30px;color:var(--red);text-shadow:0 0 18px rgba(255,31,31,.4);margin-bottom:20px}
+.mprice small{font-size:13px;color:var(--faint);font-weight:400;margin-left:6px}
+.mrows{border-top:1px solid var(--line);margin-bottom:20px}
+.mrow{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+.mrow .k{font-family:var(--mono);font-size:7.5px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;align-self:center}
+.mrow .v{color:var(--text);font-weight:500}
+.mnote{color:var(--muted);font-size:13px;line-height:1.65;font-weight:300;margin-bottom:24px;flex:1}
+.mcard .btn{align-self:flex-start;padding:10px 18px;font-size:11px}
+@media(max-width:980px){.market-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.market-grid{grid-template-columns:1fr}}
+
+/* ---------- comparison ---------- */
+.cmp-wrap{margin-top:56px;overflow-x:auto;border:1px solid var(--line)}
+table.cmp{border-collapse:collapse;min-width:900px;width:100%}
+.cmp th,.cmp td{padding:18px 20px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
+.cmp thead th{
+  font-family:var(--head);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.1em;
+  background:var(--panel2);color:var(--muted);
+}
+.cmp thead th.hero-col{color:var(--red);background:rgba(255,31,31,.07);border-left:1px solid var(--line-strong);border-right:1px solid var(--line-strong)}
+.cmp tbody th{
+  font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase;font-weight:400;
+  white-space:nowrap;
+}
+.cmp td{color:var(--muted);font-weight:300;line-height:1.5}
+.cmp td.hero-col{color:var(--text);background:rgba(255,31,31,.05);border-left:1px solid var(--line-strong);border-right:1px solid var(--line-strong);font-weight:500}
+.cmp tr:hover td,.cmp tr:hover th{background:rgba(255,31,31,.02)}
+.cmp tr:hover td.hero-col{background:rgba(255,31,31,.08)}
+.cmp .yes{color:var(--red)}.cmp .no{color:var(--faint)}
+
+/* ---------- quotes ---------- */
+#legacy{background:linear-gradient(180deg,var(--bg), var(--bg2));text-align:center}
+.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:56px;text-align:left}
+.qcard{
+  background:var(--panel);border:1px solid var(--line);padding:38px 32px;position:relative;
+  transition:border-color .35s, box-shadow .35s, transform .4s;
+}
+.qcard:hover{border-color:var(--line-strong);box-shadow:0 0 40px rgba(255,31,31,.12);transform:translateY(-4px)}
+.qcard .q{
+  font-family:var(--head);font-weight:300;font-size:20px;line-height:1.55;color:var(--text);
+  margin-bottom:24px;position:relative;padding-top:26px;
+}
+.qcard .q::before{content:'“';position:absolute;top:-14px;left:-6px;font-size:64px;color:var(--red);opacity:.5;font-family:var(--head)}
+.qcard .who{font-family:var(--mono);font-size:7.5px;letter-spacing:.24em;color:var(--faint);text-transform:uppercase}
+.qcard .who b{color:var(--red);font-weight:400;display:block;margin-bottom:6px}
+@media(max-width:900px){.qgrid{grid-template-columns:1fr}}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);background:#030203;padding:80px 0 40px;position:relative;overflow:hidden}
+footer::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent, var(--red), transparent);
+  box-shadow:0 0 30px var(--red);
+}
+.fgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:44px;margin-bottom:64px}
+.fbrand p{color:var(--muted);font-size:13.5px;line-height:1.75;font-weight:300;margin-top:20px;max-width:300px}
+.fcol h4{font-family:var(--mono);font-size:8px;letter-spacing:.26em;color:var(--red);margin-bottom:22px;text-transform:uppercase}
+.fcol a{display:block;color:var(--muted);font-size:14px;padding:7px 0;font-weight:300;transition:color .25s, transform .25s}
+.fcol a:hover{color:var(--red);transform:translateX(4px)}
+.fbottom{
+  border-top:1px solid var(--line);padding-top:30px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:7.5px;letter-spacing:.18em;color:var(--faint);
+}
+.fbottom .warn{max-width:640px;line-height:2}
+@media(max-width:900px){.fgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.fgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="noise"></div>
+<div class="vignette"></div>
+<div id="flash"></div>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <nav class="nav">
+    <a class="brand" href="#hero">
+      <span class="box"></span>
+      <span>VB&nbsp;ARCHIVE<small>RED&nbsp;UNIT&nbsp;//&nbsp;1995</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#story">Story</a>
+      <a href="#hardware">Hardware</a>
+      <a href="#features">Features</a>
+      <a href="#games">Games</a>
+      <a href="#redspace">Red&nbsp;Space</a>
+      <a href="#market">Market</a>
+      <a href="#timeline">Archive</a>
+    </div>
+    <button class="btn" onclick="enterRed()">Enter Red Space</button>
+  </nav>
+</header>
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <div id="hero-canvas"></div>
+  <span class="hud-corner tl"></span><span class="hud-corner tr"></span>
+  <span class="hud-corner bl"></span><span class="hud-corner br"></span>
+  <div class="hero-hud hud-tl">
+    SYS.VB-95 // STEREO RENDER <span class="hl">ACTIVE</span><br>
+    L-EYE 240×160 @75HZ<br>
+    R-EYE 240×160 @75HZ
+  </div>
+  <div class="hero-hud hud-tr">
+    COORD 35.0116°N 135.7681°E<br>
+    KYOTO LAB / <span class="hl">PROJECT M-2</span><br>
+    BUILD 07.15.95
+  </div>
+  <div class="hero-hud hud-bl">
+    DEPTH PLANE: 0.75m<br>
+    IR-TRIGGER: <span class="hl">SYNCED</span>
+  </div>
+  <div class="hero-hud hud-br">
+    UNIT STATUS: <span class="hl">RARE</span><br>
+    COLLECTOR GRADE: A+
+  </div>
+
+  <div class="hero-inner wrap">
+    <div class="hero-grid">
+      <div class="hero-kicker"><span class="dot"></span>NINTENDO INTERNAL // EXPERIMENT 07 // 1995</div>
+      <h1 class="hero-title">VIRTUAL<br><span class="stroke">BOY</span></h1>
+      <p class="hero-tag">
+        A tabletop headset. One color. A true sense of <strong>depth</strong> — before the world
+        was ready for it. Seven hundred thousand units. Six months.
+        One of the strangest artifacts in gaming history.
+      </p>
+      <div class="hero-cta">
+        <a href="#hardware" class="btn solid">Explore the Hardware</a>
+        <button class="btn" onclick="enterRed()">Enter Red Space</button>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint"><span>SCROLL</span><span class="bar"></span></div>
+</section>
+
+<!-- ================= TICKER ================= -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span><b>770,000</b> UNITS SOLD WORLDWIDE</span><span>◆</span>
+    <span><b>6 MONTHS</b> OF NORTHERN AMERICAN LIFE</span><span>◆</span>
+    <span><b>2 × 240×160</b> STEREO LCD PANELS</span><span>◆</span>
+    <span><b>ONE COLOR</b> — AND IT WAS RED</span><span>◆</span>
+    <span><b>42.002 MHZ</b> 16-BIT CORE</span><span>◆</span>
+    <span><b>12 GAMES</b> IN A 15-MONTH WINDOW</span><span>◆</span>
+    <span><b>CLASSIFIED</b> CULT ARTIFACT // COLLECTOR GRADE A</span><span>◆</span>
+    <span><b>770,000</b> UNITS SOLD WORLDWIDE</span><span>◆</span>
+    <span><b>6 MONTHS</b> OF NORTHERN AMERICAN LIFE</span><span>◆</span>
+    <span><b>2 × 240×160</b> STEREO LCD PANELS</span><span>◆</span>
+    <span><b>ONE COLOR</b> — AND IT WAS RED</span><span>◆</span>
+    <span><b>42.002 MHZ</b> 16-BIT CORE</span><span>◆</span>
+    <span><b>12 GAMES</b> IN A 15-MONTH WINDOW</span><span>◆</span>
+    <span><b>CLASSIFIED</b> CULT ARTIFACT // COLLECTOR GRADE A</span><span>◆</span>
+  </div>
+</div>
+
+<!-- ================= STORY ================= -->
+<section id="story">
+  <div class="wrap">
+    <div class="kicker reveal">// 01 — ORIGIN FILE</div>
+    <h2 class="title reveal" data-d="1">A machine built from <em>ambition</em>,<br>not a business plan.</h2>
+    <div class="story-grid">
+      <div class="story-copy reveal" data-d="2">
+        <p class="drop">
+          In the mid-1990s, virtual reality was a word sold to the public long before it could be
+          delivered. Headsets were vaporware. The technology wasn't there. Nintendo, however,
+          had already decided what the future should look like — and it looked like a black box
+          with two glowing red eyes.
+        </p>
+        <p>
+          The Virtual Boy was never meant to be a safe product. It was a
+          <strong>tabletop stereoscopic headset</strong>: a flat console you laid across a desk or lap,
+          a visor you clamped over your face, two infrared-emitting LCDs flickering in precise
+          sync to fake depth. No 3D glasses. No projection. Just two red pictures, timed
+          16&nbsp;milliseconds apart, persuading your brain that the world had a third dimension.
+        </p>
+        <p>
+          The result was genuinely, almost embarrassingly <strong>effective</strong> — and also
+          genuinely, almost embarrassingly strange. The monochrome palette, the forced head
+          position, the way the room faded to darkness the moment you put it on. It felt less
+          like a game console and more like a machine you had to be fitted for.
+        </p>
+        <div class="pull-stat">
+          <div class="num">0.75m</div>
+          <div class="lbl">FIXED VIEWING DISTANCE — YOUR FACE, LOCKED TO THE BOX</div>
+        </div>
+      </div>
+      <div class="reveal" data-d="3">
+        <div class="stat-row">
+          <div class="stat-cell"><div class="n">199<i>5</i></div><div class="l">Launch — Japan, July</div></div>
+          <div class="stat-cell"><div class="n">$17<i>9</i></div><div class="l">MSRP — North America</div></div>
+          <div class="stat-cell"><div class="n">2<i>×</i></div><div class="l">Infrared LCD emitters</div></div>
+          <div class="stat-cell"><div class="n">12</div><div class="l">Retail games, total</div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-cell"><div class="n">75<i>HZ</i></div><div class="l">Flicker rate per eye</div></div>
+          <div class="stat-cell"><div class="n">1</div><div class="l">Player. Always one.</div></div>
+        </div>
+        <p style="margin-top:30px;color:var(--muted);font-size:14.5px;line-height:1.8;font-weight:300">
+          What makes the Virtual Boy fascinating is not that it failed.
+          It's that it <strong style="color:var(--text)">worked</strong> — technically, it delivered real
+          stereoscopic depth on a consumer machine five years before the world had the displays,
+          the lenses, or the patience for it. It was the right idea wearing the wrong body,
+          arriving a decade too early, and disappearing almost without a trace.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HARDWARE OVERVIEW ================= -->
+<section id="hardware">
+  <div class="wrap">
+    <div class="kicker reveal">// 02 — HARDWARE INVENTORY</div>
+    <h2 class="title reveal" data-d="1">The complete unit,<br><em>component by component.</em></h2>
+    <p class="lead reveal" data-d="2">
+      Presented here as it would appear in a collector's intake report. Every component of the
+      Virtual Boy was custom, and nearly every one of them is now a sought-after piece.
+    </p>
+    <div class="hw-list">
+      <div class="hw-item reveal"><div class="hw-idx">HW.01</div>
+        <div class="hw-name">Headset Visor<small>STEREO VIEWER UNIT</small></div>
+        <div class="hw-desc">The signature black clamp-on visor. Two infrared-emitting LCDs sit flush against your eyes, separated by an adjustable nose bridge and a chin rest. No lenses — the image forms in the air between you and the box.</div>
+        <div class="hw-status">SEALS INTACT: RARE</div>
+      </div>
+      <div class="hw-item reveal" data-d="1"><div class="hw-idx">HW.02</div>
+        <div class="hw-name">Tabletop Console<small>BASE UNIT VB-001</small></div>
+        <div class="hw-desc">The flat, low-profile base that hosts the IR emitters, the cartridge slot, and the internal 42&nbsp;MHz core. Designed to sit on a desk, a table, or — as many found — dangerously close to the floor.</div>
+        <div class="hw-status">CONDITION: GRADE A</div>
+      </div>
+      <div class="hw-item reveal" data-d="2"><div class="hw-idx">HW.03</div>
+        <div class="hw-name">Dual-Grip Controller<small>VB-CTR / CABLED</small></div>
+        <div class="hw-desc">A single controller split into two asymmetric grips, each with its own pair of face buttons plus start. Designed for a two-handed posture that most players described, after the first ten minutes, as "exhausting."</div>
+        <div class="hw-status">WIRING CHECK: PASS</div>
+      </div>
+      <div class="hw-item reveal" data-d="3"><div class="hw-idx">HW.04</div>
+        <div class="hw-name">Red Monochrome Display<small>2 × 240 × 160 IR LCD</small></div>
+        <div class="hw-desc">Single-channel red-on-black imagery rendered at 75Hz per eye. Every shadow, every highlight, every particle of light in every game on this system is a shade of the same impossible red.</div>
+        <div class="hw-status">EMITTER: ACTIVE</div>
+      </div>
+      <div class="hw-item reveal" data-d="4"><div class="hw-idx">HW.05</div>
+        <div class="hw-name">Cartridges<small>3.5IN / 1–2MB PCB</small></div>
+        <div class="hw-desc">Black plastic shells, red-accented labels, and — on the rarer titles — a serial number that collectors now check twice. Cartridges are the anchor of the entire collecting market.</div>
+        <div class="hw-status">12 TITLES TRACKED</div>
+      </div>
+      <div class="hw-item reveal" data-d="5"><div class="hw-idx">HW.06</div>
+        <div class="hw-name">Tabletop Stand &amp; Strap<small>ACCESSORY KIT</small></div>
+        <div class="hw-desc">The adjustable stand, neck strap, and instruction manuals — the pieces most often lost, and the ones that push a loose unit into complete-in-box territory. A manual with the red spine is worth triple.</div>
+        <div class="hw-status">COMPLETENESS: +$</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section id="features">
+  <div class="wrap">
+    <div class="kicker reveal">// 03 — CAPABILITY MATRIX</div>
+    <h2 class="title reveal" data-d="1">Eight reasons this machine <em>still matters.</em></h2>
+    <div class="feat-grid">
+      <div class="feat reveal"><div class="num">FT.01</div><div class="icon">▣</div>
+        <h3>Red Monochrome Display</h3>
+        <p>A single channel of light. Every game on the system exists in one color — which forced artists to master contrast, motion, and negative space with brutal efficiency.</p>
+      </div>
+      <div class="feat reveal" data-d="1"><div class="num">FT.02</div><div class="icon">◢◣</div>
+        <h3>Stereoscopic 3D Gameplay</h3>
+        <p>Two infrared panels, one 16ms-per-eye pipeline. Depth on the Virtual Boy wasn't a gimmick — it's real binocular parallax. Try it once and it's nearly impossible to forget.</p>
+      </div>
+      <div class="feat reveal" data-d="2"><div class="num">FT.03</div><div class="icon">▭</div>
+        <h3>Tabletop Headset Design</h3>
+        <p>Not a handheld, not a home console — a desk appliance. You put it down, strap on the visor, and the room disappears. The form factor still has no direct successor.</p>
+      </div>
+      <div class="feat reveal" data-d="3"><div class="num">FT.04</div><div class="icon">⋔⋏</div>
+        <h3>Unique Dual-Grip Controller</h3>
+        <p>Split grips, no D-pad, face buttons on both sides. An ergonomic experiment that prioritized the seated posture of the headset over everything else. Memorable. Demanding.</p>
+      </div>
+      <div class="feat reveal"><div class="num">FT.05</div><div class="icon">▤</div>
+        <h3>Cartridge-Based Games</h3>
+        <p>Small, durable, serial-numbered PCBs in red-and-black shells. The physical scarcity of every title is a direct cause of the collecting market's fever.</p>
+      </div>
+      <div class="feat reveal" data-d="1"><div class="num">FT.06</div><div class="icon">▯</div>
+        <h3>Tabletop, Not Handheld</h3>
+        <p>The system's most misunderstood trait. It was never meant to travel. It was meant to be set up, sat down, and stared into — a séance of light at kitchen-table height.</p>
+      </div>
+      <div class="feat reveal" data-d="2"><div class="num">FT.07</div><div class="icon">◈</div>
+        <h3>Experimental 90s VR Concept</h3>
+        <p>Before "VR" was a product category, this was it: a consumer device selling depth, presence, and a darkened world. A decade before its window, technically flawless at the core.</p>
+      </div>
+      <div class="feat reveal" data-d="3"><div class="num">FT.08</div><div class="icon">✦</div>
+        <h3>Collector Rarity</h3>
+        <p>With roughly 770,000 units ever shipped and a market that has only appreciated since, sealed units and complete-in-box sets now price well beyond any other Nintendo hardware of the era.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SPECS ================= -->
+<section id="specs">
+  <div class="wrap">
+    <div class="kicker reveal">// 04 — TECHNICAL SPECIFICATIONS</div>
+    <h2 class="title reveal" data-d="1">Intake sheet: <em>VB-001 unit</em></h2>
+    <div style="overflow-x:auto;border:1px solid var(--line)" class="reveal" data-d="2">
+      <table class="spec-table">
+        <tr><td>Display Type</td><td>Dual infrared-emitting LCD, stereoscopic <span class="alt">240 × 160 per eye · no lenses · image formed at ~75cm</span></td></tr>
+        <tr><td>Color Palette</td><td>Single-channel red monochrome <span class="alt">Red-on-black · 8-bit grayscale per channel</span></td></tr>
+        <tr><td>Refresh Rate</td><td>75 Hz per eye, alternating emission <span class="alt">Temporal interleaving produces the 3D illusion</span></td></tr>
+        <tr><td>Processor</td><td>Custom 16-bit core @ 42.002 MHz <span class="alt">Dual CPU architecture · 512KB main memory</span></td></tr>
+        <tr><td>Controller</td><td>Dual-grip, 8-button, cable-connected <span class="alt">4 face buttons per grip · no D-pad · Start</span></td></tr>
+        <tr><td>Game Format</td><td>Proprietary 3.5" cartridge <span class="alt">1MB standard · 2MB on select titles · serial-numbered PCB</span></td></tr>
+        <tr><td>Release Era</td><td>July 1995 – March 1996 <span class="alt">Japan · North America · select international markets</span></td></tr>
+        <tr><td>Visual Style</td><td>Wireframe, flat-shaded, and sprite 3D in red <span class="alt">Every asset authored for a one-color display</span></td></tr>
+        <tr><td>Power Source</td><td>AC adapter, 9V DC <span class="alt">No battery operation · designed for stationary play</span></td></tr>
+        <tr><td>Player Mode</td><td>Single player only <span class="alt">No multiplayer support of any kind</span></td></tr>
+        <tr><td>Collector Status</td><td>Classified: Rare / Cult Artifact <span class="alt">CIB units premium · sealed games exceptional · Grade A reference system</span></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GAMES ================= -->
+<section id="games">
+  <div class="wrap">
+    <div class="kicker reveal">// 05 — GAME LIBRARY</div>
+    <h2 class="title reveal" data-d="1">Twelve cartridges. <em>Six hall-of-fame titles.</em></h2>
+    <p class="lead reveal" data-d="2">Thumbnail renderings reconstructed in red monochrome from original system output patterns. No official box art is reproduced.</p>
+    <div class="games-grid">
+      <div class="gcard reveal"><div class="gthumb"><canvas data-art="tennis" width="96" height="96"></canvas><div class="glow"></div></div>
+        <div class="gbody"><div class="gtop"><div class="gname">Mario's Tennis</div><div class="ggenre">SPORTS</div></div>
+        <div class="gdesc">The launch showcase. A court rendered in pure depth — the ball genuinely falls out of the screen. The game that proved the 3D, and the one that most defined the experience.</div>
+        <div class="grarity">RARITY<div class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>COMMON</div></div>
+      </div>
+      <div class="gcard reveal" data-d="1"><div class="gthumb"><canvas data-art="alarm" width="96" height="96"></canvas><div class="glow"></div></div>
+        <div class="gbody"><div class="gtop"><div class="gname">Red Alarm</div><div class="ggenre">TACTICAL</div></div>
+        <div class="gdesc">A top-down shooter built around a single red command console. The interface, the palette, the tension — the purest expression of what this machine could do.</div>
+        <div class="grarity">RARITY<div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>UNCOMMON</div></div>
+      </div>
+      <div class="gcard reveal" data-d="2"><div class="gthumb"><canvas data-art="wario" width="96" height="96"></canvas><div class="glow"></div></div>
+        <div class="gbody"><div class="gtop"><div class="gname">Wario Land</div><div class="ggenre">PLATFORM</div></div>
+        <div class="gdesc">The cult favorite. A dark, puzzle-driven platformer that used the headset's depth to hide dangers just behind the floor. Still the most-quoted reason people remember the system fondly.</div>
+        <div class="grarity">RARITY<div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>UNCOMMON</div></div>
+      </div>
+      <div class="gcard reveal"><div class="gthumb"><canvas data-art="boxer" width="96" height="96"></canvas><div class="glow"></div></div>
+        <div class="gbody"><div class="gtop"><div class="gname">Teleroboxer</div><div class="ggenre">FIGHTING</div></div>
+        <div class="gdesc">Retro boxing on the world's first 3D fighting ring. You watch the bout from behind your own fighter — a camera angle the headset made feel startlingly real in 1995.</div>
+        <div class="grarity">RARITY<div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>RARE</div></div>
+      </div>
+      <div class="gcard reveal" data-d="1"><div class="gthumb"><canvas data-art="pinball" width="96" height="96"></canvas><div class="glow"></div></div>
+        <div class="gbody"><div class="gtop"><div class="gname">Galactic Pinball</div><div class="ggenre">ARCADE</div></div>
+        <div class="gdesc">A pinball table suspended in space, with bumpers that hit you in the depth plane. One of the most hypnotic — and least-played — titles on the list.</div>
+        <div class="grarity">RARITY<div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>RARE</div></div>
+      </div>
+      <div class="gcard reveal" data-d="2"><div class="gthumb"><canvas data-art="force" width="96" height="96"></canvas><div class="glow"></div></div>
+        <div class="gbody"><div class="gtop"><div class="gname">Vertical Force</div><div class="ggenre">SHOOTER</div></div>
+        <div class="gdesc">A vertical-scrolling 3D shooter aimed squarely at the arcade crowd. Fast, dark, and unapologetically difficult — the system's closest thing to a hardcore entry.</div>
+        <div class="grarity">RARITY<div class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>COMMON</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAILED / MATTERS ================= -->
+<section id="matters">
+  <div class="wrap">
+    <div class="kicker reveal">// 06 — POST-MORTEM</div>
+    <h2 class="title reveal" data-d="1">Why it failed. <em>Why it matters.</em></h2>
+    <div class="cols reveal" data-d="2">
+      <div class="mcol fail">
+        <h3><span class="sq"></span>The Honest Record</h3>
+        <ul>
+          <li>Commercially, it was a clear disappointment — the fastest Nintendo console to be pulled from the North American market, gone in roughly a year.</li>
+          <li>Long sessions caused fatigue, headaches, and in some reports nausea. The fixed head position was a genuine ergonomic flaw, not a style choice.</li>
+          <li>The red monochrome palette was a hardware constraint, and it made the catalog feel thin and repetitive even when the games were well-made.</li>
+          <li>Priced at $179 with a small launch library, it asked 1995 buyers to take a big conceptual leap for a small amount of content.</li>
+        </ul>
+      </div>
+      <div class="mcol win">
+        <h3><span class="sq"></span>The Enduring Value</h3>
+        <ul>
+          <li>It was an act of bold, expensive experimentation at a time when "virtual reality" was otherwise sold as pure fantasy.</li>
+          <li>The stereoscopic depth was real. Every headset that followed — for a decade or more — is solving the same problem this box solved in 1995.</li>
+          <li>The industrial design is now widely regarded as one of the most distinctive pieces of consumer tech ever shipped. Ugly to some. Unmistakable to everyone.</li>
+          <li>Its scarcity, strangeness, and technical honesty made it the most interesting footnote in the 16-bit era — and a cornerstone of modern hardware collecting.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TIMELINE ================= -->
+<section id="timeline">
+  <div class="wrap">
+    <div class="kicker reveal">// 07 — ARCHIVE TIMELINE</div>
+    <h2 class="title reveal" data-d="1">The short, <em>red life</em> of a system</h2>
+    <div class="tl">
+      <div class="tl-item reveal"><div class="tl-year">1992 — CONCEPT</div>
+        <h3>Project begins in Kyoto</h3>
+        <p>Internal research teams begin exploring stereoscopic display for consumer games. The brief: depth without external equipment. The answer: two flickering infrared panels and a very small viewing distance.</p></div>
+      <div class="tl-item reveal"><div class="tl-year">1993 — DEVELOPMENT</div>
+        <h3>The form factor is settled</h3>
+        <p>The tabletop base and clamped visor become the design's signature. Industrial designers iterate on the controller's split grips. The red monochrome constraint is locked in for cost and sync stability.</p></div>
+      <div class="tl-item reveal"><div class="tl-year">JUL 1995 — JAPAN LAUNCH</div>
+        <h3>Seven hundred thousand units, worldwide</h3>
+        <p>The system launches in Japan to curiosity and, for the first cohort, genuine surprise. The 3D effect works. The press is fascinated. The queues are real — if short-lived.</p></div>
+      <div class="tl-item reveal"><div class="tl-year">SEP 1995 — NORTH AMERICA</div>
+        <h3>Box stores, red light</h3>
+        <p>A North American launch with a modest library and big advertising. Players try it in stores and either remember it for years or leave the aisle. The split in public reaction is total, and immediate.</p></div>
+      <div class="tl-item reveal"><div class="tl-year">1996 — WITHDRAWAL</div>
+        <h3>Shelves go dark</h3>
+        <p>Distribution in North America ends within months. Remaining stock is cleared. The company does not announce a successor. For the next two decades, the system is mostly remembered as a cautionary tale.</p></div>
+      <div class="tl-item reveal"><div class="tl-year">2010s — CULT STATUS</div>
+        <h3>The artifact era begins</h3>
+        <p>Online communities begin treating the unit as a museum piece. Prices for complete sets climb steadily. The device's reputation flips from embarrassment to object of fascination.</p></div>
+      <div class="tl-item reveal"><div class="tl-year">2023 — TODAY</div>
+        <h3>Collector rediscovery</h3>
+        <p>Sealed cartridges and CIB units trade at multiples of any other 90s Nintendo hardware. The Virtual Boy is no longer a footnote. It is the most requested object in every retro-tech collection we catalog.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RED SPACE (FAUX VIEWPORT) ================= -->
+<section id="redspace">
+  <div class="wrap">
+    <div class="kicker reveal">// 08 — RED SPACE SIMULATION</div>
+    <h2 class="title reveal" data-d="1">Step inside <em>the red.</em></h2>
+    <p class="lead reveal" data-d="2">A reconstruction of what the infrared panels emitted: wireframe terrain, depth cues, and the unmistakable one-color glow. This is a simulation — your eyes are safe. Your nostalgia is not.</p>
+    <div class="viewport reveal" data-d="3">
+      <canvas id="vp-canvas" width="960" height="440"></canvas>
+      <div class="vp-scan"></div>
+      <div class="vp-sweep"></div>
+      <div class="vp-hud">
+        <span class="a">EYE.SYNC LOCKED</span>
+        <span class="b">FPS 75</span>
+        <span class="c">DEPTH 0.75M</span>
+        <span class="d" id="vp-score">DIST 0000</span>
+      </div>
+    </div>
+    <div class="vp-note reveal" data-d="4">
+      <span>RENDER: FLAT-SHADED WIREFRAME / 1-CHANNEL RED</span>
+      <span>NO OFFICIAL ASSETS // RECONSTRUCTED PATTERN</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COLLECTOR MARKET ================= -->
+<section id="market">
+  <div class="wrap">
+    <div class="kicker reveal">// 09 — COLLECTOR MARKET</div>
+    <h2 class="title reveal" data-d="1">Current listings, <em>graded and appraised.</em></h2>
+    <p class="lead reveal" data-d="2">Representative market data for reference. Prices reflect the collector market as a range, not an offer.</p>
+    <div class="market-grid">
+      <div class="mcard reveal">
+        <div class="mtag">LOOSE UNIT</div>
+        <div class="mname">Console Only — Visor + Base</div>
+        <div class="mcond">GRADE B+ // FUNCTIONAL</div>
+        <div class="mprice">$450<small>– $700</small></div>
+        <div class="mrows">
+          <div class="mrow"><span class="k">Completeness</span><span class="v">Partial</span></div>
+          <div class="mrow"><span class="k">Rarity</span><span class="v">◈◈◇◇◇ Moderate</span></div>
+          <div class="mrow"><span class="k">Tested</span><span class="v">Power on / emit OK</span></div>
+        </div>
+        <div class="mnote">Missing controller and packaging. Light scuffs on visor underside. IR emission verified on both panels. The standard entry point into collecting.</div>
+        <button class="btn">View Listing</button>
+      </div>
+      <div class="mcard reveal" data-d="1">
+        <div class="mtag hot">COMPLETE-IN-BOX</div>
+        <div class="mname">Full System + Stand + Manuals</div>
+        <div class="mcond">GRADE A // COMPLETE</div>
+        <div class="mprice">$900<small>– $1,400</small></div>
+        <div class="mrows">
+          <div class="mrow"><span class="k">Completeness</span><span class="v">Full kit</span></div>
+          <div class="mrow"><span class="k">Rarity</span><span class="v">◈◈◈◈◇ High</span></div>
+          <div class="mrow"><span class="k">Tested</span><span class="v">Full diagnostic pass</span></div>
+        </div>
+        <div class="mnote">Everything: visor, base, controller, stand, strap, both manual sets. Light shelf wear only. The benchmark listing that the rest of the market prices against.</div>
+        <button class="btn">View Listing</button>
+      </div>
+      <div class="mcard reveal" data-d="2">
+        <div class="mtag hot">SEALED CARTRIDGE</div>
+        <div class="mname">Sealed Game — Retail</div>
+        <div class="mcond">FACTORY SEAL // UNPLAYED</div>
+        <div class="mprice">$300<small>– $650</small></div>
+        <div class="mrows">
+          <div class="mrow"><span class="k">Completeness</span><span class="v">Sealed</span></div>
+          <div class="mrow"><span class="k">Rarity</span><span class="v">◈◈◈◈◈ Exceptional</span></div>
+          <div class="mrow"><span class="k">Auth.</span><span class="v">Serial verified</span></div>
+        </div>
+        <div class="mnote">Unopened retail cartridge, shrink intact, serial cross-checked against production records. Title-dependent pricing; rare-title seals command the top of the range.</div>
+        <button class="btn">View Listing</button>
+      </div>
+      <div class="mcard reveal">
+        <div class="mtag">COMPONENT</div>
+        <div class="mname">Controller Only — Dual-Grip</div>
+        <div class="mcond">GRADE B+ // WIRING CLEAN</div>
+        <div class="mprice">$120<small>– $250</small></div>
+        <div class="mrows">
+          <div class="mrow"><span class="k">Completeness</span><span class="v">Single part</span></div>
+          <div class="mrow"><span class="k">Rarity</span><span class="v">◈◈◈◇◇ High</span></div>
+          <div class="mrow"><span class="k">Tested</span><span class="v">All 8 inputs pass</span></div>
+        </div>
+        <div class="mnote">The most-lost component in any collection. Original cable, both grips, no button chatter. The essential repair piece for every CIB restoration in the hobby.</div>
+        <button class="btn">View Listing</button>
+      </div>
+      <div class="mcard reveal" data-d="1">
+        <div class="mtag hot">COLLECTOR BUNDLE</div>
+        <div class="mname">Full Bundle — System + 4 Titles</div>
+        <div class="mcond">MIXED GRADE A / A- // DOCUMENTED</div>
+        <div class="mprice">$2,200<small>– $3,500</small></div>
+        <div class="mrows">
+          <div class="mrow"><span class="k">Completeness</span><span class="v">System + library</span></div>
+          <div class="mrow"><span class="k">Rarity</span><span class="v">◈◈◈◈◈ Exceptional</span></div>
+          <div class="mrow"><span class="k">Docs</span><span class="v">Provenance file included</span></div>
+        </div>
+        <div class="mnote">A complete reference set: full kit plus a curated four-game library spanning the system's strongest titles. Includes condition photos and a written provenance record.</div>
+        <button class="btn">View Listing</button>
+      </div>
+      <div class="mcard reveal" data-d="2">
+        <div class="mtag">REFERENCE</div>
+        <div class="mname">Manual &amp; Paper Set</div>
+        <div class="mcond">GRADE A // ORIGINAL PRINT</div>
+        <div class="mprice">$150<small>– $400</small></div>
+        <div class="mrows">
+          <div class="mrow"><span class="k">Completeness</span><span class="v">Both sets</span></div>
+          <div class="mrow"><span class="k">Rarity</span><span class="v">◈◈◈◈◇ High</span></div>
+          <div class="mrow"><span class="k">Condition</span><span class="v">Red spine intact</span></div>
+        </div>
+        <div class="mnote">Original printed documentation, both manual sets, minimal yellowing. The single most common missing piece in loose units — and the fastest to appreciate.</div>
+        <button class="btn">View Listing</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMPARISON ================= -->
+<section id="compare">
+  <div class="wrap">
+    <div class="kicker reveal">// 10 — CATEGORY COMPARISON</div>
+    <h2 class="title reveal" data-d="1">Where it sits <em>in the timeline</em></h2>
+    <div class="cmp-wrap reveal" data-d="2">
+      <table class="cmp">
+        <thead><tr>
+          <th>Category</th>
+          <th class="hero-col">VB Headset</th>
+          <th>Handheld</th>
+          <th>Home Console</th>
+          <th>Arcade</th>
+          <th>Modern VR</th>
+        </tr></thead>
+        <tbody>
+          <tr><th>Era</th><td class="hero-col">1995</td><td>1989–</td><td>1990s</td><td>1978–</td><td>2016–</td></tr>
+          <tr><th>Display</th><td class="hero-col">2× IR LCD, red mono</td><td>Single LCD</td><td>TV output</td><td>Direct panel</td><td>2× OLED/micro-OLED</td></tr>
+          <tr><th>Portability</th><td class="hero-col"><span class="no">None — tabletop fixed</span></td><td><span class="yes">Full</span></td><td><span class="no">None</span></td><td><span class="no">None</span></td><td><span class="yes">Full</span></td></tr>
+          <tr><th>3D Support</th><td class="hero-col"><span class="yes">Native stereoscopic</span></td><td><span class="no">No</span></td><td><span class="no">Mostly no</span></td><td><span class="no">No</span></td><td><span class="yes">Native + passthrough</span></td></tr>
+          <tr><th>Comfort</th><td class="hero-col"><span class="no">Short sessions only</span></td><td><span class="yes">Excellent</span></td><td><span class="yes">Excellent</span></td><td><span class="yes">Good</span></td><td><span class="yes">Improving</span></td></tr>
+          <tr><th>Game Library</th><td class="hero-col"><span class="no">12 titles</span></td><td><span class="yes">Huge</span></td><td><span class="yes">Large</span></td><td><span class="no">Per-cabinet</span></td><td><span class="yes">Growing</span></td></tr>
+          <tr><th>Legacy</th><td class="hero-col">Prototype of the future</td><td>Ubiquitous</td><td>Ubiquitous</td><td>Cultural icon</td><td>Emerging mainstream</td></tr>
+          <tr><th>Collector Appeal</th><td class="hero-col"><span class="yes">Exceptional</span></td><td>Moderate</td><td>High</td><td>High</td><td><span class="no">Too early</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUOTES ================= -->
+<section id="legacy">
+  <div class="wrap">
+    <div class="kicker reveal" style="justify-content:center">// 11 — LEGACY RECORD</div>
+    <h2 class="title reveal" data-d="1">What history <em>kept</em></h2>
+    <div class="qgrid">
+      <div class="qcard reveal"><div class="q">It gave real depth to a generation three years before the word "virtual reality" stopped meaning nothing. Nobody else on the shelf came close.</div>
+        <div class="who"><b>RETRO-HW ARCHIVE</b>EDITORIAL NOTE, 2021</div></div>
+      <div class="qcard reveal" data-d="1"><div class="q">The most beautiful failure in consumer electronics. One color, one player, one fixed position — and somehow, more vision than anything that followed it.</div>
+        <div class="who"><b>COLUMNIST</b>HARDWARE QUARTERLY</div></div>
+      <div class="qcard reveal" data-d="2"><div class="q">I got headaches. I got a headache-prone lifetime. I would buy it again tomorrow, and I have, twice, in different boxes.</div>
+        <div class="who"><b>COLLECTOR #0047</b>MARKETPLACE VERIFIED</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="brand" href="#hero">
+          <span class="box"></span>
+          <span>VB&nbsp;ARCHIVE<small>RED&nbsp;UNIT&nbsp;//&nbsp;1995</small></span>
+        </a>
+        <p>An independent collector archive and interactive exhibit for one of gaming's strangest machines. Built for people who remember the red.</p>
+      </div>
+      <div class="fcol">
+        <h4>Archive</h4>
+        <a href="#story">Origin File</a>
+        <a href="#specs">Technical Specs</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#matters">Post-Mortem</a>
+        <a href="#compare">Comparisons</a>
+      </div>
+      <div class="fcol">
+        <h4>Collector Resources</h4>
+        <a href="#market">Market Listings</a>
+        <a href="#games">Game Library</a>
+        <a href="#hardware">Intake Guide</a>
+        <a href="#">Grading Standard PDF</a>
+        <a href="#">Serial Lookup Tool</a>
+      </div>
+      <div class="fcol">
+        <h4>Connect</h4>
+        <a href="#">Museum Index</a>
+        <a href="#">Community Forum</a>
+        <a href="#">Newsletter — Red Channel</a>
+        <a href="#">Discord Signal</a>
+        <a href="#">Archive RSS</a>
+      </div>
+    </div>
+    <div class="fbottom">
+      <span>© 2024 VB ARCHIVE // A FAN-MADE EXHIBIT</span>
+      <span class="warn">DISCLAIMER: This is an independent tribute project. No affiliation with Nintendo. All system names, game titles, and specifications reference historical hardware for educational and archival purposes. No official artwork, logos, or box art are reproduced.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   SCROLL REVEAL
+============================================================ */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.12, rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ============================================================
+   RED SPACE FLASH
+============================================================ */
+function enterRed(){
+  const f=document.getElementById('flash');
+  f.classList.remove('active'); void f.offsetWidth; f.classList.add('active');
+  setTimeout(()=>document.getElementById('redspace').scrollIntoView({behavior:'smooth'}), 480);
+}
+
+/* ============================================================
+   THREE.JS HERO — wireframe VB headset + red grid + particles
+============================================================ */
+(function(){
+  const holder=document.getElementById('hero-canvas');
+  if(!holder || !window.THREE) return;
+
+  const scene=new THREE.Scene();
+  scene.fog=new THREE.FogExp2(0x050405,0.052);
+
+  const camera=new THREE.PerspectiveCamera(55, holder.clientWidth/holder.clientHeight, .1, 120);
+  camera.position.set(0, .4, 7.2);
+
+  const renderer=new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(holder.clientWidth, holder.clientHeight);
+  holder.appendChild(renderer.domElement);
+
+  const RED=0xff1f1f, DARK=0x7a1013, FAINT=0x3a0c0e;
+
+  function wire(geo, color, opacity){
+    const g=new THREE.Group();
+    const fill=new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color:DARK, transparent:true, opacity:.10, side:THREE.DoubleSide}));
+    const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo),
+      new THREE.LineBasicMaterial({color, transparent:true, opacity:opacity}));
+    g.add(fill,edges);
+    return g;
+  }
+
+  const rig=new THREE.Group();
+  scene.add(rig);
+
+  /* --- headset body --- */
+  const body=wire(new THREE.BoxGeometry(2.9,1.35,1.15), RED,.9);
+  body.position.set(0,.55,0);
+  rig.add(body);
+
+  /* inner frame */
+  const inner=wire(new THREE.BoxGeometry(2.55,1.05,.95), 0xff5454,.45);
+  inner.position.set(0,.55,.06);
+  rig.add(inner);
+
+  /* screen panels (two glowing red planes = the IR emitters) */
+  const screenMat=new THREE.MeshBasicMaterial({color:RED, transparent:true, opacity:.32});
+  [-0.62,0.62].forEach(x=>{
+    const s=new THREE.Mesh(new THREE.PlaneGeometry(1.1,.72), screenMat);
+    s.position.set(x,.55,.62);
+    rig.add(s);
+    const frame=wire(new THREE.PlaneGeometry(1.3,.9), RED,.8);
+    frame.position.set(x,.55,.615);
+    rig.add(frame);
+  });
+
+  /* nose bridge + chin bar */
+  const bridge=wire(new THREE.BoxGeometry(.34,.5,.3), RED,.8);
+  bridge.position.set(0,.02,.62); rig.add(bridge);
+  const chin=wire(new THREE.BoxGeometry(1.7,.16,.28), RED,.7);
+  chin.position.set(0,-.28,.6); rig.add(chin);
+
+  /* strap rings */
+  [-1.55,1.55].forEach(x=>{
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(.42,.028,8,28),
+      new THREE.MeshBasicMaterial({color:RED, transparent:true, opacity:.6}));
+    ring.position.set(x,.55,-.2); rig.add(ring);
+  });
+
+  /* --- tablet base + stand --- */
+  const base=wire(new THREE.BoxGeometry(3.5,.22,2.5), RED,.75);
+  base.position.set(0,-1.35,-.55);
+  rig.add(base);
+  const baseInner=wire(new THREE.BoxGeometry(3.0,.1,2.0), 0xff5454,.35);
+  baseInner.position.set(0,-1.24,-.55); rig.add(baseInner);
+
+  const arm=wire(new THREE.BoxGeometry(.24,1.0,.24), RED,.7);
+  arm.position.set(0,-.18,-.55); arm.rotation.x=.42; rig.add(arm);
+
+  /* --- floating cartridges --- */
+  const carts=[];
+  [[-2.6,1.1,.6,-.4,.25],[2.5,.9,.9,.35,-.2],[-2.1,-.6,1.2,.18,.4],[2.3,-.9,.3,-.28,-.15]].forEach(c=>{
+    const g=new THREE.Group();
+    const shell=wire(new THREE.BoxGeometry(.55,.95,.16), RED,.85);
+    const label=new THREE.Mesh(new THREE.PlaneGeometry(.38,.5),
+      new THREE.MeshBasicMaterial({color:RED, transparent:true, opacity:.22}));
+    label.position.z=.085; g.add(shell,label);
+    g.position.set(c[0],c[1],c[2]);
+    g.rotation.set(c[3],c[4],c[3]*.5);
+    g.userData={y0:c[1], r0:g.rotation.y, ph:Math.random()*6.28};
+    carts.push(g); rig.add(g);
+  });
+
+  /* --- particles --- */
+  const N=420, pos=new Float32Array(N*3);
+  for(let i=0;i<N;i++){
+    pos[i*3]=(Math.random()-.5)*22;
+    pos[i*3+1]=(Math.random()-.5)*12;
+    pos[i*3+2]=(Math.random()-.5)*22;
+  }
+  const pGeo=new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const points=new THREE.Points(pGeo, new THREE.PointsMaterial({color:0xff3a3a, size:.04, transparent:true, opacity:.7}));
+  scene.add(points);
+
+  /* --- grids --- */
+  const grid1=new THREE.GridHelper(90, 60, RED, 0x2c0a0c);
+  grid1.position.y=-2.35;
+  grid1.material.transparent=true; grid1.material.opacity=.5;
+  scene.add(grid1);
+  const grid2=new THREE.GridHelper(90, 30, 0xff5454, 0x240809);
+  grid2.position.y=-2.36;
+  grid2.material.transparent=true; grid2.material.opacity=.22;
+  scene.add(grid2);
+
+  /* ceiling grid, faint */
+  const grid3=new THREE.GridHelper(90, 45, 0x5a1012, 0x1a0708);
+  grid3.position.y=5.5;
+  grid3.material.transparent=true; grid3.material.opacity=.18;
+  scene.add(grid3);
+
+  /* --- mouse parallax --- */
+  let mx=0, my=0, tx=0, ty=0;
+  window.addEventListener('pointermove', e=>{
+    tx=(e.clientX/innerWidth - .5);
+    ty=(e.clientY/innerHeight - .5);
+  });
+
+  const clock=new THREE.Clock();
+  function tick(){
+    const t=clock.getElapsedTime();
+    mx+=(tx-mx)*.045; my+=(ty-my)*.045;
+
+    rig.rotation.y = Math.sin(t*.25)*.28 + mx*.7;
+    rig.rotation.x = my*.35 + Math.sin(t*.4)*.03;
+    rig.position.y = Math.sin(t*.8)*.14;
+
+    camera.position.x = mx*1.1;
+    camera.position.y = .4 - my*.7;
+    camera.lookAt(0,0,0);
+
+    carts.forEach(c=>{
+      c.position.y = c.userData.y0 + Math.sin(t*1.2 + c.userData.ph)*.18;
+      c.rotation.y = c.userData.r0 + t*.35 + Math.sin(t*.6+c.userData.ph)*.2;
+    });
+
+    grid2.position.z=(t*.9)%3;
+    points.rotation.y = t*.02 + mx*.2;
+    points.rotation.x = my*.1;
+
+    screenMat.opacity=.26 + Math.abs(Math.sin(t*1.4))*.14;
+
+    renderer.render(scene,camera);
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  window.addEventListener('resize',()=>{
+    camera.aspect=holder.clientWidth/holder.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(holder.clientWidth, holder.clientHeight);
+  });
+})();
+
+/* ============================================================
+   GAME THUMBNAILS — generated red pixel art (no official art)
+============================================================ */
+(function(){
+  document.querySelectorAll('.gthumb canvas').forEach(cv=>{
+    const ctx=cv.getContext('2d'), w=cv.width, h=cv.height;
+    ctx.fillStyle='#050505'; ctx.fillRect(0,0,w,h);
+    const P=(x,y,s,a=1)=>{ctx.fillStyle='rgba(255,40,40,'+a+')';ctx.fillRect(x,y,s,s);};
+    const art=cv.dataset.art;
+    if(art==='tennis'){
+      for(let x=0;x<w;x+=8) for(let y=0;y<h;y+=8) P(x,y,2,.10);
+      for(let y=16;y<h;y+=14){ctx.fillStyle='rgba(255,40,40,.55)';ctx.fillRect(6,y,w-12,2);}
+      ctx.fillStyle='#ff2a2a'; ctx.fillRect(56,30,10,10); // ball
+      ctx.fillStyle='rgba(255,40,40,.25)'; for(let i=1;i<5;i++) ctx.fillRect(56-i*9,30+i*4,10,10);
+      ctx.fillStyle='#ff2a2a'; ctx.fillRect(18,58,8,26); ctx.fillRect(14,54,16,6); // player
+    }
+    if(art==='alarm'){
+      for(let x=0;x<w;x+=12) for(let y=0;y<h;y+=12) P(x,y,2,.14);
+      for(let r=6;r<46;r+=8){ctx.strokeStyle='rgba(255,40,40,.5)';ctx.strokeRect(48-r/1,48-r/1,r*1.42,r*1.42);}
+      ctx.fillStyle='#ff2a2a';
+      ctx.beginPath();ctx.moveTo(48,26);ctx.lineTo(66,62);ctx.lineTo(30,62);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#050505'; ctx.fillRect(46,40,4,14); ctx.fillRect(46,56,4,4);
+    }
+    if(art==='wario'){
+      ctx.fillStyle='rgba(255,40,40,.15)'; ctx.fillRect(0,0,w,h);
+      let s=7;
+      for(let r=0;r<7;r++){ // staircase
+        for(let c=0;c<=r;c++){ ctx.fillStyle='rgba(255,40,40,.85)'; ctx.fillRect(8+c*s, 76-r*s, s-1, s-1); }
+      }
+      ctx.fillStyle='#ff2a2a'; ctx.fillRect(12,18,14,14); // wario-ish block head
+      ctx.fillStyle='#050505'; ctx.fillRect(16,22,3,3); ctx.fillRect(21,22,3,3);
+      ctx.fillStyle='rgba(255,40,40,.5)'; for(let i=0;i<10;i++) P((i*37)%w,(i*53)%h,2,.4);
+    }
+    if(art==='boxer'){
+      for(let y=52;y<h;y+=10){ctx.fillStyle='rgba(255,40,40,'+(.5-(y-52)/160)+')';ctx.fillRect(0,y,w,3);}
+      ctx.fillStyle='#ff2a2a';
+      ctx.fillRect(24,30,14,20); ctx.fillRect(22,46,10,16); // fighter A
+      ctx.fillRect(60,34,14,20); ctx.fillRect(66,50,10,14); // fighter B
+      ctx.fillStyle='rgba(255,40,40,.3)'; ctx.fillRect(20,74,w-40,3);
+      for(let x=14;x<w-10;x+=8) P(x,80,3,.5);
+    }
+    if(art==='pinball'){
+      ctx.strokeStyle='rgba(255,40,40,.6)';
+      ctx.strokeRect(14,10,68,78);
+      ctx.beginPath();ctx.moveTo(14,10);ctx.lineTo(40,42);ctx.lineTo(82,20);ctx.stroke();
+      [[48,36],[30,58],[66,64],[44,80]].forEach(b=>{
+        ctx.fillStyle='rgba(255,40,40,.25)';ctx.beginPath();ctx.arc(b[0],b[1],7,0,7);ctx.fill();
+        ctx.fillStyle='#ff2a2a';ctx.beginPath();ctx.arc(b[0],b[1],3.5,0,7);ctx.fill();
+      });
+      ctx.fillStyle='#fff';ctx.globalAlpha=.9;ctx.fillRect(70,82,3,3);ctx.globalAlpha=1;
+      ctx.fillStyle='#ff2a2a'; ctx.fillRect(70,82,3,3);
+    }
+    if(art==='force'){
+      for(let i=0;i<6;i++){ // vertical scroll bars
+        ctx.fillStyle='rgba(255,40,40,'+(.15+i*.11)+')';
+        ctx.fillRect(10+i*14, h-30-(i*13)%h, 8, 26+(i*7)%40);
+      }
+      ctx.fillStyle='#ff2a2a';
+      ctx.beginPath();ctx.moveTo(48,18);ctx.lineTo(58,40);ctx.lineTo(38,40);ctx.closePath();ctx.fill();
+      ctx.fillRect(44,40,8,14);
+      for(let i=0;i<7;i++){ctx.fillStyle='rgba(255,40,40,'+(.7-i*.1)+')';ctx.fillRect(45,56+i*5,6,4);}
+    }
+  });
+})();
+
+/* ============================================================
+   RED SPACE VIEWPORT — animated red wireframe terrain
+============================================================ */
+(function(){
+  const cv=document.getElementById('vp-canvas');
+  if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const horizon=Math.floor(H*.42);
+  let t=0, dist=0;
+
+  const stars=[];
+  for(let i=0;i<70;i++) stars.push({x:Math.random()*W, y:Math.random()*horizon, s:Math.random()<.2?2:1, p:Math.random()*6.28});
+
+  function draw(){
+    t+=.016; dist+=1.4;
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H);
+
+    /* sky stars */
+    stars.forEach(s=>{
+      const a=.25+.55*Math.abs(Math.sin(t*1.5+s.p));
+      ctx.fillStyle='rgba(255,40,40,'+a.toFixed(2)+')';
+      ctx.fillRect(s.x,s.y,s.s,s.s);
+    });
+
+    /* sun / horizon glow */
+    const g=ctx.createRadialGradient(W/2,horizon,10,W/2,horizon,240);
+    g.addColorStop(0,'rgba(255,30,30,.35)'); g.addColorStop(1,'rgba(255,30,30,0)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,horizon);
+    ctx.fillStyle='rgba(255,60,60,.9)'; ctx.fillRect(0,horizon,W,2);
+
+    /* horizon mountain ridge */
+    ctx.strokeStyle='rgba(255,40,40,.7)'; ctx.lineWidth=1.5; ctx.beginPath();
+    for(let x=0;x<=W;x+=8){
+      const y=horizon-6-Math.abs(Math.sin(x*.012+t*.3))*26-Math.abs(Math.sin(x*.031))*14;
+      x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+
+    /* perspective wireframe terrain */
+    const rows=14;
+    for(let r=0;r<rows;r++){
+      const z=(r+1)/rows;
+      const y=horizon + Math.pow(z,1.7)*(H-horizon);
+      const alpha=.15+.85*Math.pow(z,1.6);
+      ctx.strokeStyle='rgba(255,40,40,'+alpha.toFixed(2)+')';
+      ctx.lineWidth=z>.7?2:1;
+      ctx.beginPath();
+      for(let x=0;x<=W;x+=12){
+        const hgt=Math.sin(x*.013 + r*.85 + t*1.4)*(6+z*30);
+        x===0?ctx.moveTo(x,y-hgt):ctx.lineTo(x,y-hgt);
+      }
+      ctx.stroke();
+    }
+    /* converging verticals */
+    const off=(dist%60)/60;
+    for(let i=-12;i<=12;i++){
+      const bx=W/2+i*46;
+      ctx.strokeStyle='rgba(255,40,40,.28)'; ctx.lineWidth=1;
+      ctx.beginPath();
+      ctx.moveTo(W/2 + bx*0.02, horizon);
+      ctx.lineTo(bx, H);
+      ctx.stroke();
+      /* moving node on the line */
+      const nz=((i*37 + dist*.6)%100)/100;
+      const ny=horizon + Math.pow(nz,1.7)*(H-horizon);
+      const nx=W/2 + (bx-W/2)*nz;
+      ctx.fillStyle='rgba(255,60,60,.85)';
+      ctx.fillRect(nx-2,ny-2,4,4);
+    }
+
+    /* ship sprite (simple chevron) */
+    const sx=W/2 + Math.sin(t*.9)*90;
+    const sy=H*.66 + Math.sin(t*1.7)*14;
+    ctx.fillStyle='rgba(255,255,255,.85)';
+    ctx.beginPath(); ctx.moveTo(sx,sy-16); ctx.lineTo(sx+13,sy+10); ctx.lineTo(sx,sy+4); ctx.lineTo(sx-13,sy+10); ctx.closePath(); ctx.fill();
+    /* engine trail */
+    for(let i=1;i<6;i++){
+      ctx.fillStyle='rgba(255,40,40,'+(.5-i*.08)+')';
+      ctx.fillRect(sx-3+i*0, sy+10+i*5, 6-i, 4);
+    }
+    /* shadow */
+    ctx.fillStyle='rgba(255,40,40,.3)';
+    ctx.fillRect(sx-16, sy+38, 32, 3);
+
+    /* occasional flying wireframe rock */
+    const rx=((t*60)%(W+200))-100;
+    const ry=horizon+40+Math.sin(t*2)*20;
+    ctx.strokeStyle='rgba(255,60,60,.7)'; ctx.lineWidth=1.5;
+    ctx.strokeRect(rx,ry,22,16);
+    ctx.beginPath(); ctx.moveTo(rx,ry);ctx.lineTo(rx+22,ry+16);ctx.moveTo(rx+22,ry);ctx.lineTo(rx,ry+16); ctx.stroke();
+
+    /* vignette in viewport */
+    const vg=ctx.createRadialGradient(W/2,H/2,H*.3,W/2,H/2,W*.62);
+    vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.55)');
+    ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+
+    const score=document.getElementById('vp-score');
+    if(score) score.textContent='DIST '+String(Math.floor(dist)).padStart(4,'0');
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

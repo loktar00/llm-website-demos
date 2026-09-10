@@ -1,0 +1,2580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Aurelian Express — Luxury Overnight Railway</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --navy: #0a1628;
+  --navy-mid: #1a2744;
+  --navy-light: #243352;
+  --ivory: #f5f0e8;
+  --ivory-dim: #ede4d3;
+  --black: #0d0d0d;
+  --black-lacquer: #1a1a1a;
+  --teal: #2a6b6b;
+  --teal-dark: #1d4d4d;
+  --teal-light: #3a8b8b;
+  --gold: #c9a84c;
+  --gold-light: #d4af37;
+  --gold-dim: #b8942e;
+  --gold-pale: #e8d5a0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background: var(--navy);
+  color: var(--ivory);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 4px; }
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; }
+.display-title {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ===== ART DECO DECORATIVE ELEMENTS ===== */
+.sunburst {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.brass-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 2rem auto;
+  max-width: 300px;
+}
+
+.brass-line-wide {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  margin: 1rem auto;
+  max-width: 600px;
+}
+
+.stepped-border {
+  border: 2px solid var(--gold-dim);
+  position: relative;
+  padding: 2rem;
+}
+.stepped-border::before,
+.stepped-border::after {
+  content: '';
+  position: absolute;
+  border: 2px solid var(--gold-dim);
+}
+.stepped-border::before {
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+}
+.stepped-border::after {
+  top: 16px; left: 16px; right: 16px; bottom: 16px;
+  border-color: var(--gold-dim);
+  opacity: 0.4;
+}
+
+/* ===== SECTION BASE ===== */
+section {
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-header h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.section-header .subtitle {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  font-size: 0.9rem;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+}
+
+/* ===== REVEAL ANIMATIONS ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ===== NAVIGATION ===== */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.4s ease, padding 0.4s ease;
+}
+
+nav.scrolled {
+  background: rgba(10, 22, 40, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 0.6rem 2rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--ivory-dim);
+  text-decoration: none;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--gold); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+  margin: 5px 0;
+  transition: 0.3s;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-mid) 50%, var(--navy) 100%);
+  padding: 2rem;
+}
+
+.hero-bg-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 49px, var(--gold) 49px, var(--gold) 50px),
+    repeating-linear-gradient(90deg, transparent, transparent 49px, var(--gold) 49px, var(--gold) 50px);
+}
+
+.hero-content {
+  text-align: center;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.5em;
+  font-size: clamp(0.7rem, 1.5vw, 1rem);
+  color: var(--gold-dim);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 10vw, 8rem);
+  letter-spacing: 0.12em;
+  line-height: 0.95;
+  color: var(--ivory);
+  margin-bottom: 0.5rem;
+}
+
+.hero-title .gold { color: var(--gold); }
+
+.hero-tagline {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.6rem);
+  color: var(--ivory-dim);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.hero-divider {
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 2rem;
+}
+
+.hero-train-svg {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto 0;
+  position: relative;
+}
+
+.hero-train-svg svg {
+  width: 100%;
+  height: auto;
+}
+
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.hero-scroll-indicator span {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  font-size: 0.7rem;
+  color: var(--gold-dim);
+}
+
+.scroll-arrow {
+  width: 20px;
+  height: 20px;
+  border-right: 1px solid var(--gold-dim);
+  border-bottom: 1px solid var(--gold-dim);
+  transform: rotate(45deg);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+/* ===== LAMP GLOW ANIMATION ===== */
+.lamp-glow {
+  animation: lampPulse 4s ease-in-out infinite;
+}
+
+@keyframes lampPulse {
+  0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(201, 168, 76, 0.3)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(201, 168, 76, 0.7)); }
+}
+
+/* ===== ROUTE SECTION ===== */
+.route-section {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--black-lacquer) 50%, var(--navy) 100%);
+  padding: 6rem 2rem;
+}
+
+.route-map-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.route-line-svg {
+  width: 100%;
+  height: auto;
+}
+
+.route-line-path {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  transition: stroke-dashoffset 2s ease;
+}
+
+.route-line-path.drawn {
+  stroke-dashoffset: 0;
+}
+
+.route-stops-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.route-stop {
+  position: absolute;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.route-stop:hover {
+  transform: scale(1.1);
+}
+
+.route-stop-medallion {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.route-stop:hover .route-stop-medallion {
+  background: var(--gold);
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+}
+
+.route-stop-medallion .stop-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+  transition: color 0.3s;
+}
+
+.route-stop:hover .route-stop-medallion .stop-number {
+  color: var(--navy);
+}
+
+.route-stop-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem;
+  color: var(--ivory);
+  white-space: nowrap;
+}
+
+.route-stop-time {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--gold-dim);
+}
+
+/* ===== DESTINATIONS SECTION ===== */
+.destinations-section {
+  background: var(--navy);
+  padding: 6rem 2rem;
+}
+
+.destinations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.destination-card {
+  position: relative;
+  background: linear-gradient(180deg, var(--navy-mid) 0%, var(--navy) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  padding: 2rem;
+  text-align: center;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.destination-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.destination-card:hover::before { opacity: 1; }
+
+.destination-card:hover {
+  border-color: rgba(201, 168, 76, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.destination-poster {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+.destination-poster svg {
+  width: 100%;
+  height: 100%;
+}
+
+.destination-card h3 {
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.destination-card .dest-country {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: var(--gold-dim);
+  margin-bottom: 1rem;
+}
+
+.destination-card p {
+  font-size: 0.95rem;
+  color: var(--ivory-dim);
+  line-height: 1.7;
+}
+
+/* ===== SUITES SECTION ===== */
+.suites-section {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--black-lacquer) 100%);
+  padding: 6rem 2rem;
+}
+
+.suites-showcase {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.suite-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.suite-item:nth-child(even) { direction: rtl; }
+.suite-item:nth-child(even) > * { direction: ltr; }
+
+.suite-illustration {
+  position: relative;
+  aspect-ratio: 4/3;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  overflow: hidden;
+  background: var(--navy-mid);
+}
+
+.suite-illustration svg {
+  width: 100%;
+  height: 100%;
+}
+
+.suite-details h3 {
+  font-size: 2rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.suite-details .suite-type {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  font-size: 0.8rem;
+  color: var(--gold-dim);
+  margin-bottom: 1.5rem;
+}
+
+.suite-details p {
+  font-size: 1.05rem;
+  color: var(--ivory-dim);
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.suite-features {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.suite-features li {
+  font-size: 0.9rem;
+  color: var(--ivory-dim);
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.suite-features li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  color: var(--gold-dim);
+  font-size: 0.5rem;
+  top: 0.35rem;
+}
+
+/* ===== DINING SECTION ===== */
+.dining-section {
+  background: var(--navy);
+  padding: 6rem 2rem;
+  position: relative;
+}
+
+.dining-content {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.dining-content > p {
+  font-size: 1.15rem;
+  color: var(--ivory-dim);
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  line-height: 1.8;
+}
+
+.dining-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.menu-card {
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  padding: 2rem;
+  text-align: center;
+  background: rgba(26, 39, 68, 0.5);
+  transition: all 0.3s;
+}
+
+.menu-card:hover {
+  border-color: var(--gold-dim);
+  background: rgba(26, 39, 68, 0.8);
+}
+
+.menu-card .meal-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1rem;
+}
+
+.menu-card h4 {
+  font-size: 1.3rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.menu-card .meal-time {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: var(--gold-dim);
+  margin-bottom: 1rem;
+}
+
+.menu-card p {
+  font-size: 0.95rem;
+  color: var(--ivory-dim);
+  line-height: 1.7;
+}
+
+/* ===== TIMELINE SECTION ===== */
+.timeline-section {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--black-lacquer) 100%);
+  padding: 6rem 2rem;
+}
+
+.timeline-container {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold-dim), var(--teal), var(--gold-dim));
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.timeline-item:nth-child(odd) { flex-direction: row; }
+.timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+.timeline-time {
+  flex: 1;
+  text-align: right;
+  padding-right: 2rem;
+}
+
+.timeline-item:nth-child(even) .timeline-time {
+  text-align: left;
+  padding-right: 0;
+  padding-left: 2rem;
+}
+
+.timeline-time .time {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+.timeline-time .period {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--gold-dim);
+}
+
+.timeline-node {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: var(--navy);
+  z-index: 2;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.timeline-item:hover .timeline-node {
+  background: var(--gold);
+  box-shadow: 0 0 15px rgba(201, 168, 76, 0.5);
+}
+
+.timeline-desc {
+  flex: 1;
+  padding-left: 2rem;
+}
+
+.timeline-item:nth-child(even) .timeline-desc {
+  padding-left: 0;
+  padding-right: 2rem;
+  text-align: right;
+}
+
+.timeline-desc h4 {
+  font-size: 1.1rem;
+  color: var(--ivory);
+  margin-bottom: 0.3rem;
+}
+
+.timeline-desc p {
+  font-size: 0.9rem;
+  color: var(--ivory-dim);
+}
+
+/* ===== SPECS SECTION ===== */
+.specs-section {
+  background: var(--navy);
+  padding: 6rem 2rem;
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.spec-item {
+  text-align: center;
+  padding: 2rem 1rem;
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  transition: all 0.3s;
+}
+
+.spec-item:hover {
+  border-color: rgba(201, 168, 76, 0.3);
+  background: rgba(26, 39, 68, 0.3);
+}
+
+.spec-item .spec-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 1rem;
+}
+
+.spec-item .spec-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.spec-item .spec-label {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+}
+
+/* ===== RITUALS SECTION ===== */
+.rituals-section {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--black-lacquer) 100%);
+  padding: 6rem 2rem;
+}
+
+.rituals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.ritual-card {
+  padding: 2.5rem;
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s;
+}
+
+.ritual-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+
+.ritual-card:hover::after { transform: scaleX(1); }
+
+.ritual-card:hover {
+  border-color: rgba(201, 168, 76, 0.3);
+  background: rgba(26, 39, 68, 0.3);
+}
+
+.ritual-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  color: rgba(201, 168, 76, 0.15);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.ritual-card h4 {
+  font-size: 1.3rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.ritual-card p {
+  font-size: 0.95rem;
+  color: var(--ivory-dim);
+  line-height: 1.8;
+}
+
+/* ===== TESTIMONIALS ===== */
+.testimonials-section {
+  background: var(--navy);
+  padding: 6rem 2rem;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.testimonial-card {
+  padding: 2.5rem;
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  position: relative;
+  background: rgba(26, 39, 68, 0.3);
+}
+
+.testimonial-card .quote-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  color: var(--gold-dim);
+  line-height: 1;
+  opacity: 0.3;
+  position: absolute;
+  top: 1rem;
+  left: 1.5rem;
+}
+
+.testimonial-card blockquote {
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ivory-dim);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.testimonial-card .author {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  color: var(--gold);
+}
+
+.testimonial-card .author-title {
+  font-size: 0.8rem;
+  color: var(--gold-dim);
+  font-style: italic;
+}
+
+/* ===== FARE TIERS ===== */
+.fares-section {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--black-lacquer) 100%);
+  padding: 6rem 2rem;
+}
+
+.fares-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.fare-card {
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  position: relative;
+  transition: all 0.4s;
+  background: rgba(10, 22, 40, 0.8);
+}
+
+.fare-card.featured {
+  border-color: var(--gold);
+  background: rgba(26, 39, 68, 0.5);
+  transform: scale(1.02);
+}
+
+.fare-card.featured::before {
+  content: 'MOST REQUESTED';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gold);
+  color: var(--navy);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  font-size: 0.65rem;
+  padding: 0.3rem 1.5rem;
+}
+
+.fare-card:hover {
+  border-color: var(--gold-dim);
+  transform: translateY(-4px);
+}
+
+.fare-card.featured:hover {
+  transform: scale(1.02) translateY(-4px);
+}
+
+.fare-tier-name {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  font-size: 0.85rem;
+  color: var(--gold-dim);
+  margin-bottom: 0.5rem;
+}
+
+.fare-card h3 {
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.fare-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--ivory);
+  margin-bottom: 0.3rem;
+}
+
+.fare-price .currency {
+  font-size: 1.2rem;
+  vertical-align: super;
+}
+
+.fare-per {
+  font-size: 0.8rem;
+  color: var(--gold-dim);
+  margin-bottom: 2rem;
+}
+
+.fare-features {
+  list-style: none;
+  margin-bottom: 2rem;
+}
+
+.fare-features li {
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--ivory-dim);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.05);
+}
+
+.fare-features li:last-child { border: none; }
+
+/* ===== BOOKING CTA ===== */
+.booking-section {
+  background: var(--navy);
+  padding: 6rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(201, 168, 76, 0.05) 0%, transparent 70%);
+}
+
+.booking-content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.booking-content h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.booking-content p {
+  font-size: 1.15rem;
+  color: var(--ivory-dim);
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+}
+
+.booking-form {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.booking-form input,
+.booking-form select {
+  background: rgba(26, 39, 68, 0.6);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  color: var(--ivory);
+  padding: 1rem 1.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  min-width: 200px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.booking-form input:focus,
+.booking-form select:focus {
+  border-color: var(--gold);
+}
+
+.booking-form select option {
+  background: var(--navy);
+  color: var(--ivory);
+}
+
+.btn-gold {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold-dim), var(--gold), var(--gold-dim));
+  color: var(--navy);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.25em;
+  font-size: 1rem;
+  padding: 1rem 3rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.btn-gold:hover {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(201, 168, 76, 0.3);
+}
+
+.btn-outline {
+  display: inline-block;
+  background: transparent;
+  color: var(--gold);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.25em;
+  font-size: 1rem;
+  padding: 1rem 3rem;
+  border: 1px solid var(--gold-dim);
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background: rgba(201, 168, 76, 0.1);
+  border-color: var(--gold);
+}
+
+/* ===== LUGGAGE LABEL ===== */
+.luggage-label {
+  display: inline-block;
+  border: 2px solid var(--gold-dim);
+  padding: 1.5rem 2rem;
+  margin: 2rem auto;
+  position: relative;
+  background: rgba(245, 240, 232, 0.03);
+}
+
+.luggage-label::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.luggage-label .label-title {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  font-size: 0.7rem;
+  color: var(--gold-dim);
+  margin-bottom: 0.5rem;
+}
+
+.luggage-label .label-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: var(--ivory);
+  margin-bottom: 0.3rem;
+}
+
+.luggage-label .label-route {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: var(--gold-dim);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--black);
+  padding: 4rem 2rem 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.footer-links a {
+  color: var(--ivory-dim);
+  text-decoration: none;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.15em;
+  font-size: 0.8rem;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--gold); }
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: rgba(245, 240, 232, 0.3);
+  margin-top: 2rem;
+}
+
+/* ===== WINDOW LANDSCAPE ANIMATION ===== */
+.window-frame {
+  position: relative;
+  overflow: hidden;
+  border: 3px solid var(--gold-dim);
+}
+
+.window-frame::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 100%;
+  background: var(--gold-dim);
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.window-frame::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--gold-dim);
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.landscape-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+}
+
+.landscape-far {
+  animation: driftFar 30s linear infinite;
+}
+
+.landscape-mid {
+  animation: driftMid 20s linear infinite;
+}
+
+.landscape-near {
+  animation: driftNear 12s linear infinite;
+}
+
+@keyframes driftFar {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes driftMid {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes driftNear {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ===== MEDALLION ROTATION ===== */
+.medallion-rotate {
+  animation: medallionSpin 8s ease-in-out infinite;
+}
+
+@keyframes medallionSpin {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .suite-item {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .suite-item:nth-child(even) { direction: ltr; }
+  
+  .timeline-line { left: 20px; }
+  .timeline-item,
+  .timeline-item:nth-child(even) {
+    flex-direction: row;
+  }
+  .timeline-time,
+  .timeline-item:nth-child(even) .timeline-time {
+    text-align: right;
+    padding-right: 1rem;
+    padding-left: 0;
+  }
+  .timeline-desc,
+  .timeline-item:nth-child(even) .timeline-desc {
+    padding-left: 1rem;
+    padding-right: 0;
+    text-align: left;
+  }
+  .timeline-node {
+    position: absolute;
+    left: 10px;
+  }
+  .timeline-item {
+    padding-left: 50px;
+  }
+  
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(10, 22, 40, 0.98);
+    padding: 2rem;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+  }
+}
+
+@media (max-width: 600px) {
+  section { padding: 4rem 1rem; }
+  
+  .destinations-grid { grid-template-columns: 1fr; }
+  .suites-grid { grid-template-columns: 1fr; }
+  .rituals-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .fares-grid { grid-template-columns: 1fr; }
+  .specs-grid { grid-template-columns: repeat(2, 1fr); }
+  
+  .booking-form { flex-direction: column; align-items: center; }
+  .booking-form input,
+  .booking-form select { width: 100%; max-width: 350px; }
+  
+  .fare-card.featured { transform: none; }
+  .fare-card.featured:hover { transform: translateY(-4px); }
+}
+
+/* ===== DECORATIVE CORNER ORNAMENTS ===== */
+.corner-ornament {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  opacity: 0.3;
+}
+
+.corner-ornament.top-left { top: 0; left: 0; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+.corner-ornament.top-right { top: 0; right: 0; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+.corner-ornament.bottom-left { bottom: 0; left: 0; border-bottom: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+.corner-ornament.bottom-right { bottom: 0; right: 0; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+
+/* ===== GEOMETRIC PATTERN OVERLAY ===== */
+.geo-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.02;
+  background-image: 
+    repeating-linear-gradient(45deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 20px),
+    repeating-linear-gradient(-45deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 20px);
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">THE AURELIAN EXPRESS</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#route">Route</a></li>
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#suites">Suites</a></li>
+    <li><a href="#dining">Dining</a></li>
+    <li><a href="#timeline">Journey</a></li>
+    <li><a href="#fares">Fares</a></li>
+    <li><a href="#book">Book</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero" id="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="geo-pattern"></div>
+  
+  <div class="hero-content">
+    <p class="hero-eyebrow reveal">Luxury Overnight Railway · Est. 1924</p>
+    <h1 class="hero-title reveal reveal-delay-1">
+      THE <span class="gold">AURELIAN</span><br>EXPRESS
+    </h1>
+    <p class="hero-tagline reveal reveal-delay-2">Seven Cities. One Extraordinary Night.</p>
+    <div class="hero-divider reveal reveal-delay-3"></div>
+  </div>
+
+  <!-- Train Silhouette SVG -->
+  <div class="hero-train-svg reveal reveal-delay-4">
+    <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="trainBody" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#2a2a2a"/>
+          <stop offset="100%" style="stop-color:#1a1a1a"/>
+        </linearGradient>
+        <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#b8942e"/>
+          <stop offset="50%" style="stop-color:#d4af37"/>
+          <stop offset="100%" style="stop-color:#b8942e"/>
+        </linearGradient>
+        <linearGradient id="windowGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#e8d5a0;stop-opacity:0.8"/>
+          <stop offset="100%" style="stop-color:#c9a84c;stop-opacity:0.2"/>
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      
+      <!-- Ground line -->
+      <line x1="0" y1="170" x2="800" y2="170" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+      
+      <!-- Train body - Main locomotive -->
+      <rect x="50" y="60" width="280" height="90" rx="4" fill="url(#trainBody)" stroke="#c9a84c" stroke-width="1"/>
+      <!-- Locomotive front -->
+      <path d="M330 60 L370 80 L370 150 L330 150 Z" fill="url(#trainBody)" stroke="#c9a84c" stroke-width="1"/>
+      <!-- Smokestack -->
+      <rect x="100" y="30" width="20" height="30" rx="2" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+      <ellipse cx="110" cy="28" rx="15" ry="5" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+      <!-- Smoke -->
+      <circle cx="110" cy="15" r="8" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3">
+        <animate attributeName="cy" values="15;5;15" dur="4s" repeatCount="indefinite"/>
+        <animate attributeName="r" values="8;15;8" dur="4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.3;0.1;0.3" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="120" cy="10" r="6" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.2">
+        <animate attributeName="cy" values="10;0;10" dur="5s" repeatCount="indefinite"/>
+        <animate attributeName="r" values="6;12;6" dur="5s" repeatCount="indefinite"/>
+      </circle>
+      
+      <!-- Gold stripe -->
+      <line x1="50" y1="100" x2="370" y2="100" stroke="url(#goldAccent)" stroke-width="2"/>
+      
+      <!-- Windows on locomotive -->
+      <rect x="80" y="70" width="30" height="25" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="120" y="70" width="30" height="25" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="160" y="70" width="30" height="25" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="200" y="70" width="30" height="25" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="240" y="70" width="30" height="25" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="280" y="70" width="30" height="25" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      
+      <!-- Cab window -->
+      <polygon points="340,70 365,82 365,110 340,110" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      
+      <!-- Wheels -->
+      <circle cx="100" cy="155" r="15" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1"/>
+      <circle cx="100" cy="155" r="5" fill="#c9a84c" opacity="0.3"/>
+      <circle cx="200" cy="155" r="15" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1"/>
+      <circle cx="200" cy="155" r="5" fill="#c9a84c" opacity="0.3"/>
+      <circle cx="300" cy="155" r="15" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1"/>
+      <circle cx="300" cy="155" r="5" fill="#c9a84c" opacity="0.3"/>
+      
+      <!-- Connecting rod -->
+      <line x1="100" y1="155" x2="300" y2="155" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+      
+      <!-- Carriage 1 -->
+      <rect x="400" y="65" width="180" height="85" rx="3" fill="url(#trainBody)" stroke="#c9a84c" stroke-width="1"/>
+      <line x1="400" y1="100" x2="580" y2="100" stroke="url(#goldAccent)" stroke-width="1.5"/>
+      <rect x="415" y="72" width="25" height="22" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="450" y="72" width="25" height="22" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="485" y="72" width="25" height="22" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="520" y="72" width="25" height="22" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <circle cx="440" cy="155" r="12" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1"/>
+      <circle cx="540" cy="155" r="12" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1"/>
+      
+      <!-- Coupling -->
+      <rect x="370" y="95" width="30" height="4" fill="#c9a84c" opacity="0.5"/>
+      
+      <!-- Carriage 2 -->
+      <rect x="600" y="65" width="160" height="85" rx="3" fill="url(#trainBody)" stroke="#c9a84c" stroke-width="1"/>
+      <line x1="600" y1="100" x2="760" y2="100" stroke="url(#goldAccent)" stroke-width="1.5"/>
+      <rect x="615" y="72" width="25" height="22" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="650" y="72" width="25" height="22" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="685" y="72" width="25" height="22" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <rect x="720" y="72" width="25" height="22" rx="2" fill="url(#windowGlow)" stroke="#c9a84c" stroke-width="0.5" class="lamp-glow"/>
+      <circle cx="640" cy="155" r="12" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1"/>
+      <circle cx="730" cy="155" r="12" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1"/>
+      
+      <!-- Coupling 2 -->
+      <rect x="580" y="95" width="20" height="4" fill="#c9a84c" opacity="0.5"/>
+      
+      <!-- Headlight -->
+      <circle cx="372" cy="110" r="6" fill="#e8d5a0" opacity="0.8" filter="url(#glow)" class="lamp-glow"/>
+      <polygon points="378,106 420,95 420,125 378,114" fill="url(#windowGlow)" opacity="0.15"/>
+    </svg>
+  </div>
+
+  <div class="hero-scroll-indicator">
+    <span>Discover the Journey</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ===== ROUTE SECTION ===== -->
+<section class="route-section" id="route">
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">The Grand Coastal Route</p>
+      <h2 class="reveal reveal-delay-1">Seven Cities of Splendour</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="route-map-container reveal">
+      <svg class="route-line-svg" viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#b8942e"/>
+            <stop offset="50%" style="stop-color:#d4af37"/>
+            <stop offset="100%" style="stop-color:#b8942e"/>
+          </linearGradient>
+          <filter id="routeGlow">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        
+        <!-- Background decorative elements -->
+        <rect x="0" y="0" width="1000" height="400" fill="none"/>
+        
+        <!-- Route path - curved coastal route -->
+        <path class="route-line-path" d="M 80 200 C 150 120, 250 80, 350 150 C 450 220, 500 300, 600 250 C 700 200, 750 100, 850 180 C 900 220, 930 280, 950 250" 
+              fill="none" stroke="url(#routeGrad)" stroke-width="2" filter="url(#routeGlow)"/>
+        
+        <!-- Secondary decorative route line -->
+        <path class="route-line-path" d="M 80 200 C 150 120, 250 80, 350 150 C 450 220, 500 300, 600 250 C 700 200, 750 100, 850 180 C 900 220, 930 280, 950 250" 
+              fill="none" stroke="#c9a84c" stroke-width="6" opacity="0.1"/>
+        
+        <!-- Stop markers -->
+        <g filter="url(#routeGlow)">
+          <circle cx="80" cy="200" r="8" fill="#0a1628" stroke="#c9a84c" stroke-width="2"/>
+          <circle cx="350" cy="150" r="8" fill="#0a1628" stroke="#c9a84c" stroke-width="2"/>
+          <circle cx="600" cy="250" r="8" fill="#0a1628" stroke="#c9a84c" stroke-width="2"/>
+          <circle cx="850" cy="180" r="8" fill="#0a1628" stroke="#c9a84c" stroke-width="2"/>
+          <circle cx="950" cy="250" r="8" fill="#0a1628" stroke="#c9a84c" stroke-width="2"/>
+          <circle cx="215" cy="135" r="6" fill="#0a1628" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="475" cy="235" r="6" fill="#0a1628" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="725" cy="140" r="6" fill="#0a1628" stroke="#c9a84c" stroke-width="1.5"/>
+        </g>
+        
+        <!-- Stop labels -->
+        <text x="80" y="235" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="12" letter-spacing="2">PORT AURELIA</text>
+        <text x="215" y="115" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="11" letter-spacing="2">SILVERHAVEN</text>
+        <text x="350" y="130" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="12" letter-spacing="2">CÔTE D'OR</text>
+        <text x="475" y="265" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="11" letter-spacing="2">MARENOVA</text>
+        <text x="600" y="280" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="12" letter-spacing="2">BELLA MARINA</text>
+        <text x="725" y="120" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="11" letter-spacing="2">AZURE POINT</text>
+        <text x="850" y="160" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="12" letter-spacing="2">CORALIS</text>
+        <text x="950" y="280" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="12" letter-spacing="2">SOLMAR</text>
+        
+        <!-- Decorative compass rose -->
+        <g transform="translate(500, 360)" opacity="0.2">
+          <circle r="20" fill="none" stroke="#c9a84c" stroke-width="0.5"/>
+          <line x1="0" y1="-25" x2="0" y2="25" stroke="#c9a84c" stroke-width="0.5"/>
+          <line x1="-25" y1="0" x2="25" y2="0" stroke="#c9a84c" stroke-width="0.5"/>
+          <text y="-30" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="10">N</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DESTINATIONS SECTION ===== -->
+<section class="destinations-section" id="destinations">
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">Along the Coast</p>
+      <h2 class="reveal reveal-delay-1">The Seven Destinations</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="destinations-grid">
+      <!-- Port Aurelia -->
+      <div class="destination-card reveal">
+        <div class="destination-poster">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sky1" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a2744"/>
+                <stop offset="100%" style="stop-color:#2a6b6b"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="200" fill="url(#sky1)"/>
+            <!-- Sun -->
+            <circle cx="220" cy="60" r="30" fill="#c9a84c" opacity="0.8"/>
+            <g opacity="0.3">
+              <line x1="220" y1="10" x2="220" y2="0" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="220" y1="110" x2="220" y2="120" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="170" y1="60" x2="160" y2="60" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="270" y1="60" x2="280" y2="60" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="185" y1="25" x2="178" y2="18" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="255" y1="95" x2="262" y2="102" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="185" y1="95" x2="178" y2="102" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="255" y1="25" x2="262" y2="18" stroke="#c9a84c" stroke-width="1"/>
+            </g>
+            <!-- Water -->
+            <rect x="0" y="130" width="300" height="70" fill="#1d4d4d" opacity="0.6"/>
+            <line x1="0" y1="140" x2="300" y2="140" stroke="#c9a84c" stroke-width="0.3" opacity="0.3"/>
+            <line x1="0" y1="155" x2="300" y2="155" stroke="#c9a84c" stroke-width="0.3" opacity="0.2"/>
+            <!-- Buildings silhouette -->
+            <rect x="20" y="80" width="30" height="50" fill="#0d0d0d"/>
+            <rect x="55" y="60" width="25" height="70" fill="#0d0d0d"/>
+            <rect x="85" y="90" width="40" height="40" fill="#0d0d0d"/>
+            <polygon points="105,70 105,90 125,90" fill="#0d0d0d"/>
+            <rect x="130" y="75" width="20" height="55" fill="#0d0d0d"/>
+            <!-- Lighthouse -->
+            <rect x="250" y="50" width="12" height="80" fill="#0d0d0d"/>
+            <rect x="248" y="45" width="16" height="8" fill="#0d0d0d"/>
+            <circle cx="256" cy="40" r="4" fill="#e8d5a0" opacity="0.8" class="lamp-glow"/>
+            <!-- Art Deco frame -->
+            <rect x="5" y="5" width="290" height="190" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>Port Aurelia</h3>
+        <p class="dest-country">The Grand Departure</p>
+        <p>Where the Aurelian Express begins its legendary journey. A city of marble colonnades and golden harbours, where the sea meets the sky in an eternal embrace.</p>
+      </div>
+
+      <!-- Silverhaven -->
+      <div class="destination-card reveal reveal-delay-1">
+        <div class="destination-poster">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sky2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#243352"/>
+                <stop offset="100%" style="stop-color:#1a2744"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="200" fill="url(#sky2)"/>
+            <!-- Mountains -->
+            <polygon points="0,120 60,50 120,120" fill="#1d4d4d" opacity="0.4"/>
+            <polygon points="80,120 150,30 220,120" fill="#1d4d4d" opacity="0.5"/>
+            <polygon points="180,120 260,60 300,120" fill="#1d4d4d" opacity="0.3"/>
+            <!-- Snow caps -->
+            <polygon points="135,45 150,30 165,45" fill="#f5f0e8" opacity="0.3"/>
+            <polygon points="45,65 60,50 75,65" fill="#f5f0e8" opacity="0.2"/>
+            <!-- Water -->
+            <rect x="0" y="120" width="300" height="80" fill="#0d0d0d" opacity="0.5"/>
+            <!-- Silver reflections -->
+            <line x1="50" y1="130" x2="100" y2="130" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+            <line x1="150" y1="140" x2="220" y2="140" stroke="#c9a84c" stroke-width="0.5" opacity="0.2"/>
+            <line x1="80" y1="150" x2="180" y2="150" stroke="#c9a84c" stroke-width="0.5" opacity="0.15"/>
+            <!-- Stars -->
+            <circle cx="50" cy="20" r="1" fill="#f5f0e8" opacity="0.5"/>
+            <circle cx="120" cy="15" r="1" fill="#f5f0e8" opacity="0.4"/>
+            <circle cx="200" cy="25" r="1" fill="#f5f0e8" opacity="0.6"/>
+            <circle cx="270" cy="10" r="1" fill="#f5f0e8" opacity="0.3"/>
+            <rect x="5" y="5" width="290" height="190" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>Silverhaven</h3>
+        <p class="dest-country">The Mountain Pass</p>
+        <p>Nestled between ancient peaks and a mirror-like fjord, Silverhaven rewards travellers with silver-pine forests and thermal springs of legendary restorative power.</p>
+      </div>
+
+      <!-- Côte d'Or -->
+      <div class="destination-card reveal reveal-delay-2">
+        <div class="destination-poster">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sky3" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a2744"/>
+                <stop offset="100%" style="stop-color:#b8942e" stop-opacity="0.3"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="200" fill="url(#sky3)"/>
+            <!-- Golden fields -->
+            <rect x="0" y="100" width="300" height="100" fill="#1d4d4d" opacity="0.3"/>
+            <!-- Vineyard rows -->
+            <g opacity="0.4">
+              <line x1="30" y1="100" x2="30" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="50" y1="100" x2="50" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="70" y1="100" x2="70" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="90" y1="100" x2="90" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="110" y1="100" x2="110" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="130" y1="100" x2="130" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="150" y1="100" x2="150" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="170" y1="100" x2="170" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="190" y1="100" x2="190" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="210" y1="100" x2="210" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="230" y1="100" x2="230" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="250" y1="100" x2="250" y2="160" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="270" y1="100" x2="270" y2="160" stroke="#c9a84c" stroke-width="1"/>
+            </g>
+            <!-- Horizontal vine lines -->
+            <line x1="0" y1="115" x2="300" y2="115" stroke="#c9a84c" stroke-width="0.3" opacity="0.3"/>
+            <line x1="0" y1="135" x2="300" y2="135" stroke="#c9a84c" stroke-width="0.3" opacity="0.3"/>
+            <line x1="0" y1="155" x2="300" y2="155" stroke="#c9a84c" stroke-width="0.3" opacity="0.3"/>
+            <!-- Château -->
+            <rect x="120" y="50" width="60" height="50" fill="#0d0d0d"/>
+            <polygon points="120,50 150,25 180,50" fill="#0d0d0d"/>
+            <rect x="145" y="35" width="10" height="15" fill="#0d0d0d"/>
+            <rect x="5" y="5" width="290" height="190" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>Côte d'Or</h3>
+        <p class="dest-country">The Golden Coast</p>
+        <p>A landscape of sun-drenched vineyards and terraced hillsides, where centuries of viticulture have produced wines of unparalleled character and depth.</p>
+      </div>
+
+      <!-- Marenova -->
+      <div class="destination-card reveal">
+        <div class="destination-poster">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sky4" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#243352"/>
+                <stop offset="100%" style="stop-color:#2a6b6b"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="200" fill="url(#sky4)"/>
+            <!-- Ocean waves -->
+            <path d="M0 120 Q 30 110, 60 120 Q 90 130, 120 120 Q 150 110, 180 120 Q 210 130, 240 120 Q 270 110, 300 120" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+            <path d="M0 140 Q 30 130, 60 140 Q 90 150, 120 140 Q 150 130, 180 140 Q 210 150, 240 140 Q 270 130, 300 140" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.2"/>
+            <path d="M0 160 Q 30 150, 60 160 Q 90 170, 120 160 Q 150 150, 180 160 Q 210 170, 240 160 Q 270 150, 300 160" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.15"/>
+            <!-- Island -->
+            <ellipse cx="150" cy="110" rx="40" ry="15" fill="#0d0d0d"/>
+            <rect x="140" y="60" width="20" height="50" fill="#0d0d0d"/>
+            <polygon points="140,60 150,40 160,60" fill="#0d0d0d"/>
+            <!-- Palm trees -->
+            <line x1="100" y1="100" x2="100" y2="70" stroke="#0d0d0d" stroke-width="2"/>
+            <path d="M100 70 Q 85 60, 80 75 Q 90 65, 100 70" fill="#0d0d0d"/>
+            <path d="M100 70 Q 115 60, 120 75 Q 110 65, 100 70" fill="#0d0d0d"/>
+            <line x1="200" y1="100" x2="200" y2="65" stroke="#0d0d0d" stroke-width="2"/>
+            <path d="M200 65 Q 185 55, 180 70 Q 190 60, 200 65" fill="#0d0d0d"/>
+            <path d="M200 65 Q 215 55, 220 70 Q 210 60, 200 65" fill="#0d0d0d"/>
+            <rect x="5" y="5" width="290" height="190" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>Marenova</h3>
+        <p class="dest-country">The Azure Archipelago</p>
+        <p>A string of emerald islands connected by causeways of white stone, where turquoise waters lap against ancient sea caves and hidden coves.</p>
+      </div>
+
+      <!-- Bella Marina -->
+      <div class="destination-card reveal reveal-delay-1">
+        <div class="destination-poster">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sky5" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a2744"/>
+                <stop offset="100%" style="stop-color:#243352"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="200" fill="url(#sky5)"/>
+            <!-- Grand plaza -->
+            <ellipse cx="150" cy="140" rx="120" ry="40" fill="#1d4d4d" opacity="0.3"/>
+            <!-- Central fountain -->
+            <ellipse cx="150" cy="135" rx="25" ry="10" fill="#0d0d0d"/>
+            <rect x="147" y="100" width="6" height="35" fill="#0d0d0d"/>
+            <circle cx="150" cy="95" r="8" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+            <!-- Arcs -->
+            <path d="M60 120 Q 150 60, 240 120" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+            <path d="M80 125 Q 150 75, 220 125" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.2"/>
+            <!-- Columns -->
+            <rect x="70" y="80" width="8" height="40" fill="#0d0d0d"/>
+            <rect x="90" y="80" width="8" height="40" fill="#0d0d0d"/>
+            <rect x="202" y="80" width="8" height="40" fill="#0d0d0d"/>
+            <rect x="222" y="80" width="8" height="40" fill="#0d0d0d"/>
+            <!-- Dome -->
+            <ellipse cx="150" cy="75" rx="30" ry="20" fill="#0d0d0d"/>
+            <rect x="140" y="75" width="20" height="25" fill="#0d0d0d"/>
+            <rect x="5" y="5" width="290" height="190" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>Bella Marina</h3>
+        <p class="dest-country">The Garden Harbour</p>
+        <p>A city of cascading terraces and botanical gardens, where every balcony overlooks a harbour filled with galleons and the scent of jasmine hangs in the air.</p>
+      </div>
+
+      <!-- Azure Point -->
+      <div class="destination-card reveal reveal-delay-2">
+        <div class="destination-poster">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sky6" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#243352"/>
+                <stop offset="100%" style="stop-color:#1d4d4d"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="200" fill="url(#sky6)"/>
+            <!-- Cliffs -->
+            <polygon points="0,100 50,60 100,80 150,40 200,70 250,50 300,90 300,200 0,200" fill="#0d0d0d"/>
+            <!-- Ocean -->
+            <rect x="0" y="130" width="300" height="70" fill="#1d4d4d" opacity="0.4"/>
+            <!-- Sea spray -->
+            <circle cx="150" cy="125" r="3" fill="#f5f0e8" opacity="0.2"/>
+            <circle cx="140" cy="120" r="2" fill="#f5f0e8" opacity="0.15"/>
+            <circle cx="160" cy="122" r="2" fill="#f5f0e8" opacity="0.15"/>
+            <!-- Birds -->
+            <path d="M80 40 Q 85 35, 90 40" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+            <path d="M100 35 Q 105 30, 110 35" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+            <path d="M200 45 Q 205 40, 210 45" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+            <rect x="5" y="5" width="290" height="190" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>Azure Point</h3>
+        <p class="dest-country">The Dramatic Headland</p>
+        <p>Where the coastline plunges into the sea in dramatic cliffs, Azure Point offers the most breathtaking vista on the entire route—a place of wild beauty and solitude.</p>
+      </div>
+
+      <!-- Coralis -->
+      <div class="destination-card reveal">
+        <div class="destination-poster">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sky7" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a2744"/>
+                <stop offset="100%" style="stop-color:#2a6b6b"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="200" fill="url(#sky7)"/>
+            <!-- Coral reef formations -->
+            <g opacity="0.5">
+              <path d="M50 160 Q 55 120, 50 100 Q 60 110, 65 100 Q 60 130, 55 160" fill="#c9a84c" opacity="0.3"/>
+              <path d="M100 160 Q 105 110, 100 80 Q 110 95, 115 85 Q 110 120, 105 160" fill="#c9a84c" opacity="0.25"/>
+              <path d="M150 160 Q 155 100, 150 70 Q 160 85, 165 75 Q 160 115, 155 160" fill="#c9a84c" opacity="0.3"/>
+              <path d="M200 160 Q 205 120, 200 95 Q 210 105, 215 95 Q 210 130, 205 160" fill="#c9a84c" opacity="0.25"/>
+              <path d="M250 160 Q 255 130, 250 110 Q 260 120, 265 110 Q 260 140, 255 160" fill="#c9a84c" opacity="0.3"/>
+            </g>
+            <!-- Water surface -->
+            <rect x="0" y="140" width="300" height="60" fill="#1d4d4d" opacity="0.3"/>
+            <!-- Underwater light rays -->
+            <line x1="100" y1="0" x2="80" y2="140" stroke="#c9a84c" stroke-width="0.3" opacity="0.1"/>
+            <line x1="200" y1="0" x2="220" y2="140" stroke="#c9a84c" stroke-width="0.3" opacity="0.1"/>
+            <rect x="5" y="5" width="290" height="190" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>Coralis</h3>
+        <p class="dest-country">The Reef Kingdom</p>
+        <p>A city built upon living coral, where architecture and nature intertwine. The Coralis reefs glow with bioluminescence after dark—a spectacle unlike any other.</p>
+      </div>
+
+      <!-- Solmar -->
+      <div class="destination-card reveal reveal-delay-1">
+        <div class="destination-poster">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sky8" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#b8942e" stop-opacity="0.4"/>
+                <stop offset="50%" style="stop-color:#243352"/>
+                <stop offset="100%" style="stop-color:#1a2744"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="200" fill="url(#sky8)"/>
+            <!-- Grand sunset -->
+            <circle cx="150" cy="100" r="50" fill="#c9a84c" opacity="0.6"/>
+            <circle cx="150" cy="100" r="40" fill="#d4af37" opacity="0.4"/>
+            <!-- Sunburst rays -->
+            <g opacity="0.2">
+              <line x1="150" y1="30" x2="150" y2="0" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="150" y1="170" x2="150" y2="200" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="80" y1="100" x2="0" y2="100" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="220" y1="100" x2="300" y2="100" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="100" y1="50" x2="60" y2="10" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="200" y1="150" x2="240" y2="190" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="100" y1="150" x2="60" y2="190" stroke="#c9a84c" stroke-width="1"/>
+              <line x1="200" y1="50" x2="240" y2="10" stroke="#c9a84c" stroke-width="1"/>
+            </g>
+            <!-- Horizon water -->
+            <rect x="0" y="140" width="300" height="60" fill="#0d0d0d" opacity="0.4"/>
+            <!-- Golden reflection -->
+            <rect x="130" y="140" width="40" height="60" fill="#c9a84c" opacity="0.1"/>
+            <!-- Grand terminal silhouette -->
+            <rect x="100" y="110" width="100" height="30" fill="#0d0d0d"/>
+            <polygon points="100,110 150,85 200,110" fill="#0d0d0d"/>
+            <rect x="140" y="95" width="20" height="15" fill="#0d0d0d"/>
+            <rect x="5" y="5" width="290" height="190" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <h3>Solmar</h3>
+        <p class="dest-country">The Final Destination</p>
+        <p>The journey's magnificent conclusion. Solmar's grand terminal, bathed in the first light of dawn, welcomes travellers with a ceremony of champagne and orchestral music.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUITES SECTION ===== -->
+<section class="suites-section" id="suites">
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">Accommodations</p>
+      <h2 class="reveal reveal-delay-1">Sleep in Grandeur</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="suites-showcase">
+      <!-- Suite 1 -->
+      <div class="suite-item reveal">
+        <div class="suite-illustration window-frame">
+          <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+            <!-- Room interior -->
+            <rect width="400" height="300" fill="#1a2744"/>
+            <!-- Floor -->
+            <rect x="0" y="200" width="400" height="100" fill="#0d0d0d" opacity="0.5"/>
+            <!-- Parquet pattern -->
+            <g opacity="0.1">
+              <line x1="0" y1="220" x2="400" y2="220" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="0" y1="240" x2="400" y2="240" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="0" y1="260" x2="400" y2="260" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="0" y1="280" x2="400" y2="280" stroke="#c9a84c" stroke-width="0.5"/>
+            </g>
+            <!-- Bed -->
+            <rect x="80" y="140" width="240" height="80" rx="5" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+            <rect x="90" y="130" width="220" height="20" rx="3" fill="#2a2a2a" stroke="#c9a84c" stroke-width="0.5"/>
+            <!-- Pillows -->
+            <ellipse cx="140" cy="125" rx="35" ry="12" fill="#f5f0e8" opacity="0.15"/>
+            <ellipse cx="260" cy="125" rx="35" ry="12" fill="#f5f0e8" opacity="0.15"/>
+            <!-- Bedspread -->
+            <rect x="90" y="150" width="220" height="60" rx="3" fill="#243352" opacity="0.5"/>
+            <!-- Headboard -->
+            <rect x="70" y="80" width="260" height="55" rx="5" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1"/>
+            <rect x="75" y="85" width="250" height="45" rx="3" fill="#0d0d0d"/>
+            <!-- Art Deco headboard pattern -->
+            <g opacity="0.3">
+              <line x1="100" y1="90" x2="100" y2="125" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="130" y1="90" x2="130" y2="125" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="160" y1="90" x2="160" y2="125" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="190" y1="90" x2="190" y2="125" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="220" y1="90" x2="220" y2="125" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="250" y1="90" x2="250" y2="125" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="280" y1="90" x2="280" y2="125" stroke="#c9a84c" stroke-width="0.5"/>
+              <line x1="310" y1="90" x2="310" y2="125" stroke="#c9a84c" stroke-width="0.5"/>
+            </g>
+            <!-- Window -->
+            <rect x="140" y="10" width="120" height="60" rx="60" fill="#243352" stroke="#c9a84c" stroke-width="1"/>
+            <line x1="200" y1="10" x2="200" y2="70" stroke="#c9a84c" stroke-width="0.5"/>
+            <!-- Moonlight through window -->
+            <circle cx="230" cy="30" r="8" fill="#e8d5a0" opacity="0.3"/>
+            <!-- Nightstands -->
+            <rect x="40" y="150" width="35" height="50" rx="2" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+            <rect x="325" y="150" width="35" height="50" rx="2" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+            <!-- Lamps -->
+            <rect x="52" y="130" width="10" height="20" fill="#c9a84c" opacity="0.6" class="lamp-glow"/>
+            <ellipse cx="57" cy="125" rx="12" ry="8" fill="#c9a84c" opacity="0.3" class="lamp-glow"/>
+            <rect x="337" y="130" width="10" height="20" fill="#c9a84c" opacity="0.6" class="lamp-glow"/>
+            <ellipse cx="342" cy="125" rx="12" ry="8" fill="#c9a84c" opacity="0.3" class="lamp-glow"/>
+          </svg>
+        </div>
+        <div class="suite-details">
+          <h3>The Aurelian Suite</h3>
+          <p class="suite-type">Premier Accommodation</p>
+          <p>A sanctuary of refined luxury featuring hand-carved mahogany furnishings, Egyptian cotton linens, and an en-suite marble bathroom with rain shower and deep soaking tub.</p>
+          <ul class="suite-features">
+            <li>King-size canopy bed</li>
+            <li>Marble en-suite bath</li>
+            <li>Private observation window</li>
+            <li>Minibar & turndown service</li>
+            <li>Persian silk throws</li>
+            <li>Personal butler service</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Suite 2 -->
+      <div class="suite-item reveal">
+        <div class="suite-illustration window-frame">
+          <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="300" fill="#1a2744"/>
+            <rect x="0" y="200" width="400" height="100" fill="#0d0d0d" opacity="0.5"/>
+            <!-- Two single beds -->
+            <rect x="40" y="140" width="150" height="60" rx="5" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+            <rect x="210" y="140" width="150" height="60" rx="5" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+            <!-- Headboards -->
+            <rect x="35" y="100" width="160" height="45" rx="3" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+            <rect x="205" y="100" width="160" height="45" rx="3" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+            <!-- Pillows -->
+            <ellipse cx="90" cy="135" rx="30" ry="10" fill="#f5f0e8" opacity="0.12"/>
+            <ellipse cx="280" cy="135" rx="30" ry="10" fill="#f5f0e8" opacity="0.12"/>
+            <!-- Seating area -->
+            <rect x="140" y="220" width="120" height="40" rx="20" fill="#2a2a2a" stroke="#c9a84c" stroke-width="0.5"/>
+            <!-- Small table -->
+            <ellipse cx="200" cy="210" rx="20" ry="8" fill="#1a1a1a" stroke="#c9a84c" stroke-width="0.5"/>
+            <rect x="198" y="210" width="4" height="15" fill="#c9a84c" opacity="0.3"/>
+            <!-- Window with landscape -->
+            <rect x="140" y="10" width="120" height="70" rx="4" fill="#243352" stroke="#c9a84c" stroke-width="1"/>
+            <line x1="200" y1="10" x2="200" y2="80" stroke="#c9a84c" stroke-width="0.5"/>
+            <line x1="140" y1="45" x2="260" y2="45" stroke="#c9a84c" stroke-width="0.5"/>
+            <!-- Stars in window -->
+            <circle cx="170" cy="25" r="1" fill="#f5f0e8" opacity="0.5"/>
+            <circle cx="230" cy="30" r="1" fill="#f5f0e8" opacity="0.4"/>
+            <circle cx="240" cy="55" r="1" fill="#f5f0e8" opacity="0.3"/>
+            <!-- Art Deco ceiling medallion -->
+            <circle cx="200" cy="0" r="30" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.2"/>
+            <circle cx="200" cy="0" r="20" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.15"/>
+            <!-- Chandelier -->
+            <line x1="200" y1="0" x2="200" y2="15" stroke="#c9a84c" stroke-width="0.5"/>
+            <circle cx="200" cy="18" r="5" fill="#c9a84c" opacity="0.4" class="lamp-glow"/>
+          </svg>
+        </div>
+        <div class="suite-details">
+          <h3>The Coastal Cabin</h3>
+          <p class="suite-type">Classic Accommodation</p>
+          <p>Elegantly appointed with twin or double sleeping arrangements, featuring Art Deco furnishings, a comfortable sitting area, and a private washroom with heated marble floors.</p>
+          <ul class="suite-features">
+            <li>Twin or double bed option</li>
+            <li>Sitting area with writing desk</li>
+            <li>Heated marble washroom</li>
+            <li>Panoramic window</li>
+            <li>Complimentary tea service</li>
+            <li>Daily turndown ritual</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DINING SECTION ===== -->
+<section class="dining-section" id="dining">
+  <div class="geo-pattern"></div>
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">Culinary Excellence</p>
+      <h2 class="reveal reveal-delay-1">The Aurelian Dining Room</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="dining-content">
+      <p class="reveal">Beneath a ceiling of hand-painted constellations, our dining room offers a gastronomic journey through the coastal regions we traverse. Each meal is a celebration of local provenance, prepared by our award-winning chef and presented on hand-thrown ceramic and sterling silver.</p>
+
+      <div class="dining-menu">
+        <div class="menu-card reveal">
+          <div class="meal-icon">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="25" fill="none" stroke="#c9a84c" stroke-width="1"/>
+              <circle cx="30" cy="30" r="18" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+              <!-- Moon -->
+              <path d="M25 18 A12 12 0 1 0 35 42 A10 10 0 1 1 25 18" fill="#c9a84c" opacity="0.6"/>
+            </svg>
+          </div>
+          <h4>Evening Repast</h4>
+          <p class="meal-time">7:30 PM — 9:00 PM</p>
+          <p>A five-course tasting menu featuring the day's coastal harvest, paired with wines from the Côte d'Or vineyards. Each evening's menu is revealed at dusk.</p>
+        </div>
+
+        <div class="menu-card reveal reveal-delay-1">
+          <div class="meal-icon">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="25" fill="none" stroke="#c9a84c" stroke-width="1"/>
+              <circle cx="30" cy="30" r="18" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+              <!-- Cup -->
+              <path d="M20 25 L20 40 Q20 45 30 45 Q40 45 40 40 L40 25 Z" fill="none" stroke="#c9a84c" stroke-width="1"/>
+              <path d="M40 28 Q48 28 48 35 Q48 42 40 42" fill="none" stroke="#c9a84c" stroke-width="1"/>
+              <!-- Steam -->
+              <path d="M25 22 Q27 18, 25 14" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+              <path d="M30 22 Q32 18, 30 14" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+              <path d="M35 22 Q37 18, 35 14" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+            </svg>
+          </div>
+          <h4>Midnight Service</h4>
+          <p class="meal-time">11:00 PM — 1:00 AM</p>
+          <p>A quiet interlude of petit fours, digestifs, and rare teas served in the observation lounge. The perfect accompaniment to starlit journeys.</p>
+        </div>
+
+        <div class="menu-card reveal reveal-delay-2">
+          <div class="meal-icon">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="25" fill="none" stroke="#c9a84c" stroke-width="1"/>
+              <circle cx="30" cy="30" r="18" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+              <!-- Sun -->
+              <circle cx="30" cy="30" r="8" fill="#c9a84c" opacity="0.6"/>
+              <line x1="30" y1="14" x2="30" y2="18" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+              <line x1="30" y1="42" x2="30" y2="46" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+              <line x1="14" y1="30" x2="18" y2="30" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+              <line x1="42" y1="30" x2="46" y2="30" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
+          <h4>Dawn Breakfast</h4>
+          <p class="meal-time">6:30 AM — 9:00 AM</p>
+          <p>Wake to the aroma of freshly baked pastries and the first light over a new city. A lavish breakfast spread with eggs prepared to order and regional specialties.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TIMELINE SECTION ===== -->
+<section class="timeline-section" id="timeline">
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">The Journey Unfolds</p>
+      <h2 class="reveal reveal-delay-1">A Night to Remember</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="timeline-container">
+      <div class="timeline-line"></div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">17:30</span>
+          <span class="period">PM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>Boarding at Port Aurelia</h4>
+          <p>Greeted with champagne and a hand-stamped luggage tag. Your suite awaits.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">18:45</span>
+          <span class="period">PM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>Departure Ceremony</h4>
+          <p>The golden whistle sounds. The Aurelian Express glides from the grand terminal.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">19:30</span>
+          <span class="period">PM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>Sunset Cocktails</h4>
+          <p>The observation lounge fills with golden light as the coast unfolds below.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">20:30</span>
+          <span class="period">PM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>Evening Repast</h4>
+          <p>The dining room's constellations glow as the five-course menu begins.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">23:00</span>
+          <span class="period">PM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>Midnight Service</h4>
+          <p>Petit fours and rare teas beneath the stars in the quiet observation lounge.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">01:00</span>
+          <span class="period">AM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>The Silent Hours</h4>
+          <p>Through the mountain passes and coastal tunnels, the train whispers through darkness.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">05:30</span>
+          <span class="period">AM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>Turndown to Dawn</h4>
+          <p>Room service delivers warm towels and the first light paints the eastern sky.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">06:30</span>
+          <span class="period">AM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>Dawn Breakfast</h4>
+          <p>Fresh pastries and regional specialties as Solmar's harbour comes into view.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-time">
+          <span class="time">08:00</span>
+          <span class="period">AM</span>
+        </div>
+        <div class="timeline-node"></div>
+        <div class="timeline-desc">
+          <h4>Arrival at Solmar</h4>
+          <p>The grand terminal, the orchestra, the champagne. A new day begins.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SPECS SECTION ===== -->
+<section class="specs-section" id="specs">
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">The Machine</p>
+      <h2 class="reveal reveal-delay-1">Train Specifications</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="specs-grid">
+      <div class="spec-item reveal">
+        <div class="spec-icon">
+          <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="15" width="40" height="25" rx="3" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <line x1="5" y1="25" x2="45" y2="25" stroke="#c9a84c" stroke-width="0.5"/>
+            <rect x="10" y="18" width="8" height="6" rx="1" fill="#c9a84c" opacity="0.3"/>
+            <rect x="21" y="18" width="8" height="6" rx="1" fill="#c9a84c" opacity="0.3"/>
+            <rect x="32" y="18" width="8" height="6" rx="1" fill="#c9a84c" opacity="0.3"/>
+            <circle cx="15" cy="42" r="4" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <circle cx="35" cy="42" r="4" fill="none" stroke="#c9a84c" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="spec-value">14</div>
+        <div class="spec-label">Carriages</div>
+      </div>
+
+      <div class="spec-item reveal reveal-delay-1">
+        <div class="spec-icon">
+          <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="25" cy="25" r="18" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <line x1="25" y1="7" x2="25" y2="25" stroke="#c9a84c" stroke-width="1"/>
+            <line x1="25" y1="25" x2="35" y2="30" stroke="#c9a84c" stroke-width="0.5"/>
+            <circle cx="25" cy="25" r="2" fill="#c9a84c"/>
+          </svg>
+        </div>
+        <div class="spec-value">142</div>
+        <div class="spec-label">Miles</div>
+      </div>
+
+      <div class="spec-item reveal reveal-delay-2">
+        <div class="spec-icon">
+          <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="25" cy="25" r="18" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <circle cx="25" cy="25" r="12" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.5"/>
+            <text x="25" y="30" text-anchor="middle" fill="#c9a84c" font-family="Bebas Neue" font-size="14">14</text>
+          </svg>
+        </div>
+        <div class="spec-value">14h</div>
+        <div class="spec-label">Journey Time</div>
+      </div>
+
+      <div class="spec-item reveal reveal-delay-3">
+        <div class="spec-icon">
+          <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 40 L10 20 Q10 10 25 10 Q40 10 40 20 L40 40" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <line x1="10" y1="25" x2="40" y2="25" stroke="#c9a84c" stroke-width="0.5"/>
+            <line x1="10" y1="32" x2="40" y2="32" stroke="#c9a84c" stroke-width="0.5"/>
+            <circle cx="25" cy="18" r="3" fill="#c9a84c" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="spec-value">48</div>
+        <div class="spec-label">Guests</div>
+      </div>
+
+      <div class="spec-item reveal">
+        <div class="spec-icon">
+          <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="10" width="34" height="30" rx="2" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <line x1="8" y1="18" x2="42" y2="18" stroke="#c9a84c" stroke-width="0.5"/>
+            <rect x="12" y="22" width="10" height="14" fill="#c9a84c" opacity="0.2"/>
+            <rect x="28" y="22" width="10" height="14" fill="#c9a84c" opacity="0.2"/>
+          </svg>
+        </div>
+        <div class="spec-value">24</div>
+        <div class="spec-label">Suites</div>
+      </div>
+
+      <div class="spec-item reveal reveal-delay-1">
+        <div class="spec-icon">
+          <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="25" cy="25" r="18" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <path d="M25 12 L25 25 L34 30" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <circle cx="25" cy="25" r="2" fill="#c9a84c"/>
+          </svg>
+        </div>
+        <div class="spec-value">1924</div>
+        <div class="spec-label">Established</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RITUALS SECTION ===== -->
+<section class="rituals-section" id="rituals">
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">The Aurelian Way</p>
+      <h2 class="reveal reveal-delay-1">Service Rituals</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="rituals-grid">
+      <div class="ritual-card reveal">
+        <div class="ritual-number">I</div>
+        <h4>The Luggage Ceremony</h4>
+        <p>Each guest's luggage is met at the platform by a uniformed porter, stamped with a hand-carved brass medallion, and delivered to your suite within minutes of boarding.</p>
+      </div>
+
+      <div class="ritual-card reveal reveal-delay-1">
+        <div class="ritual-number">II</div>
+        <h4>The Welcome Elixir</h4>
+        <p>A bespoke aperitif, crafted by our master mixologist to your preference, awaits in your suite upon arrival—served in hand-blown crystal with a sprig of coastal rosemary.</p>
+      </div>
+
+      <div class="ritual-card reveal reveal-delay-2">
+        <div class="ritual-number">III</div>
+        <h4>The Turndown Ritual</h4>
+        <p>Each evening, your suite is prepared for rest with warm towels, a chamomile compress, and the gentle scent of sandalwood. The windows are drawn and the lamps dimmed to moonlight.</p>
+      </div>
+
+      <div class="ritual-card reveal">
+        <div class="ritual-number">IV</div>
+        <h4>The Morning Pressing</h4>
+        <p>Leave your garments on the valet stand and they will be returned pressed and refreshed before breakfast—a tradition unchanged since 1924.</p>
+      </div>
+
+      <div class="ritual-card reveal reveal-delay-1">
+        <div class="ritual-number">V</div>
+        <h4>The Arrival Toast</h4>
+        <p>As the train enters the final station, a string quartet plays in the lounge and champagne is poured. The conductor personally wishes each guest farewell.</p>
+      </div>
+
+      <div class="ritual-card reveal reveal-delay-2">
+        <div class="ritual-number">VI</div>
+        <h4>The Journey Journal</h4>
+        <p>Each guest receives a leather-bound journal documenting the route, the cuisine, and the stories of the seven cities. It is yours to keep as a memento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials-section" id="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">Voices of the Journey</p>
+      <h2 class="reveal reveal-delay-1">What Travellers Say</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <span class="quote-mark">"</span>
+        <blockquote>The Aurelian Express is not merely a train—it is a state of mind. From the moment the champagne flute touches your lips to the final notes of the string quartet at dawn, every detail has been considered with extraordinary care.</blockquote>
+        <p class="author">ELEANOR VASQUEZ</p>
+        <p class="author-title">Travel Editor, The Meridian</p>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-1">
+        <span class="quote-mark">"</span>
+        <blockquote>I have travelled on every luxury train in the world, and none compare. The Aurelian Express understands that true luxury is not in the gold leaf, but in the silence between stations and the warmth of a perfectly timed gesture.</blockquote>
+        <p class="author">JAMES CORBIN III</p>
+        <p class="author-title">Author, "The Slow Journey"</p>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-2">
+        <span class="quote-mark">"</span>
+        <blockquote>Waking to the first light over Solmar's harbour, with a cup of coffee in hand and the sound of the sea below—this is the kind of moment that stays with you for the rest of your life.</blockquote>
+        <p class="author">DR. YUKO TANAKA</p>
+        <p class="author-title">Cultural Anthropologist</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FARE TIERS ===== -->
+<section class="fares-section" id="fares">
+  <div class="container">
+    <div class="section-header">
+      <p class="subtitle reveal">Investment in Experience</p>
+      <h2 class="reveal reveal-delay-1">Fare Tiers</h2>
+      <div class="brass-line reveal reveal-delay-2"></div>
+    </div>
+
+    <div class="fares-grid">
+      <div class="fare-card reveal">
+        <p class="fare-tier-name">Classic</p>
+        <h3>Coastal Cabin</h3>
+        <p class="fare-price"><span class="currency">$</span>2,450</p>
+        <p class="fare-per">per person / journey</p>
+        <ul class="fare-features">
+          <li>Coastal Cabin accommodation</li>
+          <li>All meals included</li>
+          <li>Observation lounge access</li>
+          <li>Evening repast & breakfast</li>
+          <li>Journey journal</li>
+          <li>Luggage ceremony</li>
+        </ul>
+        <a href="#book" class="btn-outline">Select Cabin</a>
+      </div>
+
+      <div class="fare-card featured reveal reveal-delay-1">
+        <p class="fare-tier-name">Premier</p>
+        <h3>Aurelian Suite</h3>
+        <p class="fare-price"><span class="currency">$</span>4,200</p>
+        <p class="fare-per">per person / journey</p>
+        <ul class="fare-features">
+          <li>Aurelian Suite with canopy bed</li>
+          <li>All meals & premium wines</li>
+          <li>Personal butler service</li>
+          <li>Midnight service included</li>
+          <li>Morning pressing service</li>
+          <li>Private observation window</li>
+          <li>Welcome elixir & turndown ritual</li>
+        </ul>
+        <a href="#book" class="btn-gold">Select Suite</a>
+      </div>
+
+      <div class="fare-card reveal reveal-delay-2">
+        <p class="fare-tier-name">Sovereign</p>
+        <h3>Grand Saloon</h3>
+        <p class="fare-price"><span class="currency">$</span>8,500</p>
+        <p class="fare-per">per suite / journey</p>
+        <ul class="fare-features">
+          <li>Entire private saloon carriage</li>
+          <li>Dedicated chef & sommelier</li>
+          <li>Custom itinerary adjustments</li>
+          <li>Helicopter transfer options</li>
+          <li>Exclusive shore excursions</li>
+          <li>Commemorative silver service</li>
+          <li>All Premier inclusions</li>
+        </ul>
+        <a href="#book" class="btn-outline">Inquire Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BOOKING CTA ===== -->
+<section class="booking-section" id="book">
+  <div class="geo-pattern"></div>
+  <div class="corner-ornament top-left"></div>
+  <div class="corner-ornament top-right"></div>
+  <div class="corner-ornament bottom-left"></div>
+  <div class="corner-ornament bottom-right"></div>
+  
+  <div class="booking-content">
+    <div class="luggage-label reveal">
+      <p class="label-title">RESERVATION</p>
+      <p class="label-name">The Aurelian Express</p>
+      <p class="label-route">PORT AURELIA → SOLMAR</p>
+    </div>
+
+    <h2 class="reveal reveal-delay-1">Begin Your Journey</h2>
+    <p class="reveal reveal-delay-2">Reserve your place aboard the most celebrated overnight railway in the world. Departures are limited to 48 guests per sailing, ensuring an experience of intimacy and distinction.</p>
+
+    <div class="booking-form reveal reveal-delay-3">
+      <input type="text" placeholder="Full Name" aria-label="Full Name">
+      <input type="email" placeholder="Email Address" aria-label="Email Address">
+      <select aria-label="Preferred Date">
+        <option value="">Preferred Departure</option>
+        <option value="spring-2025">Spring 2025</option>
+        <option value="summer-2025">Summer 2025</option>
+        <option value="autumn-2025">Autumn 2025</option>
+        <option value="winter-2025">Winter 2025</option>
+      </select>
+      <select aria-label="Accommodation">
+        <option value="">Accommodation</option>
+        <option value="cabin">Coastal Cabin</option>
+        <option value="suite">Aurelian Suite</option>
+        <option value="saloon">Grand Saloon</option>
+      </select>
+    </div>
+
+    <button class="btn-gold reveal reveal-delay-4" onclick="alert('Thank you for your interest in The Aurelian Express. Our reservations team will contact you within 24 hours.')">
+      REQUEST RESERVATION
+    </button>
+
+    <p class="reveal reveal-delay-4" style="margin-top: 2rem; font-size: 0.85rem; color: var(--gold-dim);">
+      A member of our reservations team will contact you within 24 hours to confirm availability and arrange your journey.
+    </p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-logo">THE AURELIAN EXPRESS</div>
+  <div class="brass-line"></div>
+  <div class="footer-links">
+    <a href="#route">Route</a>
+    <a href="#destinations">Destinations</a>
+    <a href="#suites">Suites</a>
+    <a href="#dining">Dining</a>
+    <a href="#timeline">Journey</a>
+    <a href="#fares">Fares</a>
+    <a href="#book">Reservations</a>
+  </div>
+  <div class="brass-line"></div>
+  <p class="footer-copy">© 2024 The Aurelian Express. A work of fiction. All rights reserved.<br>Seven grand coastal cities, one extraordinary night.</p>
+</footer>
+
+<script>
+// ===== NAVIGATION SCROLL EFFECT =====
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 80) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// ===== MOBILE NAV TOGGLE =====
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+
+// Close mobile nav on link click
+navLinks.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+  });
+});
+
+// ===== SCROLL REVEAL =====
+const revealElements = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+});
+
+revealElements.forEach(el => revealObserver.observe(el));
+
+// ===== ROUTE LINE ANIMATION =====
+const routePaths = document.querySelectorAll('.route-line-path');
+const routeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('drawn');
+    }
+  });
+}, { threshold: 0.3 });
+
+routePaths.forEach(path => routeObserver.observe(path));
+
+// ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// ===== PARALLAX-LIKE SUBTLE EFFECT ON HERO =====
+window.addEventListener('scroll', () => {
+  const hero = document.querySelector('.hero-content');
+  if (hero) {
+    const scrolled = window.scrollY;
+    if (scrolled < window.innerHeight) {
+      hero.style.transform = `translateY(${scrolled * 0.15}px)`;
+      hero.style.opacity = 1 - (scrolled / window.innerHeight) * 0.6;
+    }
+  }
+});
+</script>
+
+</body>
+</html>

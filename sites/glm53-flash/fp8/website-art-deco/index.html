@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Aurelian Express — Seven Cities · One Night</title>
+<meta name="description" content="A fictional luxury overnight railway: Barcelona to Venice in a single unbroken night.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='6.5' y='6.5' width='11' height='11' transform='rotate(45 12 12)' fill='%23C6A15B'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ FOUNDATION ============ */
+:root{
+  --navy:#0C1424; --navy-2:#101B30; --navy-3:#15233C;
+  --lac:#090C11; --lac-2:#0A0E14;
+  --ivory:#F1E8D4;
+  --iv78:rgba(241,232,212,.78); --iv55:rgba(241,232,212,.55); --iv30:rgba(241,232,212,.30);
+  --iv14:rgba(241,232,212,.14); --iv08:rgba(241,232,212,.08);
+  --gold:#C6A15B; --gold2:#E2C684;
+  --g40:rgba(198,161,91,.40); --g22:rgba(198,161,91,.22); --g12:rgba(198,161,91,.12);
+  --teal:#2E5F5C; --teal2:#1D3F3C; --terra:#B0663A;
+  --lamp:0;
+  --serif:"Bodoni Moda","Bodoni MT",Didot,Georgia,serif;
+  --sans:"Jost","Futura","Century Gothic",sans-serif;
+  --ital:"Cormorant Garamond",Georgia,serif;
+  --ease:cubic-bezier(.22,.61,.21,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+body{background:var(--navy);color:var(--iv78);font:300 17px/1.72 var(--sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#10131A}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+.section{padding:clamp(72px,9vw,128px) 0;position:relative}
+h1,h2,h3{color:var(--ivory);font-weight:600}
+
+/* ornament helpers */
+.dia{display:inline-block;width:6px;height:6px;background:var(--gold);transform:rotate(45deg);flex:none}
+.kicker{display:flex;align-items:center;justify-content:center;gap:16px;font:500 11px/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--gold)}
+.kicker::before,.kicker::after{content:"";height:1px;width:58px;background:linear-gradient(90deg,transparent,var(--g40))}
+.kicker::after{background:linear-gradient(90deg,var(--g40),transparent)}
+.kicker .dia{margin:0 4px;opacity:.9}
+.shead{text-align:center;max-width:780px;margin:0 auto clamp(44px,6vw,74px)}
+.shead h2{font:600 clamp(2.1rem,4.6vw,3.5rem)/1.12 var(--serif);letter-spacing:.02em;margin:20px 0 16px}
+.shead p{color:var(--iv78)}
+.step-div{display:flex;justify-content:center;padding:0 0 clamp(72px,9vw,128px)}
+.step-div svg{width:240px;height:26px;color:var(--g40)}
+
+/* reveal */
+[data-reveal]{opacity:0;transform:translateY(18px);transition:opacity .95s var(--ease),transform .95s var(--ease)}
+[data-reveal].in{opacity:1;transform:none}
+
+/* buttons */
+.btn{position:relative;display:inline-block;padding:15px 30px;border:1px solid var(--gold);color:var(--ivory);
+  font:500 11.5px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;transition:background .35s,color .35s;white-space:nowrap}
+.btn::before,.btn::after{content:"";position:absolute;width:7px;height:7px;border:1px solid var(--gold);transition:border-color .35s}
+.btn::before{top:3px;left:3px;border-right:0;border-bottom:0}
+.btn::after{bottom:3px;right:3px;border-left:0;border-top:0}
+.btn:hover{background:var(--gold);color:#14100A}
+.btn:hover::before,.btn:hover::after{border-color:#14100A}
+.btn-solid{background:var(--gold);color:#14100A}
+.btn-solid:hover{background:var(--gold2)}
+.btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
+
+/* ============ NAV ============ */
+.nav{position:fixed;inset:0 0 auto 0;z-index:60;display:flex;align-items:center;gap:26px;
+  padding:0 clamp(18px,3.4vw,44px);height:72px;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(9,12,17,.9);backdrop-filter:blur(10px);border-bottom-color:var(--g22)}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.brand svg{width:34px;height:34px;color:var(--gold)}
+.brand span{font:600 14px var(--serif);letter-spacing:.34em;color:var(--ivory)}
+.nav-links{display:flex;gap:clamp(14px,2.2vw,30px)}
+.nav-links a{position:relative;font:500 10.5px var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--iv55);padding:6px 0;transition:color .3s}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
+.nav-links a:hover{color:var(--ivory)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.nav .btn{padding:10px 18px;font-size:10px}
+@media(max-width:940px){.nav-links{display:none}}
+
+/* ============ HERO ============ */
+.hero{position:relative;min-height:640px;height:100vh;height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0A1220}
+.hero-scene{position:absolute;inset:0;width:100%;height:100%}
+.hero-inner{position:relative;z-index:3;text-align:center;padding:0 20px;max-width:980px}
+.h-kicker{display:flex;align-items:center;justify-content:center;gap:18px;font:500 12px var(--sans);letter-spacing:.5em;color:var(--gold);text-transform:uppercase;text-indent:.5em}
+.h-kicker::before,.h-kicker::after{content:"";height:1px;width:min(120px,14vw);background:var(--g40)}
+.h-title{font:600 clamp(3.2rem,10.5vw,8.4rem)/1 var(--serif);letter-spacing:.045em;color:var(--ivory);margin:14px 0 10px;text-indent:.045em}
+.h-sub{display:flex;align-items:center;justify-content:center;gap:16px;font:600 clamp(.95rem,2vw,1.4rem) var(--serif);letter-spacing:.62em;text-indent:.62em;color:var(--gold2)}
+.h-lede{font:italic 400 clamp(1.05rem,1.7vw,1.3rem)/1.6 var(--ital);color:var(--iv78);max-width:620px;margin:22px auto 0}
+.h-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+.h-strip{margin:40px auto 0;max-width:520px}
+.h-strip .rline{stroke:var(--gold);stroke-width:1.2;stroke-dasharray:496;stroke-dashoffset:496}
+.h-strip .rdot{fill:var(--gold2);opacity:0;transition:opacity .6s}
+.h-strip .rdia{fill:none;stroke:var(--gold);stroke-width:1}
+body.loaded .h-strip .rline{transition:stroke-dashoffset 2s var(--ease) .9s;stroke-dashoffset:0}
+body.loaded .h-strip .rdot{opacity:1}
+body.loaded .h-strip .rdot:nth-of-type(1){transition-delay:1.05s}body.loaded .h-strip .rdot:nth-of-type(2){transition-delay:1.28s}
+body.loaded .h-strip .rdot:nth-of-type(3){transition-delay:1.51s}body.loaded .h-strip .rdot:nth-of-type(4){transition-delay:1.74s}
+body.loaded .h-strip .rdot:nth-of-type(4){transition-delay:1.97s}body.loaded .h-strip .rdot:nth-of-type(5){transition-delay:2.2s}
+body.loaded .h-strip .rdot:nth-of-type(6){transition-delay:2.43s}body.loaded .h-strip .rdot:nth-of-type(7){transition-delay:2.66s}
+.rise{opacity:0;transform:translateY(22px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease);transition-delay:var(--d,0s)}
+body.loaded .rise{opacity:1;transform:none}
+.deco-frame{position:absolute;inset:clamp(12px,2.2vw,22px);border:1px solid var(--g22);pointer-events:none;z-index:4}
+.deco-frame .corner{position:absolute;width:52px;height:52px;color:var(--gold);opacity:.85}
+.corner.tl{top:-1px;left:-1px}.corner.tr{top:-1px;right:-1px;transform:scaleX(-1)}
+.corner.bl{bottom:-1px;left:-1px;transform:scaleY(-1)}.corner.br{bottom:-1px;right:-1px;transform:scale(-1)}
+@media(max-width:640px){.deco-frame .corner{width:34px;height:34px}}
+/* hero animation */
+.star{fill:#EDE4CE;animation:tw 4.5s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.12}to{opacity:.75}}
+#raysSpin{animation:spin 260s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#heroTrain{animation:heroRun 38s linear infinite}
+@keyframes heroRun{0%{transform:translateX(-820px)}44%{transform:translateX(1760px)}100%{transform:translateX(1760px)}}
+.cloud-a{animation:cloudA 78s ease-in-out infinite alternate}
+.cloud-b{animation:cloudA 96s ease-in-out infinite alternate-reverse}
+@keyframes cloudA{to{transform:translateX(70px)}}
+.glintline{stroke-dasharray:24 20;animation:gl 13s linear infinite}
+@keyframes gl{to{stroke-dashoffset:-88}}
+.beam{animation:beam 9s ease-in-out infinite alternate}
+@keyframes beam{from{transform:rotate(-7deg);opacity:.5}to{transform:rotate(8deg);opacity:1}}
+
+/* ============ TICKER ============ */
+.ticker{border-block:1px solid var(--g22);background:var(--lac-2);overflow:hidden;padding:15px 0}
+.ticker-track{display:flex;width:max-content;animation:tick 46s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-track span{display:flex;align-items:center;font:500 12px var(--sans);letter-spacing:.3em;color:var(--iv55);text-transform:uppercase;white-space:nowrap}
+.ticker-track .dia{margin:0 26px;width:5px;height:5px;opacity:.65}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ============ INTRO ============ */
+.prose{max-width:760px;margin:0 auto;text-align:center}
+.prose p+p{margin-top:1.2em}
+.figures{display:flex;flex-wrap:wrap;margin-top:clamp(44px,6vw,70px)}
+.figures>div{flex:1 1 200px;padding:10px 26px;border-left:1px solid var(--iv14)}
+.figures>div:first-child{border-left:0}
+.figures b{display:block;font:600 clamp(2rem,3.4vw,2.9rem)/1 var(--serif);color:var(--ivory)}
+.figures i{display:block;margin-top:10px;font:500 10.5px var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-style:normal}
+@media(max-width:760px){.figures>div{flex:1 1 46%;margin-bottom:26px;border-left:0;text-align:center}}
+
+/* ============ ROUTE ============ */
+.route-grid{display:grid;grid-template-columns:1.45fr 1fr;gap:clamp(26px,3.4vw,44px);align-items:start}
+.map-frame{border:1px solid var(--g22);background:#0B1526;padding:clamp(12px,2vw,22px)}
+.map-frame svg{width:100%;height:auto;display:block}
+.map-coast{fill:#122036}
+.map-sea{fill:#0A2130}
+.map-coastline{fill:none;stroke:var(--g40);stroke-width:1.4}
+.map-ghost{fill:none;stroke:var(--iv14);stroke-width:2}
+.map-gold{fill:none;stroke:var(--gold);stroke-width:2.6;stroke-linecap:round}
+.map-lbl{font:500 13.5px var(--sans);letter-spacing:.16em;fill:var(--ivory)}
+.map-time{font:500 10.5px var(--sans);letter-spacing:.14em;fill:var(--gold)}
+.map-tiny{font:500 9.5px var(--sans);letter-spacing:.2em;fill:var(--iv55)}
+.med{cursor:pointer}
+.med-bezel{fill:none;stroke:var(--iv30);stroke-width:1;stroke-dasharray:3 5;transform-box:fill-box;transform-origin:center;animation:spin 70s linear infinite}
+.med-disc{fill:#0D1526;stroke:var(--g40);stroke-width:1;transition:.35s}
+.med-glyph{color:var(--iv55);transition:.35s}
+.med.lit .med-disc{stroke:var(--gold);fill:#12233B}
+.med.lit .med-glyph{color:var(--gold2)}
+.med.sel .med-disc{stroke:var(--gold2);stroke-width:1.6;fill:#173049}
+.med.sel .med-glyph{color:var(--ivory)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dot-pulse{fill:none;stroke:var(--gold);transform-box:fill-box;transform-origin:center;animation:pulse 2.6s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+.stops{list-style:none}
+.stop{display:flex;align-items:baseline;gap:16px;width:100%;text-align:left;padding:13px 6px;border-bottom:1px solid var(--iv08);color:var(--iv78);transition:.3s}
+.stop .s-roman{font:600 13px var(--serif);color:var(--gold);width:26px;flex:none}
+.stop .s-city{font:600 17px var(--serif);letter-spacing:.06em;color:var(--ivory);transition:.3s}
+.stop .s-tag{font:300 12.5px var(--sans);color:var(--iv55);margin-left:10px}
+.stop .s-time{margin-left:auto;font:500 13px var(--sans);letter-spacing:.1em;color:var(--iv55);transition:.3s}
+.stop:hover{padding-left:12px}
+.stop.active{background:linear-gradient(90deg,var(--g12),transparent 70%)}
+.stop.active .s-city{color:var(--gold2)}
+.stop.active .s-time{color:var(--ivory)}
+.city-card{margin-top:26px;border:1px solid var(--g22);background:var(--navy-2);padding:24px;display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:start}
+.city-card.swap .cc-anim{animation:swap .55s var(--ease)}
+@keyframes swap{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.cc-poster svg{width:100%;height:auto;box-shadow:0 18px 44px rgba(0,0,0,.45)}
+.cc-body h3{font:600 26px var(--serif);letter-spacing:.04em;color:var(--ivory)}
+.cc-epi{font:italic 500 15px var(--ital);color:var(--gold2);margin:2px 0 12px}
+.cc-note{font:300 14.5px/1.7 var(--sans);color:var(--iv78)}
+.cc-sched{display:flex;gap:18px;align-items:center;margin-top:16px;font:500 11px var(--sans);letter-spacing:.24em;color:var(--iv55)}
+.cc-sched b{color:var(--ivory);font-weight:500}
+.cc-label{margin-top:16px;transform:rotate(-2.5deg)}
+.cc-label svg{width:190px;height:auto}
+.p-cap{font:500 8.2px var(--sans);letter-spacing:.3em;fill:rgba(241,232,212,.6)}
+.p-name{font:600 19px var(--serif);letter-spacing:.1em;fill:var(--ivory)}
+.p-epi{font:italic 500 12px var(--ital);fill:rgba(241,232,212,.62)}
+.l-cap{font:500 8px var(--sans);letter-spacing:.32em;fill:var(--gold)}
+.l-name{font:600 17px var(--serif);letter-spacing:.12em;fill:var(--ivory)}
+.l-sub{font:500 8.5px var(--sans);letter-spacing:.26em;fill:rgba(241,232,212,.6)}
+@media(max-width:1080px){.route-grid{grid-template-columns:1fr}}
+@media(max-width:660px){.city-card{grid-template-columns:1fr}.cc-poster{max-width:220px}}
+@media(max-width:560px){.stop .s-tag{display:none}}
+
+/* ============ SUITES ============ */
+#suites{background:var(--lac-2)}
+#suites .wrap>p{background-image:repeating-linear-gradient(90deg,transparent 0 13px,rgba(241,232,212,.014) 13px 14px)}
+.suites-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(30px,4vw,60px);align-items:center}
+.suite-win{width:100%;height:auto;--curtain:#2E5F5C}
+.suite-win.t2{--curtain:#6B5320}
+.suite-win.t3{--curtain:#1E4A46}
+.suite-win .f1,.suite-win .f2,.suite-win .f3{display:none}
+.suite-win.t1 .f1{display:block}.suite-win.t2 .f2{display:block}.suite-win.t3 .f3{display:block}
+.drift-far{animation:df 130s linear infinite}
+.drift-mid{animation:df 58s linear infinite}
+.drift-near{animation:df 22s linear infinite}
+@keyframes df{to{transform:translateX(-700px)}}
+.sheen-m{animation:sh 11s ease-in-out infinite}
+@keyframes sh{0%{transform:translateX(-240px)}55%,100%{transform:translateX(820px)}}
+.lamp-glow{opacity:var(--lamp);transition:opacity 1.2s}
+.win-cap{text-align:center;font:italic 500 14.5px var(--ital);color:var(--iv55);margin-top:14px}
+.tiers{border-top:1px solid var(--iv14)}
+.tier{display:flex;align-items:baseline;gap:14px;width:100%;text-align:left;padding:17px 6px;border-bottom:1px solid var(--iv14);color:var(--iv78);transition:.3s}
+.tier .t-mark{width:8px;height:8px;border:1px solid var(--gold);transform:rotate(45deg);flex:none;align-self:center;transition:.3s}
+.tier .t-name{font:600 21px var(--serif);letter-spacing:.04em;color:var(--ivory)}
+.tier .t-price{margin-left:auto;font:300 14px var(--sans);color:var(--iv55);white-space:nowrap}
+.tier:hover{padding-left:12px}
+.tier.active{background:linear-gradient(90deg,var(--g12),transparent 70%)}
+.tier.active .t-mark{background:var(--gold)}
+.tier.active .t-name{color:var(--gold2)}
+.suite-detail{margin-top:26px}
+.suite-detail h3{font:italic 600 20px var(--ital);color:var(--ivory)}
+.suite-detail .price{font:500 11px var(--sans);letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin:4px 0 12px}
+.suite-detail .desc{font:300 15px/1.7 var(--sans)}
+.feat-ledger{margin-top:18px;border-top:1px solid var(--iv14)}
+.feat-ledger div{display:flex;gap:18px;padding:9px 2px;border-bottom:1px solid var(--iv08);font:300 13.5px var(--sans)}
+.feat-ledger dt{width:120px;flex:none;font:500 10px var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);padding-top:3px}
+.feat-ledger dd{color:var(--iv78)}
+@media(max-width:960px){.suites-grid{grid-template-columns:1fr}}
+
+/* ============ DINING ============ */
+.dine-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,4vw,64px);align-items:center}
+.dine-fig svg{width:100%;height:auto}
+.dine-fig figcaption{text-align:center;font:italic 500 14.5px var(--ital);color:var(--iv55);margin-top:12px}
+.arch-glint{stroke-dasharray:10 16;animation:agl 9s linear infinite}
+@keyframes agl{to{stroke-dashoffset:-104}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:fl 1.6s ease-in-out infinite alternate}
+@keyframes fl{from{transform:scaleY(.82);opacity:.75}to{transform:scaleY(1.12);opacity:1}}
+.menu{border-top:1px solid var(--g22)}
+.menu .course{padding:16px 2px;border-bottom:1px solid var(--iv08)}
+.menu .c-role{font:500 10px var(--sans);letter-spacing:.34em;text-transform:uppercase;color:var(--gold)}
+.menu .c-dish{font:600 19px var(--serif);letter-spacing:.03em;color:var(--ivory);margin:5px 0 3px}
+.menu .c-note{font:300 13.5px var(--sans);color:var(--iv55)}
+.hours{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:22px;font:500 10.5px var(--sans);letter-spacing:.24em;color:var(--iv55);text-transform:uppercase}
+.cellar{font:italic 500 17px/1.6 var(--ital);color:var(--iv78);margin-top:22px;padding-left:18px;border-left:2px solid var(--g40)}
+@media(max-width:960px){.dine-grid{grid-template-columns:1fr}}
+
+/* ============ TIMELINE ============ */
+.tl{position:relative;max-width:1020px;margin:0 auto;padding:26px 0 8px}
+.tl::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);
+  background:linear-gradient(180deg,#D9A05B,#C6A15B 16%,#5E7A80 42%,#25333E 60%,#3E6A66 78%,#C9B27A 90%,#F1E8D4)}
+.tl-item{position:relative;width:50%;padding:24px 60px 4px 0;text-align:right}
+.tl-item:nth-child(even){margin-left:50%;padding:24px 0 4px 60px;text-align:left}
+.tl-node{position:absolute;top:36px;right:-6px;width:11px;height:11px;transform:rotate(45deg);background:var(--navy);border:1.5px solid var(--gold)}
+.tl-item:nth-child(even) .tl-node{right:auto;left:-6px}
+.tl-lamp{position:absolute;top:14px;right:-46px;width:34px}
+.tl-item:nth-child(even) .tl-lamp{right:auto;left:-46px;transform:scaleX(-1)}
+.tl-time{font:600 1.55rem var(--serif);color:var(--ivory);letter-spacing:.03em}
+.tl-phase{display:inline-block;font:500 9.5px var(--sans);letter-spacing:.32em;text-transform:uppercase;margin:2px 0 6px}
+.ph-dusk{color:#D9A05B}.ph-night{color:#9DB8B3}.ph-dawn{color:#E4C989}.ph-morn{color:var(--ivory)}
+.tl-item h3{font:500 13.5px var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.tl-item p{font:300 14.5px/1.7 var(--sans);color:var(--iv78)}
+.tl-mark{position:absolute;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:var(--navy-2);border:1px solid var(--g40);display:flex;align-items:center;justify-content:center;color:var(--gold2)}
+@media(max-width:820px){
+  .tl::before{left:18px;transform:none}
+  .tl-item,.tl-item:nth-child(even){width:auto;margin-left:52px;padding:22px 0 4px 4px;text-align:left}
+  .tl-node,.tl-item:nth-child(even) .tl-node{left:-39.5px;right:auto}
+  .tl-lamp,.tl-item:nth-child(even) .tl-lamp{left:-45px;right:auto;transform:scaleX(-1)}
+  .tl-mark{left:18px}
+}
+
+/* ============ CONSIST ============ */
+.consist{border:1px solid var(--g22);background:var(--navy-2);padding:clamp(14px,3vw,32px)}
+.consist svg{width:100%;height:auto;display:block}
+.car{cursor:pointer;outline:none}
+.c-body{fill:#0D131D;stroke:rgba(241,232,212,.4);stroke-width:1.1;transition:.3s}
+.c-win{fill:rgba(232,192,120,.5);stroke:none;transition:.3s}
+.c-wheel{fill:#0A0E14;stroke:rgba(241,232,212,.4);stroke-width:1.1}
+.c-stripe{fill:var(--g40);transition:.3s}
+.c-door,.c-coup{stroke:rgba(241,232,212,.22);stroke-width:1;fill:#0A0E14}
+.c-pant{stroke:rgba(241,232,212,.5);stroke-width:1.4;fill:none}
+.c-rail{stroke:var(--g22);stroke-width:1.6}
+.car:hover .c-body,.car.lit .c-body,#loco:hover .c-body{stroke:var(--gold2)}
+.car:hover .c-win,.car.lit .c-win,#loco:hover .c-win{fill:var(--gold2)}
+.car:hover .c-stripe,.car.lit .c-stripe{fill:var(--gold)}
+.car-cap{min-height:52px;margin-top:16px;text-align:center;font:italic 500 16.5px var(--ital);color:var(--iv78)}
+.car-cap b{font:600 12px var(--sans);letter-spacing:.3em;color:var(--gold);font-style:normal;text-transform:uppercase;display:block;margin-bottom:5px}
+.specs{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(36px,5vw,58px);border-block:1px solid var(--g22)}
+.sp{padding:26px 10px;text-align:center;border-left:1px solid var(--iv08)}
+.sp:first-child{border-left:0}
+.sp b{display:block;font:600 clamp(1.6rem,2.8vw,2.1rem) var(--serif);color:var(--ivory)}
+.sp b small{font-size:.55em;color:var(--gold2)}
+.sp i{display:block;margin-top:8px;font:500 9.5px var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-style:normal}
+@media(max-width:760px){.specs{grid-template-columns:1fr 1fr}.sp:nth-child(odd){border-left:0}.sp{border-top:1px solid var(--iv08)}.sp:nth-child(-n+2){border-top:0}}
+
+/* ============ RITUALS ============ */
+#rituals{background:var(--lac-2)}
+.rituals{max-width:880px;margin:0 auto;border-top:1px solid var(--iv14)}
+.ritual{display:grid;grid-template-columns:84px 1fr 64px;gap:22px;align-items:center;padding:26px 4px;border-bottom:1px solid var(--iv14);transition:background .3s}
+.ritual:hover{background:rgba(241,232,212,.025)}
+.ritual .r-num{font:600 2rem var(--serif);color:var(--gold)}
+.ritual h3{font:500 13px var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--ivory);margin-bottom:6px}
+.ritual p{font:300 14.5px/1.7 var(--sans);color:var(--iv78)}
+.ritual .r-ic{color:var(--g40);justify-self:end;transition:.35s}
+.ritual:hover .r-ic{color:var(--gold2)}
+@media(max-width:620px){.ritual{grid-template-columns:56px 1fr}.ritual .r-ic{display:none}.ritual .r-num{font-size:1.5rem}}
+
+/* ============ LEDGER (quotes) ============ */
+.ledger{position:relative;max-width:820px;margin:0 auto;text-align:center;padding-top:26px}
+.qmark{position:absolute;top:-26px;left:50%;transform:translateX(-50%);font:700 7.5rem/1 var(--serif);color:var(--g22);pointer-events:none}
+.quotes{display:grid}
+.quote{grid-area:1/1;opacity:0;transform:translateY(10px);transition:opacity .8s var(--ease),transform .8s var(--ease);pointer-events:none}
+.quote.on{opacity:1;transform:none;pointer-events:auto}
+.quote blockquote{font:italic 500 clamp(1.4rem,3vw,2.05rem)/1.4 var(--ital);color:var(--ivory)}
+.quote cite{display:block;margin-top:22px;font:500 11px var(--sans);letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-style:normal}
+.q-ctl{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:36px}
+.q-ctl button{width:44px;height:44px;border:1px solid var(--g40);color:var(--gold2);display:flex;align-items:center;justify-content:center;transition:.3s}
+.q-ctl button:hover{background:var(--gold);color:#14100A}
+.q-ctl span{font:500 11px var(--sans);letter-spacing:.34em;color:var(--iv55)}
+
+/* ============ TARIFF ============ */
+.tariff-wrap{overflow-x:auto}
+.tariff{width:100%;min-width:640px;border-collapse:collapse}
+.tariff th,.tariff td{padding:17px 18px;text-align:center;border-bottom:1px solid var(--iv08)}
+.tariff th{font:500 11px var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--g22)}
+.tariff th:first-child,.tariff td:first-child{text-align:left;color:var(--iv55);font:500 10.5px var(--sans);letter-spacing:.24em;text-transform:uppercase}
+.tariff td{font:300 15.5px var(--sans);color:var(--iv78)}
+.tariff td b{font:600 22px var(--serif);color:var(--ivory);font-weight:600}
+.tariff tbody tr{transition:background .3s}
+.tariff tbody tr:hover{background:rgba(198,161,91,.05)}
+.tariff .hl{background:rgba(46,95,92,.20)}
+.tariff thead .hl{background:rgba(46,95,92,.30)}
+.chip{display:inline-block;margin-top:8px;font:500 8.5px var(--sans);letter-spacing:.3em;color:#10131A;background:var(--gold);padding:4px 9px}
+.tariff th button{display:block;margin:10px auto 0;font:500 9px var(--sans);letter-spacing:.26em;color:var(--gold2);border-bottom:1px solid var(--g40);padding-bottom:3px;text-transform:uppercase}
+.tariff th button:hover{color:var(--ivory)}
+.t-foot{margin-top:26px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between}
+.t-foot small{font:300 12.5px var(--sans);color:var(--iv55);max-width:640px}
+
+/* ============ DAWN ORNAMENT ============ */
+.dawn-orn{display:flex;justify-content:center;padding:0 0 0}
+.dawn-orn svg{width:min(1100px,92vw);height:auto}
+.dawn-orn .d-sun{transition:transform 1.4s var(--ease)}
+.dawn-orn.in .d-sun{transform:translateY(6px)}
+
+/* ============ RESERVE ============ */
+.dawn{background:var(--ivory);color:#241E17}
+.dawn .kicker{color:#8A6A2F}
+.dawn .kicker::before{background:linear-gradient(90deg,transparent,rgba(138,106,47,.5))}
+.dawn .kicker::after{background:linear-gradient(90deg,rgba(138,106,47,.5),transparent)}
+.dawn .shead h2{color:#191512}
+.dawn .shead p,.dawn p{color:rgba(25,21,18,.74)}
+.dawn .btn{border-color:#8A6A2F;color:#191512}
+.dawn .btn::before,.dawn .btn::after{border-color:#8A6A2F}
+.dawn .btn:hover{background:#8A6A2F;color:var(--ivory)}
+.dawn .btn:hover::before,.dawn .btn::after{border-color:transparent}
+.dawn .btn:hover::before,.dawn .btn:hover::after{border-color:rgba(241,232,212,.6)}
+.book-grid{display:grid;grid-template-columns:1fr 430px;gap:clamp(30px,5vw,70px);align-items:start}
+.bk-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field.wide{grid-column:1/-1}
+.field label{font:500 10px var(--sans);letter-spacing:.32em;text-transform:uppercase;color:#8A6A2F}
+.field select{appearance:none;-webkit-appearance:none;border:1px solid rgba(25,21,18,.35);border-radius:0;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238A6A2F' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 14px center/12px;padding:13px 40px 13px 14px;font:400 15px var(--sans);color:#191512;cursor:pointer}
+.field select:focus-visible{outline:2px solid #8A6A2F;outline-offset:2px}
+.bk-form .btn{grid-column:1/-1;justify-self:start;margin-top:8px}
+.bk-note{grid-column:1/-1;font:italic 500 15px var(--ital);color:rgba(25,21,18,.6)}
+/* ticket */
+.ticket{position:relative;background:var(--navy);border:1px solid var(--g40);color:var(--ivory);padding:24px 24px 0;box-shadow:0 26px 60px rgba(20,15,8,.35)}
+.tk-head{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--g22);padding-bottom:16px}
+.tk-head b{font:600 15px var(--serif);letter-spacing:.16em}
+.tk-head svg{width:26px;height:26px;color:var(--gold)}
+.tk-no{font:400 10px var(--sans);letter-spacing:.22em;color:var(--iv55)}
+.tk-route{font:600 clamp(14px,1.5vw,18px) var(--serif);letter-spacing:.05em;text-align:center;padding:20px 0;border-bottom:1px dashed var(--g40);color:var(--gold2)}
+.tk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px 0}
+.tk-grid dt{font:500 8.5px var(--sans);letter-spacing:.3em;color:var(--gold);text-transform:uppercase}
+.tk-grid dd{font:500 15px var(--sans);margin-top:6px;color:var(--ivory)}
+.tk-stub{display:flex;justify-content:space-between;align-items:center;gap:14px;border-top:1px dashed var(--g40);margin:0 -24px;padding:14px 24px 16px;font:500 8.5px var(--sans);letter-spacing:.26em;color:var(--iv55);text-transform:uppercase}
+.tk-held{position:absolute;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;padding:24px;opacity:0;pointer-events:none;transition:opacity .55s}
+.ticket.held .tk-held{opacity:1;pointer-events:auto}
+.tk-held svg{width:44px;height:44px;color:var(--gold)}
+.tk-ref{font:600 30px var(--serif);letter-spacing:.14em;color:var(--gold2)}
+.tk-held p{font:italic 500 15px var(--ital);color:var(--iv78);max-width:260px}
+.tk-held button{margin-top:6px;font:500 10px var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gold2);border-bottom:1px solid var(--g40);padding-bottom:4px}
+.ticket-inner{transition:opacity .4s}
+.ticket.held .ticket-inner{opacity:0;pointer-events:none}
+@media(max-width:920px){.book-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.tk-grid{grid-template-columns:1fr 1fr}.bk-form{grid-template-columns:1fr}}
+
+/* ============ FOOTER ============ */
+footer{background:var(--lac);border-top:1px solid var(--g22);padding:clamp(56px,7vw,90px) 24px 46px;text-align:center}
+.f-crest{width:74px;height:74px;margin:0 auto 20px;color:var(--gold)}
+footer h4{font:600 21px var(--serif);letter-spacing:.3em;text-indent:.3em;color:var(--ivory)}
+.f-tag{font:italic 500 15px var(--ital);color:var(--iv55);margin:10px 0 26px}
+.f-rule{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto 26px;max-width:420px}
+.f-rule::before,.f-rule::after{content:"";height:1px;flex:1;background:var(--g22)}
+.f-links{display:flex;flex-wrap:wrap;gap:14px 34px;justify-content:center;font:500 10.5px var(--sans);letter-spacing:.28em;text-transform:uppercase}
+.f-links a{color:var(--iv55);transition:color .3s}
+.f-links a:hover{color:var(--gold2)}
+.f-note{max-width:560px;margin:34px auto 0;font:300 12px/1.8 var(--sans);color:rgba(241,232,212,.4)}
+.f-fine{margin-top:26px;font:500 9.5px var(--sans);letter-spacing:.34em;color:var(--g40);text-transform:uppercase}
+
+/* ============ CLOCK WIDGET ============ */
+.clock{position:fixed;right:20px;bottom:20px;z-index:70;width:88px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;background:rgba(9,12,17,.86);border:1px solid var(--g40);backdrop-filter:blur(8px);transition:border-color .3s}
+.clock:hover{border-color:var(--gold2)}
+.clock svg{width:62px;height:62px}
+.cl-ring{fill:none;stroke:var(--g40)}
+.cl-ring2{fill:rgba(198,161,91,.05);stroke:var(--g22)}
+.cl-tick{stroke:var(--iv30)}
+.cl-tick.big{stroke:var(--gold)}
+.cl-hand{stroke:var(--gold2);stroke-width:2;stroke-linecap:round}
+.cl-hub{fill:var(--gold)}
+.cl-meta{text-align:center;line-height:1.3}
+.cl-meta b{display:block;font:600 14px var(--serif);letter-spacing:.1em;color:var(--ivory)}
+.cl-meta i{font:500 8px var(--sans);letter-spacing:.3em;color:var(--gold);font-style:normal}
+.clock[data-phase="night"] .cl-meta i{color:#9DB8B3}
+.clock[data-phase="dawn"] .cl-meta i{color:#E4C989}
+@media(max-width:620px){.clock{display:none}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.15s!important}
+  [data-reveal]{opacity:1;transform:none}
+  .rise{opacity:1;transform:none}
+  .h-strip .rline{stroke-dashoffset:0}
+  .h-strip .rdot{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="The Aurelian Express — top">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor"><rect x="11" y="11" width="18" height="18" transform="rotate(45 20 20)"/><rect x="15" y="15" width="10" height="10" transform="rotate(45 20 20)"/></g><text x="20" y="24.5" text-anchor="middle" font-family="Bodoni Moda,serif" font-size="11" fill="currentColor" stroke="none">Æ</text></svg>
+    <span>AURELIAN</span>
+  </a>
+  <nav class="nav-links" aria-label="Sections">
+    <a href="#route">Route</a><a href="#suites">Staterooms</a><a href="#dining">Dining</a>
+    <a href="#hour">Hour by Hour</a><a href="#train">The Train</a><a href="#tariff">Tariff</a>
+  </nav>
+  <a class="btn" href="#reserve">Reserve</a>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top" aria-label="The Aurelian Express — poster">
+  <svg class="hero-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#0A1120"/><stop offset=".36" stop-color="#13273A"/>
+        <stop offset=".56" stop-color="#2E5F5C"/><stop offset=".66" stop-color="#8A6A46"/>
+        <stop offset=".72" stop-color="#E0B063"/><stop offset=".78" stop-color="#EFCB84"/>
+      </linearGradient>
+      <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#173B44"/><stop offset=".5" stop-color="#0E2531"/><stop offset="1" stop-color="#081119"/>
+      </linearGradient>
+      <radialGradient id="sunG"><stop offset="0" stop-color="#FFF3D6"/><stop offset=".55" stop-color="#F2CE8C"/><stop offset="1" stop-color="#E8B463"/></radialGradient>
+      <linearGradient id="sunRefG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2CE8C" stop-opacity=".55"/><stop offset="1" stop-color="#F2CE8C" stop-opacity="0"/></linearGradient>
+      <radialGradient id="beamG"><stop offset="0" stop-color="#FFE9B4" stop-opacity=".5"/><stop offset="1" stop-color="#FFE9B4" stop-opacity="0"/></radialGradient>
+      <clipPath id="skyClip"><rect x="0" y="0" width="1600" height="562"/></clipPath>
+    </defs>
+
+    <rect width="1600" height="566" fill="url(#skyG)"/>
+    <g id="stars"></g>
+
+    <!-- sunburst rays -->
+    <g transform="translate(1180,558)" clip-path="url(#skyClip)"><g id="raysSpin"></g></g>
+    <!-- sun -->
+    <circle cx="1180" cy="558" r="72" fill="url(#sunG)"/>
+
+    <!-- sea -->
+    <rect y="562" width="1600" height="338" fill="url(#seaG)"/>
+    <rect x="1128" y="562" width="104" height="190" fill="url(#sunRefG)"/>
+    <line x1="0" y1="562" x2="1600" y2="562" stroke="#EFCB84" stroke-opacity=".5" stroke-width="1.4"/>
+    <g stroke="#EFCB84">
+      <line class="glintline" x1="1010" y1="594" x2="1530" y2="594" stroke-opacity=".32"/>
+      <line class="glintline" x1="1060" y1="634" x2="1500" y2="634" stroke-opacity=".2" style="animation-duration:17s"/>
+      <line class="glintline" x1="1120" y1="682" x2="1460" y2="682" stroke-opacity=".14" style="animation-duration:17s"/>
+    </g>
+
+    <!-- clouds -->
+    <g fill="#0F2334">
+      <g class="cloud-a"><ellipse cx="380" cy="180" rx="150" ry="13"/><ellipse cx="470" cy="164" rx="90" ry="9"/></g>
+      <g class="cloud-b"><ellipse cx="820" cy="118" rx="105" ry="9"/><ellipse cx="880" cy="132" rx="60" ry="7"/></g>
+    </g>
+    <!-- birds -->
+    <g fill="none" stroke="rgba(241,232,212,.4)" stroke-width="1.6" stroke-linecap="round">
+      <path d="M500 216q5 -6 10 0q5 -6 10 0"/><path d="M546 196q4 -5 8 0q4 -5 8 0"/><path d="M584 226q4 -5 8 0q4 -5 8 0"/>
+    </g>
+
+    <!-- far ridge -->
+    <path d="M0 562 L0 468 L150 412 L280 468 L350 438 L452 505 L540 562 Z" fill="#16323E"/>
+    <path d="M1300 562 L1390 468 L1470 502 L1600 448 L1600 562 Z" fill="#142E3A"/>
+
+    <!-- viaduct -->
+    <g>
+      <rect x="430" y="640" width="1170" height="12" fill="#0A1019"/>
+      <line x1="430" y1="640" x2="1600" y2="640" stroke="#C6A15B" stroke-opacity=".85" stroke-width="1.2"/>
+      <rect x="430" y="652" width="1170" height="44" fill="#0A111C"/>
+      <g fill="#0E2530">
+        <path d="M452 696 v-16 a30 30 0 0 1 60 0 v16 z"/><path d="M556 696 v-16 a30 30 0 0 1 60 0 v16 z"/>
+        <path d="M660 696 v-16 a30 30 0 0 1 60 0 v16 z"/><path d="M660 696 v-16 a30 30 0 0 1 60 0 v16 z" opacity="0"/>
+        <path d="M764 696 v-16 a30 30 0 0 1 60 0 v16 z"/><path d="M868 696 v-16 a30 30 0 0 1 60 0 v16 z"/>
+        <path d="M868 696 v-16 a30 30 0 0 1 60 0 v16 z" opacity="0"/>
+        <path d="M972 696 v-16 a30 30 0 0 1 60 0 v16 z"/><path d="M1076 696 v-16 a30 30 0 0 1 60 0 v16 z"/>
+        <path d="M1180 696 v-16 a30 30 0 0 1 60 0 v16 z"/><path d="M1284 696 v-16 a30 30 0 0 1 60 0 v16 z"/>
+        <path d="M1388 696 v-16 a30 30 0 0 1 60 0 v16 z"/><path d="M1492 696 v-16 a30 30 0 0 1 60 0 v16 z"/>
+      </g>
+    </g>
+
+    <!-- the train -->
+    <g transform="translate(0,588)">
+      <g id="heroTrain">
+        <ellipse cx="300" cy="52" rx="330" ry="4" fill="#000" opacity=".35"/>
+        <!-- locomotive -->
+        <path d="M2 52 L2 10 Q2 5 9 5 L74 1 Q136 -3 172 18 Q186 26 185 36 L184 52 Z" fill="#080B10" stroke="rgba(241,232,212,.5)" stroke-width="1.2"/>
+        <path d="M104 8 L138 8 Q152 10 162 18 L166 23 L108 23 Z" fill="#E8C078" opacity=".9"/>
+        <rect x="2" y="33" width="180" height="2.6" fill="#C6A15B" opacity=".9"/>
+        <path d="M40 5 L30 -12 h22 L44 5 M24 -14 h34" stroke="rgba(241,232,212,.55)" stroke-width="1.4" fill="none"/>
+        <circle cx="182" cy="30" r="2.6" fill="#FFE9B4"/>
+        <g fill="#080B14" stroke="rgba(241,232,212,.35)">
+          <circle cx="28" cy="52" r="5"/><circle cx="48" cy="52" r="5"/><circle cx="150" cy="52" r="5"/><circle cx="172" cy="52" r="5"/>
+        </g>
+        <!-- cars -->
+        <g>
+          <g transform="translate(200,0)"><rect x="0" y="10" width="118" height="42" rx="3" fill="#080B14" stroke="rgba(241,232,212,.42)" stroke-width="1.1"/>
+            <rect x="12" y="17" width="12" height="10" fill="#E8C078" opacity=".92"/><rect x="34" y="17" width="12" height="10" fill="#E8C078" opacity=".92"/><rect x="56" y="17" width="12" height="10" fill="#E8C078" opacity=".92"/><rect x="56" y="17" width="12" height="10" fill="#E8C078" opacity="0"/><rect x="78" y="17" width="12" height="10" fill="#E8C078" opacity=".92"/><rect x="96" y="17" width="12" height="10" fill="#E8C078" opacity=".92"/>
+            <rect x="0" y="36" width="118" height="2.2" fill="#C6A15B" opacity=".8"/>
+            <circle cx="20" cy="52" r="4.6" fill="#080B14" stroke="rgba(241,232,212,.35)"/><circle cx="98" cy="52" r="4.6" fill="#080B14" stroke="rgba(241,232,212,.35)"/></g>
+          <g transform="translate(326,0)"><rect x="0" y="10" width="118" height="42" rx="3" fill="#080B14" stroke="rgba(241,232,212,.42)" stroke-width="1.1"/>
+            <rect x="14" y="16" width="20" height="12" rx="2" fill="#E8C078" opacity=".92"/><rect x="52" y="16" width="20" height="12" rx="2" fill="#E8C078" opacity=".92"/><rect x="86" y="16" width="20" height="12" rx="2" fill="#E8C078" opacity=".92"/>
+            <rect x="0" y="36" width="118" height="2.2" fill="#C6A15B" opacity=".8"/>
+            <circle cx="20" cy="52" r="4.6" fill="#080B14" stroke="rgba(241,232,212,.35)"/><circle cx="98" cy="52" r="4.6" fill="#080B14" stroke="rgba(241,232,212,.35)"/></g>
+          <g transform="translate(452,0)"><rect x="0" y="10" width="118" height="42" rx="3" fill="#080B14" stroke="rgba(241,232,212,.42)" stroke-width="1.1"/>
+            <path d="M18 44 v-16 a10 10 0 0 1 20 0 v16 z M52 44 v-16 a10 10 0 0 1 20 0 v16 z M86 44 v-16 a10 10 0 0 1 20 0 v16 z" fill="#E8C078" opacity=".92"/>
+            <rect x="0" y="36" width="118" height="2.2" fill="#C6A15B" opacity=".8"/>
+            <circle cx="20" cy="52" r="4.6" fill="#080B14" stroke="rgba(241,232,212,.35)"/><circle cx="98" cy="52" r="4.6" fill="#080B14" stroke="rgba(241,232,212,.35)"/></g>
+          <g transform="translate(578,0)"><path d="M0 52 V16 Q0 10 8 15 Q60 -4 112 14 Q118 17 118 22 V52 Z" fill="#080B14" stroke="rgba(241,232,212,.42)" stroke-width="1.1"/>
+            <path d="M64 20 h34 a12 12 0 0 1 12 14 v10 h-48 z" fill="#E8C078" opacity=".92"/>
+            <circle cx="20" cy="52" r="4.6" fill="#080B14" stroke="rgba(241,232,212,.35)"/><circle cx="88" cy="52" r="4.6" fill="#080B14" stroke="rgba(241,232,212,.35)"/></g>
+        </g>
+      </g>
+    </g>
+
+    <!-- foreground headlands + lighthouse -->
+    <path d="M0 900 L0 588 Q64 556 128 584 Q224 622 300 664 Q388 668 424 748 L432 900 Z" fill="#0A121E"/>
+    <path d="M1600 900 L1600 640 Q1540 636 1496 682 Q1452 726 1486 726 L1510 900 Z" fill="#0A121E"/>
+    <g>
+      <g transform="translate(102,540)">
+        <path d="M-11 44 L-7 -10 h18 l4 44 z" fill="#070B12"/>
+        <rect x="-7" y="-18" width="14" height="9" fill="#070B12"/>
+        <circle cx="0" cy="-13" r="4" fill="#FFE9B4"/>
+        <g transform="translate(0,-13)"><g class="beam"><polygon points="0,-3 190,-16 190,16" fill="url(#sunRefG)" opacity=".5"/></g></g>
+        <line x1="0" y1="-22" x2="0" y2="-28" stroke="#070B12" stroke-width="3"/>
+      </g>
+    </g>
+    <rect y="742" width="1600" height="158" fill="#081019" opacity=".85"/>
+    <g stroke="#EFCB84"><line class="glintline" x1="60" y1="800" x2="620" y2="800" stroke-opacity=".18" style="animation-duration:16s"/><line class="glintline" x1="900" y1="846" x2="1560" y2="846" stroke-opacity=".12" style="animation-duration:20s"/></g>
+  </svg>
+
+  <div class="hero-inner">
+    <p class="h-kicker rise" style="--d:.15s">The</p>
+    <h1 class="h-title rise" style="--d:.3s">AURELIAN</h1>
+    <p class="h-sub rise" style="--d:.5s"><i class="dia" aria-hidden="true"></i>EXPRESS<i class="dia" aria-hidden="true"></i></p>
+    <p class="h-lede rise" style="--d:.68s">An overnight grand hotel on rails. Seven coastal cities, one unbroken night —
+      dinner as Barcelona recedes, coffee as the lagoons of Venice arrive.</p>
+    <div class="h-cta rise" style="--d:.85s">
+      <a class="btn btn-solid" href="#reserve">Reserve a berth</a>
+      <a class="btn" href="#route">Trace the route</a>
+    </div>
+    <svg class="h-strip rise" style="--d:1s" viewBox="0 0 520 26" aria-label="Barcelona to Venice, seven ports, departing 17:12, arriving 11:52">
+      <line class="rline" x1="12" y1="13" x2="508" y2="13"/>
+      <rect class="rdia" x="8" y="9" width="8" height="8" transform="rotate(45 12 13)"/>
+      <rect class="rdia" x="504" y="9" width="8" height="8" transform="rotate(45 508 13)"/>
+      <circle class="rdot" cx="30" cy="13" r="3"/><circle class="rdot" cx="106" cy="13" r="3"/><circle class="rdot" cx="182" cy="13" r="3"/>
+      <circle class="rdot" cx="258" cy="13" r="3"/><circle class="rdot" cy="13" r="3" cx="334"/><circle class="rdot" cx="410" cy="13" r="3"/><circle class="rdot" cx="486" cy="13" r="3"/>
+    </svg>
+  </div>
+
+  <div class="deco-frame" aria-hidden="true">
+    <svg class="corner tl" viewBox="0 0 52 52"><path d="M51 1H17v16H1v34" fill="none" stroke="currentColor"/></svg>
+    <svg class="corner tr" viewBox="0 0 52 52"><path d="M51 1H17v16H1v34" fill="none" stroke="currentColor"/></svg>
+    <svg class="corner bl" viewBox="0 0 52 52"><path d="M51 1H17v16H1v34" fill="none" stroke="currentColor"/></svg>
+    <svg class="corner br" viewBox="0 0 52 52"><path d="M51 1H17v16H1v34" fill="none" stroke="currentColor"/></svg>
+  </div>
+</header>
+
+<!-- ticker -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span>Barcelona <i class="dia"></i> Marseille <i class="dia"></i> Monaco <i class="dia"></i> Genoa <i class="dia"></i> Livorno <i class="dia"></i> Naples <i class="dia"></i> Venice <i class="dia"></i> Seven cities <i class="dia"></i> One night <i class="dia"></i></span>
+  </div>
+</div>
+
+<!-- ================= INTRO ================= -->
+<section class="section" id="intro">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>The Proposition<i class="dia"></i></p>
+      <h2>One Night Between Two Seas</h2>
+    </div>
+    <div class="prose" data-reveal>
+      <p>The Aurelian Express is a hotel that happens to move. Eighty-four guests, nine carriages, and a coastline that
+      does the entertaining: the Côte d'Azur at dinner, the Ligurian cliffs by nightlight, the Tyrrhenian at first coffee,
+      the lagoon by late breakfast.</p>
+      <p>Everything aboard is unhurried on purpose. The train was built for people who have somewhere wonderful to be
+      in the morning — and no interest whatsoever in arriving tired.</p>
+    </div>
+    <div class="figures" data-reveal>
+      <div><b>1,612</b><i>Kilometres, coast to coast</i></div>
+      <div><b>18:40</b><i>Hours, dusk to mid-morning</i></div>
+      <div><b>VII</b><i>Ports of call, sea to lagoon</i></div>
+      <div><b>84</b><i>Guests, never one more</i></div>
+    </div>
+  </div>
+</section>
+
+<div class="step-div" aria-hidden="true"><svg viewBox="0 0 240 26"><g fill="none" stroke="currentColor"><line x1="0" y1="13" x2="92" y2="13"/><line x1="148" y1="13" x2="240" y2="13"/><rect x="114" y="7" width="12" height="12" transform="rotate(45 120 13)"/><rect x="106" y="10" width="6" height="6" transform="rotate(45 109 13)"/><rect x="128" y="10" width="6" height="6" transform="rotate(45 131 13)"/></g><circle cx="120" cy="13" r="1.6" fill="currentColor"/></svg></div>
+
+<!-- ================= ROUTE ================= -->
+<section class="section" id="route">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>The Route<i class="dia"></i></p>
+      <h2>Seven Cities, Drawn in Gold</h2>
+      <p>The line keeps the sea on your side of the glass for all but ninety minutes of the night. Select a port to inspect its lithograph.</p>
+    </div>
+    <div class="route-grid">
+      <div class="map-frame" data-reveal>
+        <svg viewBox="0 0 960 600" role="img" aria-label="Stylised route map from Barcelona to Venice">
+          <defs>
+            <linearGradient id="seaM" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0C2836"/><stop offset="1" stop-color="#08131E"/></linearGradient>
+          </defs>
+          <rect width="960" height="600" fill="#0D1A2C"/>
+          <path class="map-sea" d="M40 545 C90 522 106 496 120 470 C160 430 240 392 300 352 C350 322 396 306 436 286 C480 264 528 244 566 232 C612 236 654 256 688 272 C726 294 774 342 800 372 C812 332 830 296 842 256 C852 216 862 186 876 150 C888 128 920 112 960 108 L960 600 L0 600 L0 560 Z"/>
+          <path class="map-coast" d="M0 0 H960 V108 C920 112 888 128 876 150 C862 186 852 216 842 256 C830 296 812 332 800 372 C774 342 726 294 688 272 C654 256 612 236 566 232 C528 244 480 264 436 286 C396 306 350 322 300 352 C240 392 160 430 120 470 C106 496 90 522 40 545 L0 560 Z" opacity=".92"/>
+          <path class="map-coastline" d="M40 545 C90 522 106 496 120 470 C160 430 240 392 300 352 C350 322 396 306 436 286 C480 264 528 244 566 232 C612 236 654 256 688 272 C726 294 774 342 800 372 C812 332 830 296 842 256 C852 216 862 186 876 150 C888 128 920 112 960 108" fill="none"/>
+          <!-- graticule + islands -->
+          <g fill="none" stroke="rgba(241,232,212,.06)" stroke-width="1">
+            <circle cx="60" cy="40" r="430"/><circle cx="60" cy="40" r="560"/><path d="M0 250 Q480 210 960 260"/>
+          </g>
+          <ellipse cx="205" cy="478" rx="22" ry="8" transform="rotate(-12 205 478)" fill="#123043" stroke="rgba(241,232,212,.2)"/>
+          <ellipse cx="505" cy="325" rx="13" ry="26" transform="rotate(14 505 325)" fill="#123043" stroke="rgba(241,232,212,.2)"/>
+          <ellipse cx="560" cy="430" rx="15" ry="34" transform="rotate(7 560 430)" fill="#123043" stroke="rgba(241,232,212,.2)"/>
+          <path d="M856 470 L910 452 L892 508 Z" fill="#123043" stroke="rgba(241,232,212,.2)"/>
+          <!-- mountains -->
+          <g stroke="rgba(241,232,212,.22)" stroke-width="1.4" fill="none">
+            <path d="M158 300l10 -10l10 10M186 300l10 -10l10 10"/>
+            <path d="M448 178l10 -10l10 10M476 178l10 -10l10 10"/>
+            <path d="M700 186l10 -10l10 10M728 186l10 -10l10 10"/>
+            <path d="M828 96l10 -10l10 10"/>
+          </g>
+          <!-- lagoon -->
+          <g stroke="rgba(241,232,212,.35)" stroke-width="1.2" fill="none">
+            <path d="M892 168q6 4 12 0t12 0"/><path d="M896 182q6 4 12 0t12 0"/>
+          </g>
+          <!-- compass -->
+          <g transform="translate(74,86)">
+            <circle r="32" fill="none" stroke="rgba(241,232,212,.22)"/><circle r="25" fill="none" stroke="rgba(241,232,212,.14)"/>
+            <path d="M0 -26 L4 0 L0 26 L-4 0 Z M-26 0 L0 -4 L26 0 L0 4 Z" fill="rgba(198,161,91,.5)"/>
+            <circle r="2.4" fill="#C6A15B"/>
+            <text y="-38" text-anchor="middle" class="map-tiny" fill="#C6A15B">N</text>
+          </g>
+          <!-- cartouche -->
+          <g>
+            <rect x="596" y="504" width="330" height="70" fill="#0B1B2C" stroke="rgba(198,161,91,.4)"/>
+            <rect x="603" y="511" width="316" height="56" fill="none" stroke="rgba(241,232,212,.16)"/>
+            <text x="761" y="530" text-anchor="middle" style="font:600 13px var(--serif);letter-spacing:.24em" fill="#C6A15B">THE AURELIAN LINE</text>
+            <text x="761" y="549" text-anchor="middle" class="map-tiny">BARCELONA — VENICE · 1,612 KM · SEVEN PORTS</text>
+            <text x="761" y="563" text-anchor="middle" class="map-tiny">DEPARTS 17:12 · ARRIVES 11:52</text>
+          </g>
+          <!-- scale -->
+          <g stroke="rgba(241,232,212,.4)"><line x1="48" y1="572" x2="168" y2="572"/><line x1="48" y1="566" x2="48" y2="578"/><line x1="108" y1="568" x2="108" y2="576"/><line x1="168" y1="566" x2="168" y2="578"/></g>
+          <text x="108" y="592" text-anchor="middle" class="map-tiny">100 KM</text>
+          <!-- route -->
+          <path class="map-ghost" d="M120 470 C180 428 240 392 300 352 C350 322 396 306 436 286 C480 264 528 244 566 232 C612 236 654 254 688 272 C726 294 774 344 800 372 C812 332 836 290 846 250 C854 214 862 184 876 150"/>
+          <path id="routeGold" class="map-gold" d="M120 470 C180 428 240 392 300 352 C350 322 396 306 436 286 C480 264 528 244 566 232 C612 236 654 254 688 272 C726 294 774 344 800 372 C812 332 836 290 846 250 C854 214 862 184 876 150"/>
+          <g id="routeDot">
+            <circle class="dot-pulse" r="9" fill="none" stroke="rgba(198,161,91,.6)" stroke-width="1.4"/>
+            <rect x="-17" y="-1" width="14" height="2" fill="rgba(198,161,91,.55)"/>
+            <circle r="5.4" fill="#E2C684" stroke="#141008" stroke-width="1"/>
+          </g>
+          <g id="routeStops"></g>
+        </svg>
+      </div>
+
+      <div data-reveal>
+        <ol class="stops" id="stopList"></ol>
+        <div class="city-card" id="cityCard">
+          <div class="cc-poster cc-anim" id="posterBox"></div>
+          <div class="cc-body cc-anim">
+            <h3 id="cityName">Barcelona</h3>
+            <p class="cc-epi" id="cityEpithet"></p>
+            <p class="cc-note" id="cityNote"></p>
+            <p class="cc-sched"><span>ARR <b id="cityArr">—</b></span><i class="dia" aria-hidden="true"></i><span>DEP <b id="cityDep">17:12</b></span></p>
+            <div class="cc-label" id="labelBox"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="step-div" aria-hidden="true"><svg viewBox="0 0 240 26"><g fill="none" stroke="currentColor"><line x1="0" y1="13" x2="92" y2="13"/><line x1="148" y1="13" x2="240" y2="13"/><rect x="114" y="7" width="12" height="12" transform="rotate(45 120 13)"/><rect x="106" y="10" width="6" height="6" transform="rotate(45 109 13)"/><rect x="128" y="10" width="6" height="6" transform="rotate(45 131 13)"/></g><circle cx="120" cy="13" r="1.6" fill="currentColor"/></svg></div>
+
+<!-- ================= SUITES ================= -->
+<section class="section" id="suites">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>Staterooms<i class="dia"></i></p>
+      <h2>Three Ways to Sleep Through the Dark</h2>
+      <p>Every cabin faces the water. The window below is Car 4's — the landscape drifts past at roughly ninety kilometres an hour.</p>
+    </div>
+    <div class="suites-grid">
+      <figure class="dine-fig" data-reveal>
+        <svg id="suiteWin" class="suite-win t1" viewBox="0 0 640 520" role="img" aria-label="Illustrated train window with drifting night landscape">
+          <defs>
+            <linearGradient id="skyW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#081526"/><stop offset="1" stop-color="#14344A"/></linearGradient>
+            <linearGradient id="seaW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E2E3C"/><stop offset="1" stop-color="#091826"/></linearGradient>
+            <radialGradient id="lampG"><stop offset="0" stop-color="#FFE3A1" stop-opacity=".55"/><stop offset="1" stop-color="#FFE3A1" stop-opacity="0"/></radialGradient>
+            <linearGradient id="sheenG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F1E8D4" stop-opacity="0"/><stop offset=".5" stop-color="#F1E8D4" stop-opacity=".09"/><stop offset="1" stop-color="#F1E8D4" stop-opacity="0"/></linearGradient>
+            <clipPath id="winClip"><rect x="100" y="82" width="440" height="246"/></clipPath>
+            <path id="ridgeP" d="M0 202 Q70 158 150 186 Q230 212 310 184 Q390 156 470 192 Q550 210 630 186 L700 202 L700 210 L0 210 Z" fill="inherit"/>
+          </defs>
+          <rect width="640" height="520" fill="#0A0E14"/>
+          <g stroke="rgba(241,232,212,.06)"><line x1="40" y1="70" x2="40" y2="470"/><line x1="600" y1="70" x2="600" y2="470"/></g>
+          <!-- stepped pediment -->
+          <g fill="#10161F" stroke="rgba(198,161,91,.35)" stroke-width=".8">
+            <rect x="245" y="16" width="150" height="13"/><rect x="270" y="29" width="100" height="12"/><rect x="292" y="41" width="56" height="11"/>
+          </g>
+          <g transform="translate(320,22)"><rect x="-8" y="-8" width="16" height="16" transform="rotate(45)" fill="#0D1520" stroke="rgba(198,161,91,.7)"/>
+            <text id="plaqueNum" x="0" y="3.5" text-anchor="middle" style="font:600 9px var(--serif)" fill="#E2C684">I</text></g>
+          <!-- window -->
+          <rect x="88" y="70" width="464" height="270" fill="#0B2230" stroke="rgba(198,161,91,.45)" stroke-width="2.4"/>
+          <g clip-path="url(#winClip)">
+            <rect x="100" y="82" width="440" height="126" fill="url(#skyW)"/>
+            <g fill="#EDE4CE"><circle cx="150" cy="110" r="1.1"/><circle cx="210" cy="96" r=".8"/><circle cx="268" cy="126" r="1"/><circle cx="330" cy="104" r=".8"/><circle cx="392" cy="132" r="1.1"/><circle cx="452" cy="150" r=".8"/><circle cx="512" cy="98" r="1"/></g>
+            <circle cx="452" cy="120" r="16" fill="#EFE6CE"/>
+            <circle cx="446" cy="114" r="14" fill="#0B2C40"/>
+            <g fill="#12293A"><g class="drift-far"><use href="#ridgeP"/><use href="#ridgeP" x="700"/></g></g>
+            <rect x="100" y="208" width="440" height="120" fill="url(#seaW)"/>
+            <line x1="100" y1="208" x2="540" y2="208" stroke="rgba(241,232,212,.16)"/>
+            <g stroke="#E8C078" fill="none">
+              <g class="drift-mid" stroke-opacity=".4"><path d="M0 240 h1400" stroke-dasharray="18 34"/><path d="M0 262 h1400" stroke-dasharray="12 40" opacity=".6"/><path d="M0 288 h1400" stroke-dasharray="24 54" opacity=".35"/></g>
+            </g>
+            <g class="drift-near">
+              <path d="M0 328 L0 302 Q90 294 180 303 Q270 312 360 300 Q450 291 540 300 Q630 309 700 301 L700 328 Z" fill="#060B12" transform="translate(0,0)"/>
+              <path d="M0 328 L0 302 Q90 294 180 303 Q270 312 360 300 Q450 291 540 300 Q630 309 700 301 L700 328 Z" fill="#060B12" transform="translate(700,0)"/>
+              <g fill="#FFE3A1">
+                <g transform="translate(120,0)"><rect x="-1.5" y="268" width="3" height="36" fill="#060B12"/><circle cx="0" cy="264" r="4"/><circle cx="0" cy="264" r="13" fill="url(#lampG)"/><rect x="-4" y="310" width="8" height="1.6" opacity=".3"/></g>
+                <g transform="translate(470,0)"><rect x="-1.5" y="268" width="3" height="36" fill="#060B12"/><circle cx="0" cy="264" r="4"/><circle cx="0" cy="264" r="13" fill="url(#lampG)"/><rect x="-4" y="310" width="8" height="1.6" opacity=".3"/></g>
+                <g transform="translate(1170,0)"><rect x="-1.5" y="268" width="3" height="36" fill="#060B12"/><circle cx="0" cy="264" r="4"/><circle cx="0" cy="264" r="13" fill="url(#lampG)"/></g>
+              </g>
+            </g>
+            <g class="sheen-m"><rect x="-60" y="70" width="80" height="270" fill="url(#sheenG)" transform="skewX(-14)"/></g>
+          </g>
+          <!-- mullions -->
+          <g fill="#10161F" stroke="rgba(198,161,91,.35)" stroke-width=".8">
+            <rect x="315" y="82" width="10" height="246"/><rect x="100" y="200" width="440" height="9"/>
+          </g>
+          <rect x="313" y="198" width="14" height="13" fill="#C6A15B" opacity=".85"/>
+          <!-- curtains -->
+          <path d="M52 56 h78 q-8 150 0 288 h-78 z" fill="var(--curtain)"/>
+          <path d="M588 56 h-78 q8 150 0 288 h78 z" fill="var(--curtain)"/>
+          <g stroke="rgba(0,0,0,.28)" fill="none"><path d="M74 60 q-6 142 0 280 M96 60 q-4 142 0 280 M566 60 q6 142 0 280 M544 60 q-6 142 0 280"/></g>
+          <path d="M48 52 h90 v10 h-78 q-7 12 -12 0 z" fill="#10161F" stroke="rgba(198,161,91,.5)" stroke-width=".8"/>
+          <path d="M592 52 h-90 v10 h78 q7 12 12 0 z" fill="#10161F" stroke="rgba(198,161,91,.5)" stroke-width=".8"/>
+          <!-- sill + interior -->
+          <rect x="70" y="344" width="500" height="15" fill="#141B26" stroke="rgba(198,161,91,.35)" stroke-width=".8"/>
+          <g class="f1">
+            <path d="M150 456 v-52 q0 -14 14 -14 h34 q14 0 14 14 v54" fill="#10161F" stroke="rgba(241,232,212,.16)"/>
+            <rect x="158" y="424" width="46" height="10" rx="4" fill="#182231"/>
+            <line x1="470" y1="456" x2="470" y2="398" stroke="#10161F" stroke-width="4"/>
+            <path d="M452 398 h36 l-7 -22 h-22 z" fill="#10161F" stroke="rgba(198,161,91,.4)" stroke-width=".8"/>
+            <circle cx="470" cy="392" r="20" fill="url(#lampG)" class="lamp-glow"/>
+            <circle cx="470" cy="390" r="3.4" fill="#FFE3A1"/>
+          </g>
+          <g class="f2">
+            <rect x="176" y="366" width="288" height="94" rx="10" fill="#10161F" stroke="rgba(241,232,212,.16)"/>
+            <rect x="184" y="410" width="272" height="42" rx="8" fill="#182231"/>
+            <rect x="196" y="398" width="86" height="18" rx="7" fill="#202C40"/><rect x="358" y="398" width="86" height="18" rx="7" fill="#202C40"/>
+            <circle cx="140" cy="400" r="18" fill="url(#lampG)" class="lamp-glow"/><circle cx="500" cy="400" r="18" fill="url(#lampG)" class="lamp-glow"/>
+            <rect x="122" y="416" width="38" height="42" fill="#10161F" stroke="rgba(241,232,212,.16)"/>
+            <rect x="480" y="416" width="38" height="42" fill="#10161F" stroke="rgba(241,232,212,.16)"/>
+            <circle cx="141" cy="404" r="3" fill="#FFE3A1"/><circle cx="499" cy="404" r="3" fill="#FFE3A1"/>
+          </g>
+          <g class="f3">
+            <path d="M150 462 q-16 -64 22 -66 q30 -2 34 24 l4 42 z" fill="#10161F" stroke="rgba(241,232,212,.16)"/>
+            <rect x="200" y="436" width="150" height="26" rx="12" fill="#182231"/>
+            <rect x="392" y="428" width="52" height="34" fill="#10161F" stroke="rgba(241,232,212,.16)"/>
+            <rect x="408" y="404" width="8" height="26" fill="#182231"/><rect x="404" y="400" width="16" height="7" rx="2" fill="#C6A15B" opacity=".8"/>
+            <circle cx="470" cy="410" r="18" fill="url(#lampG)" class="lamp-glow"/><circle cx="470" cy="408" r="3" fill="#FFE3A1"/>
+            <circle cx="300" cy="414" r="16" fill="url(#lampG)" class="lamp-glow"/>
+          </g>
+          <rect x="70" y="462" width="500" height="8" fill="#0C1220"/>
+        </svg>
+        <figcaption class="win-cap" id="viewCap">Car 4, berth 12 — 23:41, somewhere off Monaco</figcaption>
+      </figure>
+
+      <div data-reveal>
+        <div class="tiers" id="tierList" role="tablist" aria-label="Suite tiers">
+          <button class="tier active" data-tier="t1" role="tab" aria-selected="true"><i class="t-mark"></i><span class="t-name">Salon Cabin</span><span class="t-price">from €1,180 / guest</span></button>
+          <button class="tier" data-tier="t2" role="tab" aria-selected="false"><i class="t-mark"></i><span class="t-name">Deco Suite</span><span class="t-price">from €2,340 / guest</span></button>
+          <button class="tier" data-tier="t3" role="tab" aria-selected="false"><i class="t-mark"></i><span class="t-name">The Aurelian Chamber</span><span class="t-price">from €3,900 / guest</span></button>
+        </div>
+        <div class="suite-detail">
+          <h3 id="suiteName">Salon Cabin</h3>
+          <p class="price" id="suitePrice">From €1,180 per guest</p>
+          <p class="desc" id="suiteDesc"></p>
+          <dl class="feat-ledger" id="suiteFeats"></dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DINING ================= -->
+<section class="section" id="dining">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>The Grand Salon<i class="dia"></i></p>
+      <h2>Dinner at Ninety Kilometres an Hour</h2>
+      <p>One dining room, forty-two covers, white linen that barely trembles. The menu follows the coast; the cellars follow the menu.</p>
+    </div>
+    <div class="dine-grid">
+      <figure class="dine-fig" data-reveal>
+        <svg viewBox="0 0 760 360" role="img" aria-label="The Grand Salon dining car at night">
+          <defs>
+            <linearGradient id="wallD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#101A2A"/><stop offset="1" stop-color="#0A1220"/></linearGradient>
+            <linearGradient id="archSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0D2A3A"/><stop offset="1" stop-color="#091826"/></linearGradient>
+            <radialGradient id="lampGD"><stop offset="0" stop-color="#FFE3A1" stop-opacity=".5"/><stop offset="1" stop-color="#FFE3A1" stop-opacity="0"/></radialGradient>
+            <clipPath id="aA"><path d="M92 262 V158 A82 82 0 0 1 256 158 V262 Z"/></clipPath>
+            <clipPath id="aB"><path d="M299 262 V158 A82 82 0 0 1 463 158 V262 Z"/></clipPath>
+            <clipPath id="aC"><path d="M508 262 V158 A82 82 0 0 1 672 158 V262 Z"/></clipPath>
+          </defs>
+          <rect width="760" height="360" fill="url(#wallD)"/>
+          <rect width="760" height="26" fill="#0A0F17"/><line x1="0" y1="26" x2="760" y2="26" stroke="rgba(198,161,91,.5)"/>
+          <!-- ceiling sunburst -->
+          <g transform="translate(380,26)" fill="rgba(198,161,91,.14)">
+            <polygon points="0,0 -5,-84 5,-84" transform="rotate(-90)"/><polygon points="0,0 -5,-84 5,-84" transform="rotate(-45)"/>
+            <polygon points="0,0 -5,-84 5,-84"/><polygon points="0,0 -5,-84 5,-84" transform="rotate(45)"/><polygon points="0,0 -5,-84 5,-84" transform="rotate(90)"/>
+            <circle r="11" fill="none" stroke="rgba(198,161,91,.5)"/>
+          </g>
+          <g stroke="rgba(241,232,212,.08)"><line x1="30" y1="26" x2="30" y2="330"/><line x1="40" y1="26" x2="40" y2="330"/><line x1="720" y1="26" x2="720" y2="330"/><line x1="730" y1="26" x2="730" y2="330"/></g>
+          <!-- arch windows -->
+          <g>
+            <path d="M90 262 V158 A82 82 0 0 1 254 158 V262 Z" fill="url(#archSea)"/>
+            <g clip-path="url(#aA)">
+              <g fill="#EDE4CE" opacity=".8"><circle cx="130" cy="130" r="1"/><circle cx="190" cy="112" r="1.1"/><circle cx="238" cy="146" r=".9"/></g>
+              <path d="M110 226 h300 M120 244 h300" stroke="rgba(232,192,120,.28)" stroke-dasharray="10 16" class="arch-glint" fill="none"/>
+              <path d="M150 236 q10 -5 20 0 l-4 6 h-12 z" fill="#0A0F17"/>
+            </g>
+            <path d="M90 262 V158 A82 82 0 0 1 254 158 V262 Z" fill="none" stroke="rgba(198,161,91,.55)" stroke-width="2"/>
+            <path d="M299 262 V158 A82 82 0 0 1 463 158 V262 Z" fill="url(#archSea)"/>
+            <g clip-path="url(#aB)">
+              <circle cx="382" cy="126" r="15" fill="#EFE6CE"/><circle cx="377" cy="121" r="13" fill="#0D2A3C"/>
+              <g fill="#EDE4CE" opacity=".8"><circle cx="330" cy="150" r="1"/><circle cx="440" cy="108" r="1"/></g>
+              <path d="M310 230 h140 M316 248 h140" stroke="rgba(232,192,120,.3)" stroke-dasharray="12 18" class="arch-glint" fill="none" style="animation-duration:11s"/>
+            </g>
+            <path d="M299 262 V158 A82 82 0 0 1 463 158 V262 Z" fill="none" stroke="rgba(198,161,91,.55)" stroke-width="2"/>
+            <path d="M508 262 V158 A82 82 0 0 1 672 158 V262 Z" fill="url(#archSea)"/>
+            <g clip-path="url(#aC)">
+              <g fill="#EDE4CE" opacity=".8"><circle cx="548" cy="128" r="1"/><circle cx="612" cy="112" r="1.1"/><circle cx="658" cy="148" r=".9"/></g>
+              <path d="M528 228 h140 M536 246 h140" stroke="rgba(232,192,120,.28)" stroke-dasharray="9 15" class="arch-glint" fill="none" style="animation-duration:10s"/>
+              <path d="M590 238 q10 -5 20 0 l-4 6 h-12 z" fill="#0A0F17"/>
+            </g>
+            <path d="M508 262 V158 A82 82 0 0 1 672 158 V262 Z" fill="none" stroke="rgba(198,161,91,.55)" stroke-width="2"/>
+          </g>
+          <!-- pendant lamps -->
+          <g>
+            <g transform="translate(277,26)"><line y2="62" stroke="rgba(198,161,91,.6)"/><path d="M-16 62 h32 l-6 18 h-20 z" fill="#10161F" stroke="rgba(198,161,91,.6)" stroke-width=".8"/><circle cy="90" r="22" fill="url(#lampGD)" class="lamp-glow"/><circle cy="84" r="3.2" fill="#FFE3A1"/></g>
+            <g transform="translate(486,26)"><line y2="62" stroke="rgba(198,161,91,.6)"/><path d="M-16 62 h32 l-6 18 h-20 z" fill="#10161F" stroke="rgba(198,161,91,.6)" stroke-width=".8"/><circle cy="90" r="22" fill="url(#lampGD)" class="lamp-glow"/><circle cy="84" r="3.2" fill="#FFE3A1"/></g>
+          </g>
+          <!-- chairs -->
+          <g fill="#0D1219" stroke="rgba(241,232,212,.14)">
+            <rect x="158" y="212" width="72" height="56" rx="26"/><rect x="344" y="212" width="72" height="56" rx="26"/><rect x="530" y="212" width="72" height="56" rx="26"/>
+          </g>
+          <g stroke="rgba(198,161,91,.5)" stroke-width="1.4" fill="none">
+            <path d="M162 216 h64 M348 216 h64 M534 216 h64"/>
+          </g>
+          <!-- table -->
+          <rect x="42" y="266" width="676" height="84" fill="#E9E0CC"/>
+          <g stroke="rgba(10,14,20,.1)"><line x1="106" y1="266" x2="106" y2="350"/><line x1="170" y1="266" x2="170" y2="350"/><line x1="234" y1="266" x2="234" y2="350"/><line x1="298" y1="266" x2="298" y2="350"/><line x1="362" y1="266" x2="362" y2="350"/><line x1="426" y1="266" x2="426" y2="350"/><line x1="490" y1="266" x2="490" y2="350"/><line x1="554" y1="266" x2="554" y2="350"/><line x1="618" y1="266" x2="618" y2="350"/><line x1="682" y1="266" x2="682" y2="350"/></g>
+          <line x1="42" y1="272" x2="718" y2="272" stroke="#8A6A2F" stroke-width="1.6" opacity=".55"/>
+          <rect x="42" y="350" width="676" height="10" fill="#0A0F17"/>
+          <!-- table settings -->
+          <g stroke="rgba(241,232,212,.45)" fill="none" stroke-width="1.6">
+            <g transform="translate(150,266)"><path d="M-10 -44 C-10 -28 10 -28 10 -44"/><path d="M-8 -33 C-8 -25 8 -25 8 -33 Z" fill="#4A2830" stroke="none"/><line y1="-30" y2="-6"/><line x1="-9" y1="-6" x2="9" y2="-6"/></g>
+            <g transform="translate(610,266)"><path d="M-10 -44 C-10 -28 10 -28 10 -44"/><path d="M-8 -33 C-8 -25 8 -25 8 -33 Z" fill="#4A2830" stroke="none"/><line y1="-30" y2="-6"/><line x1="-9" y1="-6" x2="9" y2="-6"/></g>
+          </g>
+          <g transform="translate(330,266)"><rect x="-8" y="-52" width="16" height="52" rx="3" fill="#0D1420" stroke="rgba(241,232,212,.35)"/><rect x="-3" y="-66" width="6" height="16" fill="#0D1420" stroke="rgba(241,232,212,.35)"/><rect x="-8" y="-36" width="16" height="13" fill="rgba(198,161,91,.4)"/></g>
+          <ellipse cx="120" cy="270" rx="27" ry="5" fill="none" stroke="rgba(241,232,212,.4)" stroke-width="1.4"/>
+          <ellipse cx="540" cy="270" rx="27" ry="5" fill="none" stroke="rgba(241,232,212,.4)" stroke-width="1.4"/>
+          <g transform="translate(452,266)"><rect x="-4" y="-32" width="8" height="32" fill="#E9E0CC" opacity=".85"/><g class="flame"><ellipse cy="-38" rx="3.4" ry="6.5" fill="#F2CE8C"/></g><line x1="-8" y1="0" x2="8" y2="0" stroke="rgba(198,161,91,.6)"/></g>
+        </svg>
+        <figcaption>The Grand Salon, Car 8 — second seating, somewhere off Genoa</figcaption>
+      </figure>
+
+      <div data-reveal>
+        <div class="menu">
+          <div class="course"><p class="c-role">To Begin</p><p class="c-dish">Coastal Consommé</p><p class="c-note">Saffron, orange peel, a whisper of pastis as Marseille passes.</p></div>
+          <div class="course"><p class="c-role">From the Sea</p><p class="c-dish">Sea Bass in Fennel</p><p class="c-note">Baked whole, dressed with Ligurian oil and nothing else.</p></div>
+          <div class="course"><p class="c-role">From the Land</p><p class="c-dish">Quail, Grape &amp; Vine</p><p class="c-note">Roasted over vine cuttings somewhere outside Livorno.</p></div>
+          <div class="course"><p class="c-role">The Trolley</p><p class="c-dish">Five Ages of One Ewe</p><p class="c-note">A single cheese, from mild March to stormy September.</p></div>
+          <div class="course"><p class="c-role">To Finish</p><p class="c-dish">Chocolate &amp; Olive-Oil Tarte</p><p class="c-note">With candied Naples orange; served as the volcano appears.</p></div>
+        </div>
+        <p class="hours"><span>Dinner 20:15 &amp; 21:45</span><i class="dia" aria-hidden="true"></i><span>Willow Bar until 02:00</span><i class="dia" aria-hidden="true"></i><span>Coffee from 06:30</span><i class="dia" aria-hidden="true"></i><span>Brunch 09:30</span></p>
+        <p class="cellar">The cellar holds a white from each of the seven ports, opened in the order the train passes them. The sommelier keeps the Venetian for the lagoon.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="step-div" aria-hidden="true"><svg viewBox="0 0 240 26"><g fill="none" stroke="currentColor"><line x1="0" y1="13" x2="92" y2="13"/><line x1="148" y1="13" x2="240" y2="13"/><rect x="114" y="7" width="12" height="12" transform="rotate(45 120 13)"/><rect x="106" y="10" width="6" height="6" transform="rotate(45 109 13)"/><rect x="128" y="10" width="6" height="6" transform="rotate(45 131 13)"/></g><circle cx="120" cy="13" r="1.6" fill="currentColor"/></svg></div>
+
+<!-- ================= TIMELINE ================= -->
+<section class="section" id="hour">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>Hour by Hour<i class="dia"></i></p>
+      <h2>The Shape of the Night</h2>
+      <p>Scroll, and the evening keeps its appointments: lamps are lit below as the train passes into full night, and put out again at dawn.</p>
+    </div>
+    <div class="tl" data-reveal>
+      <div class="tl-mark" style="top:41%"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M11 2a6.4 6.4 0 1 0 3 10.5A7 7 0 0 1 11 2Z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></div>
+      <div class="tl-mark" style="top:82%"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.3"/><g stroke="currentColor" stroke-width="1.2"><line x1="8" y1="1" x2="8" y2="3"/><line x1="8" y1="13" x2="8" y2="15"/><line x1="1" y1="8" x2="3" y2="8"/><line x1="13" y1="8" x2="15" y2="8"/><line x1="3" y1="3" x2="4.4" y2="4.4"/><line x1="11.6" y1="11.6" x2="13" y2="13"/><line x1="13" y1="3" x2="11.6" y2="4.4"/><line x1="4.4" y1="11.6" x2="3" y2="13"/></g></svg></div>
+
+      <article class="tl-item"><span class="tl-node"></span><div class="tl-time">16:30</div><span class="tl-phase ph-dusk">Dusk</span><h3>Boarding, Barcelona</h3><p>The brass key changes hands; the first pour is poured. Dusk gathers over the harbour while luggage disappears for ever — until Venice.</p></article>
+      <article class="tl-item"><span class="tl-node"></span><div class="tl-time">17:12</div><span class="tl-phase ph-dusk">Dusk</span><h3>Departure</h3><p>The coast unwinds. Lamps come on along the water like a slow ovation, and the Aurelian takes the coast road south.</p></article>
+      <article class="tl-item"><span class="tl-node"></span><div class="tl-time">20:15</div><span class="tl-phase ph-night">Night</span><h3>First Sitting, the Grand Salon</h3><p>Five courses against a moving horizon. The wine list leans coastal; the linen barely trembles.</p></article>
+      <article class="tl-item"><svg class="tl-lamp" viewBox="0 0 34 64"><circle cx="17" cy="18" r="13" fill="url(#lampG)" class="lamp-glow" opacity="0"/><line x1="17" y1="0" x2="17" y2="16" stroke="rgba(198,161,91,.6)"/><path d="M10 16 h14 l-4 16 h-6 z" fill="#10161F" stroke="rgba(198,161,91,.6)"/><circle cx="17" cy="24" r="3" fill="#FFE3A1"/></svg><div class="tl-time">23:58</div><span class="tl-phase ph-night">Night</span><h3>Midnight at Monaco</h3><p>The train slows to a courtesy. Casino windows burn gold above the harbour; below, masts and murmurs. Nobody boards. Everybody looks.</p></article>
+      <article class="tl-item"><svg class="tl-lamp" viewBox="0 0 34 64"><circle cx="17" cy="24" r="13" fill="url(#lampG)" class="lamp-glow" opacity="0"/><line x1="17" y1="0" x2="17" y2="16" stroke="rgba(198,161,91,.6)"/><path d="M10 16 h14 l-4 16 h-6 z" fill="#10161F" stroke="rgba(198,161,91,.6)"/><circle cx="17" cy="24" r="3" fill="#FFE3A1"/></svg><div class="tl-time">00:40</div><span class="tl-phase ph-night">Night</span><h3>Lights to Blue</h3><p>Berths folded, lamps fallen to a low harbour-blue. The train takes the Ligurian curves like a held breath.</p></article>
+      <article class="tl-item"><svg class="tl-lamp" viewBox="0 0 34 64"><circle cx="17" cy="24" r="13" fill="url(#lampG)" class="lamp-glow" opacity="0"/><line x1="17" y1="0" x2="17" y2="16" stroke="rgba(198,161,91,.6)"/><path d="M10 16 h14 l-4 16 h-6 z" fill="#10161F" stroke="rgba(198,161,91,.6)"/><circle cx="17" cy="24" r="3" fill="#FFE3A1"/></svg><div class="tl-time">03:00</div><span class="tl-phase ph-night">The Quiet Hours</span><p class="tl-phase ph-night" style="display:block;margin:0">Night</p><h3>The Headlands</h3><p>Silver cliffs pass in their sleep. Only the joints of the track tell you the world is still out there.</p></article>
+      <article class="tl-item"><span class="tl-node"></span><div class="tl-time">06:20</div><span class="tl-phase ph-dawn">Dawn</span><h3>First Light off Naples</h3><p>The sea turns to hammered pewter; the mountain stands up out of the haze. Curtains, quietly, are drawn back.</p></article>
+      <article class="tl-item"><span class="tl-node"></span><div class="tl-time">07:24</div><span class="tl-phase ph-dawn">Dawn</span><h3>Espresso on the Platform</h3><p>Ninety seconds of salt air and perfect coffee at Naples. By decree, the finest stop on any railway.</p></article>
+      <article class="tl-item"><span class="tl-node"></span><div class="tl-time">09:30</div><span class="tl-phase ph-morn">Morning</span><h3>Brunch as the Plain Unrolls</h3><p>The Adriatic side of the country slides by with your second coffee. Warm sfogliatelle; no rush whatsoever.</p></article>
+      <article class="tl-item"><span class="tl-node"></span><div class="tl-time">11:52</div><span class="tl-phase ph-morn">Morning</span><h3>Arrival, Venice Santa Lucia</h3><p>The lagoon opens like a held page. Gondolas punctuate. Nobody hurries you off.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THE TRAIN ================= -->
+<section class="section" id="train">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>The Train<i class="dia"></i></p>
+      <h2>Anatomy of the Consist</h2>
+      <p>Nine carriages and one very quiet electric head. Rest your cursor along the line — every carriage has an opinion.</p>
+    </div>
+    <div class="consist" data-reveal>
+      <svg viewBox="0 0 1160 240" role="img" aria-label="Side elevation of the nine-car Aurelian Express">
+        <g id="carsG"></g>
+        <g id="loco" data-i="-1" tabindex="0" role="img" aria-label="Locomotive AE-1">
+          <path class="c-body" d="M26 168 V118 q0 -9 10 -10 l52 -4 q62 -5 98 26 q9 8 8 20 l-1 18 z"/>
+          <path class="c-win" d="M116 112 l34 1 q20 2 32 12 l6 8 h-72 z"/>
+          <rect class="c-stripe" x="26" y="146" width="168" height="3"/>
+          <path class="c-pant" d="M56 106 L46 84 h20 L64 106 M40 82 h36"/>
+          <path class="c-pant" d="M138 106 L128 84 h20 L146 106 M122 80 h36"/>
+          <rect class="c-coup" x="196" y="152" width="10" height="6"/>
+          <circle cx="182" cy="128" r="2.6" fill="#FFE3A1"/>
+          <g fill="#0A0E14" stroke="rgba(241,232,212,.4)"><circle cx="56" cy="178" r="7.5"/><circle cx="80" cy="178" r="7.5"/><circle cx="140" cy="178" r="7.5"/><circle cx="164" cy="178" r="7.5"/></g>
+          <text x="86" y="164" style="font:500 8px var(--sans);letter-spacing:.4em" fill="rgba(198,161,91,.8)">AE-1</text>
+        </g>
+        <line class="c-rail" x1="14" y1="187" x2="1146" y2="187"/>
+      </svg>
+      <p class="car-cap" id="carCap"><b>The Consist</b>Hover along the train — nine carriages, one intention.</p>
+      <div class="specs">
+        <div class="sp"><b>412<small> m</small></b><i>Length over all</i></div>
+        <div class="sp"><b>10</b><i>Vehicles, head to tail</i></div>
+        <div class="sp"><b>84</b><i>Guests aboard</i></div>
+        <div class="sp"><b>41</b><i>Crew, in white gloves</i></div>
+        <div class="sp"><b>6.4<small> MW</small></b><i>Continuous rating</i></div>
+        <div class="sp"><b>200<small> km/h</small></b><i>Maximum speed</i></div>
+        <div class="sp"><b>25<small> kV</small></b><i>Overhead current</i></div>
+        <div class="sp"><b>1931</b><i>Design lineage, kept</i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RITUALS ================= -->
+<section class="section" id="rituals">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>Service Rituals<i class="dia"></i></p>
+      <h2>Small Ceremonies, Kept Strictly</h2>
+    </div>
+    <ol class="rituals" data-reveal>
+      <li class="ritual"><span class="r-num">I</span><div><h3>The Brass Key</h3><p>A solid brass key on a grosgrain ribbon — car, number, and the Aurelian sun. Yours until Venice; many ask to keep it. Some are allowed.</p></div>
+        <svg class="r-ic" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="4.6"/><path d="M12 12l8 8M17.5 17.5l2.5-2.5M15 15l2-2"/></svg></li>
+      <li class="ritual"><span class="r-num">II</span><div><h3>The First Pour</h3><p>Champagne while the harbour is still in view. The glass is chilled; the timing is not negotiable.</p></div>
+        <svg class="r-ic" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6 4h12a6 6 0 0 1-12 0Z"/><path d="M12 13v6M8 21h8"/><path d="M6.5 7h11"/></svg></li>
+      <li class="ritual"><span class="r-num">III</span><div><h3>The Folding of the Berth</h3><p>While you are at dinner the steward remakes the room: sofa to bed, day to night, in eleven unhurried minutes.</p></div>
+        <svg class="r-ic" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 19v-8h18v8M3 15h18M3 19v2M21 19v2M6 11V7h5l3 4"/><circle cx="7.5" cy="8" r="1.6"/></svg></li>
+      <li class="ritual"><span class="r-num">IV</span><div><h3>Lights to Blue</h3><p>At a signal from the wire, cabin lamps fall to a low harbour-blue. The corridor carpet glows the whole length of the train.</p></div>
+        <svg class="r-ic" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M9 3h6l2 8H7Z"/><path d="M12 11v8M8 21h8"/><path d="M12 14v3"/></svg></li>
+      <li class="ritual"><span class="r-num">V</span><div><h3>Coffee at First Light</h3><p>Brought at the exact minute you named the night before — with the day's route card and one perfect sfogliatella.</p></div>
+        <svg class="r-ic" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4.5 9h12v5a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5Z"/><path d="M16.5 10h1.8a2.6 2.6 0 0 1 0 5.2h-2.1"/><path d="M8 6c0-1.2 1-1.4 1-2.6M12 6c0-1.2 1-1.4 1-2.6"/></svg></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= PASSENGERS' LEDGER ================= -->
+<section class="section" id="ledger">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>The Passengers' Ledger<i class="dia"></i></p>
+      <h2>What Is Said at Breakfast</h2>
+    </div>
+    <div class="ledger" data-reveal>
+      <span class="qmark" aria-hidden="true">&ldquo;</span>
+      <div class="quotes" id="quotes" aria-live="polite"></div>
+      <div class="q-ctl">
+        <button id="qPrev" aria-label="Previous excerpt"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 2L4 8l6 6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button>
+        <span id="qIdx">I · IV</span>
+        <button id="qNext" aria-label="Next excerpt"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TARIFF ================= -->
+<section class="section" id="tariff" style="background:var(--navy-2)">
+  <div class="wrap">
+    <div class="shead" data-reveal>
+      <p class="kicker"><i class="dia"></i>The Tariff<i class="dia"></i></p>
+      <h2>Fares for the Night</h2>
+      <p>All table d'hôte dining, wines at dinner, platform service at Naples and every luggage label are included in the fare. Deposit holds the berth for seven tides.</p>
+    </div>
+    <div class="tariff-wrap" data-reveal>
+      <table class="tariff">
+        <thead><tr>
+          <th scope="col">The journey</th>
+          <th scope="col">Salon Cabin<button data-tier="t1">Choose</button></th>
+          <th scope="col" class="hl">Deco Suite<span class="chip">Most chosen</span><button data-tier="t2">Choose</button></th>
+          <th scope="col">Aurelian Chamber<button data-tier="t3">Choose</button></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Journey, per guest</td><td><b>€1,180</b></td><td class="hl"><b>€2,340</b></td><td><b>€3,900</b></td></tr>
+          <tr><td>The berth</td><td>Upper &amp; lower single</td><td class="hl">Double, 160 × 200</td><td>King, 180 × 210</td></tr>
+          <tr><td>The washroom</td><td>Marble, corridor</td><td class="hl">Private, with shower</td><td>Marble room, bronze tub</td></tr>
+          <tr><td>The table</td><td>Five courses</td><td class="hl">Seven courses + bar</td><td>Chef's table, six seats</td></tr>
+          <tr><td>Sole occupancy</td><td>+€420</td><td class="hl">+€780</td><td>Included</td></tr>
+          <tr><td>Deposit to hold</td><td>15%</td><td class="hl">15%</td><td>15%</td></tr>
+        </tbody>
+      </table>
+      <div class="t-foot">
+        <small>Fares are quoted per guest for the full run, Barcelona—Venice or in reverse. Children under twelve travel at half fare and are taught the card tables on request.</small>
+        <a class="btn" href="#reserve">Begin a reservation</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- dawn ornament -->
+<div class="dawn-orn" data-reveal aria-hidden="true">
+  <svg viewBox="0 0 1200 130">
+    <g transform="translate(600,112)">
+      <g fill="rgba(226,198,132,.2)"><polygon points="0,0 -6,-96 6,-96" transform="rotate(-90)"/><polygon points="0,0 -6,-84 6,-84" transform="rotate(-63)"/><polygon points="0,0 -6,-76 6,-76" transform="rotate(-36)"/><polygon points="0,0 -6,-72 6,-72" transform="rotate(-12)"/><polygon points="0,0 -6,-72 6,-72" transform="rotate(12)"/><polygon points="0,0 -6,-76 6,-76" transform="rotate(36)"/><polygon points="0,0 -6,-84 6,-84" transform="rotate(63)"/><polygon points="0,0 -6,-96 6,-96" transform="rotate(90)"/></g>
+      <path class="d-sun" d="M-40 0 A40 40 0 0 1 40 0 Z" fill="#D9A959"/>
+      <circle r="5" cy="-2" fill="#F1E8D4" opacity=".8"/>
+    </g>
+    <line x1="0" y1="112" x2="1200" y2="112" stroke="rgba(198,161,91,.45)"/>
+    <g stroke="rgba(226,198,132,.3)"><line class="glintline" x1="480" y1="120" x2="720" y2="120"/><line class="glintline" x1="420" y1="126" x2="780" y2="126" opacity=".5"/></g>
+  </svg>
+</div>
+
+<!-- ================= RESERVE ================= -->
+<section class="section dawn" id="reserve">
+  <div class="wrap book-grid">
+    <div data-reveal>
+      <p class="kicker" style="justify-content:flex-start"><i class="dia"></i>Reservations</p>
+      <h2 style="font:600 clamp(2.1rem,4.4vw,3.4rem)/1.12 var(--serif);color:#191512;margin:18px 0 16px">Hold Your Night</h2>
+      <p style="max-width:520px">Choose a direction, a night, and a way of sleeping. A concierge confirms every request personally — the train is small on purpose, and the purpose is sleep.</p>
+      <form class="bk-form" id="bookForm" novalidate>
+        <div class="field"><label for="fDir">Direction</label>
+          <select id="fDir"><option value="w">Westbound — Barcelona to Venice</option><option value="e">Eastbound — Venice to Barcelona</option></select></div>
+        <div class="field"><label for="fDate">Night of departure</label>
+          <select id="fDate"><option>Friday, 12 April</option><option>Friday, 26 April</option><option>Thursday, 9 May</option><option selected>Friday, 24 May</option><option>Saturday, 8 June</option><option>Friday, 12 September</option><option>Friday, 26 September</option></select></div>
+        <div class="field"><label for="fClass">Way of sleeping</label>
+          <select id="fClass"><option value="t1">Salon Cabin — €1,180</option><option value="t2" selected>Deco Suite — €2,340</option><option value="t3">Aurelian Chamber — €3,900</option></select></div>
+        <div class="field"><label for="fGuests">Guests</label>
+          <select id="fGuests"><option>1</option><option selected>2</option></select></div>
+        <button class="btn btn-solid" type="submit" id="submitBtn" style="border-color:#8A6A2F">Request reservation</button>
+        <p class="bk-note">No payment is taken here — this is a hold, not a transaction. The concierge writes back within one tide.</p>
+      </form>
+    </div>
+
+    <aside data-reveal>
+      <div class="ticket" id="ticket">
+        <div class="ticket-inner">
+          <div class="tk-head">
+            <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor"><rect x="11" y="11" width="18" height="18" transform="rotate(45 20 20)"/><rect x="15" y="15" width="10" height="10" transform="rotate(45 20 20)"/></g><text x="20" y="24" text-anchor="middle" font-family="Bodoni Moda,serif" font-size="11" fill="currentColor">Æ</text></svg>
+            <b>THE AURELIAN EXPRESS</b>
+            <span class="tk-no">No. 001931</span>
+          </div>
+          <p class="tk-route" id="tkRoute">BARCELONA 17:12 → VENICE 11:52</p>
+          <dl class="tk-grid">
+            <div><dt>Date</dt><dd id="tkDate">FRI 24 MAY</dd></div>
+            <div><dt>Class</dt><dd id="tkClass">Deco Suite</dd></div>
+            <div><dt>Guests</dt><dd id="tkGuests">2</dd></div>
+            <div><dt>Fare</dt><dd id="tkFare">€4,680</dd></div>
+          </dl>
+          <div class="tk-stub">
+            <span>Keep this portion — the journey resumes at dawn</span>
+            <svg width="86" height="24" viewBox="0 0 86 24" aria-hidden="true"><g fill="rgba(198,161,91,.85)"><rect x="0" width="3" height="24"/><rect x="6" width="1.5" height="24"/><rect x="10" width="2" height="24"/><rect x="16" width="4" height="24"/><rect x="23" width="1.5" height="24"/><rect x="27" width="3" height="24"/><rect x="34" width="1.5" height="24"/><rect x="39" width="2.5" height="24"/><rect x="45" width="4" height="24"/><rect x="52" width="1.5" height="24"/><rect x="56" width="3" height="24"/><rect x="62" width="2" height="24"/><rect x="68" width="1.5" height="24"/><rect x="72" width="4" height="24"/><rect x="80" width="2" height="24"/></g></svg>
+          </div>
+        </div>
+        <div class="tk-held">
+          <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor"><rect x="11" y="11" width="18" height="18" transform="rotate(45 20 20)"/><rect x="15" y="15" width="10" height="10" transform="rotate(45 20 20)"/></g><text x="20" y="24" text-anchor="middle" font-family="Bodoni Moda,serif" font-size="11" fill="currentColor">Æ</text></svg>
+          <p class="tk-ref" id="tkRef">AX-0000-ÆÆ</p>
+          <p>Held for you. A concierge will write within one tide — pack light, and bring an appetite.</p>
+          <button type="button" id="amendBtn">Amend the request</button>
+        </div>
+      </div>
+      <p style="margin-top:16px;font:300 12px var(--sans);color:rgba(25,21,18,.55);text-align:center">The ticket above is a memento of the request; the real one is heavier, and made of brass.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <svg class="f-crest" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor"><rect x="11" y="11" width="18" height="18" transform="rotate(45 20 20)"/><rect x="15" y="15" width="10" height="10" transform="rotate(45 20 20)"/></g><text x="20" y="24" text-anchor="middle" font-family="Bodoni Moda,serif" font-size="11" fill="currentColor">Æ</text></svg>
+    <h4>THE AURELIAN EXPRESS</h4>
+    <p class="f-tag">Seven grand coastal cities. One unbroken night.</p>
+    <div class="f-rule" aria-hidden="true"><i class="dia"></i></div>
+    <nav class="f-links" aria-label="Footer">
+      <a href="#hour">Timetable</a><a href="#train">The Consist</a><a href="#tariff">The Tariff</a><a href="#reserve">Reserve</a><a href="#top">Back to dusk</a>
+    </nav>
+    <p class="f-note">The Aurelian Express is a work of fiction, lovingly over-served. Any resemblance to a railway you can actually board is a happy accident. All landscapes, portraits and labels aboard were drawn by hand in ink and light.</p>
+    <p class="f-fine">Est. 1931 · Barcelona — Venice · 1,612 km of intention</p>
+  </div>
+</footer>
+
+<!-- journey clock -->
+<button class="clock" id="clock" data-phase="dusk" title="Train time — click to return to dusk" aria-label="Journey clock, click to return to top">
+  <svg viewBox="0 0 84 84" aria-hidden="true">
+    <circle class="cl-ring" cx="42" cy="42" r="40"/>
+    <circle class="cl-ring2" cx="42" cy="42" r="33"/>
+    <g id="clockTicks"></g>
+    <g id="needle"><line class="cl-hand" x1="42" y1="42" x2="42" y2="13"/></g>
+    <circle cx="42" cy="42" r="3.2" fill="#E2C684"/>
+  </svg>
+  <span class="cl-meta"><b id="clockTime">17:12</b><i id="phaseName">DUSK</i></span>
+</button>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const ROMAN=["I","II","III","IV","V","VI","VII"];
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- city data ---------- */
+const MOTIFS={
+spires:`<path d="M50 6 C53 22 56 34 60 48 L68 48 L68 96 L32 96 L32 48 L40 48 C44 34 47 22 50 6 Z"/>
+<path d="M18 34 C20 44 21 50 23 58 L27 58 L27 96 L9 96 L9 58 L13 58 C15 50 16 44 18 34 Z"/>
+<path d="M82 34 C84 44 85 50 87 58 L91 58 L91 96 L73 96 L73 58 L77 58 C79 50 80 44 82 34 Z"/>
+<rect x="4" y="92" width="92" height="6"/>`,
+basilica:`<path d="M2 96 Q50 56 98 96 Z"/><rect x="43" y="52" width="14" height="14"/>
+<path d="M50 32 L57 52 L43 52 Z"/><rect x="32" y="60" width="7" height="10"/><path d="M35.5 60 L35.5 52 L40 52 L40 60 Z"/>
+<rect x="61" y="60" width="7" height="12"/><path d="M64.5 52 L69 60 L60 60 Z"/>
+<rect x="2" y="94" width="96" height="4"/>`,
+rock:`<path d="M2 96 L2 72 Q24 60 44 66 Q70 74 96 68 L96 96 Z"/>
+<rect x="18" y="52" width="18" height="16"/><path d="M18 52 A9 9 0 0 1 36 52 Z"/>
+<path d="M27 43 V34"/><path d="M27 34 L37 37 L27 40 Z"/><rect x="2" y="94" width="96" height="4"/>`,
+lantern:`<path d="M38 96 L44 60 L56 60 L62 96 Z"/><rect x="42" y="46" width="16" height="14"/>
+<path d="M45 46 L47 30 L53 30 L55 46 Z"/><rect x="46" y="20" width="8" height="10"/>
+<path d="M50 20 V12"/><rect x="12" y="76" width="18" height="20"/><rect x="70" y="72" width="20" height="24"/>
+<rect x="2" y="94" width="96" height="4"/>`,
+terrace:`<rect x="2" y="94" width="96" height="4"/>
+<path d="M8 94 A92 62 0 0 1 92 94" fill="none" stroke-width="2.4"/>
+<path d="M24 94 A60 42 0 0 1 76 94" fill="none" stroke-width="2.4"/>
+<path d="M36 94 A26 20 0 0 1 64 94" fill="none" stroke-width="2.4"/>
+<path d="M18 94 V76 M50 94 V70 M82 94 V76" stroke-width="3.4"/><path d="M50 66 L60 69 L50 72 Z"/>`,
+vesuvius:`<path d="M8 96 Q30 56 40 40 L44 34 Q47 30 50 34 L54 40 L56 38 Q68 58 92 96 Z"/>
+<path d="M50 26 Q58 18 50 8" fill="none" stroke-width="2.4"/>
+<path d="M14 88 h12 l-3 5 h-6 z"/><rect x="2" y="94" width="96" height="4"/>`,
+campanile:`<rect x="44" y="30" width="12" height="60"/><path d="M42 30 L50 16 L58 30 Z"/>
+<rect x="47" y="40" width="6" height="9" fill="var(--ivory)" opacity=".7"/>
+<path d="M64 90 V72 A10 10 0 0 1 84 72 V90 Z"/><path d="M74 62 V56 M74 56 h6 M74 56 v-6" stroke-width="2" fill="none"/>
+<path d="M14 90 V64 M22 90 V68" stroke-width="3.4" fill="none"/><rect x="2" y="94" width="96" height="4"/>`};
+const GLYPHS={
+spires:`<path d="M6 20V11M9.5 20V7M12 20V4M14.5 20V7M18 20V11"/><path d="M4 20h16"/>`,
+basilica:`<path d="M4 19C8 11 16 11 20 19"/><path d="M9 19L12 11L15 19Z"/><path d="M12 11V7"/><path d="M4 19h16"/>`,
+rock:`<path d="M4 19L9 12h6l5 7"/><path d="M12 5.5L14.5 8L12 10.5L9.5 8Z"/><path d="M4 19h16"/>`,
+lantern:`<path d="M10 19l1-8h2l1 8z"/><path d="M10.5 11V6h3v5"/><path d="M11 6V4h2v2"/><path d="M5 19h14"/>`,
+terrace:`<path d="M4 18A8 5.5 0 0 1 20 18"/><path d="M8 18A4 3 0 0 1 16 18"/><path d="M12 18v-7"/><path d="M4 18h16"/>`,
+vesuvius:`<path d="M4 19L10 8h4l6 11"/><path d="M12 8V5"/><path d="M4 19h16"/>`,
+campanile:`<path d="M10 19V8h4v11"/><path d="M9 8l3-4 3 4"/><path d="M17 19v-6"/><path d="M4 19h16"/>`};
+
+const CITIES=[
+{name:"Barcelona",epithet:"The Catalan Gate",arr:"—",dep:"17:12",roman:"I",accent:"#C97B3F",bg:"#241812",motif:"spires",x:120,y:470,tag:"Boarding from 16:30",
+ note:"Board beneath the hill of Montjuïc. The stewards learn your name before the whistle, and the first pour is poured while the harbour is still in view."},
+{name:"Marseille",epithet:"The Old Port",arr:"21:18",dep:"21:36",roman:"II",accent:"#4E9A8F",bg:"#0F2426",motif:"basilica",x:300,y:352,tag:"A 20-minute stop",
+ note:"A pause between the bouillabaisse kettles and the dark. The basilica keeps a small light burning over the roadstead as we slide out along the jetty."},
+{name:"Monaco",epithet:"Midnight at the Rock",arr:"23:58",dep:"00:14",roman:"III",accent:"#D9B45F",bg:"#221D10",motif:"rock",x:436,y:286,tag:"The new day begins",
+ note:"The new day begins at sea level. Casino windows burn gold above the gardens; below, the harbour is all masts and murmurs. Nobody boards. Everybody looks."},
+{name:"Genoa",epithet:"The Great Lantern",arr:"02:22",dep:"02:37",roman:"IV",accent:"#7FA3BF",bg:"#101E30",motif:"lantern",x:566,y:232,tag:"Slow coastal curves",
+ note:"The great lantern still turning above the terraces. The train takes the coastal curves slowly here — a courtesy to anyone still awake."},
+{name:"Livorno",epithet:"The Striped Terrace",arr:"04:07",dep:"04:19",roman:"V",accent:"#5E9C84",bg:"#122A22",motif:"terrace",x:688,y:272,tag:"The quiet coast",
+ note:"Even the promenade sleeps in stripes. Out past the breakwater the Tyrrhenian lies flat as poured ink; one lamp stays lit in the salon for the curious."},
+{name:"Naples",epithet:"Shadow of the Volcano",arr:"07:24",dep:"07:39",roman:"VI",accent:"#D98A5A",bg:"#2A1A16",motif:"vesuvius",x:800,y:372,tag:"Espresso on the platform",
+ note:"Ninety seconds of salt air and perfect coffee on the platform, the mountain standing up out of the morning haze. The finest railway stop in Europe, by decree."},
+{name:"Venice",epithet:"Arrival: the Lagoon",arr:"11:52",dep:"—",roman:"VII",accent:"#BFB06A",bg:"#20241A",motif:"campanile",x:876,y:150,tag:"Arrival, mid-morning",
+ note:"The line leaves the sea and enters the lagoon, and the whole carriage falls quiet. Gondolas punctuate. Nobody hurries you off."}];
+
+/* ---------- hero: stars + rays ---------- */
+const starsG=$("#stars");
+if(starsG){let h="";for(let i=0;i<54;i++){const x=(Math.random()*1600).toFixed(0),y=(Math.random()*380).toFixed(0),r=(0.5+Math.random()*0.9).toFixed(2),d=(Math.random()*5).toFixed(2),o=(0.2+Math.random()*0.5).toFixed(2);
+h+=`<circle cx="${x}" cy="${y}" r="${r}" class="star" style="animation-delay:-${d}s;opacity:${o}"/>`;}starsG.innerHTML=h;}
+const raysG=$("#raysSpin");
+if(raysG){let h="";for(let i=0;i<22;i++){h+=`<polygon points="0,0 -7,-620 7,-620" fill="#EFCB84" opacity="${i%2?0.05:0.08}" transform="rotate(${i*(360/22)})"/>`;}raysG.innerHTML=h;}
+
+/* ---------- ticker duplicate ---------- */
+const tk=$("#tickerTrack"); if(tk){tk.innerHTML+=tk.innerHTML;}
+
+/* ---------- route: medallions + list + posters ---------- */
+const stopG=$("#routeStops"), stopList=$("#stopList");
+const NS="http://www.w3.org/2000/svg";
+CITIES.forEach((c,i)=>{
+  const g=document.createElementNS(NS,"g");
+  g.setAttribute("class","med"); g.setAttribute("transform",`translate(${c.x},${c.y})`); g.setAttribute("tabindex","0"); g.setAttribute("role","button");
+  g.setAttribute("aria-label",c.name+", "+c.epithet);
+  g.innerHTML=`<circle class="med-bezel" r="27"/><circle class="med-disc" r="20"/>
+   <g class="med-glyph" transform="translate(-11,-11)" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">${GLYPHS[c.motif]}</g>`;
+  stopG.appendChild(g);
+  const lbl=document.createElementNS(NS,"text");
+  let lx=c.x, ly=c.y-38, anchor="middle";
+  if(c.motif==="rock"){lx=c.x+34;ly=c.y-6;anchor="start";}
+  if(c.motif==="terrace"){ly=c.y+40;}
+  if(c.motif==="campanile"){lx=c.x+24;ly=c.y-14;anchor="start";}
+  if(c.motif==="vesuvius"){lx=c.x+28;ly=c.y+4;anchor="start";}
+  if(c.motif==="lantern"){ly=c.y-38;}
+  lbl.setAttribute("x",lx);lbl.setAttribute("y",ly);lbl.setAttribute("text-anchor",anchor);lbl.setAttribute("class","map-lbl");
+  lbl.innerHTML=`<tspan class="map-lbl" x="${lx}">${c.name.toUpperCase()}</tspan><tspan class="map-time" x="${lx}" dy="16">${c.arr==="—"?"DEP "+c.dep:c.arr}</tspan>`;
+  stopG.appendChild(lbl);
+  const li=document.createElement("li");
+  li.innerHTML=`<button class="stop" data-i="${i}" aria-pressed="false">
+    <span class="s-roman">${c.roman}</span>
+    <span class="s-main"><span class="s-city">${c.name}</span><span class="s-tag">${c.tag}</span></span>
+    <span class="s-time">${c.arr==="—"?"DEP "+c.dep:c.arr}</span></button>`;
+  stopList.appendChild(li);
+});
+function posterSVG(c){
+  let rays="";for(let i=0;i<12;i++){rays+=`<polygon points="0,0 -6,-212 6,-212" fill="${c.accent}" opacity=".1" transform="rotate(${i*30})"/>`;}
+  return `<svg viewBox="0 0 240 340" role="img" aria-label="Lithograph poster of ${c.name}">
+  <rect width="240" height="340" fill="${c.bg}"/>
+  <g transform="translate(120,152)">${rays}</g>
+  <circle cx="120" cy="152" r="52" fill="${c.accent}"/>
+  <g transform="translate(70,90)" fill="#0A0D12">${MOTIFS[c.motif].replace(/stroke-width="([\d.]+)"/g,'stroke-width="3"')}</g>
+  <g transform="translate(120,56)"><rect x="-7" y="-7" width="14" height="14" transform="rotate(45)" fill="none" stroke="${c.accent}"/></g>
+  <text x="120" y="60" text-anchor="middle" style="font:600 10px var(--serif)" fill="${c.ivory||'#F1E8D4'}">${c.roman}</text>
+  <text x="120" y="38" text-anchor="middle" class="p-cap">THE AURELIAN EXPRESS</text>
+  <path d="M26 282 q12 -9 24 0 t24 0 t24 0 t24 0 t24 0 t24 0" fill="none" stroke="${c.accent}" stroke-width="1.6" opacity=".6"/>
+  <path d="M40 296 q12 -9 24 0 t24 0 t24 0 t24 0 t24 0" fill="none" stroke="${c.accent}" stroke-width="1.2" opacity=".4"/>
+  <text x="120" y="314" text-anchor="middle" class="p-name">${c.name.toUpperCase()}</text>
+  <text x="120" y="330" text-anchor="middle" class="p-epi">${c.epithet}</text>
+  <rect x="7" y="7" width="226" height="326" fill="none" stroke="${c.accent}" stroke-width="1.5"/>
+  <rect x="14" y="14" width="212" height="312" fill="none" stroke="rgba(241,232,212,.3)"/>
+  </svg>`;
+}
+function labelSVG(c){
+  const sub=c.dep!=="—"?`DEPARTS ${c.dep}`:`ARRIVES ${c.arr}`;
+  return `<svg viewBox="0 0 220 92" role="img" aria-label="Luggage label for ${c.name}">
+  <g transform="rotate(-2 110 46)">
+   <rect x="3" y="3" width="214" height="86" rx="10" fill="${c.bg}" stroke="${c.accent}"/>
+   <rect x="9" y="9" width="202" height="74" rx="6" fill="none" stroke="rgba(241,232,212,.35)"/>
+   <g transform="translate(28,46)" fill="none" stroke="${c.accent}" stroke-width="1"><rect x="-11" y="-11" width="22" height="22" transform="rotate(45)"/></g>
+   <text x="28" y="50" text-anchor="middle" style="font:600 11px var(--serif)" fill="${c.accent}">${c.roman}</text>
+   <text x="118" y="30" text-anchor="middle" class="l-cap">THE AURELIAN EXPRESS</text>
+   <text x="118" y="54" text-anchor="middle" class="l-name">${c.name.toUpperCase()}</text>
+   <text x="118" y="72" text-anchor="middle" class="l-sub">${sub} · LUGGAGE OF RECORD</text>
+  </g></svg>`;
+}
+
+const routePath=$("#routeGold"), routeDot=$("#routeDot");
+let RL=0;
+function measureRoute(){
+  RL=routePath.getTotalLength();
+  routePath.style.strokeDasharray=RL;
+  routePath.style.strokeDashoffset=reduce?0:RL;
+  CITIES.forEach(c=>{let best=0,bd=1e12;
+    for(let k=0;k<=600;k++){const p=routePath.getPointAtLength(RL*k/600);
+      const d=(p.x-c.x)**2+(p.y-c.y)**2; if(d<bd){bd=d;best=k;}}
+    c.frac=best/600;});
+}
+const medEls=$$("#routeStops .med"), listBtns=$$("#stopList .stop");
+const card=$("#cityCard"), posterBox=$("#posterBox"), labelBox=$("#labelBox");
+let curCity=0, userLocked=false;
+function selectCity(i,manual){
+  if(manual)userLocked=true;
+  curCity=i;const c=CITIES[i];
+  posterBox.innerHTML=posterSVG(c);
+  labelBox.innerHTML=labelSVG(c);
+  $("#cityName").textContent=c.name;
+  $("#cityEpithet").textContent=c.epithet;
+  $("#cityNote").textContent=c.note;
+  $("#cityArr").textContent=c.arr==="—"?c.dep+" (dep)":c.arr;
+  $("#cityDep").textContent=c.dep==="—"?"terminus":c.dep;
+  listBtns.forEach((b,k)=>{b.classList.toggle("active",k===i);b.setAttribute("aria-pressed",k===i);});
+  medEls.forEach((m,k)=>m.classList.toggle("sel",k===i));
+  card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
+}
+listBtns.forEach((b,i)=>{b.addEventListener("click",()=>selectCity(i,true));
+  b.addEventListener("mouseenter",()=>selectCity(i,true));});
+medEls.forEach((m,i)=>{m.addEventListener("click",()=>selectCity(i,true));});
+
+/* ---------- suites ---------- */
+const TIERS={
+t1:{name:"Salon Cabin",price:"From €1,180 per guest",plaque:"I",
+ cap:"Car 4, berth 12 — 23:41, somewhere off Monaco",
+ desc:"A marble-silled window, a deep day sofa, and a proper berth that folds out of the walnut at turndown. The corridor washroom is one step away — marble, naturally.",
+ feats:[["The berth","Upper & lower single, 195 cm"],["The washroom","Marble, corridor"],["The window","Twin sash, brass sill"],["Dining","Grand Salon, five courses"],["Included","Wines at dinner, all seven labels"]]},
+t2:{name:"Deco Suite",price:"From €2,340 per guest",plaque:"II",
+ cap:"Car 8, Suite 2 — 01:07, the Genoan lights astern",
+ desc:"A proper double bed behind drawn velvet, two brass reading lamps, a sitting nook with a fixed decanter, and your own shower room lined in bottle-green lacquer.",
+ feats:[["The berth","Double, 160 × 200 cm"],["The washroom","Private, with rain shower"],["The window","Full width, day-bed nook"],["Dining","Seven courses + the Willow Bar"],["Included","All Salon privileges, pressing at dawn"]]},
+t3:{name:"The Aurelian Chamber",price:"From €3,900 per guest",plaque:"III",
+ cap:"Car 10, the Chamber — 05:58, first light over the water",
+ desc:"The whole tail of the train: a king berth, a bronze tub beneath its own window over the coupling, and a butler who appears exactly when thought of.",
+ feats:[["The berth","King, 180 × 210 cm"],["The washroom","Marble room, bronze tub"],["The window","Bay window, rear aspect"],["Dining","Chef's table, six seats"],["Included","Everything, plus the butler"]]}};
+const suiteWin=$("#suiteWin");
+function setTier(t){
+  suiteWin.classList.remove("t1","t2","t3"); suiteWin.classList.add(t);
+  $("#plaqueNum").textContent=TIERS[t].plaque;
+  $("#suiteName").textContent=TIERS[t].name;
+  $("#suitePrice").textContent=TIERS[t].price;
+  $("#suiteDesc").textContent=TIERS[t].desc;
+  $("#viewCap").textContent=TIERS[t].cap;
+  $("#suiteFeats").innerHTML=TIERS[t].feats.map(f=>`<div><dt>${f[0]}</dt><dd>${f[1]}</dd></div>`).join("");
+  $$("#tierList .tier").forEach(b=>{const on=b.dataset.tier===t;b.classList.toggle("active",on);b.setAttribute("aria-selected",on);});
+}
+$$("#tierList .tier").forEach(b=>b.addEventListener("click",()=>setTier(b.dataset.tier)));
+setTier("t1");
+
+/* ---------- consist builder ---------- */
+const CARS=[
+{n:"Staff & Baggage",t:"staff",cap:"Sixteen tons of steamer trunks, and one very calm man in charge of them."},
+{n:"Salon Cabin · Car 3",t:"cabin",cap:"Twenty-eight berths of walnut, wool and sea-light."},
+{n:"Salon Cabin · Car 4",t:"cabin",cap:"Every berth faces the water. Every curtain is lined in gold."},
+{n:"Salon Cabin · Car 5",t:"cabin",cap:"Reading lamps of solid brass, dimmed by the steward, never by switch."},
+{n:"Deco Suite · Car 6",t:"suite",cap:"Curtains you will want to keep drawn, and a decanter that refills itself."},
+{n:"Deco Suite · Car 7",t:"suite",cap:"A sitting nook, a fixed table, and two chairs that never slide."},
+{n:"The Grand Salon · Car 8",t:"dining",cap:"Forty-two covers beneath three arched windows. The horizon is the fourth wall."},
+{n:"The Willow Bar · Car 9",t:"bar",cap:"Vermouth, chess, and the slow gossip of the coast until two in the morning."},
+{n:"The Aurelian Chamber · Car 10",t:"chamber",cap:"The tail of the train: a bay window over the coupling, and the best bed aboard."}];
+function carSVG(x,i,c){
+  const wheels=[x+22,x+40,x+64,x+82].map(cx=>`<circle class="c-wheel" cx="${cx}" cy="178" r="7"/>`).join("");
+  let body,win="";
+  if(c.t==="chamber"){
+    body=`<path class="c-body" d="M${x} 112 h78 q26 0 26 30 v12 q0 14 -14 14 h-90 z"/>`;
+    win=`<path class="c-win" d="M${x+56} 128 h18 a16 16 0 0 1 16 18 v8 h-34 z"/><rect class="c-win" x="${x+14}" y="124" width="26" height="22" rx="3"/>`;
+  }else{
+    body=`<rect class="c-body" x="${x}" y="112" width="96" height="56" rx="6"/>`;
+    if(c.t==="staff")win=[0,1,2,3].map(k=>`<rect class="c-win" x="${x+12+k*20}" y="126" width="10" height="12" rx="2"/>`).join("");
+    if(c.t==="cabin")win=[0,1,2].map(k=>`<rect class="c-win" x="${x+10+k*30}" y="122" width="18" height="20" rx="2"/>`).join("");
+    if(c.t==="suite")win=[0,1].map(k=>`<rect class="c-win" x="${x+13+k*40}" y="122" width="28" height="24" rx="3"/>`).join("");
+    if(c.t==="dining")win=[0,1,2].map(k=>`<path class="c-win" d="M${x+8+k*30} 152 v-14 a11 11 0 0 1 22 0 v14 z"/>`).join("");
+    if(c.t==="bar")win=[0,1,2,3].map(k=>`<rect class="c-win" x="${x+8+k*22}" y="122" width="14" height="22" rx="2"/>`).join("");
+  }
+  return `<g class="car" data-i="${i}" tabindex="0" role="img" aria-label="${c.n}">${body}${win}<rect class="c-coup" x="${x-8}" y="150" width="8" height="6"/>${wheels}</g>`;
+}
+(function buildConsist(){
+  const host=$("#carsG");let x=212,s="";
+  CARS.forEach((c,i)=>{s_x=carSVG(x,i,c);host.insertAdjacentHTML("beforeend",s_x);x+=104;});
+})();
+const carCap=$("#carCap");
+function setCap(i){
+  if(i<0){carCap.innerHTML="<b>Locomotive AE-1</b>Six point four megawatts, and quiet as a held breath.";return;}
+  carCap.innerHTML="<b>"+CARS[i].n.toUpperCase().replace(/·/,"·")+"</b>"+CARS[i].cap;
+}
+setCap(-1);
+document.querySelector("#train svg").addEventListener("mouseover",e=>{
+  const t=e.target.closest("[data-i]"); if(!t)return; setCap(+t.dataset.i);});
+document.querySelector("#train svg").addEventListener("click",e=>{
+  const t=e.target.closest("[data-i]"); if(!t)return; setCap(+t.dataset.i);});
+$("#loco").addEventListener("focus",()=>setCap(-1));
+$$("#carsG .car").forEach(g=>{g.addEventListener("focus",()=>setCap(+g.dataset.i));
+  g.addEventListener("mouseenter",()=>{g.classList.add("lit")});g.addEventListener("mouseleave",()=>g.classList.remove("lit"));});
+$("#loco").addEventListener("mouseenter",()=>$("#loco").classList.add("lit"));
+$("#loco").addEventListener("mouseleave",()=>$("#loco").classList.remove("lit"));
+
+/* ---------- quotes ---------- */
+const QUOTES=[
+{q:"Dinner at ninety kilometres an hour, with the sea keeping pace outside the window. Ridiculous — and essential.",c:"The Continental Ledger"},
+{q:"Somewhere past three I woke to silver cliffs, and decided, quietly, never to fly again.",by:"Hélène Vasseur · Paris"},
+{q:"A grand hotel that happens to move. The bill, like the coastline, is easiest to forgive at dawn.",by:"J. Whitmore · The Coastal Review"},
+{q:"I booked the berth for the sleeping and stayed awake all night for the window.",by:"Claudia Marchetti · Novelist, Naples"}];
+const quotesHost=$("#quotes");
+quotesHost.innerHTML=QUOTES.map((q,i)=>`<div class="quote${i===0?" on":""}"><blockquote>${q.q}</blockquote><cite>— ${q.by||q.q2||""}</cite></div>`).join("");
+const qEls=$$("#quotes .quote");let qi=0,qTimer;
+function showQ(n){qi=(n+QUOTES.length)%QUOTES.length;
+  qEls.forEach((el,k)=>el.classList.toggle("on",k===qi));
+  $("#qIdx").textContent=ROMAN[qi]+" · "+ROMAN[QUOTES.length-1];}
+function restartQ(){clearInterval(qTimer);qTimer=setInterval(()=>showQ(qi+1),6500);}
+$("#qPrev").addEventListener("click",()=>{showQ(qi-1);restartQ();});
+$("#qNext").addEventListener("click",()=>{showQ(qi+1);restartQ();});
+restartQ();
+
+/* ---------- booking ---------- */
+const FARE={t1:1180,t2:2340,t3:3900};
+const CLASSNAME={t1:"Salon Cabin",t2:"Deco Suite",t3:"Aurelian Chamber"};
+const bookForm=$("#bookForm"),ticket=$("#ticket");
+function updTicket(){
+  const dir=$("#fDir").value, cls=$("#fClass").value, g=+$("#fGuests").value;
+  const dateRaw=$("#fDate").value;
+  $("#tkRoute").textContent=dir==="w"?"BARCELONA 17:12 → VENICE 11:52":"VENICE 15:40 → BARCELONA 10:36";
+  $("#tkDate").textContent=dateRaw.replace(",","").replace(/(\w+) (\d+)/, (m,a,b)=>a.slice(0,3).toUpperCase()+" "+b).toUpperCase();
+  $("#tkClass").textContent=CLASSNAME[cls];
+  $("#tkGuests").textContent=g;
+  $("#tkFare").textContent="€"+(FARE[cls]*g).toLocaleString("en-IE");
+}
+["fDir","fDate","fClass","fGuests"].forEach(id=>$("#"+id).addEventListener("change",updTicket));
+updTicket();
+bookForm.addEventListener("submit",e=>{
+  e.preventDefault();
+  if(ticket.classList.contains("held"))return;
+  const letters="AEIOUÆ";
+  const ref="AX-"+(1000+Math.floor(Math.random()*9000))+"-"+letters[Math.floor(Math.random()*letters.length)]+letters[Math.floor(Math.random()*6)];
+  $("#tkRef").textContent=ref;
+  ticket.classList.add("held");
+  $("#submitBtn").textContent="Request received";
+});
+$("#amendBtn").addEventListener("click",()=>{
+  ticket.classList.remove("held");
+  $("#submitBtn").textContent="Request reservation";
+});
+$$(".tariff th button").forEach(b=>b.addEventListener("click",()=>{
+  $("#fClass").value=b.dataset.tier; updTicket();
+  document.getElementById("reserve").scrollIntoView({behavior:reduce?"auto":"smooth"});}));
+
+/* ---------- reveal ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}
+}),{threshold:.16,rootMargin:"0px 0px -36px 0px"});
+$$("[data-reveal]").forEach(el=>io.observe(el));
+
+/* ---------- clock + scroll systems ---------- */
+const ticksG=$("#clockTicks");let th="";
+for(let i=0;i<24;i++){const a=i*15*Math.PI/180,big=i%6===0;
+  const r1=big?33:36,r2=40;
+  th+=`<line class="cl-tick${big?" big":""}" x1="${(42+r1*Math.sin(a)).toFixed(1)}" y1="${(42-r1*Math.cos(a)).toFixed(2)}" x2="${(42+r2*Math.sin(a)).toFixed(2)}" y2="${(42-r2*Math.cos(a)).toFixed(2)}"/>`;}
+ticksG.innerHTML=th;
+
+const needle=$("#needle"), clockEl=$("#clock"), clockTime=$("#clockTime"), phaseName=$("#phaseName");
+const START=17*60+12, END=11*60+52+1440, SPAN=END-START; // 17:12 → 11:52
+let curPhase="dusk";
+clockEl.addEventListener("click",()=>window.scrollTo({top:0,behavior:reduce?"auto":"smooth"}));
+const nav=$("#nav"), routeSec=document.getElementById("route");
+const pad=n=>String(n).padStart(2,"0");
+
+function onScroll(){
+  const max=document.documentElement.scrollHeight-innerHeight;
+  const p=clamp(scrollY/(max||1),0,1);
+  const t=START+p*SPAN; // minutes since midnight (wraps past 24h)
+  const mm=Math.round(t)%1440;
+  clockTime.textContent=pad(Math.floor(mm/60))+":"+pad(mm%60);
+  needle.setAttribute("transform",`rotate(${(mm/1440)*360} 42 42)`);
+  // lamps: dark from ~19:00, out after ~07:00
+  let lamp=0;
+  if(t<1140)lamp=0; else if(t<1230)lamp=(t-1140)/90;
+  else if(t<1800)lamp=1;
+  else if(t<1870)lamp=Math.max(.05,1-(t-1800)/70);
+  else lamp=.05;
+  document.documentElement.style.setProperty("--lamp",lamp.toFixed(3));
+  const ph=t<1140?"dusk":t<1795?"night":t<1915?"dawn":"morn";
+  if(ph!==curPhase){curPhase=ph;clockEl.dataset.phase=ph;
+    phaseName.textContent=ph==="morn"?"MORNING":ph.toUpperCase();}
+  nav.classList.toggle("scrolled",scrollY>40);
+  // route drawing
+  if(routePath){
+    const r=routeSec.getBoundingClientRect();
+    const rp=clamp((innerHeight*0.9-r.top)/(r.height*0.95),0,1);
+    routePath.style.strokeDashoffset=(reduce?0:RL*(1-rp));
+    const pt=routePath.getPointAtLength(RL*rp);
+    const pt2=routePath.getPointAtLength(Math.min(RL,RL*rp+2));
+    const ang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*180/Math.PI;
+    routeDot.setAttribute("transform",`translate(${pt.x.toFixed(1)},${pt.y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+    let lit=-1;
+    CITIES.forEach((c,k)=>{if(rp>=c.frac-0.02)lit=k;});
+    medEls.forEach((m,k)=>m.classList.toggle("lit",rp>=CITIES[k].frac-0.02));
+    if(!userLocked&&lit>=0&&lit!==curCity)selectCity(lit,false);
+  }
+}
+let ticking=false;
+addEventListener("scroll",()=>{if(!ticking){ticking=true;requestAnimationFrame(()=>{onScroll();ticking=false;});}},{passive:true});
+
+/* ---------- hero parallax ---------- */
+const hero=$(".hero");
+if(!reduce){
+  hero.addEventListener("mousemove",e=>{
+    const nx=(e.clientX/innerWidth-0.5), ny=(e.clientY/innerHeight-0.5);
+    requestAnimationFrame(()=>{
+      hero.querySelector(".hero-scene").style.transform=`translate(${nx*-14}px,${ny*-8}px)`;
+      const inner=hero.querySelector(".hero-inner");
+      inner.style.transform=`translate(${nx*8}px,${ny*6}px)`;
+    });
+  });
+}
+
+/* ---------- init ---------- */
+measureRoute();
+selectCity(0,false);
+onScroll();
+requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add("loaded")));
+addEventListener("resize",()=>{measureRoute();onScroll();});
+})();
+</script>
+</body>
+</html>

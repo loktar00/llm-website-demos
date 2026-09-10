@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INK WEATHER — A Joyful Print Fair &amp; Riso Festival</title>
+<meta name="description" content="INK WEATHER: a weekend of risograph, zines, workshops and ink-soaked joy at The Old Drum Factory.">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --paper:#f5efe2;
+  --paper-2:#efe6d2;
+  --coral:#ff5a4e;
+  --coral-hot:#ff4340;
+  --cobalt:#1349c6;
+  --sun:#ffc63d;
+  --mint:#63d3ae;
+  --ink:#181512;
+  --ink-soft:#2b2620;
+  --display:"Avenir Next","Futura","Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"Courier New",Courier,monospace;
+  --serif:Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--display);
+  line-height:1.55;
+  overflow-x:hidden;
+}
+::selection{background:var(--sun);color:var(--ink)}
+img,svg{display:block;max-width:100%}
+a{color:var(--cobalt)}
+button{font-family:inherit;cursor:pointer}
+
+/* ============ GRAIN + HALFTONE UTILITIES ============ */
+.grain{
+  position:fixed;inset:-50%;width:200%;height:200%;
+  pointer-events:none;z-index:1200;opacity:.28;mix-blend-mode:multiply;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="300" height="300" filter="url(%23n)" opacity="0.55"/></svg>');
+  animation:grainShift 1.2s steps(3) infinite;
+}
+@keyframes grainShift{
+  0%{transform:translate(0,0)}33%{transform:translate(-2%,1%)}
+  66%{transform:translate(1%,-2%)}100%{transform:translate(0,0)}
+}
+.halftone{
+  background-image:radial-gradient(circle,currentColor 1.1px,transparent 1.6px);
+  background-size:9px 9px;
+}
+.halftone-lg{
+  background-image:radial-gradient(circle,currentColor 2px,transparent 2.8px);
+  background-size:16px 16px;
+}
+.torn{
+  clip-path:polygon(0 3%,4% 0,12% 2%,22% 0,33% 2%,45% 1%,58% 3%,70% 0,82% 2%,93% 0,100% 3%,100% 97%,95% 100%,84% 98%,72% 100%,59% 98%,47% 100%,35% 98%,24% 100%,13% 98%,4% 100%,0 96%);
+}
+.torn-v{
+  clip-path:polygon(2% 0,98% 0,100% 6%,98% 15%,100% 27%,98% 40%,100% 52%,98% 66%,100% 78%,98% 89%,100% 96%,97% 100%,3% 100%,0 94%,2% 83%,0 70%,2% 58%,0 44%,2% 31%,0 18%,2% 8%);
+}
+
+/* ============ SKIP / A11Y ============ */
+.skip{
+  position:absolute;left:-999px;top:0;background:var(--ink);color:var(--paper);
+  padding:.7rem 1.2rem;z-index:2000;font-weight:700;
+}
+.skip:focus{left:12px;top:12px}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1rem,4vw,2.5rem)}
+section{position:relative;padding:clamp(3.5rem,8vw,6.5rem) 0}
+.kicker{
+  font-family:var(--mono);font-size:.8rem;letter-spacing:.28em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:var(--ink);color:var(--paper);padding:.35rem .8rem;
+  transform:rotate(-1.2deg);
+}
+h2{
+  font-size:clamp(2.1rem,5.5vw,3.8rem);line-height:1.02;text-transform:uppercase;
+  letter-spacing:-.02em;font-weight:900;margin:.6rem 0 1.4rem;
+}
+h3{font-weight:900;text-transform:uppercase;letter-spacing:.01em}
+.lede{max-width:56ch;font-size:1.08rem}
+
+/* misregister heading treatment */
+.misreg{position:relative;display:inline-block}
+.misreg::before,.misreg::after{
+  content:attr(data-text);position:absolute;inset:0;z-index:-1;
+  transition:transform .25s ease;
+}
+.misreg::before{color:var(--coral);transform:translate(4px,3px)}
+.misreg::after{color:var(--cobalt);transform:translate(-4px,-2px)}
+.misreg:hover::before{transform:translate(7px,5px)}
+.misreg:hover::after{transform:translate(-7px,-4px)}
+
+/* ============ HEADER ============ */
+header.site{
+  position:sticky;top:0;z-index:900;
+  background:var(--paper);
+  border-bottom:3px solid var(--ink);
+}
+header.site .wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:.7rem;padding-bottom:.7rem;gap:1rem;
+}
+.logo{
+  font-weight:900;text-transform:uppercase;letter-spacing:.02em;
+  font-size:1.15rem;text-decoration:none;color:var(--ink);
+  display:flex;align-items:center;gap:.55rem;
+}
+.logo .dot{width:16px;height:16px;border-radius:50%;background:var(--coral);
+  box-shadow:4px 3px 0 var(--cobalt);flex:none;transition:transform .3s}
+.logo:hover .dot{transform:rotate(20deg) scale(1.15)}
+nav.main ul{display:flex;gap:.2rem;list-style:none;flex-wrap:wrap}
+nav.main a{
+  font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;
+  text-decoration:none;color:var(--ink);padding:.45rem .65rem;position:relative;
+}
+nav.main a::after{
+  content:"";position:absolute;left:.6rem;right:.6rem;bottom:.25rem;height:6px;
+  background:var(--sun);z-index:-1;transform:scaleX(0);transform-origin:left;transition:transform .25s;
+}
+nav.main a:hover::after,nav.main a:focus-visible::after{transform:scaleX(1)}
+@media (max-width:820px){nav.main{display:none}}
+
+/* ============ HERO ============ */
+.hero{
+  padding:clamp(2rem,5vw,4rem) 0 clamp(3rem,7vw,5rem);
+  border-bottom:3px solid var(--ink);
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 85% 12%, rgba(255,198,61,.55), transparent 34%),
+    var(--paper);
+}
+.hero-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:2rem;align-items:center}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.hero-title{
+  font-size:clamp(3.4rem,11vw,8.5rem);
+  line-height:.88;font-weight:900;text-transform:uppercase;letter-spacing:-.03em;
+  position:relative;
+}
+.hero-title .layer{display:block;position:relative}
+.sep{position:absolute;inset:0;pointer-events:none;user-select:none;mix-blend-mode:multiply}
+.sep.c{color:var(--coral)}
+.sep.b{color:var(--cobalt)}
+.sep.y{color:var(--sun)}
+#titleStack{position:relative;display:inline-block}
+#titleStack .base{position:relative;z-index:2;color:var(--ink)}
+#titleStack .ghost{
+  position:absolute;inset:0;z-index:1;mix-blend-mode:multiply;
+  transition:transform .8s cubic-bezier(.6,0,.2,1);
+}
+.hero-meta{
+  margin-top:1.6rem;display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;
+  font-family:var(--mono);font-size:.95rem;
+}
+.stamp{
+  border:3px solid var(--ink);padding:.5rem .9rem;background:var(--paper);
+  transform:rotate(-2deg);font-weight:700;
+}
+.stamp.sun{background:var(--sun)}
+.stamp.coral{background:var(--coral);color:var(--paper);border-color:var(--coral-hot)}
+.hero-copy{margin-top:1.4rem;max-width:52ch;font-size:1.12rem}
+.btn{
+  display:inline-block;border:3px solid var(--ink);background:var(--coral);color:var(--paper);
+  font-weight:900;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;
+  padding:.85rem 1.5rem;margin-top:1.6rem;position:relative;
+  box-shadow:6px 6px 0 var(--ink);transition:transform .18s,box-shadow .18s;
+}
+.btn:hover,.btn:focus-visible{transform:translate(-2px,-2px);box-shadow:9px 9px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.btn.alt{background:var(--cobalt)}
+.btn.plain{background:var(--paper);color:var(--ink)}
+
+/* roller */
+.roller-track{
+  position:relative;margin-top:2.6rem;height:54px;border-top:3px solid var(--ink);
+  overflow:hidden;
+}
+.roller{
+  position:absolute;top:6px;left:-90px;width:74px;height:44px;
+  animation:rollAcross 14s linear infinite;
+}
+@keyframes rollAcross{
+  from{transform:translateX(0) }
+  to{transform:translateX(calc(100vw + 200px))}
+}
+.roller .wheel{transform-origin:center;animation:spin 2.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* drifting scraps */
+.scrap{
+  position:absolute;pointer-events:none;mix-blend-mode:multiply;opacity:.85;
+  animation:drift var(--dur,16s) ease-in-out infinite alternate;
+}
+@keyframes drift{
+  from{transform:translate(0,0) rotate(var(--r0,0deg))}
+  to{transform:translate(var(--dx,30px),var(--dy,40px)) rotate(var(--r1,8deg))}
+}
+
+/* hero poster side */
+.poster-frame{
+  position:relative;border:3px solid var(--ink);background:var(--paper-2);
+  padding:1rem;transform:rotate(1.6deg);
+  box-shadow:10px 12px 0 rgba(19,73,198,.35);
+}
+.tape{
+  position:absolute;width:110px;height:30px;background:rgba(255,198,61,.75);
+  top:-14px;left:50%;transform:translateX(-50%) rotate(-3deg);
+  border:1px dashed rgba(24,21,18,.35);
+}
+
+/* ============ INK LAYER ANIMATION SECTION ============ */
+.inklab{background:var(--ink);color:var(--paper);border-bottom:3px solid var(--ink)}
+.inklab .kicker{background:var(--sun);color:var(--ink)}
+.ink-stage{
+  margin-top:2rem;display:grid;grid-template-columns:1fr 300px;gap:2rem;align-items:center;
+}
+@media (max-width:860px){.ink-stage{grid-template-columns:1fr}}
+#inkCanvas{width:100%;height:auto;border:3px solid var(--paper);background:var(--paper)}
+.ink-legend{font-family:var(--mono);font-size:.85rem}
+.ink-legend li{list-style:none;display:flex;align-items:center;gap:.6rem;margin:.55rem 0}
+.swatch{width:20px;height:20px;border:2px solid var(--paper);flex:none}
+.ink-note{margin-top:1rem;opacity:.85;font-size:.9rem}
+#sepLabel{
+  font-weight:900;text-transform:uppercase;font-size:1.3rem;margin-top:1rem;
+  padding:.3rem .6rem;display:inline-block;background:var(--paper);color:var(--ink);
+}
+
+/* ============ SCHEDULE ============ */
+.schedule{background:var(--paper)}
+.day-tabs{display:flex;gap:.6rem;margin:1.2rem 0 1.6rem;flex-wrap:wrap}
+.day-tab{
+  border:3px solid var(--ink);background:var(--paper);font-weight:900;text-transform:uppercase;
+  padding:.6rem 1.1rem;letter-spacing:.03em;transition:transform .15s;
+}
+.day-tab[aria-selected="true"]{background:var(--sun);box-shadow:4px 4px 0 var(--ink);transform:rotate(-1deg)}
+.day-tab:hover{transform:rotate(1deg)}
+.sched{display:none}
+.sched.active{display:block}
+.row{
+  display:grid;grid-template-columns:110px 1fr auto;gap:1rem;align-items:baseline;
+  padding:1rem .6rem;border-bottom:2px dashed var(--ink);
+  transition:background .2s,transform .2s;
+}
+.row:hover{background:rgba(255,198,61,.35);transform:translateX(6px)}
+.row .time{font-family:var(--mono);font-weight:700}
+.row .tag{
+  font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;
+  padding:.25rem .55rem;border:2px solid var(--ink);white-space:nowrap;
+}
+.tag.ws{background:var(--mint)}
+.tag.talk{background:var(--coral);color:var(--paper)}
+.tag.live{background:var(--cobalt);color:var(--paper)}
+.tag.kids{background:var(--sun)}
+.row h3{font-size:1.05rem}
+.row p{font-size:.92rem;opacity:.85}
+@media (max-width:640px){.row{grid-template-columns:1fr;gap:.3rem}}
+
+/* ============ PRINTERS ============ */
+.printers{background:var(--paper-2);border-top:3px solid var(--ink)}
+.printer-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem;margin-top:1.5rem;
+}
+@media (max-width:940px){.printer-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:620px){.printer-grid{grid-template-columns:1fr}}
+.printer{
+  border:3px solid var(--ink);background:var(--paper);padding:1.1rem;position:relative;
+  transition:transform .25s,box-shadow .25s;
+}
+.printer:nth-child(odd){transform:rotate(-.8deg)}
+.printer:nth-child(even){transform:rotate(.9deg)}
+.printer:hover{transform:rotate(0) translateY(-6px);box-shadow:8px 10px 0 rgba(24,21,18,.9)}
+.printer .portrait{border:2px solid var(--ink);margin-bottom:.9rem;background:var(--paper-2)}
+.printer h3{font-size:1.15rem}
+.printer .studio{font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;margin:.2rem 0 .6rem}
+.printer p{font-size:.92rem}
+.printer .chip{
+  position:absolute;top:-14px;right:-10px;width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;font-family:var(--mono);font-size:.6rem;font-weight:700;
+  border:3px solid var(--ink);mix-blend-mode:multiply;transform:rotate(8deg);
+  text-align:center;line-height:1.1;
+}
+
+/* ============ MAP ============ */
+.venue{border-top:3px solid var(--ink)}
+.map-shell{
+  margin-top:1.5rem;border:3px solid var(--ink);background:var(--paper-2);
+  padding:clamp(.6rem,2vw,1.4rem);position:relative;transform:rotate(-.4deg);
+}
+.map-legend{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:1rem;font-family:var(--mono);font-size:.8rem}
+.map-legend span{display:inline-flex;align-items:center;gap:.4rem}
+.map-legend i{width:14px;height:14px;display:inline-block;border:2px solid var(--ink)}
+.compass{position:absolute;top:1rem;right:1rem;width:64px;opacity:.9}
+
+/* ============ SHOP ============ */
+.shop{background:var(--cobalt);color:var(--paper);border-top:3px solid var(--ink)}
+.shop .kicker{background:var(--coral);color:var(--paper)}
+.shop h2 .misreg::before{color:var(--sun)}
+.shop h2 .misreg::after{color:var(--mint)}
+.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6rem;margin-top:2rem}
+@media (max-width:1000px){.shop-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.shop-grid{grid-template-columns:1fr}}
+.item{
+  background:var(--paper);color:var(--ink);border:3px solid var(--ink);padding:.9rem;
+  transition:transform .25s;position:relative;
+}
+.item:nth-child(odd){transform:rotate(-1deg)}
+.item:nth-child(even){transform:rotate(1.2deg)}
+.item:hover{transform:rotate(0) scale(1.03)}
+.item .art{border:2px solid var(--ink);aspect-ratio:3/4;overflow:hidden;background:var(--paper-2);position:relative}
+.item h3{font-size:1rem;margin:.7rem 0 .2rem}
+.item .ed{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.item .price{font-weight:900;font-size:1.15rem;margin-top:.4rem}
+.item button{
+  margin-top:.6rem;width:100%;border:3px solid var(--ink);background:var(--sun);
+  font-weight:900;text-transform:uppercase;padding:.55rem;transition:transform .15s,background .15s;
+}
+.item button:hover{background:var(--coral);color:var(--paper);transform:translateY(-2px)}
+.item button.added{background:var(--mint);color:var(--ink)}
+.ed-badge{
+  position:absolute;top:-12px;left:-10px;background:var(--coral);color:var(--paper);
+  font-family:var(--mono);font-size:.65rem;padding:.3rem .5rem;border:2px solid var(--ink);
+  transform:rotate(-6deg);z-index:3;
+}
+
+/* ============ QUOTES ============ */
+.quotes{background:var(--paper);overflow:hidden;border-top:3px solid var(--ink)}
+.quote-rail{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:2rem}
+.postcard{
+  flex:1 1 260px;max-width:340px;border:3px solid var(--ink);background:var(--paper-2);
+  padding:1.2rem;font-family:var(--serif);font-style:italic;font-size:1.05rem;position:relative;
+  transition:transform .25s;
+}
+.postcard:nth-child(3n+1){transform:rotate(-2deg)}
+.postcard:nth-child(3n+2){transform:rotate(1.4deg);background:#fdf8ec}
+.postcard:nth-child(3n){transform:rotate(-.8deg);background:var(--paper)}
+.postcard:hover{transform:rotate(0) translateY(-6px)}
+.postcard cite{
+  display:block;margin-top:.9rem;font-family:var(--mono);font-style:normal;
+  font-size:.75rem;text-transform:uppercase;letter-spacing:.14em;
+}
+.postcard .pin{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  width:22px;height:22px;border-radius:50%;background:var(--coral);border:3px solid var(--ink);
+}
+
+/* ============ FAQ ============ */
+.faq{background:var(--paper-2);border-top:3px solid var(--ink)}
+.faq details{
+  border:3px solid var(--ink);background:var(--paper);margin-bottom:1rem;
+  transition:box-shadow .2s;
+}
+.faq details[open]{box-shadow:6px 6px 0 var(--sun)}
+.faq summary{
+  padding:1rem 1.2rem;font-weight:900;text-transform:uppercase;cursor:pointer;
+  list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"+";font-size:1.6rem;font-family:var(--mono);color:var(--coral);flex:none;
+  transition:transform .25s;
+}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq .answer{padding:0 1.2rem 1.2rem;max-width:70ch}
+
+/* ============ NEWSLETTER ============ */
+.news{background:var(--coral);color:var(--paper);border-top:3px solid var(--ink);overflow:hidden}
+.news .kicker{background:var(--paper);color:var(--ink)}
+.news-form{
+  display:flex;gap:.8rem;margin-top:1.6rem;flex-wrap:wrap;max-width:640px;
+}
+.news-form input[type=email]{
+  flex:1;min-width:240px;border:3px solid var(--ink);padding:.85rem 1rem;
+  font-family:var(--mono);font-size:1rem;background:var(--paper);color:var(--ink);
+}
+.news-form button{
+  border:3px solid var(--ink);background:var(--sun);color:var(--ink);font-weight:900;
+  text-transform:uppercase;padding:.85rem 1.6rem;box-shadow:5px 5px 0 var(--ink);
+  transition:transform .15s,box-shadow .15s;
+}
+.news-form button:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.news-ok{
+  display:none;margin-top:1.4rem;background:var(--paper);color:var(--ink);
+  border:3px solid var(--ink);padding:1rem 1.4rem;font-weight:900;text-transform:uppercase;
+  transform:rotate(-1.5deg);max-width:520px;
+}
+.news-ok.show{display:block;animation:stampIn .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes stampIn{from{transform:scale(1.6) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(-1.5deg);opacity:1}}
+
+/* ============ FOOTER ============ */
+footer.site{background:var(--ink);color:var(--paper);padding:0 0 2.5rem}
+.marquee{
+  overflow:hidden;border-top:3px solid var(--sun);border-bottom:3px solid var(--sun);
+  background:var(--cobalt);white-space:nowrap;
+}
+.marquee-inner{
+  display:inline-block;padding:.7rem 0;font-family:var(--mono);text-transform:uppercase;
+  letter-spacing:.2em;font-size:.85rem;animation:marquee 22s linear infinite;
+}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.foot-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;padding-top:3rem;
+}
+@media (max-width:760px){.foot-grid{grid-template-columns:1fr}}
+footer h4{font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;font-size:.8rem;margin-bottom:1rem;color:var(--sun)}
+footer ul{list-style:none}
+footer li{margin:.5rem 0}
+footer a{color:var(--paper);text-decoration:none;border-bottom:2px solid transparent;transition:border-color .2s,color .2s}
+footer a:hover{color:var(--sun);border-color:var(--coral)}
+.foot-logo{font-size:clamp(2rem,6vw,3.4rem);font-weight:900;text-transform:uppercase;line-height:.95}
+.foot-logo span{color:var(--coral)}
+.foot-note{margin-top:1rem;font-family:var(--mono);font-size:.78rem;opacity:.75;max-width:44ch}
+.ink-blot{position:absolute;pointer-events:none;mix-blend-mode:screen;opacity:.5}
+
+/* ============ REVEAL ============ */
+.reveal{opacity:0;transform:translateY(28px) rotate(var(--rr,0deg));transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:translateY(0) rotate(var(--rr,0deg))}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ================= HEADER ================= -->
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="dot" aria-hidden="true"></span>INK&nbsp;WEATHER</a>
+    <nav class="main" aria-label="Primary">
+      <ul>
+        <li><a href="#forecast">Forecast</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#printers">Printers</a></li>
+        <li><a href="#venue">Venue</a></li>
+        <li><a href="#shop">Poster Shop</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<!-- ================= HERO ================= -->
+<section class="hero" id="top" aria-label="Festival introduction">
+  <!-- drifting paper scraps -->
+  <div class="scrap" style="--dur:18s;--dx:40px;--dy:60px;--r0:-6deg;--r1:9deg;top:8%;left:4%;width:70px;height:90px;background:var(--mint)" aria-hidden="true"></div>
+  <div class="scrap torn" style="--dur:22s;--dx:-50px;--dy:35px;--r0:4deg;--r1:-7deg;top:60%;left:2%;width:90px;height:60px;background:var(--sun)" aria-hidden="true"></div>
+  <div class="scrap" style="--dur:15s;--dx:30px;--dy:-45px;--r0:10deg;--r1:-4deg;top:14%;right:6%;width:54px;height:54px;border-radius:50%;background:var(--coral)" aria-hidden="true"></div>
+  <div class="scrap torn-v" style="--dur:20s;--dx:-35px;--dy:50px;--r0:-3deg;--r1:6deg;bottom:10%;right:12%;width:60px;height:110px;background:var(--cobalt);opacity:.6" aria-hidden="true"></div>
+
+  <div class="wrap hero-grid">
+    <div>
+      <p class="kicker">A joyful independent print fair</p>
+      <h1 class="hero-title" aria-label="Ink Weather">
+        <span id="titleStack" aria-hidden="true">
+          <span class="ghost" id="ghost1">INK<br>WEATHER</span>
+          <span class="ghost" id="ghost2">INK<br>WEATHER</span>
+          <span class="base">INK<br>WEATHER</span>
+        </span>
+      </h1>
+      <div class="hero-meta">
+        <span class="stamp sun">SAT 13 – SUN 14 JUNE 2026</span>
+        <span class="stamp">THE OLD DRUM FACTORY · PORTSIDE</span>
+        <span class="stamp coral">FREE ENTRY</span>
+      </div>
+      <p class="hero-copy">Two days of risograph marathons, zine swaps, sunflower-yellow fingers and talks from the world's most charming printers. Bring tote bags. Leave with more tote bags.</p>
+      <a class="btn" href="#schedule">See the programme</a>
+      <a class="btn alt" href="#shop">Limited posters</a>
+
+      <div class="roller-track" aria-hidden="true">
+        <svg class="roller" viewBox="0 0 74 44">
+          <rect x="4" y="14" width="66" height="16" rx="8" fill="#181512"/>
+          <g class="wheel">
+            <circle cx="37" cy="22" r="14" fill="#ff5a4e" stroke="#181512" stroke-width="3"/>
+            <line x1="37" y1="8" x2="37" y2="36" stroke="#181512" stroke-width="3"/>
+          </g>
+          <rect x="0" y="38" width="74" height="4" fill="#1349c6" opacity=".7"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="poster-frame reveal" style="--rr:1.6deg">
+      <span class="tape" aria-hidden="true"></span>
+      <svg viewBox="0 0 340 440" role="img" aria-label="Festival poster: a riso sun over overlapping ink hills with halftone rain">
+        <rect width="340" height="440" fill="#f5efe2"/>
+        <circle cx="170" cy="150" r="86" fill="#ffc63d"/>
+        <circle cx="178" cy="144" r="86" fill="#ff5a4e" opacity=".55"/>
+        <g fill="#1349c6" opacity=".8">
+          <circle cx="60" cy="60" r="3"/><circle cx="84" cy="52" r="3"/><circle cx="108" cy="62" r="3"/>
+          <circle cx="250" cy="58" r="3"/><circle cx="274" cy="66" r="3"/><circle cx="296" cy="52" r="3"/>
+          <circle cx="70" cy="86" r="2.4"/><circle cx="94" cy="80" r="2.4"/><circle cx="262" cy="88" r="2.4"/>
+        </g>
+        <path d="M0 300 Q85 240 170 296 T340 292 V440 H0 Z" fill="#63d3ae" opacity=".9"/>
+        <path d="M0 320 Q100 268 190 318 T340 312 V440 H0 Z" fill="#1349c6" opacity=".72"/>
+        <path d="M0 348 Q90 306 180 348 T340 344 V440 H0 Z" fill="#181512"/>
+        <g fill="#f5efe2" opacity=".85">
+          <circle cx="60" cy="386" r="2.4"/><circle cx="84" cy="396" r="2.4"/><circle cx="110" cy="384" r="2.4"/>
+          <circle cx="140" cy="398" r="2.4"/><circle cx="170" cy="386" r="2.4"/><circle cx="200" cy="396" r="2.4"/>
+          <circle cx="230" cy="384" r="2.4"/><circle cx="260" cy="396" r="2.4"/><circle cx="288" cy="386" r="2.4"/>
+        </g>
+        <text x="170" y="424" text-anchor="middle" font-family="Courier New,monospace" font-size="15" letter-spacing="4" fill="#f5efe2">FORECAST: 100% INK</text>
+        <rect x="8" y="8" width="324" height="424" fill="none" stroke="#181512" stroke-width="4"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INK LAYERS ================= -->
+<section class="inklab" id="forecast" aria-label="Animated ink separations">
+  <div class="wrap">
+    <p class="kicker">Today's forecast</p>
+    <h2><span class="misreg" data-text="Watch the layers land">Watch the layers land</span></h2>
+    <p class="lede">Every riso print is a small weather system: drums of translucent ink passing over paper, one colour at a time, never quite agreeing with each other. Watch our four separations cycle — that wobble is the charm.</p>
+    <div class="ink-stage">
+      <canvas id="inkCanvas" width="760" height="480" role="img" aria-label="Animation of four risograph colour separations drifting in and out of registration to form a sun, hills and rain"></canvas>
+      <div>
+        <ul class="ink-legend">
+          <li><span class="swatch" style="background:var(--coral)"></span>Fluorescent coral — the sun</li>
+          <li><span class="swatch" style="background:var(--cobalt)"></span>Cobalt — the hills</li>
+          <li><span class="swatch" style="background:var(--sun)"></span>Sunflower — the halo</li>
+          <li><span class="swatch" style="background:var(--mint)"></span>Mint — the meadow</li>
+        </ul>
+        <p id="sepLabel" aria-live="polite">Pass 1 · Coral</p>
+        <p class="ink-note">The fair's live print wall runs both days — every hour a new two-colour edition, pulled on three vintage SF-9350s rescued from a defunct church bulletin department.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCHEDULE ================= -->
+<section class="schedule" id="schedule" aria-label="Festival schedule">
+  <div class="wrap">
+    <p class="kicker">Workshops · Talks · Live printing</p>
+    <h2><span class="misreg" data-text="The programme">The programme</span></h2>
+
+    <div class="day-tabs" role="tablist" aria-label="Festival days">
+      <button class="day-tab" role="tab" id="tab-sat" aria-selected="true" aria-controls="panel-sat">Sat 13 June</button>
+      <button class="day-tab" role="tab" id="tab-sun" aria-selected="false" aria-controls="panel-sun">Sun 14 June</button>
+    </div>
+
+    <div class="sched active" id="panel-sat" role="tabpanel" aria-labelledby="tab-sat">
+      <div class="row"><span class="time">10:00</span><div><h3>Doors + Zine Breakfast</h3><p>Pastries, swap table opens, first drums warm up.</p></div><span class="tag live">Live</span></div>
+      <div class="row"><span class="time">11:00</span><div><h3>Riso 101: Two Colours, No Fear</h3><p>With Mara Quist. Split-film, overprint charts, and why your misregistration is actually a feature.</p></div><span class="tag ws">Workshop</span></div>
+      <div class="row"><span class="time">13:00</span><div><h3>Talk: Weather Systems of the Small Press</h3><p>Six publishers on surviving distribution storms with nothing but a stapler and optimism.</p></div><span class="tag talk">Talk</span></div>
+      <div class="row"><span class="time">14:30</span><div><h3>Little Inksters: Potato-to-Riso</h3><p>Ages 6+. Carve a stamp, print a cloud, name the cloud.</p></div><span class="tag kids">Kids</span></div>
+      <div class="row"><span class="time">16:00</span><div><h3>Live Print Wall: The 60-Minute Poster</h3><p>Four printers, one theme, one hour, three machines, mild panic.</p></div><span class="tag live">Live</span></div>
+      <div class="row"><span class="time">18:00</span><div><h3>Ink Weather Social</h3><p>Rooftop lemonade + flat-file browsing until the sun goes cobalt.</p></div><span class="tag live">Live</span></div>
+    </div>
+
+    <div class="sched" id="panel-sun" role="tabpanel" aria-labelledby="tab-sun" hidden>
+      <div class="row"><span class="time">10:00</span><div><h3>Doors + Drum Worship</h3><p>Quiet hour to admire the machines before the crowds arrive.</p></div><span class="tag live">Live</span></div>
+      <div class="row"><span class="time">11:00</span><div><h3>Binding Bonanza</h3><p>Pamphlet, coptic and the legendary “fold that one weird zine” station. Bring your aching thumbs.</p></div><span class="tag ws">Workshop</span></div>
+      <div class="row"><span class="time">12:30</span><div><h3>Talk: Fluorescent Pink and Other Moral Obligations</h3><p>A passionate, slightly unhinged defence of the loudest inks ever manufactured.</p></div><span class="tag talk">Talk</span></div>
+      <div class="row"><span class="time">14:00</span><div><h3>Masterclass: Grain, Ghosting &amp; Happy Accidents</h3><p>With Okonkwo &amp; Daughters. Troubleshooting as a spiritual practice.</p></div><span class="tag ws">Workshop</span></div>
+      <div class="row"><span class="time">15:30</span><div><h3>Little Inksters: Weather Report Collage</h3><p>Ages 6+. Cut, glue, and broadcast your own forecast.</p></div><span class="tag kids">Kids</span></div>
+      <div class="row"><span class="time">17:00</span><div><h3>The Great Poster Pull + Closing Raffle</h3><p>Final edition printed live; raffle winners take home the festival poster, drum-bracelet included.</p></div><span class="tag live">Live</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRINTERS ================= -->
+<section class="printers" id="printers" aria-label="Featured printers">
+  <div class="wrap">
+    <p class="kicker">Six studios, six weathers</p>
+    <h2><span class="misreg" data-text="The printers">The printers</span></h2>
+    <div class="printer-grid" id="printerGrid"><!-- built by JS --></div>
+  </div>
+</section>
+
+<!-- ================= VENUE MAP ================= -->
+<section class="venue" id="venue" aria-label="Venue map">
+  <div class="wrap">
+    <p class="kicker">The Old Drum Factory · Portside</p>
+    <h2><span class="misreg" data-text="Find your way around">Find your way around</span></h2>
+    <p class="lede">A former ink factory, obviously. Follow the halftone arrows; if you smell sunflower ink, the print wall is near.</p>
+    <div class="map-shell reveal" style="--rr:-.4deg">
+      <svg class="compass" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="28" fill="none" stroke="#181512" stroke-width="3"/>
+        <path d="M32 8 L38 32 L32 28 L26 32 Z" fill="#ff5a4e" stroke="#181512" stroke-width="2"/>
+        <text x="32" y="20" text-anchor="middle" font-size="9" font-family="Courier New" font-weight="bold">N</text>
+      </svg>
+      <svg viewBox="0 0 900 460" role="img" aria-label="Hand-drawn style map of the venue: main hall with stalls, print wall, workshop barn, talk loft, zine garden and ink café">
+        <rect width="900" height="460" fill="#efe6d2"/>
+        <path d="M0 430 Q220 400 460 428 T900 420 V460 H0 Z" fill="#63d3ae" opacity=".7"/>
+        <path d="M60 60 h300 v200 h-300 z" fill="#ffc63d" stroke="#181512" stroke-width="4" transform="rotate(-1 210 160)"/>
+        <text x="210" y="150" text-anchor="middle" font-family="Courier New" font-weight="bold" font-size="20" transform="rotate(-1 210 160)">MAIN HALL</text>
+        <text x="210" y="176" text-anchor="middle" font-family="Courier New" font-size="13" transform="rotate(-1 210 160)">60 stalls · zine swap</text>
+        <g transform="rotate(1.5 640 130)">
+          <rect x="470" y="60" width="340" height="140" fill="#ff5a4e" stroke="#181512" stroke-width="4"/>
+          <text x="640" y="120" text-anchor="middle" font-family="Courier New" font-weight="bold" font-size="20" fill="#f5efe2">PRINT WALL</text>
+          <text x="640" y="146" text-anchor="middle" font-family="Courier New" font-size="13" fill="#f5efe2">live editions hourly</text>
+        </g>
+        <g transform="rotate(-2 200 340)">
+          <rect x="80" y="290" width="240" height="120" fill="#1349c6" stroke="#181512" stroke-width="4"/>
+          <text x="200" y="345" text-anchor="middle" font-family="Courier New" font-weight="bold" font-size="18" fill="#f5efe2">WORKSHOP BARN</text>
+          <text x="200" y="368" text-anchor="middle" font-family="Courier New" font-size="12" fill="#f5efe2">book ahead!</text>
+        </g>
+        <g transform="rotate(1 530 330)">
+          <rect x="400" y="270" width="220" height="120" fill="#f5efe2" stroke="#181512" stroke-width="4"/>
+          <text x="510" y="325" text-anchor="middle" font-family="Courier New" font-weight="bold" font-size="18">TALK LOFT</text>
+          <text x="510" y="348" text-anchor="middle" font-family="Courier New" font-size="12">stairs creak on purpose</text>
+        </g>
+        <g transform="rotate(-1.5 760 330)">
+          <rect x="670" y="270" width="170" height="120" fill="#63d3ae" stroke="#181512" stroke-width="4"/>
+          <text x="755" y="322" text-anchor="middle" font-family="Courier New" font-weight="bold" font-size="16">ZINE GARDEN</text>
+          <text x="755" y="344" text-anchor="middle" font-family="Courier New" font-size="11">reading lawn</text>
+        </g>
+        <circle cx="415" cy="120" r="34" fill="#f5efe2" stroke="#181512" stroke-width="4"/>
+        <text x="415" y="116" text-anchor="middle" font-family="Courier New" font-weight="bold" font-size="11">INK</text>
+        <text x="415" y="130" text-anchor="middle" font-family="Courier New" font-weight="bold" font-size="11">CAFÉ</text>
+        <g stroke="#181512" stroke-width="3" fill="none" stroke-dasharray="8 7">
+          <path d="M360 160 Q420 210 470 130"/>
+          <path d="M320 260 Q360 290 400 285"/>
+          <path d="M620 270 Q640 300 670 300"/>
+        </g>
+        <g fill="#181512">
+          <path d="M470 130 l-14 -4 6 12 z"/>
+          <path d="M400 285 l-12 -8 2 13 z"/>
+          <path d="M670 300 l-13 -5 4 12 z"/>
+        </g>
+        <text x="30" y="40" font-family="Courier New" font-size="14" letter-spacing="3">THE OLD DRUM FACTORY · 14 PIGMENT LANE, PORTSIDE</text>
+      </svg>
+      <div class="map-legend">
+        <span><i style="background:var(--sun)"></i>Stalls &amp; swap</span>
+        <span><i style="background:var(--coral)"></i>Live printing</span>
+        <span><i style="background:var(--cobalt)"></i>Workshops</span>
+        <span><i style="background:var(--paper)"></i>Talks</span>
+        <span><i style="background:var(--mint)"></i>Chill / reading</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHOP ================= -->
+<section class="shop" id="shop" aria-label="Limited edition poster shop">
+  <div class="wrap">
+    <p class="kicker">Editions of 60 · gone by Sunday</p>
+    <h2><span class="misreg" data-text="The poster shop">The poster shop</span></h2>
+    <p class="lede">Four festival exclusives, printed on site during the fair. Each one numbered, stamped, and slightly smudged with love.</p>
+    <div class="shop-grid" id="shopGrid"><!-- built by JS --></div>
+  </div>
+</section>
+
+<!-- ================= QUOTES ================= -->
+<section class="quotes" aria-label="Attendee quotes">
+  <div class="wrap">
+    <p class="kicker">Postcards from last year</p>
+    <h2><span class="misreg" data-text="What people said">What people said</span></h2>
+    <div class="quote-rail">
+      <blockquote class="postcard reveal" style="--rr:-2deg"><span class="pin" aria-hidden="true"></span>“I came for one zine. I left with eleven, a tote, and coral ink under my fingernails for a week. Ten out of ten.”<cite>— Sam T., repeat offender</cite></blockquote>
+      <blockquote class="postcard reveal" style="--rr:1.4deg"><span class="pin" aria-hidden="true"></span>“The 60-minute poster challenge is the most stressful, delightful thing I have ever watched. Someone's drum jammed and the crowd gasped.”<cite>— Priya N., printer</cite></blockquote>
+      <blockquote class="postcard reveal" style="--rr:-.8deg"><span class="pin" aria-hidden="true"></span>“My kid carved a potato, printed a cloud, and now insists our family forecast is ‘mostly risograph.’ We're fine with it.”<cite>— Devon &amp; June, ages 7 and 41</cite></blockquote>
+      <blockquote class="postcard reveal" style="--rr:1deg"><span class="pin" aria-hidden="true"></span>“Best-smelling festival on earth. It smells like soy ink and ambition.”<cite>— Anonymous, probably a librarian</cite></blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="faq" id="faq" aria-label="Frequently asked questions">
+  <div class="wrap">
+    <p class="kicker">Before you ask</p>
+    <h2><span class="misreg" data-text="Fair questions">Fair questions</span></h2>
+    <details>
+      <summary>Do I need a ticket?</summary>
+      <p class="answer">Entry to the fair is free — just turn up. Workshops have limited seats and can be reserved from Monday 1 June via the newsletter link we'll send out. Live printing sessions are first-come, first-inked.</p>
+    </details>
+    <details>
+      <summary>I've never printed anything. Is this for me?</summary>
+      <p class="answer">Especially for you. Riso 101 assumes zero experience and maximum curiosity. Half our printers started by accidentally wandering into this exact fair in a previous year and never recovering.</p>
+    </details>
+    <details>
+      <summary>Can I bring my own zines to sell or swap?</summary>
+      <p class="answer">Yes! The swap table is open all weekend, free of charge. Ten casual stall spots for small presses are released each morning at 9:30 at the info desk — cash box, honour system, good vibes.</p>
+    </details>
+    <details>
+      <summary>Is the venue accessible?</summary>
+      <p class="answer">Step-free access to the Main Hall, Print Wall and Zine Garden; a lift serves the Talk Loft and Workshop Barn. Accessible toilets on both floors. Quiet hour on Sunday 10:00–11:00. Email access@inkweather.example for anything we've missed.</p>
+    </details>
+    <details>
+      <summary>Why is everything slightly off-register?</summary>
+      <p class="answer">That's not a bug, that's the weather. Riso drums are mechanical, moody, and beautiful; every sheet comes out a little different. We consider perfect registration a missed opportunity.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ================= NEWSLETTER ================= -->
+<section class="news" aria-label="Newsletter signup">
+  <div class="scrap" style="--dur:19s;--dx:40px;--dy:-30px;--r0:5deg;--r1:-6deg;top:12%;right:8%;width:80px;height:80px;border-radius:50%;background:var(--sun);opacity:.5" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">The Ink Report</p>
+    <h2><span class="misreg" data-text="Get the forecast first">Get the forecast first</span></h2>
+    <p class="lede">One email a month: workshop reservations, poster drops, and at least one photo of a very full ink drum. No spam — we're too busy printing.</p>
+    <form class="news-form" id="newsForm" novalidate>
+      <label class="skip" for="email">Email address</label>
+      <input type="email" id="email" name="email" placeholder="you@somewhere.print" required autocomplete="email">
+      <button type="submit">Sign me up</button>
+    </form>
+    <p class="news-ok" id="newsOk" role="status">✓ Stamped! You're on the list. Watch for cobalt envelopes.</p>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site">
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-inner" id="marqueeInner">
+      INK WEATHER 2026 ✳ 13–14 JUNE ✳ THE OLD DRUM FACTORY ✳ FREE ENTRY ✳ BRING TOTES ✳ FORECAST: 100% INK ✳&nbsp;
+    </div>
+  </div>
+  <div class="wrap foot-grid">
+    <div>
+      <p class="foot-logo">INK<br><span>WEATHER</span></p>
+      <p class="foot-note">An independent, volunteer-run print fair. Powered by soy ink, strong tea, and three drums named Brenda, Carol and The Unreliable One.</p>
+    </div>
+    <div>
+      <h4>Visit</h4>
+      <ul>
+        <li>14 Pigment Lane</li>
+        <li>Portside, PO5 2DR</li>
+        <li>Sat &amp; Sun, 10:00–18:00</li>
+        <li><a href="#venue">Venue map</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Elsewhere</h4>
+      <ul>
+        <li><a href="#schedule">Programme</a></li>
+        <li><a href="#printers">Printers</a></li>
+        <li><a href="#shop">Poster shop</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Scroll reveal ---------- */
+var revealables = document.querySelectorAll(".reveal");
+// also mark section children we want to reveal
+document.querySelectorAll("section > .wrap > .kicker, section > .wrap > h2, .postcard, .printer, .item, .map-shell")
+  .forEach(function(el){ el.classList.add("reveal"); });
+revealables = document.querySelectorAll(".reveal");
+if("IntersectionObserver" in window && !reduced){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  },{threshold:.12});
+  revealables.forEach(function(el){ io.observe(el); });
+}else{
+  revealables.forEach(function(el){ el.classList.add("in"); });
+}
+
+/* ---------- Hero title: cycling spot-colour separations ---------- */
+var g1 = document.getElementById("ghost1"),
+    g2 = document.getElementById("ghost2");
+var combos = [
+  {a:"var(--coral)", b:"var(--cobalt)", ax:"5px,4px",  bx:"-5px,-3px"},
+  {a:"var(--cobalt)",b:"var(--sun)",    ax:"-6px,3px", bx:"6px,-4px"},
+  {a:"var(--sun)",   b:"var(--coral)",  ax:"4px,-5px", bx:"-4px,5px"},
+  {a:"var(--mint)",  b:"var(--coral)",  ax:"6px,2px",  bx:"-6px,-2px"}
+];
+var ci = 0;
+function applyCombo(){
+  var c = combos[ci % combos.length];
+  g1.style.color = c.a; g1.style.transform = "translate(" + c.ax + ")";
+  g2.style.color = c.b; g2.style.transform = "translate(" + c.bx + ")";
+  ci++;
+}
+applyCombo();
+if(!reduced){ setInterval(applyCombo, 2600); }
+
+/* ---------- Schedule tabs ---------- */
+var tabs = document.querySelectorAll(".day-tab");
+tabs.forEach(function(tab){
+  tab.addEventListener("click", function(){
+    tabs.forEach(function(t){
+      t.setAttribute("aria-selected", t === tab ? "true" : "false");
+      document.getElementById(t.getAttribute("aria-controls")).hidden = (t !== tab);
+      document.getElementById(t.getAttribute("aria-controls")).classList.toggle("active", t === tab);
+    });
+  });
+});
+
+/* ---------- Printers data + SVG portraits ---------- */
+var printers = [
+  {name:"Mara Quist", studio:"Drum & Drizzle Press", color:"var(--coral)", ink:"Coral", bio:"Two-colour maximalist. Mara prints weather maps of imaginary coastlines and swears her best work happens when the drum is nearly empty."},
+  {name:"Theo Okonkwo", studio:"Okonkwo & Daughters", color:"var(--cobalt)", ink:"Cobalt", bio:"Third-generation printer who treats machine jams as creative prompts. Runs the festival's repair corner, aka 'the drum hospital'."},
+  {name:"June Halftone", studio:"Dot Dot Dot Studio", color:"var(--sun)", ink:"Sunflower", bio:"Makes enormous, extremely cheerful typographic posters. Believes every problem can be solved at 45% screen and 16pt tracking."},
+  {name:"Ravi Chandra", studio:"Monsoon Mini Press", color:"var(--mint)", ink:"Mint", bio:"Publishes pocket-sized poetry zines in editions of 30. Trades them for snacks, bus tickets and other zines. Refuses all money."},
+  {name:"Bea Lindqvist", studio:"Overcast Editions", color:"var(--coral)", ink:"Fluoro", bio:"Prints moody botanical plates that glow faintly under UV. Her fluorescent pink stock sells out within the first hour, every year."},
+  {name:"Sol Marino", studio:"Sunspot Riso Lab", color:"var(--cobalt)", ink:"Cobalt+Sun", bio:"Teaches the festival's loudest workshop and runs the 60-minute poster challenge. Once printed an entire comic during a power cut. By candlelight. Allegedly."}
+];
+function portraitSVG(p, i){
+  var faces = [
+    // sun face
+    '<circle cx="90" cy="86" r="42" fill="COL" opacity=".9"/><circle cx="96" cy="80" r="42" fill="#181512" opacity=".12"/><circle cx="76" cy="80" r="5" fill="#181512"/><circle cx="104" cy="80" r="5" fill="#181512"/><path d="M76 100 q14 12 28 0" stroke="#181512" stroke-width="4" fill="none" stroke-linecap="round"/>',
+    // cloud face
+    '<path d="M45 100 a22 22 0 0 1 20-30 a26 26 0 0 1 50 4 a20 20 0 0 1 14 26 z" fill="COL" opacity=".92"/><circle cx="78" cy="86" r="4.5" fill="#181512"/><circle cx="102" cy="86" r="4.5" fill="#181512"/><path d="M80 98 q10 8 20 0" stroke="#181512" stroke-width="4" fill="none" stroke-linecap="round"/>',
+    // star face
+    '<path d="M90 40 l12 32 34 3 -26 22 8 33 -28 -18 -28 18 8 -33 -26 -22 34 -3 z" fill="COL" opacity=".9"/><circle cx="80" cy="84" r="4.5" fill="#181512"/><circle cx="102" cy="84" r="4.5" fill="#181512"/><path d="M82 98 q9 8 18 0" stroke="#181512" stroke-width="4" fill="none" stroke-linecap="round"/>',
+    // raindrop face
+    '<path d="M90 42 q34 44 34 66 a34 34 0 0 1 -68 0 q0-22 34-66z" fill="COL" opacity=".92"/><circle cx="78" cy="102" r="4.5" fill="#181512"/><circle cx="102" cy="102" r="4.5" fill="#181512"/><path d="M80 116 q10 8 20 0" stroke="#181512" stroke-width="4" fill="none" stroke-linecap="round"/>',
+    // moon face
+    '<circle cx="90" cy="86" r="44" fill="COL" opacity=".92"/><circle cx="104" cy="78" r="34" fill="#efe6d2" opacity=".55"/><circle cx="74" cy="84" r="4.5" fill="#181512"/><path d="M70 102 q12 10 24 2" stroke="#181512" stroke-width="4" fill="none" stroke-linecap="round"/>',
+    // lightning face
+    '<path d="M96 38 l-30 52 h22 l-14 46 44 -60 h-24 z" fill="COL" opacity=".94"/><circle cx="84" cy="86" r="4" fill="#181512"/><circle cx="102" cy="90" r="4" fill="#181512"/>'
+  ];
+  var rot = [-2,1.5,-1,2,-1.5,1][i];
+  return '<svg viewBox="0 0 180 170" role="img" aria-label="Playful riso-style portrait of '+p.name+'">' +
+    '<rect width="180" height="170" fill="#efe6d2"/>' +
+    '<g fill="#181512" opacity=".18"><circle cx="24" cy="24" r="2"/><circle cx="40" cy="24" r="2"/><circle cx="56" cy="24" r="2"/><circle cx="24" cy="40" r="2"/><circle cx="40" cy="40" r="2"/><circle cx="150" cy="140" r="2"/><circle cx="134" cy="140" r="2"/><circle cx="150" cy="124" r="2"/></g>' +
+    '<g transform="rotate('+rot+' 90 85)">'+faces[i].replace(/COL/g, p.color)+'</g>' +
+    '<rect x="4" y="4" width="172" height="162" fill="none" stroke="#181512" stroke-width="3"/>' +
+  '</svg>';
+}
+var grid = document.getElementById("printerGrid");
+printers.forEach(function(p,i){
+  var art = document.createElement("article");
+  art.className = "printer";
+  art.innerHTML =
+    '<span class="chip" style="background:'+p.color+'" aria-hidden="true">'+p.ink+'</span>' +
+    '<div class="portrait">'+portraitSVG(p,i)+'</div>' +
+    '<h3>'+p.name+'</h3>' +
+    '<p class="studio">'+p.studio+'</p>' +
+    '<p>'+p.bio+'</p>';
+  grid.appendChild(art);
+});
+
+/* ---------- Shop ---------- */
+var items = [
+  {title:"Forecast: 100% Ink", ed:"Ed. of 60 · 3 colours", price:"£28", badge:"Festival poster",
+   art:'<svg viewBox="0 0 210 280" aria-hidden="true"><rect width="210" height="280" fill="#f5efe2"/><circle cx="105" cy="95" r="55" fill="#ffc63d"/><circle cx="112" cy="89" r="55" fill="#ff5a4e" opacity=".5"/><path d="M0 190 Q60 150 105 188 T210 184 V280 H0Z" fill="#1349c6" opacity=".8"/><path d="M0 210 Q70 178 120 212 T210 206 V280 H0Z" fill="#181512"/><text x="105" y="256" text-anchor="middle" font-family="Courier New" font-size="13" fill="#f5efe2" letter-spacing="3">INK WEATHER</text></svg>'},
+  {title:"Brenda, Carol &amp; The Unreliable One", ed:"Ed. of 60 · 2 colours", price:"£22", badge:"Machine portrait",
+   art:'<svg viewBox="0 0 210 280" aria-hidden="true"><rect width="210" height="280" fill="#f5efe2"/><rect x="30" y="70" width="150" height="90" rx="10" fill="#63d3ae" stroke="#181512" stroke-width="4" transform="rotate(-2 105 115)"/><circle cx="70" cy="115" r="22" fill="#ff5a4e" stroke="#181512" stroke-width="4"/><circle cx="140" cy="115" r="22" fill="#1349c6" stroke="#181512" stroke-width="4"/><rect x="55" y="175" width="100" height="10" fill="#181512"/><text x="105" y="225" text-anchor="middle" font-family="Courier New" font-size="12" letter-spacing="2">THE DRUMS</text></svg>'},
+  {title:"Mostly Risograph", ed:"Ed. of 60 · 4 colours", price:"£26", badge:"Fan favourite",
+   art:'<svg viewBox="0 0 210 280" aria-hidden="true"><rect width="210" height="280" fill="#f5efe2"/><g transform="rotate(-3 105 140)"><rect x="35" y="60" width="140" height="42" fill="#ff5a4e"/><rect x="35" y="112" width="140" height="42" fill="#ffc63d"/><rect x="35" y="164" width="140" height="42" fill="#63d3ae"/></g><text x="105" y="88" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="19" fill="#f5efe2">MOSTLY</text><text x="105" y="140" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="15" fill="#181512">RISOGRAPH</text><text x="105" y="192" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="17" fill="#181512">FOREVER</text></svg>'},
+  {title:"Halftone Rain Study No.7", ed:"Ed. of 60 · 2 colours", price:"£20", badge:"Last few",
+   art:'<svg viewBox="0 0 210 280" aria-hidden="true"><rect width="210" height="280" fill="#f5efe2"/><defs><pattern id="ht" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.6" fill="#1349c6"/></pattern></defs><path d="M40 110 a30 30 0 0 1 26-40 a34 34 0 0 1 66 6 a26 26 0 0 1 18 34 z" fill="url(#ht)" stroke="#181512" stroke-width="3"/><g stroke="#ff5a4e" stroke-width="5" stroke-linecap="round"><line x1="60" y1="140" x2="52" y2="180"/><line x1="95" y1="140" x2="87" y2="196"/><line x1="130" y1="140" x2="122" y2="180"/><line x1="160" y1="136" x2="152" y2="170"/></g><text x="105" y="236" text-anchor="middle" font-family="Courier New" font-size="12" letter-spacing="2">STUDY NO.7</text></svg>'}
+];
+var shopGrid = document.getElementById("shopGrid");
+items.forEach(function(it){
+  var el = document.createElement("article");
+  el.className = "item";
+  el.innerHTML =
+    '<span class="ed-badge">'+it.badge+'</span>' +
+    '<div class="art">'+it.art+'</div>' +
+    '<h3>'+it.title+'</h3>' +
+    '<p class="ed">'+it.ed+'</p>' +
+    '<p class="price">'+it.price+'</p>' +
+    '<button type="button" aria-label="Add '+it.title.replace(/&amp;/g,"and")+' to tote">Add to tote</button>';
+  el.querySelector("button").addEventListener("click", function(){
+    this.textContent = "✓ In the tote!";
+    this.classList.add("added");
+    this.disabled = true;
+  });
+  shopGrid.appendChild(el);
+});
+
+/* ---------- Newsletter ---------- */
+document.getElementById("newsForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  var email = document.getElementById("email");
+  if(!email.value || email.value.indexOf("@") < 1){
+    email.focus();
+    email.style.boxShadow = "5px 5px 0 var(--cobalt)";
+    return;
+  }
+  document.getElementById("newsOk").classList.add("show");
+  this.reset();
+});
+
+/* ---------- Canvas ink-layer animation ---------- */
+var canvas = document.getElementById("inkCanvas"),
+    ctx = canvas.getContext("2d"),
+    W = canvas.width, H = canvas.height;
+var passes = [
+  {name:"Pass 1 · Coral",     color:"rgba(255,90,78,0.85)"},
+  {name:"Pass 2 · Sunflower", color:"rgba(255,198,61,0.85)"},
+  {name:"Pass 3 · Mint",      color:"rgba(99,211,174,0.85)"},
+  {name:"Pass 4 · Cobalt",    color:"rgba(19,73,198,0.8)"},
+  {name:"All layers · weather", color:null}
+];
+var sepLabel = document.getElementById("sepLabel");
+var t = 0, passIdx = 0, passTimer = 0;
+function wobble(seed, amp){
+  return Math.sin(t*0.9 + seed*2.1)*amp + Math.cos(t*0.5 + seed)*amp*0.5;
+}
+function drawLayer(idx, ox, oy, alpha){
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(ox, oy);
+  if(idx === 0){ // coral sun
+    ctx.fillStyle = passes[0].color;
+    ctx.beginPath(); ctx.arc(W*0.62, H*0.34, 78, 0, Math.PI*2); ctx.fill();
+  } else if(idx === 1){ // sunflower halo ring of dots
+    ctx.fillStyle = passes[1].color;
+    for(var a=0; a<24; a++){
+      var ang = a/24*Math.PI*2;
+      ctx.beginPath();
+      ctx.arc(W*0.62 + Math.cos(ang)*112, H*0.34 + Math.sin(ang)*112, 7, 0, Math.PI*2);
+      ctx.fill();
+    }
+  } else if(idx === 2){ // mint meadow
+    ctx.fillStyle = passes[2].color;
+    ctx.beginPath();
+    ctx.moveTo(-20, H*0.78);
+    ctx.quadraticCurveTo(W*0.3, H*0.6, W*0.55, H*0.76);
+    ctx.quadraticCurveTo(W*0.8, H*0.9, W+20, H*0.74);
+    ctx.lineTo(W+20, H+20); ctx.lineTo(-20, H+20); ctx.closePath(); ctx.fill();
+  } else if(idx === 3){ // cobalt hills + rain
+    ctx.fillStyle = passes[3].color;
+    ctx.beginPath();
+    ctx.moveTo(-20, H*0.86);
+    ctx.quadraticCurveTo(W*0.25, H*0.68, W*0.5, H*0.85);
+    ctx.quadraticCurveTo(W*0.75, H*0.98, W+20, H*0.84);
+    ctx.lineTo(W+20, H+20); ctx.lineTo(-20, H+20); ctx.closePath(); ctx.fill();
+    for(var r=0; r<9; r++){
+      var rx = W*0.12 + r*W*0.09,
+          ry = H*0.12 + ((r*53)%40);
+      ctx.fillRect(rx, ry + Math.sin(t*2+r)*6, 4, 26);
+    }
+  }
+  ctx.restore();
+}
+function frame(){
+  t += 0.016;
+  passTimer += 1;
+  if(passTimer > 150){ passTimer = 0; passIdx = (passIdx+1) % passes.length; sepLabel.textContent = passes[passIdx].name; }
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = "#f5efe2"; ctx.fillRect(0,0,W,H);
+  // paper dots
+  ctx.fillStyle = "rgba(24,21,18,.08)";
+  for(var d=0; d<40; d++){ ctx.fillRect((d*97)%W, (d*61)%H, 2, 2); }
+  ctx.globalCompositeOperation = "multiply";
+  var mis = 14;
+  if(passIdx === 4){
+    // all layers, drifting into and out of register together
+    var settle = (Math.sin(t*0.4)+1)/2; // 0..1
+    for(var i=0;i<4;i++){
+      drawLayer(i, wobble(i+1, mis*(1-settle*0.85)), wobble(i+3, mis*0.7*(1-settle*0.85)), 1);
+    }
+  } else {
+    // settled previous layers + wobbling current layer
+    for(var j=0;j<passIdx;j++){ drawLayer(j, 0, 0, 1); }
+    drawLayer(passIdx, wobble(passIdx+1, mis), wobble(passIdx+4, mis*0.7), 0.95);
+  }
+  ctx.globalCompositeOperation = "source-over";
+  if(!reduced){ requestAnimationFrame(frame); }
+}
+frame();
+if(reduced){ // draw a settled composite once
+  passIdx = 4; sepLabel.textContent = passes[4].name;
+}
+
+/* ---------- Marquee duplication for seamless loop ---------- */
+var mq = document.getElementById("marqueeInner");
+mq.innerHTML += mq.innerHTML;
+})();
+</script>
+</body>
+</html>

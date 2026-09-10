@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INK WEATHER — Print Fair & Risograph Festival 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--paper:#F5F0E8;--paper-dark:#E8E0D0;--coral:#FF6B6B;--cobalt:#1B4F8A;
+--yellow:#FFD23F;--mint:#7ED4A6;--ink:#1A1A1A;--magenta:#E84393;
+--coral-alpha:rgba(255,107,107,.45);--cobalt-alpha:rgba(27,79,138,.45);
+--yellow-alpha:rgba(255,210,63,.45);--mint-alpha:rgba(126,212,166,.45);
+--serif:'DM Serif Display',Georgia,serif;--sans:'Space Grotesk',system-ui,sans-serif;
+--mono:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow-x:hidden;
+line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* GRAIN OVERLAY */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.035;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+background-size:200px 200px}
+
+/* SKIP LINK */
+.skip-link{position:absolute;top:-100px;left:0;background:var(--ink);color:var(--paper);
+padding:8px 16px;z-index:10000;font-family:var(--mono);font-size:.85rem;text-decoration:none}
+.skip-link:focus{top:0}
+
+/* SELECTION */
+::selection{background:var(--yellow);color:var(--ink)}
+
+/* TYPOGRAPHY */
+h1,h2,h3,h4{font-family:var(--serif);font-weight:400;line-height:1.1}
+h1{font-size:clamp(3rem,10vw,9rem);letter-spacing:-.03em}
+h2{font-size:clamp(2rem,5vw,4.5rem);letter-spacing:-.02em}
+h3{font-size:clamp(1.3rem,3vw,2rem)}
+h4{font-size:clamp(1rem,2vw,1.4rem)}
+.display-italic{font-style:italic}
+
+/* LAYOUT */
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section{padding:clamp(60px,8vw,120px) 0;position:relative}
+
+/* RISO INK BLEED EFFECT */
+.ink-bleed{position:relative}
+.ink-bleed::before{content:attr(data-text);position:absolute;top:2px;left:2px;
+color:var(--coral-alpha);z-index:-1;mix-blend-mode:multiply;pointer-events:none}
+.ink-bleed::after{content:attr(data-text);position:absolute;top:-1px;left:-1px;
+color:var(--cobalt-alpha);z-index:-1;mix-blend-mode:multiply;pointer-events:none}
+
+/* REGISTRATION OFFSET HOVER */
+.register-offset{transition:transform .3s ease}
+.register-offset:hover{text-shadow:2px 0 var(--coral),-1.5px 1px var(--cobalt),1px -1.5px var(--yellow)}
+
+/* COLLAGE EDGE */
+.collage-edge{position:relative}
+.collage-edge::before{content:'';position:absolute;inset:-4px;
+background:var(--paper);z-index:-1;
+clip-path:polygon(2% 0%,98% 1%,100% 3%,99% 98%,1% 100%,0% 97%,1% 2%)}
+
+/* HALFTONE PATTERN */
+.halftone-bg{background-image:radial-gradient(circle,var(--ink) .8px,transparent .8px);
+background-size:8px 8px;opacity:.06}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 24px;
+display:flex;justify-content:space-between;align-items:center;
+background:var(--paper);border-bottom:2px solid var(--ink);
+transform:translateY(-100%);animation:navSlide .6s .5s forwards}
+@keyframes navSlide{to{transform:translateY(0)}}
+nav .logo{font-family:var(--mono);font-size:.85rem;font-weight:700;letter-spacing:.05em;
+text-transform:uppercase;display:flex;align-items:center;gap:8px}
+nav .logo .ink-dot{width:10px;height:10px;background:var(--coral);border-radius:50%;
+display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+nav ul{list-style:none;display:flex;gap:20px;flex-wrap:wrap}
+nav a{font-family:var(--mono);font-size:.75rem;text-decoration:none;color:var(--ink);
+text-transform:uppercase;letter-spacing:.05em;transition:color .2s}
+nav a:hover{color:var(--coral)}
+nav a:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:8px}
+.nav-toggle span{display:block;width:22px;height:2px;background:var(--ink);margin:5px 0;
+transition:transform .3s}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+align-items:center;text-align:center;padding:80px 24px;position:relative;overflow:hidden}
+.hero-poster{position:relative;max-width:900px;width:100%;padding:40px;
+border:3px solid var(--ink);background:var(--paper)}
+.hero-poster::before{content:'';position:absolute;inset:8px;border:1.5px solid var(--ink);
+opacity:.3;pointer-events:none}
+.hero-date{font-family:var(--mono);font-size:clamp(.7rem,1.5vw,.95rem);
+text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px;
+padding:6px 14px;border:1.5px solid var(--ink);display:inline-block;
+background:var(--yellow);color:var(--ink)}
+.hero h1{margin:16px 0;position:relative}
+.hero h1 .line{display:block;overflow:hidden}
+.hero h1 .line span{display:inline-block;animation:heroReveal .8s ease forwards;
+opacity:0;transform:translateY(100%)}
+.hero h1 .line:nth-child(2) span{animation-delay:.15s}
+.hero h1 .line:nth-child(3) span{animation-delay:.3s}
+@keyframes heroReveal{to{opacity:1;transform:translateY(0)}}
+.hero-sub{font-family:var(--mono);font-size:clamp(.75rem,1.5vw,1rem);
+margin-top:20px;letter-spacing:.08em;text-transform:uppercase;
+color:var(--ink);opacity:.8}
+.hero-location{font-family:var(--serif);font-size:clamp(1.1rem,2.5vw,1.6rem);
+margin-top:12px;font-style:italic}
+
+/* COLOR SEPARATION LAYERS IN HERO */
+.color-sep{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:0}
+.color-sep.active{animation:sepCycle 8s infinite}
+.color-sep.coral{background:var(--coral-alpha);transform:translate(3px,2px)}
+.color-sep.cobalt{background:var(--cobalt-alpha);transform:translate(-2px,3px)}
+.color-sep.yellow{background:var(--yellow-alpha);transform:translate(2px,-2px)}
+@keyframes sepCycle{0%,30%{opacity:0}35%,65%{opacity:.7}70%,100%{opacity:0}}
+
+/* DRIFTING PAPER SCRAPS */
+.scrap{position:absolute;pointer-events:none;z-index:2;opacity:.15;
+animation:drift linear infinite}
+.scrap:nth-child(1){width:60px;height:80px;background:var(--coral);top:10%;left:5%;
+animation-duration:18s;transform:rotate(12deg)}
+.scrap:nth-child(2){width:45px;height:55px;background:var(--cobalt);top:60%;right:8%;
+animation-duration:22s;animation-delay:-5s;transform:rotate(-8deg)}
+.scrap:nth-child(3){width:50px;height:70px;background:var(--yellow);bottom:15%;left:12%;
+animation-duration:20s;animation-delay:-10s;transform:rotate(20deg)}
+.scrap:nth-child(4){width:40px;height:50px;background:var(--mint);top:30%;right:15%;
+animation-duration:25s;animation-delay:-3s;transform:rotate(-15deg)}
+.scrap:nth-child(5){width:35px;height:45px;background:var(--magenta);bottom:25%;right:20%;
+animation-duration:19s;animation-delay:-8s;transform:rotate(25deg)}
+@keyframes drift{
+0%{transform:translateY(0) rotate(0deg)}
+25%{transform:translateY(-30px) rotate(5deg)}
+50%{transform:translateY(10px) rotate(-3deg)}
+75%{transform:translateY(-20px) rotate(4deg)}
+100%{transform:translateY(0) rotate(0deg)}}
+
+/* INK ANIMATION CANVAS */
+.ink-canvas-wrap{width:100%;height:clamp(200px,30vw,400px);position:relative;overflow:hidden;
+border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);background:var(--paper)}
+.ink-canvas-wrap canvas{width:100%;height:100%;display:block}
+.ink-canvas-wrap::before{content:'INK LAYER SEPARATIONS — WATCH THE PRESS';
+position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:.65rem;
+letter-spacing:.1em;text-transform:uppercase;color:var(--ink);opacity:.5;z-index:2}
+
+/* PRINTER ROLLER ANIMATION */
+.roller{display:flex;align-items:center;gap:12px;margin:40px 0;justify-content:center}
+.roller-bar{width:120px;height:8px;background:var(--ink);border-radius:4px;position:relative;
+overflow:hidden}
+.roller-bar::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(
+90deg,transparent,transparent 8px,var(--coral) 8px,var(--coral) 16px);
+animation:rollerMove 1s linear infinite}
+@keyframes rollerMove{to{transform:translateX(-16px)}}
+.roller-text{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em}
+
+/* SCHEDULE */
+.schedule-grid{display:grid;gap:0;margin-top:40px}
+.schedule-day{border-bottom:2px solid var(--ink);overflow:hidden}
+.schedule-day-header{display:grid;grid-template-columns:200px 1fr;align-items:center;
+padding:20px 0;background:var(--ink);color:var(--paper);cursor:pointer;
+transition:background .3s}
+.schedule-day-header:hover{background:#333}
+.schedule-day-header h3{color:var(--yellow);margin:0}
+.schedule-day-header .day-label{font-family:var(--mono);font-size:.75rem;
+text-transform:uppercase;letter-spacing:.1em;color:var(--mint)}
+.schedule-items{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.schedule-day.open .schedule-items{max-height:2000px}
+.schedule-item{display:grid;grid-template-columns:120px 1fr;gap:20px;
+padding:16px 0;border-bottom:1px solid rgba(26,26,26,.15);align-items:start}
+.schedule-item:last-child{border-bottom:2px solid var(--ink)}
+.schedule-time{font-family:var(--mono);font-size:.8rem;color:var(--coral);
+padding-top:2px;white-space:nowrap}
+.schedule-info h4{font-family:var(--sans);font-weight:600;font-size:1rem;margin-bottom:4px}
+.schedule-info p{font-size:.85rem;opacity:.7;margin:0}
+.schedule-tag{display:inline-block;font-family:var(--mono);font-size:.6rem;
+padding:2px 8px;border:1px solid var(--ink);text-transform:uppercase;
+letter-spacing:.08em;margin-top:6px;border-radius:2px}
+.tag-workshop{background:var(--mint);border-color:var(--ink)}
+.tag-talk{background:var(--yellow);border-color:var(--ink)}
+.tag-screening{background:var(--cobalt);color:var(--paper);border-color:var(--ink)}
+.tag-market{background:var(--coral);border-color:var(--ink)}
+
+/* PRINTERS */
+.printers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+gap:32px;margin-top:48px}
+.printer-card{border:2px solid var(--ink);padding:24px;position:relative;
+background:var(--paper);transition:transform .3s,box-shadow .3s;overflow:hidden}
+.printer-card:hover{transform:translate(-2px,-2px);
+box-shadow:4px 4px 0 var(--ink)}
+.printer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;
+background:var(--coral)}
+.printer-card:nth-child(2)::before{background:var(--cobalt)}
+.printer-card:nth-child(3)::before{background:var(--yellow)}
+.printer-card:nth-child(4)::before{background:var(--mint)}
+.printer-card:nth-child(5)::before{background:var(--magenta)}
+.printer-card:nth-child(6)::before{background:var(--coral)}
+.printer-avatar{width:80px;height:80px;border-radius:50%;border:2px solid var(--ink);
+overflow:hidden;margin-bottom:16px;position:relative;background:var(--paper-dark)}
+.printer-avatar svg{width:100%;height:100%}
+.printer-card h4{margin-bottom:4px;font-family:var(--serif)}
+.printer-card .printer-role{font-family:var(--mono);font-size:.7rem;
+text-transform:uppercase;letter-spacing:.08em;color:var(--coral);margin-bottom:10px}
+.printer-card p{font-size:.9rem;line-height:1.5;opacity:.8}
+
+/* VENUE MAP */
+.venue-map{width:100%;aspect-ratio:16/9;border:2px solid var(--ink);background:var(--paper);
+position:relative;overflow:hidden;margin-top:40px}
+.venue-map svg{width:100%;height:100%}
+.map-label{font-family:var(--mono);font-size:.65rem;fill:var(--ink);text-transform:uppercase;
+letter-spacing:.05em}
+
+/* POSTER SHOP */
+.poster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+gap:24px;margin-top:40px}
+.poster-item{border:2px solid var(--ink);position:relative;overflow:hidden;
+transition:transform .3s}
+.poster-item:hover{transform:scale(1.02)}
+.poster-thumb{aspect-ratio:3/4;position:relative;overflow:hidden}
+.poster-thumb svg{width:100%;height:100%}
+.poster-info{padding:12px;background:var(--paper)}
+.poster-info h4{font-family:var(--sans);font-weight:600;font-size:.9rem;margin-bottom:4px}
+.poster-info .poster-price{font-family:var(--mono);font-size:.85rem;color:var(--coral);font-weight:700}
+.poster-info .poster-edition{font-family:var(--mono);font-size:.65rem;opacity:.5;margin-top:4px}
+.poster-badge{position:absolute;top:8px;right:8px;background:var(--coral);color:var(--ink);
+font-family:var(--mono);font-size:.6rem;padding:3px 8px;text-transform:uppercase;
+letter-spacing:.08em;border:1px solid var(--ink);font-weight:700;z-index:2}
+
+/* QUOTES */
+.quotes-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+gap:32px;margin-top:48px}
+.quote-card{position:relative;padding:32px 24px 24px;border:2px solid var(--ink);
+background:var(--paper)}
+.quote-card::before{content:'\201C';position:absolute;top:-10px;left:16px;
+font-family:var(--serif);font-size:4rem;color:var(--coral);line-height:1;
+opacity:.6}
+.quote-card p{font-family:var(--serif);font-size:1.1rem;font-style:italic;
+line-height:1.5;margin-bottom:16px;position:relative;z-index:1}
+.quote-card .quote-attr{font-family:var(--mono);font-size:.7rem;
+text-transform:uppercase;letter-spacing:.08em;opacity:.6}
+.quote-card:nth-child(2){background:var(--yellow);border-color:var(--ink)}
+.quote-card:nth-child(3){background:var(--mint);border-color:var(--ink)}
+
+/* FAQ */
+.faq-list{max-width:720px;margin:48px auto 0}
+.faq-item{border-bottom:1.5px solid var(--ink)}
+.faq-q{display:flex;justify-content:space-between;align-items:center;
+padding:20px 0;cursor:pointer;gap:16px;transition:color .2s}
+.faq-q:hover{color:var(--coral)}
+.faq-q h4{font-family:var(--sans);font-weight:600;font-size:1rem;margin:0;flex:1}
+.faq-q .faq-icon{width:24px;height:24px;border:1.5px solid var(--ink);border-radius:50%;
+display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+font-size:.8rem;flex-shrink:0;transition:transform .3s,background .3s}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--coral)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease}
+.faq-item.open .faq-a{max-height:400px;padding-bottom:20px}
+.faq-a p{font-size:.9rem;line-height:1.6;opacity:.75}
+
+/* NEWSLETTER */
+.newsletter{background:var(--ink);color:var(--paper);padding:clamp(40px,6vw,80px) 24px;
+text-align:center}
+.newsletter h2{color:var(--yellow);margin-bottom:8px}
+.newsletter p{font-size:.9rem;opacity:.7;margin-bottom:24px;max-width:500px;margin-left:auto;margin-right:auto}
+.newsletter-form{display:flex;gap:0;max-width:480px;margin:0 auto;border:2px solid var(--paper)}
+.newsletter-form input{flex:1;padding:14px 16px;background:transparent;border:none;
+color:var(--paper);font-family:var(--mono);font-size:.85rem;outline:none}
+.newsletter-form input::placeholder{color:rgba(255,255,255,.4)}
+.newsletter-form button{padding:14px 24px;background:var(--coral);border:2px solid var(--paper);
+border-left:none;color:var(--ink);font-family:var(--mono);font-size:.8rem;
+text-transform:uppercase;letter-spacing:.08em;cursor:pointer;font-weight:700;
+transition:background .2s}
+.newsletter-form button:hover{background:var(--yellow)}
+.newsletter-form button:focus-visible{outline:2px solid var(--yellow);outline-offset:-2px}
+
+/* FOOTER */
+footer{background:var(--paper);border-top:2px solid var(--ink);padding:60px 24px 30px}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:40px;max-width:1200px;margin:0 auto}
+.footer-col h5{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;
+letter-spacing:.12em;margin-bottom:16px;color:var(--coral)}
+.footer-col a{display:block;font-size:.85rem;color:var(--ink);text-decoration:none;
+padding:4px 0;transition:color .2s;opacity:.7}
+.footer-col a:hover{opacity:1;color:var(--cobalt)}
+.footer-col p{font-size:.85rem;opacity:.7;line-height:1.5}
+.footer-bottom{max-width:1200px;margin:40px auto 0;padding-top:20px;
+border-top:1px solid rgba(26,26,26,.15);display:flex;justify-content:space-between;
+align-items:center;flex-wrap:wrap;gap:16px}
+.footer-bottom p{font-family:var(--mono);font-size:.65rem;opacity:.4;text-transform:uppercase;letter-spacing:.08em}
+.footer-bottom .footer-marks{display:flex;gap:12px}
+.footer-bottom .footer-marks span{width:20px;height:20px;border-radius:50%;
+display:block;border:1.5px solid var(--ink)}
+.footer-bottom .footer-marks span:nth-child(1){background:var(--coral)}
+.footer-bottom .footer-marks span:nth-child(2){background:var(--cobalt)}
+.footer-bottom .footer-marks span:nth-child(3){background:var(--yellow)}
+.footer-bottom .footer-marks span:nth-child(4){background:var(--mint)}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* SECTION TITLES */
+.section-title{margin-bottom:8px;position:relative;display:inline-block}
+.section-title .underline{display:block;height:4px;background:var(--coral);
+margin-top:8px;width:100%}
+.section-title .underline::after{content:'';position:absolute;bottom:4px;left:2px;
+width:80%;height:3px;background:var(--cobalt-alpha);mix-blend-mode:multiply}
+.section-label{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;
+letter-spacing:.15em;opacity:.5;margin-bottom:8px;display:block}
+
+/* BUTTONS */
+.btn{display:inline-block;padding:14px 32px;background:var(--ink);color:var(--paper);
+font-family:var(--mono);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;
+text-decoration:none;border:2px solid var(--ink);cursor:pointer;transition:all .2s;
+position:relative;overflow:hidden}
+.btn:hover{background:var(--coral);color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+.btn-outline{background:transparent;color:var(--ink)}
+.btn-outline:hover{background:var(--ink);color:var(--paper)}
+
+/* TICKER */
+.ticker{overflow:hidden;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+padding:12px 0;background:var(--yellow)}
+.ticker-track{display:flex;gap:48px;animation:tickerScroll 30s linear infinite;white-space:nowrap;
+width:max-content}
+.ticker-track span{font-family:var(--mono);font-size:.8rem;text-transform:uppercase;
+letter-spacing:.1em;font-weight:700}
+.ticker-track .dot{color:var(--coral)}
+@keyframes tickerScroll{to{transform:translateX(-50%)}}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);
+flex-direction:column;padding:20px 24px;border-bottom:2px solid var(--ink);gap:12px}
+nav ul.open{display:flex}
+.nav-toggle{display:block}
+.schedule-day-header{grid-template-columns:1fr;text-align:center}
+.schedule-item{grid-template-columns:1fr;gap:4px}
+.schedule-time{margin-bottom:4px}
+.hero-poster{padding:24px}
+.printers-grid{grid-template-columns:1fr}
+.poster-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.quotes-wrap{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr 1fr}
+.newsletter-form{flex-direction:column;border-left:2px solid var(--paper)}
+.newsletter-form button{border-left:2px solid var(--paper);border-top:none}
+}
+
+/* ACCESSIBILITY */
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+transition-duration:.01ms!important}
+.ticker-track{animation:none;width:auto}
+.scrap{animation:none;position:relative;display:inline-block;margin:4px}
+}
+
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+
+/* STAMP OVERLAY */
+.stamp{position:absolute;top:20px;right:20px;width:70px;height:70px;
+border:3px solid var(--coral);border-radius:50%;display:flex;align-items:center;
+justify-content:center;transform:rotate(-15deg);opacity:.5}
+.stamp span{font-family:var(--mono);font-size:.5rem;text-transform:uppercase;
+text-align:center;line-height:1.2;color:var(--coral)}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- NAV -->
+<nav role="navigation" aria-label="Main navigation">
+<div class="logo"><span class="ink-dot"></span>INK WEATHER</div>
+<button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" onclick="this.nextElementSibling.classList.toggle('open');this.setAttribute('aria-expanded',this.nextElementSibling.classList.contains('open'))">
+<span></span><span></span><span></span>
+</button>
+<ul role="menubar">
+<li role="none"><a href="#schedule" role="menuitem">Schedule</a></li>
+<li role="none"><a href="#printers" role="menuitem">Printers</a></li>
+<li role="none"><a href="#venue" role="menuitem">Venue</a></li>
+<li role="none"><a href="#shop" role="menuitem">Shop</a></li>
+<li role="none"><a href="#faq" role="menuitem">FAQ</a></li>
+</ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+<div class="scrap"></div><div class="scrap"></div><div class="scrap"></div>
+<div class="scrap"></div><div class="scrap"></div>
+
+<div class="hero-poster">
+<div class="color-sep coral active"></div>
+<div class="color-sep cobalt" style="animation-delay:2.5s"></div>
+<div class="color-sep yellow" style="animation-delay:5s"></div>
+<div class="stamp"><span>Print<br>Fair<br>2025</span></div>
+
+<div class="hero-date">12 — 14 September 2025</div>
+
+<h1>
+<span class="line"><span>INK</span></span>
+<span class="line"><span class="display-italic">Wea</span><span>ther</span></span>
+</h1>
+
+<p class="hero-sub">A joyful independent print fair &amp; risograph studio festival</p>
+<p class="hero-location">The Printworks, Manchester, UK</p>
+
+<div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<a href="#schedule" class="btn">View Schedule</a>
+<a href="#shop" class="btn btn-outline">Poster Shop</a>
+</div>
+</div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+<div class="ticker-track">
+<span>Risograph Printing<span class="dot">●</span></span>
+<span>Screen Printing<span class="dot">●</span></span>
+<span>Letterpress<span class="dot">●</span></span>
+<span>Collage Workshops<span class="dot">●</span></span>
+<span>Zine Making<span class="dot">●</span></span>
+<span>Typography Talks<span class="dot">●</span></span>
+<span>Poster Design<span class="dot">●</span></span>
+<span>Studio Visits<span class="dot">●</span></span>
+<span>Risograph Printing<span class="dot">●</span></span>
+<span>Screen Printing<span class="dot">●</span></span>
+<span>Letterpress<span class="dot">●</span></span>
+<span>Collage Workshops<span class="dot">●</span></span>
+<span>Zine Making<span class="dot">●</span></span>
+<span>Typography Talks<span class="dot">●</span></span>
+<span>Poster Design<span class="dot">●</span></span>
+<span>Studio Visits<span class="dot">●</span></span>
+</div>
+</div>
+
+<main id="main">
+
+<!-- INK ANIMATION -->
+<section class="section" aria-label="Ink layer animation">
+<div class="container">
+<div class="ink-canvas-wrap reveal">
+<canvas id="inkCanvas" aria-hidden="true"></canvas>
+</div>
+<div class="roller reveal">
+<span class="roller-text">Print Roller</span>
+<div class="roller-bar"></div>
+<span class="roller-text">→</span>
+<div class="roller-bar" style="animation-delay:.3s"></div>
+<span class="roller-text">→</span>
+<div class="roller-bar" style="animation-delay:.6s"></div>
+</div>
+</div>
+</section>
+
+<!-- SCHEDULE -->
+<section class="section" id="schedule" style="background:var(--paper-dark);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)">
+<div class="container">
+<span class="section-label reveal">Program</span>
+<h2 class="section-title reveal">Schedule<span class="underline"></span></h2>
+<p class="reveal" style="max-width:600px;margin-top:12px;opacity:.7">Three days of hands-on workshops, talks with master printers, late-night print parties, and a bustling maker's market. All workshops include materials.</p>
+
+<div class="schedule-grid reveal">
+<!-- DAY 1 -->
+<div class="schedule-day open">
+<div class="schedule-day-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>Day One — 12 September</h3>
+<span class="day-label">Friday · Doors 10am–8pm</span>
+</div>
+<div class="schedule-items">
+<div class="schedule-item">
+<span class="schedule-time">10:00</span>
+<div class="schedule-info">
+<h4>Opening Ceremony &amp; First Pour</h4>
+<p>Welcome address, ribbon cutting with a giant squeegee, and opening drinks.</p>
+<span class="schedule-tag tag-talk">Opening</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">11:00</span>
+<div class="schedule-info">
+<h4>Riso 101: Your First Print</h4>
+<p>Learn the basics of risograph printing — ink mixing, drum loading, and your first colour separation.</p>
+<span class="schedule-tag tag-workshop">Workshop</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">13:00</span>
+<div class="schedule-info">
+<h4>The Texture of Mistakes</h4>
+<p>A talk on happy accidents in print — registration errors, ink floods, and finding beauty in imperfection.</p>
+<span class="schedule-tag tag-talk">Talk</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">15:00</span>
+<div class="schedule-info">
+<h4>Screen Printing: From Shirt to Poster</h4>
+<p>Set up a screen, mix your emulsion, and pull your first print on paper and textile.</p>
+<span class="schedule-tag tag-workshop">Workshop</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">18:00</span>
+<div class="schedule-info">
+<h4>Print Culture Screening</h4>
+<p>A curated screening of independent print documentaries followed by a Q&amp;A panel.</p>
+<span class="schedule-tag tag-screening">Screening</span>
+</div>
+</div>
+</div>
+</div>
+<!-- DAY 2 -->
+<div class="schedule-day">
+<div class="schedule-day-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>Day Two — 13 September</h3>
+<span class="day-label">Saturday · Doors 10am–9pm</span>
+</div>
+<div class="schedule-items">
+<div class="schedule-item">
+<span class="schedule-time">10:00</span>
+<div class="schedule-info">
+<h4>Collage &amp; Cut: Mixed Media Portraits</h4>
+<p>Hand-cut paper collage workshop inspired by vintage editorial illustration techniques.</p>
+<span class="schedule-tag tag-workshop">Workshop</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">12:00</span>
+<div class="schedule-info">
+<h4>Typography Under Pressure</h4>
+<p>Letterpress typesetting from type case to press. Bring a name or phrase to set in metal type.</p>
+<span class="schedule-tag tag-workshop">Workshop</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">14:00</span>
+<div class="schedule-info">
+<h4>Printers Panel: Building a Studio</h4>
+<p>Six printers share stories of starting out, equipment choices, and sustaining a creative practice.</p>
+<span class="schedule-tag tag-talk">Talk</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">16:00</span>
+<div class="schedule-info">
+<h4>Zine Assembly Line</h4>
+<p>Design, fold, staple, and distribute — create your own zine in 90 minutes.</p>
+<span class="schedule-tag tag-workshop">Workshop</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">20:00</span>
+<div class="schedule-info">
+<h4>Late Night Print Party</h4>
+<p>DJ set, projection mapping, and live print-making by lamplight. Bar open.</p>
+<span class="schedule-tag tag-market">Social</span>
+</div>
+</div>
+</div>
+</div>
+<!-- DAY 3 -->
+<div class="schedule-day">
+<div class="schedule-day-header" onclick="this.parentElement.classList.toggle('open')">
+<h3>Day Three — 14 September</h3>
+<span class="day-label">Sunday · Doors 10am–6pm</span>
+</div>
+<div class="schedule-items">
+<div class="schedule-item">
+<span class="schedule-time">10:00</span>
+<div class="schedule-info">
+<h4>Advanced Riso: Layering &amp; Registration</h4>
+<p>Multi-colour risography — precise registration, custom inks, and building complex images.</p>
+<span class="schedule-tag tag-workshop">Workshop</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">12:00</span>
+<div class="schedule-info">
+<h4>The Future of Print in a Digital Age</h4>
+<p>Keynote on the renaissance of analogue printmaking and what it means for contemporary design.</p>
+<span class="schedule-tag tag-talk">Keynote</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">14:00</span>
+<div class="schedule-info">
+<h4>Maker's Market: All Stalls Open</h4>
+<p>Browse 40+ independent printers, illustrators, and papermakers. Find your next favourite print.</p>
+<span class="schedule-tag tag-market">Market</span>
+</div>
+</div>
+<div class="schedule-item">
+<span class="schedule-time">16:00</span>
+<div class="schedule-info">
+<h4>Closing Print &amp; Farewell</h4>
+<p>Collaborative group print, final drinks, and plans for next year's fair.</p>
+<span class="schedule-tag tag-talk">Closing</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PRINTERS -->
+<section class="section" id="printers">
+<div class="container">
+<span class="section-label reveal">Featured Artists</span>
+<h2 class="section-title reveal">Six Printers<span class="underline"></span></h2>
+<p class="reveal" style="max-width:600px;margin-top:12px;opacity:.7">Meet the makers leading workshops and exhibiting work at INK WEATHER 2025.</p>
+
+<div class="printers-grid">
+<!-- Printer 1 -->
+<div class="printer-card reveal">
+<div class="printer-avatar">
+<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="30" r="14" fill="var(--coral)" opacity=".8"/>
+<circle cx="40" cy="72" r="22" fill="var(--coral)" opacity=".3"/>
+<circle cx="40" cy="30" r="14" fill="var(--coral)" opacity=".6" transform="translate(1,0)"/>
+<circle cx="35" cy="27" r="2" fill="var(--ink)"/>
+<circle cx="45" cy="27" r="2" fill="var(--ink)"/>
+<path d="M36 35 Q40 39 44 35" stroke="var(--ink)" stroke-width="1.5" fill="none"/>
+</svg>
+</div>
+<h4 class="register-offset">Maya Chen</h4>
+<div class="printer-role">Risograph Alchemist</div>
+<p>London-based printmaker whose colour-separation experiments blur the line between mistake and masterpiece. Her "Drift" series explores accidental registration as artistic language.</p>
+</div>
+
+<!-- Printer 2 -->
+<div class="printer-card reveal">
+<div class="printer-avatar">
+<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="30" r="14" fill="var(--cobalt)" opacity=".7"/>
+<circle cx="40" cy="72" r="22" fill="var(--cobalt)" opacity=".25"/>
+<path d="M26 30 Q40 10 54 30" fill="var(--cobalt)" opacity=".5"/>
+<circle cx="35" cy="28" r="2" fill="var(--ink)"/>
+<circle cx="45" cy="28" r="2" fill="var(--ink)"/>
+<path d="M34 34 Q40 38 46 34" stroke="var(--ink)" stroke-width="1.5" fill="none"/>
+</svg>
+</div>
+<h4 class="register-offset">Tomás Reyes</h4>
+<div class="printer-role">Screen Printing Collective Lead</div>
+<p>Runs a community screen-printing studio in Glasgow. Known for bold, layered posters that layer five to seven colours on heavy-weight paper stock.</p>
+</div>
+
+<!-- Printer 3 -->
+<div class="printer-card reveal">
+<div class="printer-avatar">
+<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="30" r="14" fill="var(--yellow)" opacity=".8"/>
+<circle cx="40" cy="72" r="22" fill="var(--yellow)" opacity=".35"/>
+<rect x="32" y="22" width="16" height="12" rx="2" fill="var(--ink)" opacity=".15"/>
+<circle cx="35" cy="28" r="2" fill="var(--ink)"/>
+<circle cx="45" cy="28" r="2" fill="var(--ink)"/>
+<path d="M36 35 Q40 38 44 35" stroke="var(--ink)" stroke-width="1.5" fill="none"/>
+</svg>
+</div>
+<h4 class="register-offset">Aisha Patel</h4>
+<div class="printer-role">Letterpress &amp; Type</div>
+<p>Craftsman printer specialising in hand-set letterpress. Her studio in Bristol houses a 1920s Chandler &amp; Price press and over 200 type fonts.</p>
+</div>
+
+<!-- Printer 4 -->
+<div class="printer-card reveal">
+<div class="printer-avatar">
+<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="30" r="14" fill="var(--mint)" opacity=".8"/>
+<circle cx="40" cy="72" r="22" fill="var(--mint)" opacity=".3"/>
+<path d="M28 25 L40 15 L52 25" fill="var(--mint)" opacity=".4"/>
+<circle cx="35" cy="28" r="2" fill="var(--ink)"/>
+<circle cx="45" cy="28" r="2" fill="var(--ink)"/>
+<path d="M35 35 Q40 40 45 35" stroke="var(--ink)" stroke-width="1.5" fill="none"/>
+</svg>
+</div>
+<h4 class="register-offset">Felix Okafor</h4>
+<div class="printer-role">Zine Culture Archivist</div>
+<p>Publisher of "Underground Press" zine since 2016. Felix's workshops teach radical self-publishing and distribution networks for independent voices.</p>
+</div>
+
+<!-- Printer 5 -->
+<div class="printer-card reveal">
+<div class="printer-avatar">
+<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="30" r="14" fill="var(--magenta)" opacity=".7"/>
+<circle cx="40" cy="72" r="22" fill="var(--magenta)" opacity=".25"/>
+<circle cx="38" cy="24" r="3" fill="var(--ink)" opacity=".1"/>
+<circle cx="42" cy="24" r="3" fill="var(--ink)" opacity=".1"/>
+<circle cx="35" cy="28" r="2" fill="var(--ink)"/>
+<circle cx="45" cy="28" r="2" fill="var(--ink)"/>
+<path d="M37 35 Q40 38 43 35" stroke="var(--ink)" stroke-width="1.5" fill="none"/>
+</svg>
+</div>
+<h4 class="register-offset">Lena Müller</h4>
+<div class="printer-role">Collage &amp; Hand-Cut Illustration</div>
+<p>Berlin-born, Manchester-based illustrator whose intricate hand-cut paper collages have been exhibited at the V&A and printed as limited editions.</p>
+</div>
+
+<!-- Printer 6 -->
+<div class="printer-card reveal">
+<div class="printer-avatar">
+<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="30" r="14" fill="var(--coral)" opacity=".6"/>
+<circle cx="40" cy="72" r="22" fill="var(--coral)" opacity=".25"/>
+<path d="M30 20 Q40 12 50 20 Q48 30 40 32 Q32 30 30 20Z" fill="var(--coral)" opacity=".5"/>
+<circle cx="35" cy="28" r="2" fill="var(--ink)"/>
+<circle cx="45" cy="28" r="2" fill="var(--ink)"/>
+<path d="M36 34 Q40 37 44 34" stroke="var(--ink)" stroke-width="1.5" fill="none"/>
+</svg>
+</div>
+<h4 class="register-offset">Samira Khan</h4>
+<div class="printer-role">Poster Design &amp; Colour Systems</div>
+<p>Graphic designer turned full-time printer. Samira's colour-system posters explore Pantone alternatives through custom risograph ink mixing.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- VENUE MAP -->
+<section class="section" id="venue" style="background:var(--paper-dark);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)">
+<div class="container">
+<span class="section-label reveal">Find Us</span>
+<h2 class="section-title reveal">The Venue<span class="underline"></span></h2>
+<p class="reveal" style="max-width:600px;margin-top:12px;opacity:.7">The Printworks — a converted 19th-century textile mill on Manchester's Deansgate. Three floors of natural light, exposed brick, and ink-stained workspaces.</p>
+
+<div class="venue-map reveal">
+<svg viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Venue map of The Printworks showing workshop areas, talk stage, market stalls, and entrance">
+<!-- Background -->
+<rect width="800" height="450" fill="var(--paper)"/>
+<!-- Grid lines -->
+<line x1="0" y1="150" x2="800" y2="150" stroke="var(--ink)" stroke-width=".5" opacity=".1"/>
+<line x1="0" y1="300" x2="800" y2="300" stroke="var(--ink)" stroke-width=".5" opacity=".1"/>
+<line x1="200" y1="0" x2="200" y2="450" stroke="var(--ink)" stroke-width=".5" opacity=".1"/>
+<line x1="400" y1="0" x2="400" y2="450" stroke="var(--ink)" stroke-width=".5" opacity=".1"/>
+<line x1="600" y1="0" x2="600" y2="450" stroke="var(--ink" stroke-width=".5" opacity=".1"/>
+<!-- Outer building -->
+<rect x="40" y="40" width="720" height="370" rx="4" stroke="var(--ink)" stroke-width="3" fill="none"/>
+<!-- Rooms -->
+<!-- Main Hall / Market -->
+<rect x="40" y="40" width="400" height="200" stroke="var(--ink)" stroke-width="1.5" fill="var(--coral)" opacity=".12"/>
+<text x="240" y="130" text-anchor="middle" class="map-label" font-size="11">Main Hall · Market Stalls</text>
+<text x="240" y="150" text-anchor="middle" class="map-label" font-size="8" opacity=".5">40+ independent printers</text>
+<!-- Workshop A -->
+<rect x="440" y="40" width="180" height="100" stroke="var(--ink)" stroke-width="1.5" fill="var(--cobalt)" opacity=".12"/>
+<text x="530" y="85" text-anchor="middle" class="map-label" font-size="10">Workshop A</text>
+<text x="530" y="102" text-anchor="middle" class="map-label" font-size="8" opacity=".5">Riso Studio</text>
+<!-- Workshop B -->
+<rect x="440" y="140" width="180" height="100" stroke="var(--ink)" stroke-width="1.5" fill="var(--yellow)" opacity=".15"/>
+<text x="530" y="185" text-anchor="middle" class="map-label" font-size="10">Workshop B</text>
+<text x="530" y="202" text-anchor="middle" class="map-label" font-size="8" opacity=".5">Screen Print Lab</text>
+<!-- Talk Stage -->
+<rect x="630" y="40" width="130" height="200" stroke="var(--ink)" stroke-width="1.5" fill="var(--mint)" opacity=".12"/>
+<text x="695" y="125" text-anchor="middle" class="map-label" font-size="10">Talk</text>
+<text x="695" y="142" text-anchor="middle" class="map-label" font-size="10">Stage</text>
+<text x="695" y="162" text-anchor="middle" class="map-label" font-size="8" opacity=".5">120 seats</text>
+<!-- Letterpress Room -->
+<rect x="40" y="240" width="200" height="170" stroke="var(--ink)" stroke-width="1.5" fill="var(--magenta)" opacity=".1"/>
+<text x="140" y="315" text-anchor="middle" class="map-label" font-size="10">Letterpress</text>
+<text x="140" y="332" text-anchor="middle" class="map-label" font-size="8" opacity=".5">Chandler & Price</text>
+<!-- Collage Room -->
+<rect x="240" y="240" width="200" height="170" stroke="var(--ink)" stroke-width="1.5" fill="var(--coral)" opacity=".1"/>
+<text x="340" y="315" text-anchor="middle" class="map-label" font-size="10">Collage Studio</text>
+<text x="340" y="332" text-anchor="middle" class="map-label" font-size="8" opacity=".5">Paper & scissors</text>
+<!-- Bar -->
+<rect x="440" y="240" width="180" height="80" stroke="var(--ink)" stroke-width="1.5" fill="var(--yellow)" opacity=".12"/>
+<text x="530" y="280" text-anchor="middle" class="map-label" font-size="10">☕ Café &amp; Bar</text>
+<!-- Poster Shop -->
+<rect x="440" y="320" width="180" height="90" stroke="var(--ink)" stroke-width="1.5" fill="var(--cobalt)" opacity=".1"/>
+<text x="530" y="360" text-anchor="middle" class="map-label" font-size="10">Poster Shop</text>
+<!-- Entrance -->
+<rect x="630" y="240" width="130" height="170" stroke="var(--ink)" stroke-width="1.5" fill="var(--mint)" opacity=".1"/>
+<text x="695" y="315" text-anchor="middle" class="map-label" font-size="10">Entrance</text>
+<text x="695" y="332" text-anchor="middle" class="map-label" font-size="10">&amp; Tickets</text>
+<text x="695" y="352" text-anchor="middle" class="map-label" font-size="8" opacity=".5">↕ Deansgate</text>
+<!-- Arrow markers -->
+<path d="M695 390 L690 375 L700 375Z" fill="var(--coral)"/>
+<!-- Compass -->
+<circle cx="760" cy="30" r="18" stroke="var(--ink)" stroke-width="1.5" fill="var(--paper)"/>
+<text x="760" y="27" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="var(--ink)">N</text>
+<path d="M760 12 L760 48 M742 30 L778 30" stroke="var(--ink)" stroke-width=".5"/>
+<!-- Decorative dots -->
+<circle cx="100" cy="100" r="3" fill="var(--coral)" opacity=".3"/>
+<circle cx="150" cy="120" r="2" fill="var(--cobalt)" opacity=".3"/>
+<circle cx="300" cy="90" r="4" fill="var(--yellow)" opacity=".2"/>
+<circle cx="350" cy="130" r="2" fill="var(--mint)" opacity=".3"/>
+<!-- Street labels -->
+<text x="700" y="430" class="map-label" font-size="9" opacity=".4">Deansgate →</text>
+<text x="100" y="430" class="map-label" font-size="9" opacity=".4">← Printworks Close</text>
+</svg>
+</div>
+
+<div style="margin-top:32px" class="reveal">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px">
+<div style="padding:16px;border:1.5px solid var(--ink);background:var(--paper)">
+<p style="font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--coral);margin-bottom:6px">Address</p>
+<p style="font-size:.9rem">The Printworks<br>2 Deansgate<br>Manchester M3 2BW</p>
+</div>
+<div style="padding:16px;border:1.5px solid var(--ink);background:var(--paper)">
+<p style="font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cobalt);margin-bottom:6px">Getting Here</p>
+<p style="font-size:.9rem">5 min walk from Deansgate Station<br>Bus routes 42, 142<br>CVL cycle hire nearby</p>
+</div>
+<div style="padding:16px;border:1.5px solid var(--ink);background:var(--paper)">
+<p style="font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--yellow);margin-bottom:6px">Accessibility</p>
+<p style="font-size:.9rem">Wheelchair accessible<br>Quiet room available<br>Step-free entrance</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- POSTER SHOP -->
+<section class="section" id="shop">
+<div class="container">
+<span class="section-label reveal">Limited Editions</span>
+<h2 class="section-title reveal">Poster Shop<span class="underline"></span></h2>
+<p class="reveal" style="max-width:600px;margin-top:12px;opacity:.7">Collect original risograph posters from our featured printers. Each piece is numbered and signed. Available to order online or in-person at the fair.</p>
+
+<div class="poster-grid">
+<!-- Poster 1 -->
+<div class="poster-item reveal">
+<div class="poster-thumb">
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+<rect width="300" height="400" fill="var(--paper)"/>
+<circle cx="150" cy="160" r="80" fill="var(--coral)" opacity=".6"/>
+<circle cx="150" cy="160" r="80" fill="var(--coral)" opacity=".3" transform="translate(5,3)"/>
+<circle cx="150" cy="160" r="80" fill="var(--cobalt)" opacity=".3" transform="translate(-4,-2)"/>
+<text x="150" y="310" text-anchor="middle" font-family="var(--serif)" font-size="28" fill="var(--ink)">Drift No. 3</text>
+<text x="150" y="340" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink)" opacity=".5">Maya Chen · Risograph</text>
+<text x="150" y="365" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="var(--ink)" opacity=".3">2025 · 50 copies</text>
+</svg>
+<span class="poster-badge">New</span>
+</div>
+<div class="poster-info">
+<h4>Drift No. 3 — Maya Chen</h4>
+<span class="poster-price">£28</span>
+<p class="poster-edition">Ed. of 50 · Signed &amp; numbered</p>
+</div>
+</div>
+
+<!-- Poster 2 -->
+<div class="poster-item reveal">
+<div class="poster-thumb">
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+<rect width="300" height="400" fill="var(--paper)"/>
+<rect x="60" y="60" width="180" height="200" fill="var(--cobalt)" opacity=".5"/>
+<rect x="60" y="60" width="180" height="200" fill="var(--yellow)" opacity=".3" transform="translate(4,3)"/>
+<rect x="60" y="60" width="180" height="200" fill="var(--coral)" opacity=".25" transform="translate(-3,-4)"/>
+<line x1="60" y1="160" x2="240" y2="160" stroke="var(--ink)" stroke-width="2"/>
+<text x="150" y="310" text-anchor="middle" font-family="var(--serif)" font-size="22" fill="var(--ink)">BLOCKS</text>
+<text x="150" y="340" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink)" opacity=".5">Tomás Reyes · Risograph</text>
+<text x="150" y="365" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="var(--ink)" opacity=".3">2025 · 75 copies</text>
+</svg>
+</div>
+<div class="poster-info">
+<h4>BLOCKS — Tomás Reyes</h4>
+<span class="poster-price">£24</span>
+<p class="poster-edition">Ed. of 75 · Signed &amp; numbered</p>
+</div>
+</div>
+
+<!-- Poster 3 -->
+<div class="poster-item reveal">
+<div class="poster-thumb">
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+<rect width="300" height="400" fill="var(--paper)"/>
+<text x="150" y="120" text-anchor="middle" font-family="var(--serif)" font-size="60" fill="var(--ink)" opacity=".8">Aa</text>
+<text x="150" y="120" text-anchor="middle" font-family="var(--serif)" font-size="60" fill="var(--coral)" opacity=".4" transform="translate(3,2)">Aa</text>
+<text x="150" y="120" text-anchor="middle" font-family="var(--serif)" font-size="60" fill="var(--cobalt)" opacity=".3" transform="translate(-2,-3)">Aa</text>
+<rect x="80" y="160" width="140" height="80" fill="var(--yellow)" opacity=".4"/>
+<text x="150" y="310" text-anchor="middle" font-family="var(--serif)" font-size="22" fill="var(--ink)">Type &amp; Ink</text>
+<text x="150" y="340" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink)" opacity=".5">Aisha Patel · Letterpress</text>
+<text x="150" y="365" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="var(--ink)" opacity=".3">2025 · 30 copies</text>
+</svg>
+<span class="poster-badge">Rare</span>
+</div>
+<div class="poster-info">
+<h4>Type &amp; Ink — Aisha Patel</h4>
+<span class="poster-price">£35</span>
+<p class="poster-edition">Ed. of 30 · Letterpress on 300gsm</p>
+</div>
+</div>
+
+<!-- Poster 4 -->
+<div class="poster-item reveal">
+<div class="poster-thumb">
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+<rect width="300" height="400" fill="var(--paper)"/>
+<rect x="40" y="40" width="80" height="120" fill="var(--coral)" opacity=".5" transform="rotate(-5 80 100)"/>
+<rect x="120" y="80" width="90" height="100" fill="var(--cobalt)" opacity=".4" transform="rotate(3 165 130)"/>
+<rect x="60" y="180" width="100" height="80" fill="var(--mint)" opacity=".4" transform="rotate(-2 110 220)"/>
+<circle cx="200" cy="200" r="40" fill="var(--yellow)" opacity=".5"/>
+<text x="150" y="310" text-anchor="middle" font-family="var(--serif)" font-size="22" fill="var(--ink)">Collage #7</text>
+<text x="150" y="340" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink)" opacity=".5">Lena Müller · Hand-cut</text>
+<text x="150" y="365" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="var(--ink)" opacity=".3">2025 · 40 copies</text>
+</svg>
+</div>
+<div class="poster-info">
+<h4>Collage #7 — Lena Müller</h4>
+<span class="poster-price">£32</span>
+<p class="poster-edition">Ed. of 40 · Risograph of original</p>
+</div>
+</div>
+
+<!-- Poster 5 -->
+<div class="poster-item reveal">
+<div class="poster-thumb">
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+<rect width="300" height="400" fill="var(--paper)"/>
+<circle cx="150" cy="150" r="90" fill="none" stroke="var(--ink)" stroke-width="3"/>
+<circle cx="150" cy="150" r="90" fill="none" stroke="var(--coral)" stroke-width="2" transform="translate(3,3)"/>
+<circle cx="150" cy="150" r="90" fill="none" stroke="var(--cobalt)" stroke-width="2" transform="translate(-3,-3)"/>
+<circle cx="150" cy="150" r="45" fill="var(--magenta)" opacity=".3"/>
+<text x="150" y="310" text-anchor="middle" font-family="var(--serif)" font-size="22" fill="var(--ink)">Orbit Systems</text>
+<text x="150" y="340" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink)" opacity=".5">Samira Khan · Risograph</text>
+<text x="150" y="365" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="var(--ink)" opacity=".3">2025 · 60 copies</text>
+</svg>
+<span class="poster-badge">Popular</span>
+</div>
+<div class="poster-info">
+<h4>Orbit Systems — Samira Khan</h4>
+<span class="poster-price">£26</span>
+<p class="poster-edition">Ed. of 60 · Signed &amp; numbered</p>
+</div>
+</div>
+
+<!-- Poster 6 -->
+<div class="poster-item reveal">
+<div class="poster-thumb">
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+<rect width="300" height="400" fill="var(--paper)"/>
+<rect x="50" y="50" width="200" height="250" fill="var(--ink)" opacity=".05"/>
+<text x="150" y="130" text-anchor="middle" font-family="var(--serif)" font-size="36" fill="var(--ink)">ZINE</text>
+<text x="150" y="130" text-anchor="middle" font-family="var(--serif)" font-size="36" fill="var(--yellow)" opacity=".6" transform="translate(2,2)">ZINE</text>
+<line x1="70" y1="160" x2="230" y2="160" stroke="var(--ink)" stroke-width="1"/>
+<rect x="70" y="180" width="60" height="80" fill="var(--mint)" opacity=".4"/>
+<rect x="170" y="180" width="60" height="80" fill="var(--coral)" opacity=".4"/>
+<text x="150" y="310" text-anchor="middle" font-family="var(--serif)" font-size="22" fill="var(--ink)">Underground</text>
+<text x="150" y="340" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--ink)" opacity=".5">Felix Okafor · Risograph</text>
+<text x="150" y="365" text-anchor="middle" font-family="var(--mono)" font-size="8" fill="var(--ink)" opacity=".3">2025 · 100 copies</text>
+</svg>
+</div>
+<div class="poster-info">
+<h4>Underground — Felix Okafor</h4>
+<span class="poster-price">£20</span>
+<p class="poster-edition">Ed. of 100 · Signed &amp; numbered</p>
+</div>
+</div>
+</div>
+
+<div style="text-align:center;margin-top:40px" class="reveal">
+<a href="#" class="btn">View Full Collection →</a>
+</div>
+</div>
+</section>
+
+<!-- QUOTES -->
+<section class="section" style="background:var(--paper-dark);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)">
+<div class="container">
+<span class="section-label reveal">Testimonials</span>
+<h2 class="section-title reveal">What People Say<span class="underline"></span></h2>
+
+<div class="quotes-wrap">
+<div class="quote-card reveal">
+<p>"INK WEATHER is the most joyous print event I've attended. The energy, the colour, the smell of ink — it's everything print culture should be."</p>
+<span class="quote-attr">— River Tan, Print Collector, London</span>
+</div>
+<div class="quote-card reveal">
+<p>"I learned more about risograph in one Saturday morning than I did in six months of YouTube tutorials. Maya's workshop changed my practice."</p>
+<span class="quote-attr">— Jordan Ellis, Designer, Leeds</span>
+</div>
+<div class="quote-card reveal">
+<p>"The fair feels like a love letter to the handmade. Every stall, every print, every person radiates genuine enthusiasm for the craft."</p>
+<span class="quote-attr">— Priya Sharma, Editor, Paper Culture Magazine</span>
+</div>
+<div class="quote-card reveal">
+<p>"Best £25 I spent all year. I left with three posters, a letterpress business card, and enough zines to last a month."</p>
+<span class="quote-attr">— Alex Murphy, Attendee, Brighton</span>
+</div>
+<div class="quote-card reveal">
+<p>"The late-night print party is not a gimmick — it's the most magical thing I've experienced. Watching printers work under neon lights with a DJ spinning is pure magic."</p>
+<span class="quote-attr">— Sam Green, Photographer, Manchester</span>
+</div>
+<div class="quote-card reveal">
+<p>"As a printer myself, I came to learn and left feeling part of a community. The panel discussion was incredibly insightful."</p>
+<span class="quote-attr">— Chloe Williams, Self-taught Printer, Cardiff</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+<div class="container">
+<span class="section-label reveal">Common Questions</span>
+<h2 class="section-title reveal">FAQ<span class="underline"></span></h2>
+
+<div class="faq-list reveal">
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')" role="button" tabindex="0" aria-expanded="false">
+<h4>How much are tickets?</h4>
+<span class="faq-icon">+</span>
+</div>
+<div class="faq-a">
+<p>Single day tickets are £18. A three-day pass is £45 (saving you £9). Workshops cost an additional £25–£45 each and include all materials. Under 18s enter free with an accompanying adult. Students with valid ID get 50% off.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')" role="button" tabindex="0" aria-expanded="false">
+<h4>Do I need experience to attend workshops?</h4>
+<span class="faq-icon">+</span>
+</div>
+<div class="faq-a">
+<p>Not at all! Our workshops are designed for all levels. Riso 101 and Screen Printing: From Shirt to Poster are perfect for beginners. Advanced workshops like Advanced Riso assume some prior knowledge. Each listing notes the skill level.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')" role="button" tabindex="0" aria-expanded="false">
+<h4>Can I buy posters online before the fair?</h4>
+<span class="faq-icon">+</span>
+</div>
+<div class="faq-a">
+<p>Yes! Our online shop ships UK-wide. Posters purchased online are shipped in custom archival tubes. International shipping is available with a flat £12 rate. Each poster is printed-to-order using the same risograph presses featured at the fair.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')" role="button" tabindex="0" aria-expanded="false">
+<h4>Is the venue wheelchair accessible?</h4>
+<span class="faq-icon">+</span>
+</div>
+<div class="faq-a">
+<p>Absolutely. The Printworks has a step-free entrance from Deansgate, accessible restrooms on all floors, and an elevator connecting all three levels. We also have a dedicated quiet room for attendees who need a break from the sensory experience. Please let us know if you need any additional accommodations.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')" role="button" tabindex="0" aria-expanded="false">
+<h4>Can I bring my own equipment?</h4>
+<span class="faq-icon">+</span>
+</div>
+<div class="faq-a">
+<p>You're welcome to bring personal items like sketchbooks, cameras, or printing tools. However, all workshop equipment is provided. If you're an exhibiting printer with your own press, please contact us about our bring-your-own-press programme.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-q" onclick="this.parentElement.classList.toggle('open')" role="button" tabindex="0" aria-expanded="false">
+<h4>Will there be food and drink?</h4>
+<span class="faq-icon">+</span>
+</div>
+<div class="faq-a">
+<p>Yes! Our on-site café serves coffee, tea, hot chocolate, and light meals throughout the day. We also have a dedicated bar that opens at 5pm each day (and stays open late on Saturday for the print party). A selection of vegan and gluten-free options are always available.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" aria-label="Newsletter signup">
+<div class="container" style="text-align:center">
+<span class="section-label reveal" style="color:var(--mint)">Stay Updated</span>
+<h2 class="reveal">Join the Ink List</h2>
+<p class="reveal">Early ticket access, workshop announcements, and new poster drops. One email per month, maximum joy.</p>
+<form class="newsletter-form reveal" onsubmit="event.preventDefault();this.innerHTML='<p style=\'padding:14px;font-family:var(--mono);font-size:.85rem\'>🎉 You\'re in! Check your inbox for a confirmation.</p>'">
+<input type="email" placeholder="your@email.com" required aria-label="Email address">
+<button type="submit">Subscribe</button>
+</form>
+<p style="margin-top:12px;font-size:.7rem;opacity:.4" class="reveal">No spam. Unsubscribe anytime. We respect your inbox like we respect good paper stock.</p>
+</div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+<div class="footer-grid">
+<div class="footer-col">
+<h5>About</h5>
+<p>INK WEATHER is a joyful independent print fair and risograph studio festival celebrating the beauty of imperfect, handmade print culture.</p>
+<p style="margin-top:12px;font-family:var(--mono);font-size:.7rem;opacity:.5">Est. 2023 · Manchester, UK</p>
+</div>
+<div class="footer-col">
+<h5>Event</h5>
+<a href="#schedule">Schedule</a>
+<a href="#printers">Featured Printers</a>
+<a href="#venue">Venue &amp; Directions</a>
+<a href="#shop">Poster Shop</a>
+<a href="#faq">FAQ</a>
+</div>
+<div class="footer-col">
+<h5>Connect</h5>
+<a href="#">Instagram</a>
+<a href="#">Twitter / X</a>
+<a href="#">Newsletter</a>
+<a href="#">hello@inkweather.co.uk</a>
+</div>
+<div class="footer-col">
+<h5>Legal</h5>
+<a href="#">Terms &amp; Conditions</a>
+<a href="#">Privacy Policy</a>
+<a href="#">Accessibility Statement</a>
+<a href="#">Refund Policy</a>
+</div>
+</div>
+<div class="footer-bottom">
+<p>© 2025 INK WEATHER · All rights reserved · Made with ink and love</p>
+<div class="footer-marks" aria-hidden="true">
+<span></span><span></span><span></span><span></span>
+</div>
+</div>
+</footer>
+
+<script>
+// SCROLL REVEAL
+const revealEls=document.querySelectorAll('.reveal');
+const revealObserver=new IntersectionObserver((entries)=>{
+entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revealObserver.unobserve(e.target)}})
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+revealEls.forEach(el=>revealObserver.observe(el));
+
+// INK CANVAS ANIMATION
+(function(){
+const canvas=document.getElementById('inkCanvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){
+const wrap=canvas.parentElement;
+W=canvas.width=wrap.clientWidth;
+H=canvas.height=wrap.clientHeight;
+}
+resize();
+window.addEventListener('resize',resize);
+
+const colors=['#FF6B6B','#1B4F8A','#FFD23F','#7ED4A6','#E84393'];
+const blobs=[];
+class Blob{
+constructor(){
+this.x=Math.random()*W;
+this.y=Math.random()*H;
+this.r=30+Math.random()*80;
+this.color=colors[Math.floor(Math.random()*colors.length)];
+this.vx=(Math.random()-.5)*.4;
+this.vy=(Math.random()-.5)*.4;
+this.alpha=.08+Math.random()*.12;
+this.drift=0;
+}
+update(){
+this.x+=this.vx;
+this.y+=this.vy;
+this.drift+=.003;
+if(this.x<-this.r)this.x=W+this.r;
+if(this.x>W+this.r)this.x=-this.r;
+if(this.y<-this.r)this.y=H+this.r;
+if(this.y>H+this.r)this.y=-this.r;
+}
+draw(){
+ctx.save();
+ctx.globalAlpha=this.alpha;
+ctx.fillStyle=this.color;
+ctx.beginPath();
+// Organic blob shape
+for(let i=0;i<360;i+=10){
+const angle=i*Math.PI/180;
+const wobble=this.r+Math.sin(this.drift+i*.02)*8;
+const px=this.x+Math.cos(angle)*wobble;
+const py=this.y+Math.sin(angle)*wobble;
+if(i===0)ctx.moveTo(px,py);
+else ctx.lineTo(px,py);
+}
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+}
+}
+
+for(let i=0;i<12;i++)blobs.push(new Blob());
+
+// Halftone dots layer
+function drawHalftone(){
+ctx.save();
+ctx.globalAlpha=.04;
+const spacing=12;
+for(let x=0;x<W;x+=spacing){
+for(let y=0;y<H;y+=spacing){
+const d=Math.sqrt((x-W/2)**2+(y-H/2)**2);
+const maxDist=Math.sqrt(W**2+H**2)/2;
+const size=Math.max(.5,5-d/maxDist*5);
+ctx.fillStyle='#1A1A1A';
+ctx.beginPath();
+ctx.arc(x,y,size,0,Math.PI*2);
+ctx.fill();
+}
+}
+ctx.restore();
+}
+
+// Registration offset lines
+let t=0;
+function drawOffsetLines(){
+ctx.save();
+ctx.globalAlpha=.06;
+ctx.strokeStyle='#1A1A1A';
+ctx.lineWidth=1;
+for(let i=0;i<5;i++){
+const y=H/2+Math.sin(t+i*1.2)*60+i*20;
+ctx.beginPath();
+ctx.moveTo(0,y);
+for(let x=0;x<W;x+=4){
+ctx.lineTo(x,y+Math.sin(x*.02+t)*5);
+}
+ctx.stroke();
+}
+ctx.restore();
+}
+
+function animate(){
+ctx.clearRect(0,0,W,H);
+// Paper texture base
+ctx.fillStyle='#F5F0E8';
+ctx.fillRect(0,0,W,H);
+
+drawHalftone();
+drawOffsetLines();
+
+blobs.forEach(b=>{b.update();b.draw()});
+
+// Color separation indicator
+ctx.save();
+ctx.globalAlpha=.15;
+const sepPhase=(t*20)%200;
+ctx.fillStyle=colors[0];
+ctx.fillRect(0,H-4,sepPhase*.8,4);
+ctx.fillStyle=colors[1];
+ctx.fillRect(0,H-4,Math.min(W,sepPhase*.8+20),4);
+ctx.fillStyle=colors[2];
+ctx.fillRect(0,H-4,Math.min(W,sepPhase*.8+40),4);
+ctx.restore();
+
+t+=.008;
+requestAnimationFrame(animate);
+}
+animate();
+})();
+
+// FAQ keyboard support
+document.querySelectorAll('.faq-q').forEach(q=>{
+q.addEventListener('keydown',e=>{
+if(e.key==='Enter'||e.key===' '){
+e.preventDefault();
+q.parentElement.classList.toggle('open');
+q.setAttribute('aria-expanded',q.parentElement.classList.contains('open'));
+}
+});
+});
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+a.addEventListener('click',e=>{
+const target=document.querySelector(a.getAttribute('href'));
+if(target){
+e.preventDefault();
+target.scrollIntoView({behavior:'smooth',block:'start'});
+}
+});
+});
+
+// Nav hide/show on scroll
+let lastScroll=0;
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+const st=window.pageYOffset;
+if(st>lastScroll&&st>100){
+nav.style.transform='translateY(-100%)';
+}else{
+nav.style.transform='translateY(0)';
+}
+lastScroll=st;
+},{passive:true});
+</script>
+</body>
+</html>

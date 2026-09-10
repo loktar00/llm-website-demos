@@ -1,0 +1,18 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/glm53-flash/fp8/website-brutalist-2/index.html",
+  "pass": true,
+  "notes": [
+    "1 console error(s)"
+  ],
+  "console_errors": [
+    "Error: <svg> attribute preserveAspectRatio: Unrecognized enumerated value, \"xMax yMax meet\"."
+  ],
+  "page_errors": [],
+  "canvas_nonblank": null,
+  "canvas_count": 0,
+  "canvas_kinds": [],
+  "served_by": "base",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 9919,
+  "scroll_height": 7726
+}

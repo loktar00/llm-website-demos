@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HELVETICA TRANSIT ARCHIVE</title>
+<style>
+:root{
+  --black:#000;
+  --red:#E10600;
+  --gray:#6b6b6b;
+  --rule:#d9d9d9;
+  --bg:#fff;
+  --max:1200px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--black);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{max-width:100%;display:block}
+a{color:var(--black);text-decoration:none}
+a:hover,a:focus{color:var(--red)}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.container{max-width:var(--max);margin:0 auto;padding:0 32px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;align-items:start}
+.rule{height:1px;background:var(--black);margin:32px 0}
+.rule.light{background:var(--rule)}
+h1{font-weight:700;font-size:clamp(48px,8vw,96px);line-height:.9;letter-spacing:-0.02em;margin:0}
+h2{font-weight:700;font-size:32px;line-height:1.1;letter-spacing:-0.01em;margin:0 0 12px}
+h3{font-weight:700;font-size:18px;line-height:1.2;margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em}
+.caption{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)}
+.meta{font-size:12px;letter-spacing:.04em}
+p{font-size:16px;line-height:1.6;margin:0 0 16px}
+header{padding:32px 0;border-bottom:1px solid var(--black);position:sticky;top:0;background:var(--bg);z-index:10}
+.brand{font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:14px}
+.nav{display:flex;gap:24px;align-items:center;justify-content:flex-end}
+.nav a{font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.hero{padding:64px 0 48px}
+.hero .title{grid-column:1 / span 8}
+.hero .clock{grid-column:9 / span 4;text-align:right}
+.clock-box{border:1px solid var(--black);padding:16px 20px;display:inline-block}
+.clock-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.clock-time{font-variant-numeric:tabular-nums;font-weight:700;font-size:28px;letter-spacing:.02em}
+.intro{padding:48px 0}
+.intro .col{grid-column:1 / span 7}
+.intro .col2{grid-column:9 / span 4}
+.filters{padding:24px 0}
+.filter-bar{display:flex;gap:16px;flex-wrap:wrap}
+.filter-bar button{background:none;border:1px solid var(--black);padding:6px 12px;font:inherit;font-size:13px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.filter-bar button[aria-pressed="true"],.filter-bar button:hover{border-color:var(--red);color:var(--red)}
+.archive{padding:0 0 64px}
+.archive-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px 24px}
+.item{border-top:1px solid var(--black);padding-top:8px;opacity:0;transform:translateY(12px);transition:.5s ease}
+.item.in{opacity:1;transform:none}
+.item svg{width:100%;height:160px;background:#fafafa;border:1px solid var(--rule);margin-bottom:12px}
+.item .title{font-weight:700;font-size:14px;letter-spacing:.02em}
+.item .sub{font-size:12px;color:var(--gray)}
+.map-study{padding:64px 0}
+.map-wrap{grid-column:1 / span 12}
+.map-wrap svg{width:100%;height:auto;border:1px solid var(--black)}
+.path{fill:none;stroke:var(--black);stroke-width:2;stroke-dasharray:600;stroke-dashoffset:600;animation:draw 2.2s ease forwards}
+.path.r{stroke:var(--red)}
+.path.b{stroke:#1a1a1a}
+@keyframes draw{to{stroke-dashoffset:0}}
+.timeline{padding:64px 0}
+.timeline .col{grid-column:1 / span 12}
+.tl{border-left:1px solid var(--black);margin-left:8px;padding-left:24px}
+.tl-item{margin-bottom:28px;position:relative}
+.tl-item:before{content:"";position:absolute;left:-26px;top:6px;width:8px;height:8px;background:var(--black)}
+.tl-year{font-weight:700;font-size:14px;letter-spacing:.06em}
+.essay{padding:64px 0}
+.essay .col{grid-column:1 / span 7}
+.essay .side{grid-column:9 / span 4}
+blockquote{border-left:2px solid var(--red);padding-left:16px;font-size:18px;line-height:1.5;margin:24px 0}
+.table-wrap{padding:64px 0}
+.table{width:100%;border-collapse:collapse;font-size:14px}
+.table th,.table td{border-top:1px solid var(--rule);padding:12px 8px;text-align:left;vertical-align:top}
+.table th{font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:12px;border-top:1px solid var(--black)}
+.exhibit{padding:64px 0}
+.exhibit .col{grid-column:1 / span 8}
+.exhibit .side{grid-column:10 / span 3;text-align:right}
+footer{border-top:1px solid var(--black);padding:32px 0;font-size:12px}
+.footgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:24px}
+.foot-left{grid-column:1 / span 6}
+.foot-right{grid-column:9 / span 4;text-align:right}
+@media(max-width:980px){
+  .hero .title{grid-column:1 / span 12}
+  .hero .clock{grid-column:1 / span 12;text-align:left}
+  .intro .col,.intro .col2{grid-column:1 / span 12}
+  .archive-grid{grid-template-columns:repeat(2,1fr)}
+  .essay .col,.essay .side{grid-column:1 / span 12}
+  .exhibit .col,.exhibit .side{grid-column:1 / span 12;text-align:left}
+  .foot-left,.foot-right{grid-column:1 / span 12;text-align:left}
+}
+@media(max-width:600px){
+  .container{padding:0 20px}
+  .archive-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="container grid">
+    <div class="brand">Helvetica Transit Archive</div>
+    <nav class="nav" aria-label="Primary">
+      <a href="#archive">Archive</a>
+      <a href="#map">Study</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#exhibit">Exhibition</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container grid">
+      <div class="title">
+        <h1>HELVETICA<br>TRANSIT<br>ARCHIVE</h1>
+        <div class="caption" style="margin-top:16px">International collection of public transportation maps, signs, tickets, clocks and information systems</div>
+      </div>
+      <div class="clock">
+        <div class="clock-box" aria-live="polite">
+          <div class="clock-label">Station Clock • Central</div>
+          <div class="clock-time" id="station-clock">00:00:00</div>
+          <div class="caption" style="margin-top:6px">Local time • 24h</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule light"></div>
+
+  <section class="intro">
+    <div class="container grid">
+      <div class="col">
+        <h2>Collection Introduction</h2>
+        <p>The Archive documents the development of transit information design from 1900 to present. Objects are selected for typographic rigour, diagrammatic clarity and systemic coherence. The collection emphasises Swiss International Style principles: grid, hierarchy, neutrality and precision.</p>
+        <p>All items are catalogued with original dimensions, material, typeface, colour specification and context of use. No reproductions are used in public display.</p>
+      </div>
+      <div class="col2">
+        <h3>Access</h3>
+        <p class="meta">Research by appointment. Digital surrogates available for study. Citation required.</p>
+        <div class="rule" style="margin:16px 0"></div>
+        <p class="caption">Museum-grade preservation • Climate controlled • Acid-free storage</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="filters" id="archive">
+    <div class="container">
+      <div class="filter-bar" role="group" aria-label="Filter archive">
+        <button aria-pressed="true" data-filter="all">All</button>
+        <button aria-pressed="false" data-filter="maps">Maps</button>
+        <button aria-pressed="false" data-filter="signs">Signs</button>
+        <button aria-pressed="false" data-filter="tickets">Tickets</button>
+        <button aria-pressed="false" data-filter="clocks">Clocks</button>
+        <button aria-pressed="false" data-filter="systems">Systems</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="archive">
+    <div class="container archive-grid">
+      <figure class="item reveal" data-cat="maps">
+        <svg viewBox="0 0 300 160"><rect x="10" y="10" width="280" height="140" fill="none" stroke="#000"/><line x1="30" y1="40" x2="270" y2="40" stroke="#000"/><line x1="30" y1="80" x2="270" y2="80" stroke="#000"/><circle cx="150" cy="100" r="18" fill="none" stroke="#E10600"/></svg>
+        <figcaption>
+          <div class="title">1965 Zurich Tram Map</div>
+          <div class="sub caption">Map • 420×600mm • Helvetica 55</div>
+        </figcaption>
+      </figure>
+      <figure class="item reveal" data-cat="signs">
+        <svg viewBox="0 0 300 160"><rect x="20" y="20" width="260" height="120" fill="none" stroke="#000"/><rect x="70" y="60" width="160" height="40" fill="#E10600"/></svg>
+        <figcaption>
+          <div class="title">1972 Tokyo Metro Signage</div>
+          <div class="sub caption">Sign • Enamel • Gothic/Helvetica mix</div>
+        </figcaption>
+      </figure>
+      <figure class="item reveal" data-cat="tickets">
+        <svg viewBox="0 0 300 160"><rect x="40" y="40" width="220" height="80" fill="none" stroke="#000" stroke-dasharray="4 4"/><text x="150" y="90" text-anchor="middle" font-size="12">TICKET</text></svg>
+        <figcaption>
+          <div class="title">1979 Paris Métro Ticket</div>
+          <div class="sub caption">Ticket • Paper • 85×54mm</div>
+        </figcaption>
+      </figure>
+      <figure class="item reveal" data-cat="clocks">
+        <svg viewBox="0 0 300 160"><circle cx="150" cy="80" r="60" fill="none" stroke="#000"/><line x1="150" y1="80" x2="150" y2="40" stroke="#000" stroke-width="2"/><line x1="150" y1="80" x2="190" y2="80" stroke="#000" stroke-width="2"/></svg>
+        <figcaption>
+          <div class="title">1983 Helvetica Station Clock</div>
+          <div class="sub caption">Clock • Steel • 300mm</div>
+        </figcaption>
+      </figure>
+      <figure class="item reveal" data-cat="maps">
+        <svg viewBox="0 0 300 160"><polyline points="30,120 90,60 150,100 220,50 270,110" fill="none" stroke="#000"/></svg>
+        <figcaption>
+          <div class="title">1991 Berlin U-Bahn Map</div>
+          <div class="sub caption">Map • 500×700mm • Helvetica 65</div>
+        </figcaption>
+      </figure>
+      <figure class="item reveal" data-cat="systems">
+        <svg viewBox="0 0 300 160"><rect x="10" y="10" width="280" height="140" fill="none" stroke="#000"/><rect x="30" y="30" width="240" height="100" fill="none" stroke="#E10600"/></svg>
+        <figcaption>
+          <div class="title">1998 Stockholm Ticket Vending</div>
+          <div class="sub caption">System • Interface • 320×240mm</div>
+        </figcaption>
+      </figure>
+      <figure class="item reveal" data-cat="signs">
+        <svg viewBox="0 0 300 160"><circle cx="150" cy="80" r="50" fill="none" stroke="#000"/><circle cx="150" cy="80" r="30" fill="none" stroke="#E10600"/></svg>
+        <figcaption>
+          <div class="title">2003 London Underground Roundel</div>
+          <div class="sub caption">Sign • Painted metal • 600mm</div>
+        </figcaption>
+      </figure>
+      <figure class="item reveal" data-cat="systems">
+        <svg viewBox="0 0 300 160"><rect x="20" y="20" width="260" height="120" fill="none" stroke="#000"/><line x1="40" y1="60" x2="260" y2="60" stroke="#000"/><line x1="40" y1="90" x2="260" y2="90" stroke="#000"/></svg>
+        <figcaption>
+          <div class="title">2010 Seoul Information System</div>
+          <div class="sub caption">System • LCD • Helvetica Neue 55</div>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section class="map-study" id="map">
+    <div class="container grid">
+      <div class="map-wrap">
+        <h2>Transit Map Study — Line Geometry</h2>
+        <p class="meta">Original schematic construction. Paths trace on load.</p>
+        <svg viewBox="0 0 1200 520" aria-label="Schematic transit map">
+          <g stroke-linecap="square">
+            <path class="path" d="M80 260 H1120" style="animation-delay:.1s"/>
+            <path class="path r" d="M200 120 V400" style="animation-delay:.3s"/>
+            <path class="path" d="M400 80 H900" style="animation-delay:.5s"/>
+            <path class="path r" d="M600 260 C700 180,800 340,1000 260" style="animation-delay:.7s"/>
+            <circle cx="80" cy="260" r="6" fill="#000"/><circle cx="1120" cy="260" r="6" fill="#000"/>
+            <circle cx="200" cy="120" r="6" fill="#E10600"/><circle cx="200" cy="400" r="6" fill="#E10600"/>
+          </g>
+          <text x="80" y="295" font-size="12">A</text>
+          <text x="1115" y="295" font-size="12">Z</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule light"></div>
+
+  <section class="timeline" id="timeline">
+    <div class="container grid">
+      <div class="col">
+        <h2>Timeline of Information Design</h2>
+      </div>
+    </div>
+    <div class="container">
+      <div class="tl">
+        <div class="tl-item"><div class="tl-year">1900</div><p class="meta">Hand lettered station boards. City-specific type.</p></div>
+        <div class="tl-item"><div class="tl-year">1957</div><p class="meta">Helvetica release. Systematised transit lettering.</p></div>
+        <div class="tl-item"><div class="tl-year">1970</div><p class="meta">Modular grid maps. Colour coding standardised.</p></div>
+        <div class="tl-item"><div class="tl-year">1980</div><p class="meta">Digital signage prototypes. Monochrome CRT.</p></div>
+        <div class="tl-item"><div class="tl-year">2000</div><p class="meta">Wayfinding systems. Icon + type hierarchy.</p></div>
+        <div class="tl-item"><div class="tl-year">2010</div><p class="meta">Real-time data integration. Adaptive type scales.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section class="essay">
+    <div class="container grid">
+      <div class="col">
+        <h2>Featured Designer Essay</h2>
+        <h3>Massimo Vignelli — The Grid as Public Service</h3>
+        <p>For Vignelli, transit information was not decoration but civic infrastructure. The 1972 New York City Subway map reduced complexity to a regular lattice, privileging legibility over geography. Type was set in Helvetica 55 Roman at 10pt with 14pt leading. Colour was limited to black, white and a single red accent for critical information.</p>
+        <blockquote>“Design is not a product; it is a process.”</blockquote>
+        <p>The archive holds original paste-ups, colour proofs and installation photographs. The work demonstrates controlled asymmetry through alignment to a 12-column grid, generous white space, and the disciplined use of red.</p>
+      </div>
+      <div class="side">
+        <h3>Specimen</h3>
+        <p class="meta">Helvetica 55 Roman<br>12/16pt<br>Tracking 0<br>Red accent #E10600</p>
+        <div class="rule light" style="margin:16px 0"></div>
+        <p class="caption">Essay text set in 16/24. Captions 11/14 uppercase.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="table-wrap">
+    <div class="container">
+      <h2>Comparison — Specification Table</h2>
+      <table class="table" aria-label="Map specifications comparison">
+        <thead>
+          <tr><th>Map</th><th>Year</th><th>Typography</th><th>Colour</th><th>Scale</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Zurich Tram</td><td>1965</td><td>Helvetica 55</td><td>B/W/R</td><td>1:25 000</td></tr>
+          <tr><td>Paris Métro</td><td>1979</td><td>Helvetica 65</td><td>B/W</td><td>1:20 000</td></tr>
+          <tr><td>Berlin U-Bahn</td><td>1991</td><td>Helvetica 55/65</td><td>B/W/R</td><td>1:30 000</td></tr>
+          <tr><td>Seoul Subway</td><td>2010</td><td>Helvetica Neue</td><td>Full</td><td>1:40 000</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section class="exhibit" id="exhibit">
+    <div class="container grid">
+      <div class="col">
+        <h2>Exhibition Details</h2>
+        <p><strong>Grid & Motion</strong><br>Helvetica Transit Archive, Main Hall.<br>Open Tue–Sun 10:00–18:00. Closed Mondays.</p>
+        <p class="meta">Curated selection of 42 objects. Wall text set in 14pt Helvetica. Red accent used for wayfinding only.</p>
+      </div>
+      <div class="side">
+        <p class="caption">Admission free</p>
+        <p class="meta">Guided tours 11:00 and 15:00</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footgrid">
+    <div class="foot-left">
+      <div class="brand">Helvetica Transit Archive</div>
+      <p class="meta">A fictional international museum collection. All visuals generated with CSS and SVG.</p>
+    </div>
+    <div class="foot-right">
+      <p class="caption">© 2025 HTA</p>
+      <p class="meta">Swiss International Typographic Style • No gradients • No shadows</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const clockEl=document.getElementById('station-clock');
+function updateClock(){
+  const now=new Date();
+  const t=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
+  clockEl.textContent=t;
+}
+updateClock();
+setInterval(updateClock,1000);
+
+const buttons=document.querySelectorAll('.filter-bar button');
+const items=document.querySelectorAll('.item');
+buttons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    buttons.forEach(b=>b.setAttribute('aria-pressed','false'));
+    btn.setAttribute('aria-pressed','true');
+    const f=btn.dataset.filter;
+    items.forEach(it=>{
+      const show=f==='all'||it.dataset.cat===f;
+      it.style.display=show?'':'none';
+    });
+  });
+  btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();btn.click();}});
+});
+
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.2});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

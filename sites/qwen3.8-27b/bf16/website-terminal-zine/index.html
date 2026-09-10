@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>/dev/null ZINE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:      #33ff66;
+    --green-dim:  #1fae49;
+    --green-faint:#0f5c26;
+    --green-hot:  #9dffb5;
+    --bg:         #010401;
+    --glow:       0 0 6px rgba(51,255,102,.55), 0 0 14px rgba(51,255,102,.18);
+    --font-mono:  "IBM Plex Mono","Courier New",Courier,monospace;
+    --font-crt:   "VT323","IBM Plex Mono","Courier New",monospace;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scrollbar-color: var(--green-dim) #000; }
+  body{
+    background:#000;
+    color:var(--green);
+    font-family:var(--font-mono);
+    font-size:clamp(13px,1.55vw,16px);
+    line-height:1.55;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--green); color:#000; text-shadow:none; }
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:#000; }
+  ::-webkit-scrollbar-thumb{ background:var(--green-faint); border:1px solid #000; }
+
+  /* ============ THE SCREEN ============ */
+  .crt{
+    position:relative;
+    max-width:1100px;
+    margin:0 auto;
+    min-height:100vh;
+    background:radial-gradient(ellipse at center, rgba(51,255,102,.045) 0%, rgba(1,4,1,0) 62%), var(--bg);
+    border-left:1px solid #031105;
+    border-right:1px solid #031105;
+    box-shadow:
+      inset 0 0 140px rgba(0,0,0,.85),
+      inset 0 0 40px  rgba(51,255,102,.05),
+      0 0 30px rgba(51,255,102,.06);
+    border-radius:14px;
+    animation:crtflicker 7s infinite;
+  }
+  /* curvature illusion via layered edge shading */
+  .crt::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:40;
+    border-radius:inherit;
+    background:
+      radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.35) 88%, rgba(0,0,0,.72) 100%);
+  }
+  /* scanlines, fixed, drifting */
+  .crt::after{
+    content:"";
+    position:fixed;
+    inset:-10px;
+    pointer-events:none;
+    z-index:41;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,.32) 0px,
+      rgba(0,0,0,.32) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    animation:scanline-drift 9s linear infinite;
+    mix-blend-mode:multiply;
+  }
+  /* slow moving "refresh band" */
+  .refresh-band{
+    position:fixed;
+    left:0; right:0;
+    height:120px;
+    top:-140px;
+    z-index:42;
+    pointer-events:none;
+    background:linear-gradient(to bottom, transparent, rgba(51,255,102,.035), transparent);
+    animation:band-sweep 8.5s linear infinite;
+  }
+  @keyframes scanline-drift{ from{ transform:translateY(0);} to{ transform:translateY(3px);} }
+  @keyframes band-sweep{ from{ top:-140px;} to{ top:110vh;} }
+  @keyframes crtflicker{
+    0%,100%{ opacity:1; }
+    3%{ opacity:.985; }
+    4%{ opacity:1; }
+    27%{ opacity:1; }
+    28%{ opacity:.965; }
+    29%{ opacity:1; }
+    62%{ opacity:1; }
+    63%{ opacity:.988; }
+    64%{ opacity:1; }
+  }
+
+  .text{ text-shadow:var(--glow); }
+  pre{ text-shadow:var(--glow); }
+  .dim{ color:var(--green-dim); text-shadow:0 0 4px rgba(51,255,102,.25); }
+  .hot{ color:var(--green-hot); }
+
+  /* ============ BOOT ============ */
+  #boot{
+    position:fixed;
+    inset:0;
+    background:var(--bg);
+    z-index:60;
+    padding:6vh 6vw;
+    overflow:auto;
+    cursor:pointer;
+  }
+  #boot pre{
+    font-family:var(--font-crt);
+    font-size:clamp(15px,2.4vw,24px);
+    white-space:pre-wrap;
+    word-break:break-word;
+    text-shadow:var(--glow);
+  }
+  #boot.done{ opacity:0; transition:opacity .55s steps(6); pointer-events:none; }
+  #boot.done{ display:none; }
+  .boot-hidden #main{ opacity:0; }
+  #main{ transition:opacity .5s steps(5); }
+
+  /* ============ LAYOUT ============ */
+  #main{ padding:0 clamp(14px,4vw,52px) 0; position:relative; z-index:5; }
+  section{ padding:clamp(22px,4vw,44px) 0; }
+  .frame{
+    border:1px solid var(--green-faint);
+    padding:clamp(12px,2.5vw,24px);
+    margin-bottom:clamp(18px,3vw,30px);
+    position:relative;
+  }
+  .frame::before{
+    content:attr(data-label);
+    position:absolute;
+    top:-0.72em;
+    left:14px;
+    background:var(--bg);
+    padding:0 .5em;
+    color:var(--green-dim);
+    font-size:.8em;
+    letter-spacing:.08em;
+  }
+  .divider{
+    overflow:hidden;
+    white-space:nowrap;
+    color:var(--green-faint);
+    font-size:.9em;
+    user-select:none;
+    text-shadow:0 0 3px rgba(51,255,102,.2);
+    padding:0;
+  }
+
+  /* ============ HEADINGS ============ */
+  h1,h2,h3{ font-family:var(--font-crt); font-weight:400; letter-spacing:.04em; text-shadow:var(--glow); }
+  .banner{
+    font-family:var(--font-crt);
+    font-size:clamp(10px,2.05vw,22px);
+    line-height:1.12;
+    white-space:pre;
+    overflow-x:auto;
+    color:var(--green);
+    text-shadow:0 0 8px rgba(51,255,102,.7), 0 0 24px rgba(51,255,102,.25);
+    padding:8px 0;
+  }
+  h2.sec{
+    font-size:clamp(22px,3.4vw,36px);
+    margin-bottom:.35em;
+  }
+  h2.sec .num{ color:var(--green-dim); }
+  h3{ font-size:clamp(17px,2.2vw,22px); margin:1em 0 .4em; }
+
+  /* ============ LINKS / HOVER ============ */
+  a, .click{
+    color:var(--green);
+    text-decoration:none;
+    text-shadow:var(--glow);
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:none;
+  }
+  a::before{ content:"> "; color:var(--green-dim); }
+  a:hover, a:focus, .click:hover, .click:focus{
+    background:var(--green);
+    color:#000;
+    text-shadow:none;
+    outline:none;
+  }
+  a:hover::before, .click:hover::before{ color:#000; }
+  .rowlink{ display:block; width:100%; }
+  .rowlink span{ display:inline-block; }
+
+  /* ============ DIR LISTING ============ */
+  .dirlist{ font-family:var(--font-mono); font-size:clamp(11.5px,1.45vw,15px); line-height:1.9; }
+  .dirlist pre{ white-space:pre-wrap; word-break:break-word; }
+  .dirlist a{ white-space:nowrap; }
+  .dirhint{ margin-top:10px; color:var(--green-dim); font-size:.85em; }
+
+  /* ============ ARTICLE ============ */
+  .article p{ margin:0 0 1em; max-width:72ch; }
+  .article pre.art{
+    font-family:var(--font-crt);
+    font-size:clamp(8px,1.35vw,14px);
+    line-height:1.15;
+    overflow-x:auto;
+    padding:12px;
+    border:1px dashed var(--green-faint);
+    color:var(--green);
+    margin:1.2em 0;
+  }
+  .article .caption{ color:var(--green-dim); font-size:.85em; text-align:center; margin-top:-0.8em; margin-bottom:1.2em; }
+  .kbd{
+    border:1px solid var(--green-faint);
+    padding:0 .35em;
+    font-size:.9em;
+    white-space:nowrap;
+  }
+  blockquote.term{
+    border-left:3px solid var(--green-dim);
+    padding:.4em 0 .4em 1em;
+    margin:1.2em 0;
+    color:var(--green-dim);
+  }
+  blockquote.term strong{ color:var(--green); font-weight:700; }
+
+  /* ============ MAN PAGE ============ */
+  .man{ font-size:clamp(12px,1.5vw,15.5px); }
+  .man .mandebugh{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:.5em 2em;
+    border-bottom:1px solid var(--green-faint);
+    padding-bottom:.4em;
+    margin-bottom:1em;
+    color:var(--green-dim);
+    font-size:.9em;
+  }
+  .man dt{
+    color:var(--green-hot);
+    font-weight:700;
+    margin-top:1.1em;
+    text-shadow:var(--glow);
+  }
+  .man dt::before{ content:""; }
+  .man dd{ margin:0 .4em 0 2.2em; }
+  .man .ind{ display:inline-block; min-width:9.5ch; }
+  .man dd .alias{ color:var(--green-dim); }
+
+  /* ============ SUBSCRIBE / SHELL ============ */
+  .shell{ font-size:clamp(12.5px,1.55vw,16px); line-height:2; }
+  .shell pre{ white-space:pre-wrap; word-break:break-word; }
+  .prompt{ color:var(--green-dim); }
+  #subform{ display:flex; flex-wrap:wrap; align-items:baseline; gap:.4em 0; }
+  #subform .prompt{ flex:0 0 auto; }
+  #email{
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--green-hot);
+    font-family:var(--font-mono);
+    font-size:1em;
+    flex:1 1 10ch;
+    min-width:12ch;
+    max-width:34ch;
+    padding:0 .2em 0 0;
+    caret-color:var(--green-hot);
+    text-shadow:var(--glow);
+  }
+  #email::placeholder{ color:var(--green-faint); text-shadow:none; }
+  .keybtn{
+    background:transparent;
+    border:1px solid var(--green-dim);
+    color:var(--green);
+    font-family:var(--font-mono);
+    font-size:.9em;
+    padding:.1em .6em;
+    cursor:pointer;
+    text-shadow:var(--glow);
+    letter-spacing:.05em;
+  }
+  .keybtn:hover, .keybtn:focus{
+    background:var(--green);
+    color:#000;
+    text-shadow:none;
+    outline:none;
+  }
+  #submsg{ min-height:2em; color:var(--green-dim); }
+  #submsg.ok{ color:var(--green-hot); }
+  #submsg.err{ color:var(--green-dim); }
+
+  /* ============ FOOTER ============ */
+  footer.status{
+    position:relative;
+    z-index:5;
+    margin:1em clamp(14px,4vw,52px) 0;
+    padding:10px 14px 14px;
+    border-top:1px solid var(--green-faint);
+    font-size:clamp(10.5px,1.35vw,14px);
+    color:var(--green-dim);
+    display:flex;
+    flex-wrap:wrap;
+    gap:.3em 1.4em;
+    align-items:baseline;
+    text-shadow:0 0 4px rgba(51,255,102,.25);
+  }
+  footer.status .dot{ color:var(--green-hot); }
+  footer.status .right{ margin-left:auto; }
+  .status-line{
+    overflow:hidden;
+    white-space:nowrap;
+    color:var(--green-faint);
+    font-size:1em;
+  }
+
+  /* ============ CURSOR ============ */
+  .cursor{
+    display:inline-block;
+    width:.62em;
+    height:1.05em;
+    background:var(--green);
+    vertical-align:text-bottom;
+    box-shadow:0 0 8px rgba(51,255,102,.8);
+    animation:blink 1.06s steps(1) infinite;
+  }
+  .cursor.hollow{ background:transparent; border:1px solid var(--green); box-shadow:none; }
+  @keyframes blink{ 0%,49%{ opacity:1; } 50%,100%{ opacity:0; } }
+
+  /* ============ RESPONSIVE / MOTION ============ */
+  @media (max-width:640px){
+    .crt{ border-radius:6px; }
+    .man dd{ margin-left:1.2em; }
+    footer.status .right{ margin-left:0; width:100%; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .crt, .crt::after, .refresh-band, .cursor{ animation:none !important; }
+  }
+</style>
+</head>
+<body class="boot-hidden">
+
+<!-- ══════════ BOOT SEQUENCE ══════════ -->
+<div id="boot" aria-hidden="true">
+  <pre id="boottext"></pre>
+</div>
+
+<div class="refresh-band" aria-hidden="true"></div>
+
+<div class="crt">
+  <div id="main">
+
+    <!-- ══════════ MASTHEAD ══════════ -->
+    <section id="top">
+      <pre class="banner" aria-label="/dev/null ZINE">
+ ███████╗██████╗ ██╗   ██╗     ██████╗  █████╗  ██████╗ ███████╗
+ ██╔════╝██╔══██╗██║   ██║     ██╔══██╗██╔══██╗██╔════╝ ██╔════╝
+ ███████╗██████╔╝██║   ██║     ██████╔╝███████║╚█████╗  ███████╗
+ ╚════██║██╔══██╗╚██╗ ██╔╝     ██╔═══╝ ██╔══██║╚════██║ ╚════██║
+ ███████║██║  ██║ ╚████╔╝      ██║     ██║  ██║██████╔╝ ███████║
+ ╚══════╝╚═╝  ╚═╝  ╚═══╝       ╚═╝     ╚═╝  ╚═╝╚═════╝  ╚══════╝
+        ┌────────────────────────────────────────────┐
+        │  THE UNDERGROUND HACKER CULTURE ZINE       │
+        │  ink: green phosphor   baud: 2400          │
+        │  est. 1987 · no copies made · no trace     │
+        └────────────────────────────────────────────┘</pre>
+      <div style="margin-top:.6em;" class="dim">
+        $ cat /dev/null
+        <span class="hot">(device exists. it is, by definition, empty.)</span>
+      </div>
+      <div style="height:.8em;"></div>
+      <div style="display:flex; flex-wrap:wrap; gap:.2em 1.8em; font-size:.95em;">
+        <a href="#index">index</a>
+        <a href="#issue">issue 042</a>
+        <a href="#crew">contributors</a>
+        <a href="#sub">subscribe</a>
+      </div>
+      <div class="divider" aria-hidden="true">────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+    </section>
+
+    <!-- ══════════ DIRECTORY LISTING ══════════ -->
+    <section id="index">
+      <h2 class="sec"><span class="num">01/</span> ARCHIVE — DIRECTORY LISTING</h2>
+      <div class="frame" data-label="ls -la ~/zine/archive">
+        <div class="dirlist">
+<pre>
+total 247
+drwxr-xr-x   2 null null  4096 dec 31 1996 <a class="rowlink" href="#index"><span>.</span></a>
+drwxr-xr-x   9 null null  4096 jan  1 1997 <a class="rowlink" href="#index"><span>..</span></a>
+-rw-r--r--   1 null null  1337 jul 04 1994 issue-037.phos  "THE SWITCHBOARD GHOSTS"
+-rw-r--r--   1 null null  2048 nov 11 1995 issue-038.phos  "HANDSHELAKES &amp; HANDSHAKES"
+-rw-r--r--   1 null null  3141 mar 15 1996 issue-039.phos  "THE 2400 BAUD PSALMS"
+-rw-r--r--   1 null null  1234 aug 30 1996 issue-040.phos  "NULL POINTER, NO GOD"
+-rw-r--r--   1 null null  4321 feb 14 1997 issue-041.phos  "FLEA MARKETS FOR SECRETS"
+-rw-r--r--   1 null null  6666 jun 06 1997 issue-042.phos  "DEATH OF THE DIAL-UP"  ★
+-rwxr-xr-x   1 null null    77 sep 09 1997 next_issue.sh
+</pre>
+          <div class="dirhint">★ = this issue. entries are phosphor-encoded .phos files. right-clicking does nothing here.</div>
+        </div>
+      </div>
+      <div class="divider" aria-hidden="true">────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+    </section>
+
+    <!-- ══════════ FEATURED ARTICLE ══════════ -->
+    <section id="issue" class="article">
+      <h2 class="sec"><span class="num">02/</span> ISSUE 042 — FEATURED DISPATCH</h2>
+      <div class="frame" data-label="cat issue-042.phos">
+        <h3>Death of the Dial-Up — a eulogy, typed at 2400 baud</h3>
+        <p class="dim">by GHOST-09 · 14 pages · best read with the lights off and a cup of something hot</p>
+
+        <p>It started as a sound. The modem handshake — that screaming, chirping,
+        electric bird-song that meant a machine on the other end of a copper wire
+        was, for a few minutes, <em>here</em>. We called it a connection. We meant
+        it the way we meant every other word in this trade: literally, and
+        spiritually, and with a little fear attached.</p>
+
+        <pre class="art" aria-label="ASCII art of a telephone modem">
+    .-----------------------------.
+    |  MODEL: 2400-BD PSALM-89    |
+    |  [TONE] [SYNC] [CARRIER OK] |
+    '-----------------------------'
+       |        |        |
+       |        |        |
+   PHONE JACK  POWER   "THE SCREAM"
+       |
+       |  ~~~~~~   2400 baud  ~~~~~~
+       |    /\   /\   /\   /\
+       |   /  \ /  \ /  \ /  \
+       v   SIGNAL TO THE MACHINE SPIRITS</pre>
+        <div class="caption">fig.1 — a residential modem, mid-handshake. the waveform is accurate. the spirits are not.</div>
+
+        <p>What do you do when the birds stop singing? This issue is my answer.
+        I rode the line from a bedroom in 1989, shared it with two siblings and a
+        parent who believed "the internet" was what they did at the office with
+        the big calculator, and I watched it grow from a rumor into a
+        continent. The tools got faster. The rooms got colder. The ghosts
+        learned to render at 60 frames per second and stopped knocking.</p>
+
+        <blockquote class="term">
+          <strong>ghost-09@bedroom:~$</strong> who am i<br>
+          you are a packet that got nowhere, and therefore, all over.
+        </blockquote>
+
+        <p>The practical advice, for those still dialing: learn your handshakes
+        by ear. Know the difference between a carrier tone and a busy tone the
+        way a shepherd knows his sheep. Learn <span class="kbd">AT&amp;D0</span> and
+        <span class="kbd">ATS0=1</span> by heart. Keep a hand-written log of
+        bulletin boards in a notebook that never touches a scanner. When the
+        line drops at 3:00 a.m. and the modem emits its final descending
+        wail — the sound of a connection dying — <em>write it down</em>.
+        Someday the only proof we were ever logged in will be our notes.</p>
+
+        <pre class="art" aria-label="ASCII art of a terminal going dark">
+              +-----------------------+
+              |  CARRIER LOST        |
+              |  AT&amp;E0Q0             |
+              |  [no tone]           |
+              |  [no tone]           |
+              |  [no ton            |
+              |  [no t             |
+              |  [                |
+              |   [              |
+              |    [            |
+              |     [  the light |
+              |      [  is warm  |
+              |       [  on its  |
+              |        [  way out |
+              |         [        |
+              +-------------------</pre>
+        <div class="caption">fig.2 — carrier lost. the phosphor holds the last characters a moment longer than the power does.</div>
+
+        <p>This zine will not pretend otherwise: something ended in 1997, and
+        it has been ending ever since, at 2400 baud, a little bit every night,
+        every time the line goes dead and we reach for the handset out of
+        muscle memory instead of grief. But the null device still works.
+        Nothing goes in, nothing comes out, and it is always, always open.
+        That is the whole philosophy. See you in issue 043.</p>
+        <p class="dim">— end of transmission — press <span class="kbd">[RETURN]</span> to scroll to the crew.</p>
+      </div>
+      <div class="divider" aria-hidden="true">────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+    </section>
+
+    <!-- ══════════ MAN PAGE: CONTRIBUTORS ══════════ -->
+    <section id="crew" class="man">
+      <h2 class="sec"><span class="num">03/</span> CONTRIBUTORS — MAN PAGE</h2>
+      <div class="frame" data-label="man nullzine">
+        <div class="mandebugh">
+          <span>NULLZINE(1)</span>
+          <span>User Commands</span>
+          <span>NULLZINE(1)</span>
+        </div>
+        <dl>
+          <dt>NAME</dt>
+          <dd><span class="ind">nullzine</span> — an underground hacker culture zine, delivered in phosphor, printed nowhere.</dd>
+
+          <dt>SYNOPSIS</dt>
+          <dd><span class="ind">nullzine</span> [--issue N] [--ink green] [--baud 2400] [--lights off]</dd>
+
+          <dt>AUTHORS</dt>
+          <dd>
+            <span class="ind">GHOST-09</span> <span class="alias">(a.k.a. The Switchboard Ghost)</span> — editor-in-chief. former telephone exchange
+            technician, 1987–1991. claims the modem in fig.1 is haunted;
+            will not elaborate, will hum along with it.
+            <br>
+            <span class="ind">NULLPTR</span> <span class="alias">(a.k.a. The Pointer)</span> — layout and box-drawing. types everything in lowercase
+            except the words <em>ALWAYS</em> and <em>OPEN</em>. keeps the
+            ASCII art honest to 80 columns, one column at a time.
+            <br>
+            <span class="ind">BAUD-48</span> <span class="alias">(a.k.a. Slow Signal)</span> — sound archive. recorded 312 modem handshakes on
+            cassette; the cassettes are the issue, the cassettes are the
+            whole issue.
+            <br>
+            <span class="ind">ROOTKIT</span> <span class="alias">(a.k.a. The Privilege)</span> — dispatches and interviews. only reachable during
+            the day. publishes under a name she has never, so far, used
+            anywhere else.
+            <br>
+            <span class="ind">/dev/null</span> <span class="alias">(a.k.a. The Device)</span> — final proofreader. accepts all submissions, retains
+            none. considered it a compliment when nobody could be reached
+            for corrections.
+          </dd>
+
+          <dt>SEE ALSO</dt>
+          <dd><span class="ind"></span> at(7), modem(8), silence(1)</dd>
+        </dl>
+      </div>
+      <div class="divider" aria-hidden="true">────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+    </section>
+
+    <!-- ══════════ SUBSCRIBE / SHELL PROMPT ══════════ -->
+    <section id="sub">
+      <h2 class="sec"><span class="num">04/</span> SUBSCRIBE — SHELL</h2>
+      <div class="frame" data-label="/bin/sh — 80x24">
+        <div class="shell">
+<pre>
+<span class="prompt">null@zine:~$</span> nullzine --subscribe
+usage: the zine is free, the null is open. no logs kept. no trace written.
+enter your address (anything that ends in something):
+</pre>
+          <form id="subform" autocomplete="off">
+            <span class="prompt">address&gt;</span>
+            <input id="email" type="text" name="email" placeholder="you@somewhere.tld" aria-label="email address">
+            <button class="keybtn" type="submit">[RETURN]</button>
+          </form>
+<pre id="submsg" aria-live="polite"></pre>
+<pre>
+<span class="prompt">null@zine:~$</span> <span class="cursor" aria-hidden="true"></span></pre>
+        </div>
+      </div>
+      <div class="divider" aria-hidden="true">────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+    </section>
+
+  </div><!-- /#main -->
+
+  <!-- ══════════ SYSTEM STATUS FOOTER ══════════ -->
+  <footer class="status" id="statusbar">
+    <div class="status-line" aria-hidden="true">┌───────────────────────────────────────────────────────────────────────────────────────────</div>
+    <span><span class="dot">●</span> SYS:OK</span>
+    <span>MEM:63K FREE</span>
+    <span>LINK:2400 BAUD</span>
+    <span>PHOSPHOR:P1/5</span>
+    <span id="clock">--:--:-- LOCAL</span>
+    <span class="right">/dev/null ZINE · est. 1987 · issue 042/∞ · <a href="#top">^ top</a></span>
+    <div class="status-line" aria-hidden="true">└───────────────────────────────────────────────────────────────────────────────────────────</div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- boot sequence ---------- */
+  var boot = document.getElementById('boot');
+  var boottext = document.getElementById('boottext');
+  var lines = [
+    "NULLZINE BIOS v6.66  (c) 1987-1997 UNDERGROUND PRESS COLLECTIVE",
+    "",
+    "  64K PHOSPHOR RAM ............ OK",
+    "  P1 TUBE WARMUP .............. OK [5s elided]",
+    "  MOUNTING /dev/null .......... OK (always empty, as required)",
+    "  UNPACKING issue-042.phos .... OK [6666 bytes, no corruption]",
+    "  LOADING INK: #33ff66 ........ OK",
+    "  CARRIER: 2400 BAUD .......... SCREEEE...... TONE ACQUIRED",
+    "",
+    "  > ENTERING TERMINAL"
+  ];
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function endBoot(){
+    if (boot.classList.contains('done')) return;
+    boot.classList.add('done');
+    document.body.classList.remove('boot-hidden');
+    document.title = "/dev/null ZINE";
+    setTimeout(function(){ boot.remove(); }, 700);
+  }
+
+  if (reduce){
+    // no animation: show boot fully then hand off quickly
+    boottext.textContent = lines.join("\n");
+    setTimeout(endBoot, 250);
+    return wireRest();
+  }
+
+  var li = 0, ci = 0;
+  function typeLoop(){
+    if (li >= lines.length){
+      // final blinking cursor, then entry prompt
+      boottext.textContent += " \u2588";
+      setTimeout(function(){
+        boottext.textContent = lines.join("\n") + "\n\n  [ press any key / click to continue ]";
+      }, 350);
+      return;
+    }
+    var line = lines[li];
+    if (ci <= line.length){
+      boottext.textContent = lines.slice(0, li).join("\n") +
+        (li ? "\n" : "") + line.slice(0, ci) + (ci < line.length ? " \u2588" : "");
+      ci++;
+      var ch = ci <= line.length ? line[ci-1] : "";
+      var delay = 14 + Math.random() * 26;
+      if (ch === "." ) delay = 6;
+      if (ch === " " ) delay = 4;
+      setTimeout(typeLoop, delay);
+    } else {
+      li++; ci = 0;
+      setTimeout(typeLoop, 90 + Math.random() * 140);
+    }
+  }
+  typeLoop();
+
+  boot.addEventListener('click', endBoot);
+  window.addEventListener('keydown', function h(){
+    if (boot.classList.contains('done')) return;
+    endBoot();
+    window.removeEventListener('keydown', h);
+  });
+  // safety: never trap the reader
+  setTimeout(endBoot, 9000);
+
+  wireRest();
+
+  /* ---------- everything after boot ---------- */
+  function wireRest(){
+    /* footer clock + uptime feel */
+    var clock = document.getElementById('clock');
+    var t0 = new Date();
+    function pad(n){ return (n < 10 ? "0" : "") + n; }
+    function tick(){
+      var d = new Date();
+      var up = Math.floor((d - t0) / 1000);
+      clock.textContent = pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" +
+                          pad(d.getSeconds()) + " LOCAL";
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    /* subscribe shell ---------- fake but lively */
+    var form = document.getElementById('subform');
+    var email = document.getElementById('email');
+    var msg = document.getElementById('submsg');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var v = email.value.trim();
+      var ok = v.length > 3 && /\S+@\S+\.\S+/.test(v);
+      if (!ok){
+        msg.className = 'err';
+        msg.textContent = "error: address malformed or too short. the null rejects nothing, but the protocol insists.";
+        email.focus();
+        return;
+      }
+      msg.className = 'ok';
+      msg.textContent = "subscribing to " + v + " ... OK.\nwelcome to the null. issue #043 en route at 2400 baud. nothing will be logged.";
+      email.value = "";
+    });
+
+    /* smooth-scroll for in-page links, terminal pace */
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click', function(e){
+        var t = document.querySelector(a.getAttribute('href'));
+        if (t){ e.preventDefault(); t.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'}); }
+      });
+    });
+
+    /* one-off "refresh hiccup" every ~14s for CRT character */
+    if (!reduce){
+      var crt = document.querySelector('.crt');
+      setInterval(function(){
+        crt.style.filter = 'brightness(1.06)';
+        setTimeout(function(){ crt.style.filter = ''; }, 90);
+        setTimeout(function(){ crt.style.filter = 'brightness(0.96)'; }, 160);
+        setTimeout(function(){ crt.style.filter = ''; }, 240);
+      }, 14000 + Math.random() * 6000);
+    }
+  }
+})();
+</script>
+</body>
+</html>

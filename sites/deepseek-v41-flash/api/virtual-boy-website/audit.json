@@ -1,0 +1,20 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/deepseek-v41-flash/api/virtual-boy-website/index.html",
+  "pass": false,
+  "notes": [
+    "all canvases blank after settle",
+    "WebGL canvas under headless SwiftShader -- possible false negative; GPU-verify in a headed browser before calling it broken"
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": false,
+  "canvas_count": 2,
+  "canvas_kinds": [
+    "webgl",
+    "2d"
+  ],
+  "served_by": "base",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 17900,
+  "scroll_height": 18039
+}

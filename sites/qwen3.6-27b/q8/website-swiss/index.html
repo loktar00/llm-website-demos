@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helvetica Transit Archive — International Museum Collection</title>
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --red: #e30613;
+    --gray-100: #f5f5f5;
+    --gray-200: #e8e8e8;
+    --gray-300: #d0d0d0;
+    --gray-400: #999999;
+    --gray-500: #666666;
+    --gray-600: #444444;
+    --gray-700: #2a2a2a;
+    --grid-gap: 2px;
+    --section-padding: clamp(60px, 10vw, 140px);
+    --max-width: 1400px;
+    --font-main: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "Courier New", Courier, monospace;
+  }
+
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font-main);
+    color: var(--black);
+    background: var(--white);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--red);
+    color: var(--white);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 4px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img, svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* ── UTILITY ── */
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 clamp(20px, 4vw, 80px);
+  }
+
+  .rule {
+    width: 100%;
+    height: 1px;
+    background: var(--black);
+    border: none;
+    margin: 0;
+  }
+
+  .rule--red {
+    background: var(--red);
+  }
+
+  .rule--light {
+    background: var(--gray-200);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── HEADER / NAV ── */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    transition: transform 0.3s ease;
+  }
+
+  .site-header__inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: 48px;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 clamp(20px, 4vw, 80px);
+  }
+
+  .site-header__label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .site-header__year {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--gray-500);
+    text-align: center;
+  }
+
+  .site-header__nav {
+    display: flex;
+    gap: 24px;
+    justify-self: end;
+  }
+
+  .site-header__nav a {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 0;
+    position: relative;
+  }
+
+  .site-header__nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--red);
+    transition: width 0.3s ease;
+  }
+
+  .site-header__nav a:hover::after,
+  .site-header__nav a:focus-visible::after {
+    width: 100%;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    margin-top: 48px;
+    min-height: calc(100vh - 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: var(--section-padding);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 100%;
+  }
+
+  .hero__title-block {
+    padding: clamp(40px, 8vw, 120px) clamp(20px, 4vw, 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .hero__overline {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+  }
+
+  .hero__title {
+    font-size: clamp(48px, 8vw, 120px);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+  }
+
+  .hero__title em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .hero__subtitle {
+    font-size: clamp(14px, 1.5vw, 18px);
+    font-weight: 400;
+    line-height: 1.6;
+    max-width: 480px;
+    color: var(--gray-600);
+  }
+
+  .hero__clock-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-left: 1px solid var(--gray-200);
+  }
+
+  .clock-container {
+    text-align: center;
+  }
+
+  .clock-face {
+    width: clamp(200px, 25vw, 360px);
+    height: clamp(200px, 25vw, 360px);
+    position: relative;
+    margin: 0 auto 32px;
+  }
+
+  .clock-face svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .clock-time {
+    font-size: clamp(36px, 5vw, 72px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .clock-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-top: 8px;
+  }
+
+  .clock-station {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-top: 16px;
+  }
+
+  .clock-station span {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    padding: var(--section-padding) 0 0;
+  }
+
+  .section-header__number {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--red);
+    margin-bottom: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .section-header__title {
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+
+  .section-header__desc {
+    font-size: clamp(13px, 1.2vw, 16px);
+    line-height: 1.7;
+    max-width: 640px;
+    color: var(--gray-600);
+  }
+
+  /* ── COLLECTION INTRO ── */
+  .intro {
+    padding-bottom: var(--section-padding);
+  }
+
+  .intro__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    padding-top: 60px;
+  }
+
+  .intro__stat {
+    border-top: 2px solid var(--black);
+    padding-top: 20px;
+  }
+
+  .intro__stat-number {
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .intro__stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-top: 8px;
+  }
+
+  /* ── ARCHIVE GRID ── */
+  .archive {
+    padding-bottom: var(--section-padding);
+  }
+
+  .archive__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 40px 0;
+  }
+
+  .archive__filter-btn {
+    font-family: var(--font-main);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border: 1px solid var(--gray-300);
+    background: transparent;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .archive__filter-btn:hover {
+    border-color: var(--black);
+    color: var(--black);
+  }
+
+  .archive__filter-btn.active {
+    background: var(--black);
+    border-color: var(--black);
+    color: var(--white);
+  }
+
+  .archive__filter-btn:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .archive__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--grid-gap);
+    background: var(--gray-200);
+    border: 1px solid var(--gray-200);
+  }
+
+  .archive__item {
+    background: var(--white);
+    padding: 32px 24px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    overflow: hidden;
+  }
+
+  .archive__item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--red);
+    transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .archive__item:hover::before,
+  .archive__item:focus-within::before {
+    height: 100%;
+  }
+
+  .archive__item:hover {
+    background: var(--gray-100);
+  }
+
+  .archive__item-visual {
+    width: 100%;
+    aspect-ratio: 4/3;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .archive__item-visual svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .archive__item-category {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+
+  .archive__item-title {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .archive__item-meta {
+    font-size: 11px;
+    color: var(--gray-500);
+    font-weight: 400;
+  }
+
+  .archive__item-index {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gray-300);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .archive__item.hidden {
+    display: none;
+  }
+
+  /* ── TRANSIT MAP STUDY ── */
+  .map-study {
+    padding: var(--section-padding) 0;
+  }
+
+  .map-study__container {
+    margin-top: 60px;
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-study__svg-wrap {
+    width: 100%;
+    padding-bottom: 60%;
+    position: relative;
+    background: var(--white);
+  }
+
+  .map-study__svg-wrap svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .map-study__legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    padding: 32px;
+    background: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .map-study__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .map-study__legend-color {
+    width: 24px;
+    height: 3px;
+    flex-shrink: 0;
+  }
+
+  .map-study__legend-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .map-study__caption {
+    font-size: 10px;
+    color: var(--gray-400);
+    letter-spacing: 0.05em;
+    padding: 16px 32px;
+    background: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    padding: var(--section-padding) 0;
+  }
+
+  .timeline__grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+    margin-top: 60px;
+  }
+
+  .timeline__year-col {
+    border-right: 1px solid var(--gray-200);
+    padding-right: 32px;
+  }
+
+  .timeline__year {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--gray-400);
+    padding: 16px 0;
+    font-variant-numeric: tabular-nums;
+    position: relative;
+  }
+
+  .timeline__year.active {
+    color: var(--black);
+  }
+
+  .timeline__year.active::before {
+    content: '';
+    position: absolute;
+    left: -33px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    transform: translateY(-50%);
+  }
+
+  .timeline__content-col {
+    padding-left: 32px;
+  }
+
+  .timeline__entry {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .timeline__entry:last-child {
+    border-bottom: none;
+  }
+
+  .timeline__entry-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .timeline__entry-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--gray-600);
+    max-width: 560px;
+  }
+
+  /* ── DESIGNER ESSAY ── */
+  .essay {
+    padding: var(--section-padding) 0;
+  }
+
+  .essay__grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 60px;
+    margin-top: 60px;
+  }
+
+  .essay__portrait {
+    position: relative;
+  }
+
+  .essay__portrait-visual {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .essay__portrait-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+
+  .essay__portrait-role {
+    font-size: 11px;
+    color: var(--gray-500);
+    line-height: 1.5;
+  }
+
+  .essay__body {
+    padding-top: 8px;
+  }
+
+  .essay__body p {
+    font-size: clamp(14px, 1.3vw, 17px);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    color: var(--gray-700);
+  }
+
+  .essay__body p:first-child::first-letter {
+    font-size: 3.2em;
+    font-weight: 700;
+    float: left;
+    line-height: 0.8;
+    margin-right: 8px;
+    margin-top: 6px;
+    color: var(--red);
+  }
+
+  .essay__pullquote {
+    font-size: clamp(20px, 2.5vw, 32px);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    padding: 32px 0;
+    border-top: 2px solid var(--black);
+    border-bottom: 2px solid var(--black);
+    margin: 40px 0;
+  }
+
+  /* ── SPEC TABLE ── */
+  .specs {
+    padding: var(--section-padding) 0;
+  }
+
+  .specs__table-wrap {
+    margin-top: 60px;
+    overflow-x: auto;
+  }
+
+  .specs__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .specs__table th {
+    text-align: left;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 10px;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--black);
+    white-space: nowrap;
+  }
+
+  .specs__table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: top;
+  }
+
+  .specs__table tr:hover td {
+    background: var(--gray-100);
+  }
+
+  .specs__table td:first-child {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .specs__table td:not(:first-child) {
+    color: var(--gray-600);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .specs__table .red-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--red);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* ── EXHIBITION ── */
+  .exhibition {
+    padding: var(--section-padding) 0;
+  }
+
+  .exhibition__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 60px;
+    border: 1px solid var(--gray-200);
+  }
+
+  .exhibition__info {
+    padding: 48px;
+    border-right: 1px solid var(--gray-200);
+  }
+
+  .exhibition__info-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+
+  .exhibition__detail {
+    margin-bottom: 24px;
+  }
+
+  .exhibition__detail-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 4px;
+  }
+
+  .exhibition__detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .exhibition__map {
+    position: relative;
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+  }
+
+  .exhibition__map svg {
+    width: 80%;
+    height: auto;
+  }
+
+  .exhibition__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 40px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 0;
+    border-bottom: 2px solid var(--red);
+    transition: gap 0.3s ease;
+  }
+
+  .exhibition__cta:hover {
+    gap: 20px;
+  }
+
+  .exhibition__cta-arrow {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .exhibition__cta:hover .exhibition__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    padding: var(--section-padding) 0 40px;
+    border-top: 2px solid var(--black);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  .site-footer__brand {
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  .site-footer__brand em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .site-footer__tagline {
+    font-size: 12px;
+    color: var(--gray-500);
+    line-height: 1.6;
+    max-width: 320px;
+  }
+
+  .site-footer__col-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 20px;
+  }
+
+  .site-footer__link {
+    display: block;
+    font-size: 12px;
+    padding: 4px 0;
+    color: var(--gray-600);
+    transition: color 0.2s ease;
+  }
+
+  .site-footer__link:hover {
+    color: var(--black);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .site-footer__copy {
+    font-size: 10px;
+    color: var(--gray-400);
+    letter-spacing: 0.05em;
+  }
+
+  .site-footer__coords {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--gray-400);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__clock-block {
+      border-left: none;
+      border-top: 1px solid var(--gray-200);
+      padding: 60px 0;
+    }
+
+    .archive__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .essay__grid {
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
+    }
+
+    .timeline__grid {
+      grid-template-columns: 140px 1fr;
+    }
+
+    .exhibition__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .exhibition__info {
+      border-right: none;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .site-header__nav {
+      display: none;
+    }
+
+    .intro__grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .archive__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .essay__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .essay__portrait {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .essay__portrait-visual {
+      width: 120px;
+      aspect-ratio: 1;
+      flex-shrink: 0;
+    }
+
+    .timeline__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .timeline__year-col {
+      border-right: none;
+      border-bottom: 1px solid var(--gray-200);
+      padding-right: 0;
+      padding-bottom: 16px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .timeline__content-col {
+      padding-left: 0;
+    }
+
+    .exhibition__info {
+      padding: 32px 24px;
+    }
+
+    .site-footer__grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .site-footer__bottom {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    .site-header { position: static; }
+    .hero { min-height: auto; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="site-header" role="banner">
+  <div class="site-header__inner">
+    <div class="site-header__label">HTA</div>
+    <div class="site-header__year">Est. 1987 — Collection 2024</div>
+    <nav class="site-header__nav" aria-label="Main navigation">
+      <a href="#archive">Archive</a>
+      <a href="#map">Map Study</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#essay">Essay</a>
+      <a href="#exhibition">Visit</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" aria-label="Hero">
+  <div class="hero__grid">
+    <div class="hero__title-block">
+      <div class="hero__overline">International Museum Collection</div>
+      <h1 class="hero__title">Helvetica<br>Transit<br><em>Archive</em></h1>
+      <p class="hero__subtitle">
+        A curated collection of public transportation maps, signage, tickets, 
+        clocks, and information systems from 120 cities across six continents. 
+        Documenting the visual language of movement since 1863.
+      </p>
+    </div>
+    <div class="hero__clock-block">
+      <div class="clock-container">
+        <div class="clock-face" aria-hidden="true">
+          <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer ring -->
+            <circle cx="180" cy="180" r="170" fill="none" stroke="#0a0a0a" stroke-width="1"/>
+            <circle cx="180" cy="180" r="160" fill="none" stroke="#e8e8e8" stroke-width="1"/>
+            <!-- Hour markers -->
+            <g stroke="#0a0a0a" stroke-width="2">
+              <line x1="180" y1="20" x2="180" y2="40"/>
+              <line x1="180" y1="320" x2="180" y2="340"/>
+              <line x1="20" y1="180" x2="40" y2="180"/>
+              <line x1="320" y1="180" x2="340" y2="180"/>
+            </g>
+            <g stroke="#999" stroke-width="1">
+              <line x1="260" y1="38.2" x2="250" y2="52.4"/>
+              <line x1="321.8" y1="100" x2="307.6" y2="110"/>
+              <line x1="321.8" y1="260" x2="307.6" y2="250"/>
+              <line x1="260" y1="321.8" x2="250" y2="307.6"/>
+              <line x1="100" y1="321.8" x2="110" y2="307.6"/>
+              <line x1="38.2" y1="260" x2="52.4" y2="250"/>
+              <line x1="38.2" y1="100" x2="52.4" y2="110"/>
+              <line x1="100" y1="38.2" x2="110" y2="52.4"/>
+            </g>
+            <!-- Minute ticks -->
+            <g stroke="#d0d0d0" stroke-width="0.5">
+              <circle cx="180" cy="180" r="150" fill="none" stroke-dasharray="1 7.36"/>
+            </g>
+            <!-- Hands -->
+            <g id="clock-hands">
+              <line id="hour-hand" x1="180" y1="180" x2="180" y2="90" stroke="#0a0a0a" stroke-width="3" stroke-linecap="round"/>
+              <line id="minute-hand" x1="180" y1="180" x2="180" y2="50" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/>
+              <line id="second-hand" x1="180" y1="200" x2="180" y2="40" stroke="#e30613" stroke-width="1" stroke-linecap="round"/>
+              <circle cx="180" cy="180" r="4" fill="#e30613"/>
+              <circle cx="180" cy="180" r="2" fill="#0a0a0a"/>
+            </g>
+          </svg>
+        </div>
+        <div class="clock-time" id="clock-digital" aria-live="polite">00:00:00</div>
+        <div class="clock-date" id="clock-date">Loading...</div>
+        <div class="clock-station"><span>●</span> Zürich HB — Platform 12</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ═══════════ COLLECTION INTRO ═══════════ -->
+<section class="intro container" aria-label="Collection introduction">
+  <div class="section-header reveal">
+    <div class="section-header__number">001</div>
+    <h2 class="section-header__title">The Collection</h2>
+    <p class="section-header__desc">
+      The Helvetica Transit Archive preserves the material culture of public 
+      transportation information design. Our holdings span printed maps, 
+      wayfinding systems, fare media, station clocks, and digital interfaces — 
+      each object a testament to the clarity and precision required to guide 
+      millions of daily movements.
+    </p>
+  </div>
+  <div class="intro__grid">
+    <div class="intro__stat reveal reveal-delay-1">
+      <div class="intro__stat-number">14,207</div>
+      <div class="intro__stat-label">Objects in collection</div>
+    </div>
+    <div class="intro__stat reveal reveal-delay-2">
+      <div class="intro__stat-number">120</div>
+      <div class="intro__stat-label">Cities documented</div>
+    </div>
+    <div class="intro__stat reveal reveal-delay-3">
+      <div class="intro__stat-number">1863–2024</div>
+      <div class="intro__stat-label">Chronological span</div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ═══════════ ARCHIVE GRID ═══════════ -->
+<section class="archive container" id="archive" aria-label="Archive">
+  <div class="section-header reveal">
+    <div class="section-header__number">002</div>
+    <h2 class="section-header__title">Archive Grid</h2>
+    <p class="section-header__desc">
+      Eight representative objects from the collection. Filter by category 
+      to explore maps, signs, tickets, clocks, and information systems.
+    </p>
+  </div>
+
+  <div class="archive__filters reveal" role="toolbar" aria-label="Filter archive">
+    <button class="archive__filter-btn active" data-filter="all" aria-pressed="true">All Objects</button>
+    <button class="archive__filter-btn" data-filter="map" aria-pressed="false">Maps</button>
+    <button class="archive__filter-btn" data-filter="sign" aria-pressed="false">Signs</button>
+    <button class="archive__filter-btn" data-filter="ticket" aria-pressed="false">Tickets</button>
+    <button class="archive__filter-btn" data-filter="clock" aria-pressed="false">Clocks</button>
+    <button class="archive__filter-btn" data-filter="system" aria-pressed="false">Systems</button>
+  </div>
+
+  <div class="archive__grid reveal" role="list">
+
+    <!-- Item 1: Zürich S-Bahn Map -->
+    <div class="archive__item" data-category="map" role="listitem" tabindex="0">
+      <div class="archive__item-index">01</div>
+      <div class="archive__item-visual">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="150" fill="#f5f5f5"/>
+          <g stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20,75 L60,75 L100,30 L140,30 L180,75" stroke="#e30613"/>
+            <path d="M30,120 L70,80 L100,50 L130,50 L170,100" stroke="#2563eb"/>
+            <path d="M40,130 L80,90 L100,60 L120,60 L160,110" stroke="#16a34a"/>
+            <path d="M10,50 L50,50 L100,100 L150,100 L190,50" stroke="#d97706"/>
+          </g>
+          <g fill="#0a0a0a">
+            <circle cx="100" cy="30" r="4"/>
+            <circle cx="100" cy="50" r="4"/>
+            <circle cx="100" cy="60" r="4"/>
+            <circle cx="100" cy="100" r="4"/>
+            <circle cx="60" cy="75" r="3"/>
+            <circle cx="140" cy="30" r="3"/>
+            <circle cx="70" cy="80" r="3"/>
+            <circle cx="130" cy="50" r="3"/>
+          </g>
+          <text x="100" y="145" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="6" fill="#999" letter-spacing="1">ZÜRICH S-Bahn</text>
+        </svg>
+      </div>
+      <div class="archive__item-category">Map</div>
+      <div class="archive__item-title">Zürich S-Bahn Network Map</div>
+      <div class="archive__item-meta">1990 — Dieter Kuhn, SBB</div>
+    </div>
+
+    <!-- Item 2: Tokyo Metro Sign -->
+    <div class="archive__item" data-category="sign" role="listitem" tabindex="0">
+      <div class="archive__item-index">02</div>
+      <div class="archive__item-visual">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="150" fill="#f5f5f5"/>
+          <rect x="30" y="20" width="140" height="110" rx="0" fill="none" stroke="#0a0a0a" stroke-width="1.5"/>
+          <rect x="30" y="20" width="140" height="30" fill="#0a0a0a"/>
+          <text x="100" y="40" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="10" fill="#fff" font-weight="700" letter-spacing="2">出口 EXIT</text>
+          <g transform="translate(100,85)">
+            <path d="M-15,20 L0,-15 L15,20 Z" fill="none" stroke="#e30613" stroke-width="2"/>
+            <line x1="0" y1="-5" x2="0" y2="8" stroke="#e30613" stroke-width="2"/>
+            <line x1="-5" y1="8" x2="5" y2="8" stroke="#e30613" stroke-width="2"/>
+          </g>
+          <text x="100" y="118" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="5" fill="#999" letter-spacing="1">TOKYO METRO</text>
+        </svg>
+      </div>
+      <div class="archive__item-category">Sign</div>
+      <div class="archive__item-title">Tokyo Metro Exit Signage</div>
+      <div class="archive__item-meta">1972 — Tokyo Metro Co.</div>
+    </div>
+
+    <!-- Item 3: London Underground Ticket -->
+    <div class="archive__item" data-category="ticket" role="listitem" tabindex="0">
+      <div class="archive__item-index">03</div>
+      <div class="archive__item-visual">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="150" fill="#f5f5f5"/>
+          <rect x="40" y="25" width="120" height="100" fill="none" stroke="#0a0a0a" stroke-width="1.5"/>
+          <!-- Perforations -->
+          <circle cx="40" cy="75" r="6" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="0.5"/>
+          <circle cx="160" cy="75" r="6" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="0.5"/>
+          <!-- London bar -->
+          <rect x="55" y="35" width="90" height="14" fill="#003399"/>
+          <rect x="55" y="49" width="90" height="6" fill="#e30613"/>
+          <text x="100" y="46" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="7" fill="#fff" font-weight="700" letter-spacing="3">UNDERGROUND</text>
+          <text x="100" y="75" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="8" fill="#0a0a0a" font-weight="700">SINGLE</text>
+          <text x="100" y="90" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="5" fill="#666">ZONE 1–2</text>
+          <text x="100" y="105" text-anchor="middle" font-family="Courier New, monospace" font-size="6" fill="#999">VALID 28.03.85</text>
+        </svg>
+      </div>
+      <div class="archive__item-category">Ticket</div>
+      <div class="archive__item-title">London Underground Single Ticket</div>
+      <div class="archive__item-meta">1985 — British Rail Board</div>
+    </div>
+
+    <!-- Item 4: Paris Métro Clock -->
+    <div class="archive__item" data-category="clock" role="listitem" tabindex="0">
+      <div class="archive__item-index">04</div>
+      <div class="archive__item-visual">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="150" fill="#f5f5f5"/>
+          <circle cx="100" cy="75" r="50" fill="none" stroke="#0a0a0a" stroke-width="1.5"/>
+          <circle cx="100" cy="75" r="45" fill="none" stroke="#d0d0d0" stroke-width="0.5"/>
+          <g stroke="#0a0a0a" stroke-width="1.5">
+            <line x1="100" y1="30" x2="100" y2="38"/>
+            <line x1="100" y1="112" x2="100" y2="120"/>
+            <line x1="55" y1="75" x2="63" y2="75"/>
+            <line x1="137" y1="75" x2="145" y2="75"/>
+          </g>
+          <line x1="100" y1="75" x2="100" y2="45" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="100" y1="75" x2="125" y2="65" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="100" cy="75" r="3" fill="#e30613"/>
+          <text x="100" y="142" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="5" fill="#999" letter-spacing="1">PARIS MÉTRO — 1900</text>
+        </svg>
+      </div>
+      <div class="archive__item-category">Clock</div>
+      <div class="archive__item-title">Paris Métro Station Clock</div>
+      <div class="archive__item-meta">1900 — Compagnie du Métropolitain</div>
+    </div>
+
+    <!-- Item 5: New York Subway Map -->
+    <div class="archive__item" data-category="map" role="listitem" tabindex="0">
+      <div class="archive__item-index">05</div>
+      <div class="archive__item-visual">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="150" fill="#f5f5f5"/>
+          <g stroke-width="2" fill="none" stroke-linecap="round">
+            <path d="M30,130 L50,100 L70,80 L90,60 L110,40 L130,30 L160,25" stroke="#e30613"/>
+            <path d="M20,80 L60,60 L100,50 L140,45 L180,40" stroke="#2563eb"/>
+            <path d="M40,140 L60,110 L80,80 L100,55 L120,35 L150,20" stroke="#16a34a"/>
+            <path d="M25,60 L50,50 L80,45 L110,40 L140,38 L175,35" stroke="#d97706"/>
+            <path d="M50,120 L70,90 L90,65 L110,45 L130,35 L165,28" stroke="#7c3aed"/>
+          </g>
+          <g fill="#0a0a0a">
+            <circle cx="90" cy="60" r="3"/>
+            <circle cx="100" cy="50" r="3"/>
+            <circle cx="100" cy="55" r="3"/>
+            <circle cx="110" cy="40" r="3"/>
+            <circle cx="70" cy="80" r="2.5"/>
+            <circle cx="130" cy="30" r="2.5"/>
+          </g>
+          <text x="100" y="145" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="5" fill="#999" letter-spacing="1">NEW YORK CITY TRANSIT</text>
+        </svg>
+      </div>
+      <div class="archive__item-category">Map</div>
+      <div class="archive__item-title">New York Subway System Map</div>
+      <div class="archive__item-meta">1979 — MTA, William Menninger</div>
+    </div>
+
+    <!-- Item 6: Berlin U-Bahn Sign -->
+    <div class="archive__item" data-category="sign" role="listitem" tabindex="0">
+      <div class="archive__item-index">06</div>
+      <div class="archive__item-visual">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="150" fill="#f5f5f5"/>
+          <rect x="25" y="30" width="150" height="90" fill="none" stroke="#0a0a0a" stroke-width="1.5"/>
+          <rect x="25" y="30" width="150" height="28" fill="#0a0a0a"/>
+          <!-- U circle -->
+          <circle cx="48" cy="44" r="10" fill="none" stroke="#fff" stroke-width="2"/>
+          <text x="48" y="48" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="11" fill="#fff" font-weight="700">U</text>
+          <text x="75" y="48" font-family="Helvetica Neue, sans-serif" font-size="9" fill="#fff" font-weight="600" letter-spacing="1">ALEXANDERPLATZ</text>
+          <!-- Direction arrows -->
+          <g transform="translate(100,75)">
+            <line x1="-40" y1="0" x2="40" y2="0" stroke="#0a0a0a" stroke-width="1"/>
+            <polygon points="40,-5 48,0 40,5" fill="#0a0a0a"/>
+            <polygon points="-40,-5 -48,0 -40,5" fill="#0a0a0a"/>
+          </g>
+          <text x="65" y="100" font-family="Helvetica Neue, sans-serif" font-size="6" fill="#666">Friedrichstraße</text>
+          <text x="130" y="100" font-family="Helvetica Neue, sans-serif" font-size="6" fill="#666">Rosenthaler Str.</text>
+          <text x="100" y="140" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="5" fill="#999" letter-spacing="1">BERLIN U-BAHN</text>
+        </svg>
+      </div>
+      <div class="archive__item-category">Sign</div>
+      <div class="archive__item-title">Berlin U-Bahn Platform Sign</div>
+      <div class="archive__item-meta">1923 — Berliner Untergrundbahn</div>
+    </div>
+
+    <!-- Item 7: Moscow Metro Panel -->
+    <div class="archive__item" data-category="system" role="listitem" tabindex="0">
+      <div class="archive__item-index">07</div>
+      <div class="archive__item-visual">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="150" fill="#f5f5f5"/>
+          <rect x="20" y="20" width="160" height="110" fill="none" stroke="#0a0a0a" stroke-width="1"/>
+          <!-- Grid layout -->
+          <line x1="100" y1="20" x2="100" y2="130" stroke="#e8e8e8" stroke-width="0.5"/>
+          <line x1="20" y1="75" x2="180" y2="75" stroke="#e8e8e8" stroke-width="0.5"/>
+          <!-- Top left: schedule -->
+          <text x="60" y="40" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="5" fill="#999" letter-spacing="1">РАСПИСАНИЕ</text>
+          <line x1="30" y1="50" x2="90" y2="50" stroke="#0a0a0a" stroke-width="0.5"/>
+          <text x="30" y="60" font-family="Courier New, monospace" font-size="6" fill="#666">06:12  06:28  06:45</text>
+          <!-- Top right: next train -->
+          <text x="140" y="40" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="5" fill="#999" letter-spacing="1">СЛЕДУЮЩИЙ</text>
+          <text x="140" y="60" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="14" fill="#e30613" font-weight="700">3:42</text>
+          <text x="140" y="70" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="4" fill="#999">MINUTES</text>
+          <!-- Bottom: line diagram -->
+          <circle cx="40" cy="100" r="4" fill="#e30613"/>
+          <circle cx="70" cy="100" r="4" fill="#0a0a0a"/>
+          <circle cx="100" cy="100" r="4" fill="#0a0a0a"/>
+          <circle cx="130" cy="100" r="4" fill="#0a0a0a"/>
+          <circle cx="160" cy="100" r="4" fill="#16a34a"/>
+          <line x1="40" y1="100" x2="160" y2="100" stroke="#d0d0d0" stroke-width="1"/>
+          <text x="100" y="120" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="5" fill="#999" letter-spacing="1">МОСКОВСКОЕ МЕТРО</text>
+        </svg>
+      </div>
+      <div class="archive__item-category">System</div>
+      <div class="archive__item-title">Moscow Metro Information Panel</div>
+      <div class="archive__item-meta">1955 — Moskovsky Metropoliten</div>
+    </div>
+
+    <!-- Item 8: Copenhagen Wayfinding -->
+    <div class="archive__item" data-category="system" role="listitem" tabindex="0">
+      <div class="archive__item-index">08</div>
+      <div class="archive__item-visual">
+        <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="150" fill="#f5f5f5"/>
+          <!-- Wayfinding panel -->
+          <rect x="30" y="15" width="140" height="120" fill="none" stroke="#0a0a0a" stroke-width="1"/>
+          <!-- CTA logo circle -->
+          <circle cx="55" cy="40" r="14" fill="none" stroke="#0a0a0a" stroke-width="1.5"/>
+          <text x="55" y="44" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="10" fill="#0a0a0a" font-weight="700">M</text>
+          <!-- Destinations -->
+          <g font-family="Helvetica Neue, sans-serif" font-size="7" fill="#0a0a0a">
+            <text x="78" y="36">Nørrebrogade</text>
+            <text x="78" y="52">Rådhuspladsen</text>
+            <text x="78" y="68">Vesterbrogade</text>
+            <text x="78" y="84">København H</text>
+          </g>
+          <!-- Distance indicators -->
+          <g font-family="Helvetica Neue, sans-serif" font-size="6" fill="#999">
+            <text x="155" y="36">2 min</text>
+            <text x="155" y="52">4 min</text>
+            <text x="155" y="68">6 min</text>
+            <text x="155" y="84">9 min</text>
+          </g>
+          <!-- Arrows -->
+          <g fill="#e30613">
+            <polygon points="145,34 150,36 145,38"/>
+            <polygon points="145,50 150,52 145,54"/>
+            <polygon points="145,66 150,68 145,70"/>
+            <polygon points="145,82 150,84 145,86"/>
+          </g>
+          <text x="100" y="115" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="4.5" fill="#999" letter-spacing="1">COPENHAGEN METRO — 2002</text>
+        </svg>
+      </div>
+      <div class="archive__item-category">System</div>
+      <div class="archive__item-title">Copenhagen Metro Wayfinding</div>
+      <div class="archive__item-meta">2002 — Metroselskabet, Cobe</div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ═══════════ TRANSIT MAP STUDY ═══════════ -->
+<section class="map-study container" id="map" aria-label="Transit map study">
+  <div class="section-header reveal">
+    <div class="section-header__number">003</div>
+    <h2 class="section-header__title">Map Study</h2>
+    <p class="section-header__desc">
+      A diagrammatic transit map constructed from the archive's geometric 
+      principles. Routes trace into view as the section enters the viewport.
+    </p>
+  </div>
+
+  <div class="map-study__container reveal">
+    <div class="map-study__svg-wrap">
+      <svg id="transit-map" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <!-- Background grid -->
+        <rect width="1000" height="600" fill="url(#grid-pattern)"/>
+        
+        <!-- Route 1: Red (horizontal) -->
+        <path class="map-route" d="M50,300 L200,300 L300,250 L450,200 L600,200 L750,250 L850,300 L950,300" 
+              fill="none" stroke="#e30613" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="1200" stroke-dashoffset="1200"/>
+        
+        <!-- Route 2: Blue (diagonal) -->
+        <path class="map-route" d="M100,550 L200,450 L350,350 L500,250 L650,150 L800,100 L950,80" 
+              fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="1100" stroke-dashoffset="1100"/>
+        
+        <!-- Route 3: Green (vertical) -->
+        <path class="map-route" d="M500,50 L500,150 L500,250 L500,350 L500,450 L500,550" 
+              fill="none" stroke="#16a34a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="550" stroke-dashoffset="550"/>
+        
+        <!-- Route 4: Amber (loop) -->
+        <path class="map-route" d="M300,100 L450,100 L600,150 L700,300 L650,450 L500,500 L350,450 L250,300 L250,150 Z" 
+              fill="none" stroke="#d97706" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="1000" stroke-dashoffset="1000"/>
+        
+        <!-- Route 5: Purple (branching) -->
+        <path class="map-route" d="M150,100 L250,200 L350,250 L450,250 L550,200 L650,150 L800,100" 
+              fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="900" stroke-dashoffset="900"/>
+        
+        <!-- Route 6: Teal (secondary) -->
+        <path class="map-route" d="M200,550 L300,450 L400,400 L500,350 L600,350 L700,400 L800,500 L900,550" 
+              fill="none" stroke="#0891b2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="900" stroke-dashoffset="900"/>
+        
+        <!-- Route 7: Pink (express) -->
+        <path class="map-route" d="M100,300 L250,300 L400,300 L500,300 L600,300 L750,300 L900,300" 
+              fill="none" stroke="#ec4899" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="850" stroke-dashoffset="850" stroke-dasharray="12 6"/>
+
+        <!-- Station nodes -->
+        <g class="map-nodes" opacity="0">
+          <!-- Red line stations -->
+          <circle cx="200" cy="300" r="6" fill="#fff" stroke="#e30613" stroke-width="2"/>
+          <circle cx="300" cy="250" r="6" fill="#fff" stroke="#e30613" stroke-width="2"/>
+          <circle cx="450" cy="200" r="8" fill="#fff" stroke="#e30613" stroke-width="2.5"/>
+          <circle cx="600" cy="200" r="6" fill="#fff" stroke="#e30613" stroke-width="2"/>
+          <circle cx="750" cy="250" r="6" fill="#fff" stroke="#e30613" stroke-width="2"/>
+          
+          <!-- Blue line stations -->
+          <circle cx="200" cy="450" r="6" fill="#fff" stroke="#2563eb" stroke-width="2"/>
+          <circle cx="350" cy="350" r="6" fill="#fff" stroke="#2563eb" stroke-width="2"/>
+          <circle cx="500" cy="250" r="8" fill="#fff" stroke="#2563eb" stroke-width="2.5"/>
+          <circle cx="650" cy="150" r="6" fill="#fff" stroke="#2563eb" stroke-width="2"/>
+          <circle cx="800" cy="100" r="6" fill="#fff" stroke="#2563eb" stroke-width="2"/>
+          
+          <!-- Green line stations -->
+          <circle cx="500" cy="150" r="6" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+          <circle cx="500" cy="250" r="8" fill="#fff" stroke="#16a34a" stroke-width="2.5"/>
+          <circle cx="500" cy="350" r="6" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+          <circle cx="500" cy="450" r="6" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+          
+          <!-- Amber line stations -->
+          <circle cx="300" cy="100" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          <circle cx="450" cy="100" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          <circle cx="600" cy="150" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          <circle cx="700" cy="300" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          <circle cx="650" cy="450" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          <circle cx="500" cy="500" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          <circle cx="350" cy="450" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          <circle cx="250" cy="300" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          <circle cx="250" cy="150" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>
+          
+          <!-- Purple line stations -->
+          <circle cx="250" cy="200" r="6" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+          <circle cx="350" cy="250" r="6" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+          <circle cx="550" cy="200" r="6" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+          <circle cx="650" cy="150" r="6" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+          
+          <!-- Teal line stations -->
+          <circle cx="300" cy="450" r="6" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="400" cy="400" r="6" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="600" cy="350" r="6" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="700" cy="400" r="6" fill="#fff" stroke="#0891b2" stroke-width="2"/>
+          
+          <!-- Interchange hubs (larger, filled) -->
+          <circle cx="500" cy="250" r="10" fill="#0a0a0a"/>
+          <circle cx="450" cy="200" r="8" fill="#0a0a0a"/>
+          <circle cx="650" cy="150" r="8" fill="#0a0a0a"/>
+          <circle cx="500" cy="350" r="8" fill="#0a0a0a"/>
+          <circle cx="300" cy="300" r="7" fill="#0a0a0a"/>
+        </g>
+
+        <!-- Station labels -->
+        <g class="map-labels" opacity="0" font-family="Helvetica Neue, sans-serif" font-size="8" fill="#666" letter-spacing="0.5">
+          <text x="210" y="295">Nordbahnhof</text>
+          <text x="310" y="245">Hauptplatz</text>
+          <text x="460" y="195">Zentrum</text>
+          <text x="610" y="195">Ostbahnhof</text>
+          <text x="760" y="245">Südtor</text>
+          <text x="210" y="445">Weststadt</text>
+          <text x="360" y="345">Museum</text>
+          <text x="510" y="245">Kern</text>
+          <text x="660" y="145">Universität</text>
+          <text x="510" y="145">Flughafen</text>
+          <text x="510" y="345">Marktplatz</text>
+          <text x="510" y="445">Harbor</text>
+          <text x="310" y="95">Nordring</text>
+          <text x="460" y="95">Kulturhaus</text>
+          <text x="710" y="295">Bahnhof</text>
+          <text x="660" y="445">Südring</text>
+          <text x="260" y="295">Ringstrasse</text>
+          <text x="260" y="195">Altstadt</text>
+          <text x="360" y="245">Galerie</text>
+          <text x="560" y="195">Park</text>
+          <text x="310" y="445">Kanal</text>
+          <text x="410" y="395">Brücke</text>
+          <text x="610" y="345">Tor</text>
+          <text x="710" y="395">Garten</text>
+        </g>
+
+        <!-- Title block -->
+        <text x="50" y="580" font-family="Helvetica Neue, sans-serif" font-size="10" fill="#0a0a0a" font-weight="700" letter-spacing="1">DIAGRAMMATIC TRANSIT MAP — STUDY NO. 47</text>
+        <text x="50" y="592" font-family="Helvetica Neue, sans-serif" font-size="7" fill="#999" letter-spacing="0.5">NOT TO SCALE — ARCHIVE RECONSTRUCTION</text>
+      </svg>
+    </div>
+    <div class="map-study__legend">
+      <div class="map-study__legend-item">
+        <div class="map-study__legend-color" style="background:#e30613"></div>
+        <div class="map-study__legend-label">Line 1 — Red</div>
+      </div>
+      <div class="map-study__legend-item">
+        <div class="map-study__legend-color" style="background:#2563eb"></div>
+        <div class="map-study__legend-label">Line 2 — Blue</div>
+      </div>
+      <div class="map-study__legend-item">
+        <div class="map-study__legend-color" style="background:#16a34a"></div>
+        <div class="map-study__legend-label">Line 3 — Green</div>
+      </div>
+      <div class="map-study__legend-item">
+        <div class="map-study__legend-color" style="background:#d97706"></div>
+        <div class="map-study__legend-label">Line 4 — Amber</div>
+      </div>
+      <div class="map-study__legend-item">
+        <div class="map-study__legend-color" style="background:#7c3aed"></div>
+        <div class="map-study__legend-label">Line 5 — Purple</div>
+      </div>
+      <div class="map-study__legend-item">
+        <div class="map-study__legend-color" style="background:#0891b2"></div>
+        <div class="map-study__legend-label">Line 6 — Teal</div>
+      </div>
+      <div class="map-study__legend-item">
+        <div class="map-study__legend-color" style="background:#ec4899; height:2px; border-top:2px dashed #ec4899; background:transparent;"></div>
+        <div class="map-study__legend-label">Line 7 — Express</div>
+      </div>
+    </div>
+    <div class="map-study__caption">
+      Fig. 03 — Diagrammatic reconstruction based on geometric principles observed in the archive's 
+      collection of 847 transit maps. Routes are not geographically accurate but follow the 
+      topological conventions established by Harry Beck (1933) and refined across six decades.
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ═══════════ TIMELINE ═══════════ -->
+<section class="timeline container" id="timeline" aria-label="Timeline">
+  <div class="section-header reveal">
+    <div class="section-header__number">004</div>
+    <h2 class="section-header__title">Timeline</h2>
+    <p class="section-header__desc">
+      Key moments in the history of transit information design, 
+      from the first underground map to the digital age.
+    </p>
+  </div>
+
+  <div class="timeline__grid reveal">
+    <div class="timeline__year-col">
+      <div class="timeline__year active">1863</div>
+      <div class="timeline__year">1908</div>
+      <div class="timeline__year">1933</div>
+      <div class="timeline__year">1940</div>
+      <div class="timeline__year">1956</div>
+      <div class="timeline__year">1963</div>
+      <div class="timeline__year">1972</div>
+      <div class="timeline__year">1987</div>
+      <div class="timeline__year">2003</div>
+      <div class="timeline__year">2024</div>
+    </div>
+    <div class="timeline__content-col">
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">First Underground Railway Opens</div>
+        <div class="timeline__entry-text">
+          The Metropolitan Railway opens in London, the world's first underground 
+          electric railway. Early maps are geographical, showing streets and 
+          landmarks alongside the tunnel route.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">Berlin U-Bahn Opens</div>
+        <div class="timeline__entry-text">
+          The Hochbahn opens in Berlin, introducing the first systematic approach 
+          to station signage with standardized typography and directional indicators.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">Harry Beck's Diagrammatic Map</div>
+        <div class="timeline__entry-text">
+          Electrical engineer Harry Beck publishes his revolutionary topological map 
+          of the London Underground, replacing geographical accuracy with a 
+          grid-based schematic that transforms transit mapping forever.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">Wayfinding Systems Emerge</div>
+        <div class="timeline__entry-text">
+          Post-war reconstruction prompts systematic approaches to station 
+          wayfinding. Color-coded lines, standardized pictograms, and 
+          hierarchical typography become industry standards.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">Helvetica Adopted by Swiss Railways</div>
+        <div class="timeline__entry-text">
+          The SBB/CFF/FFS commissions Max Miedinger and Herbert Matter to 
+          develop a unified corporate identity for Swiss Federal Railways, 
+          establishing Helvetica as the voice of transit clarity.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">International Pictogram Standards</div>
+        <div class="timeline__entry-text">
+          ISO 7001 establishes international standards for public information 
+          symbols. Transit systems worldwide adopt unified pictograms for 
+          elevators, restrooms, exits, and transfers.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">Tokyo Metro's Universal Design</div>
+        <div class="timeline__entry-text">
+          Tokyo Metro implements a comprehensive multilingual wayfinding system 
+          combining Latin, Japanese, and pictographic elements — a model for 
+          complex multilingual transit environments.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">Archive Founded</div>
+        <div class="timeline__entry-text">
+          The Helvetica Transit Archive is established in Zürich, beginning 
+          systematic collection and documentation of transit information 
+          design objects from around the world.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">Digital Transformation</div>
+        <div class="timeline__entry-text">
+          Real-time digital displays replace static information boards. 
+          Mobile applications and contactless payment systems begin 
+          reshaping the passenger information ecosystem.
+        </div>
+      </div>
+      <div class="timeline__entry">
+        <div class="timeline__entry-title">The Archive Today</div>
+        <div class="timeline__entry-text">
+          With over 14,000 objects spanning 160 years, the archive continues 
+          to document the evolving visual language of public transportation — 
+          now extending into augmented reality and AI-assisted navigation.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ═══════════ DESIGNER ESSAY ═══════════ -->
+<section class="essay container" id="essay" aria-label="Designer essay">
+  <div class="section-header reveal">
+    <div class="section-header__number">005</div>
+    <h2 class="section-header__title">Featured Essay</h2>
+  </div>
+
+  <div class="essay__grid reveal">
+    <div class="essay__portrait">
+      <div class="essay__portrait-visual">
+        <svg viewBox="0 0 200 267" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="267" fill="#f5f5f5"/>
+          <!-- Abstract portrait -->
+          <circle cx="100" cy="90" r="40" fill="none" stroke="#0a0a0a" stroke-width="1.5"/>
+          <circle cx="100" cy="85" r="20" fill="none" stroke="#0a0a0a" stroke-width="1"/>
+          <path d="M60,160 Q100,130 140,160 L140,200 L60,200 Z" fill="none" stroke="#0a0a0a" stroke-width="1.5"/>
+          <!-- Grid overlay -->
+          <g stroke="#e8e8e8" stroke-width="0.5">
+            <line x1="0" y1="67" x2="200" y2="67"/>
+            <line x1="0" y1="134" x2="200" y2="134"/>
+            <line x1="0" y1="200" x2="200" y2="200"/>
+            <line x1="50" y1="0" x2="50" y2="267"/>
+            <line x1="100" y1="0" x2="100" y2="267"/>
+            <line x1="150" y1="0" x2="150" y2="267"/>
+          </g>
+          <text x="100" y="255" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="7" fill="#999" letter-spacing="1">ARCHIVE PORTRAIT</text>
+        </svg>
+      </div>
+      <div class="essay__portrait-name">Dieter Kuhn</div>
+      <div class="essay__portrait-role">
+        Swiss designer (1930–2019)<br>
+        SBB/CFF/FFS Corporate Identity<br>
+        Zürich S-Bahn Map System
+      </div>
+    </div>
+
+    <div class="essay__body">
+      <p>
+        The clarity of a transit map is not an accident of design but the result 
+        of relentless reduction. Dieter Kuhn understood this better than perhaps 
+        any designer of his generation. When he took on the Zürich S-Bahn map 
+        in 1989, he was not merely drawing lines on paper — he was solving the 
+        problem of how to make a city legible to someone who has never seen it.
+      </p>
+
+      <p>
+        Kuhn's approach was characteristically Swiss: mathematical, unsentimental, 
+        and deeply humane. He reduced the network to its essential topology, 
+        eliminating geographic distortion while preserving the spatial relationships 
+        that passengers actually need. The result was a map that could be read in 
+        three seconds — a critical metric when you are standing on a platform 
+        with a train arriving in forty-five seconds.
+      </p>
+
+      <blockquote class="essay__pullquote">
+        "A transit map is not a map. It is a diagram of decisions. 
+        Every line, every color, every angle exists to help a stranger 
+        choose the correct path."
+      </blockquote>
+
+      <p>
+        The archive holds 347 objects from Kuhn's working process for the 
+        S-Bahn identity: preliminary sketches, color studies, type specimens, 
+        and the final production files. What emerges is a portrait of a designer 
+        who believed that public information design was the most important work 
+        a designer could undertake — because it serves everyone, equally, without 
+        distinction.
+      </p>
+
+      <p>
+        His influence extends far beyond Zürich. The principles he developed — 
+        grid-based alignment, restrained color palettes, hierarchical typography, 
+        and the elimination of decorative elements — became the template for 
+        transit information design across Europe and eventually the world. 
+        When you hold a transit map in any major city today, you are holding 
+        the descendant of Kuhn's work.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ═══════════ SPEC TABLE ═══════════ -->
+<section class="specs container" aria-label="Specifications">
+  <div class="section-header reveal">
+    <div class="section-header__number">006</div>
+    <h2 class="section-header__title">Specifications</h2>
+    <p class="section-header__desc">
+      Comparative technical data for representative objects in the collection.
+    </p>
+  </div>
+
+  <div class="specs__table-wrap reveal">
+    <table class="specs__table">
+      <thead>
+        <tr>
+          <th scope="col">Object</th>
+          <th scope="col">Date</th>
+          <th scope="col">Medium</th>
+          <th scope="col">Dimensions</th>
+          <th scope="col">Typography</th>
+          <th scope="col">Accession</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="red-dot"></span>Zürich S-Bahn Map</td>
+          <td>1990</td>
+          <td>Offset lithograph, 4-color process</td>
+          <td>841 × 594 mm (A2)</td>
+          <td>Helvetica Neue, 4 weights</td>
+          <td>HTA-1990-0047</td>
+        </tr>
+        <tr>
+          <td><span class="red-dot"></span>Tokyo Metro Exit Sign</td>
+          <td>1972</td>
+          <td>Aluminum composite, vinyl lettering</td>
+          <td>600 × 400 mm</td>
+          <td>MS Gothic / Helvetica</td>
+          <td>HTA-1972-0112</td>
+        </tr>
+        <tr>
+          <td><span class="red-dot"></span>London Underground Ticket</td>
+          <td>1985</td>
+          <td>Thermal paper, single-color ink</td>
+          <td>89 × 63 mm</td>
+          <td> Johnston Underground / Helvetica</td>
+          <td>HTA-1985-0203</td>
+        </tr>
+        <tr>
+          <td><span class="red-dot"></span>Paris Métro Clock</td>
+          <td>1900</td>
+          <td>Cast iron, enamel face, brass hands</td>
+          <td>Ø 400 mm</td>
+          <td>Art Deco numerals</td>
+          <td>HTA-1900-0008</td>
+        </tr>
+        <tr>
+          <td><span class="red-dot"></span>NYC Subway Map</td>
+          <td>1979</td>
+          <td>Offset lithograph, 6-color process</td>
+          <td>1016 × 610 mm</td>
+          <td>Futura / Helvetica</td>
+          <td>HTA-1979-0156</td>
+        </tr>
+        <tr>
+          <td><span class="red-dot"></span>Berlin U-Bahn Sign</td>
+          <td>1923</td>
+          <td>Enamel on steel, hand-painted</td>
+          <td>500 × 300 mm</td>
+          <td>Fraktur / Latin mixture</td>
+          <td>HTA-1923-0034</td>
+        </tr>
+        <tr>
+          <td><span class="red-dot"></span>Moscow Metro Panel</td>
+          <td>1955</td>
+          <td>Porcelain tile, hand-painted</td>
+          <td>400 × 300 mm</td>
+          <td>Cyrillic sans-serif</td>
+          <td>HTA-1955-0089</td>
+        </tr>
+        <tr>
+          <td><span class="red-dot"></span>Copenhagen Wayfinding</td>
+          <td>2002</td>
+          <td>Acrylic, UV-printed, LED backlit</td>
+          <td>800 × 600 mm</td>
+          <td>Frutiger / Helvetica</td>
+          <td>HTA-2002-0312</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ═══════════ EXHIBITION ═══════════ -->
+<section class="exhibition container" id="exhibition" aria-label="Exhibition details">
+  <div class="section-header reveal">
+    <div class="section-header__number">007</div>
+    <h2 class="section-header__title">Exhibition</h2>
+    <p class="section-header__desc">
+      Visit the archive and current exhibition at our Zürich location.
+    </p>
+  </div>
+
+  <div class="exhibition__grid reveal">
+    <div class="exhibition__info">
+      <div class="exhibition__info-title">Lines of Movement:<br>Transit Design 1863–2024</div>
+      
+      <div class="exhibition__detail">
+        <div class="exhibition__detail-label">Dates</div>
+        <div class="exhibition__detail-value">14 March — 22 September 2025</div>
+      </div>
+      
+      <div class="exhibition__detail">
+        <div class="exhibition__detail-label">Hours</div>
+        <div class="exhibition__detail-value">
+          Tuesday — Sunday: 10:00 — 18:00<br>
+          Thursday: 10:00 — 20:00<br>
+          Monday: Closed
+        </div>
+      </div>
+      
+      <div class="exhibition__detail">
+        <div class="exhibition__detail-label">Location</div>
+        <div class="exhibition__detail-value">
+          Helvetica Transit Archive<br>
+          Bahnhofstrasse 42<br>
+          8001 Zürich, Switzerland
+        </div>
+      </div>
+      
+      <div class="exhibition__detail">
+        <div class="exhibition__detail-label">Admission</div>
+        <div class="exhibition__detail-value">CHF 18 / CHF 12 reduced</div>
+      </div>
+
+      <a href="#" class="exhibition__cta" aria-label="Plan your visit">
+        Plan your visit
+        <span class="exhibition__cta-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="exhibition__map">
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Abstract map of Zürich area -->
+        <rect width="400" height="400" fill="#f5f5f5"/>
+        
+        <!-- Lake -->
+        <path d="M200,100 Q250,120 280,180 Q300,240 280,300 Q260,350 200,380 Q150,360 120,300 Q100,240 120,180 Q140,120 200,100 Z" 
+              fill="#e8e8e8" stroke="#d0d0d0" stroke-width="0.5"/>
+        
+        <!-- Grid streets -->
+        <g stroke="#e0e0e0" stroke-width="0.5">
+          <line x1="0" y1="100" x2="400" y2="100"/>
+          <line x1="0" y1="200" x2="400" y2="200"/>
+          <line x1="0" y1="300" x2="400" y2="300"/>
+          <line x1="100" y1="0" x2="100" y2="400"/>
+          <line x1="200" y1="0" x2="200" y2="400"/>
+          <line x1="300" y1="0" x2="300" y2="400"/>
+        </g>
+        
+        <!-- Bahnhofstrasse (main diagonal) -->
+        <line x1="100" y1="300" x2="300" y2="100" stroke="#0a0a0a" stroke-width="1.5"/>
+        
+        <!-- Archive pin -->
+        <circle cx="200" cy="200" r="12" fill="none" stroke="#e30613" stroke-width="2"/>
+        <circle cx="200" cy="200" r="4" fill="#e30613"/>
+        <line x1="200" y1="200" x2="200" y2="160" stroke="#e30613" stroke-width="1"/>
+        
+        <!-- Label -->
+        <rect x="215" y="185" width="80" height="20" fill="#0a0a0a"/>
+        <text x="255" y="199" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="7" fill="#fff" font-weight="600" letter-spacing="0.5">ARCHIVE</text>
+        
+        <!-- Compass -->
+        <g transform="translate(350,50)">
+          <circle cx="0" cy="0" r="15" fill="none" stroke="#d0d0d0" stroke-width="0.5"/>
+          <text x="0" y="-20" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="8" fill="#0a0a0a" font-weight="700">N</text>
+          <line x1="0" y1="-10" x2="0" y2="10" stroke="#0a0a0a" stroke-width="0.5"/>
+          <line x1="-10" y1="0" x2="10" y2="0" stroke="#0a0a0a" stroke-width="0.5"/>
+          <polygon points="0,-12 -3,-5 3,-5" fill="#e30613"/>
+        </g>
+        
+        <!-- Scale -->
+        <line x1="30" y1="370" x2="130" y2="370" stroke="#0a0a0a" stroke-width="1"/>
+        <line x1="30" y1="367" x2="30" y2="373" stroke="#0a0a0a" stroke-width="1"/>
+        <line x1="130" y1="367" x2="130" y2="373" stroke="#0a0a0a" stroke-width="1"/>
+        <text x="80" y="385" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-size="6" fill="#999">500 m</text>
+        
+        <!-- Coordinates -->
+        <text x="30" y="20" font-family="Helvetica Neue, sans-serif" font-size="6" fill="#999">47.3769° N, 8.5417° E</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="site-footer container" role="contentinfo">
+  <div class="site-footer__grid">
+    <div>
+      <div class="site-footer__brand">
+        Helvetica<br>Transit <em>Archive</em>
+      </div>
+      <p class="site-footer__tagline">
+        Documenting the visual language of public transportation 
+        since 1987. A non-profit research institution and museum.
+      </p>
+    </div>
+    <div>
+      <div class="site-footer__col-title">Collection</div>
+      <a href="#" class="site-footer__link">Maps</a>
+      <a href="#" class="site-footer__link">Signage</a>
+      <a href="#" class="site-footer__link">Tickets</a>
+      <a href="#" class="site-footer__link">Clocks</a>
+      <a href="#" class="site-footer__link">Systems</a>
+      <a href="#" class="site-footer__link">Digital Archive</a>
+    </div>
+    <div>
+      <div class="site-footer__col-title">Visit</div>
+      <a href="#" class="site-footer__link">Exhibition</a>
+      <a href="#" class="site-footer__link">Hours & Access</a>
+      <a href="#" class="site-footer__link">Group Visits</a>
+      <a href="#" class="site-footer__link">Accessibility</a>
+      <a href="#" class="site-footer__link">Shop</a>
+    </div>
+    <div>
+      <div class="site-footer__col-title">Institution</div>
+      <a href="#" class="site-footer__link">About</a>
+      <a href="#" class="site-footer__link">Research</a>
+      <a href="#" class="site-footer__link">Publications</a>
+      <a href="#" class="site-footer__link">Press</a>
+      <a href="#" class="site-footer__link">Contact</a>
+    </div>
+  </div>
+  <div class="site-footer__bottom">
+    <div class="site-footer__copy">
+      © 2025 Helvetica Transit Archive. All rights reserved. 
+      Bahnhofstrasse 42, 8001 Zürich.
+    </div>
+    <div class="site-footer__coords">
+      47.3769° N — 8.5417° E
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── CLOCK ──
+  const hourHand = document.getElementById('hour-hand');
+  const minuteHand = document.getElementById('minute-hand');
+  const secondHand = document.getElementById('second-hand');
+  const digitalClock = document.getElementById('clock-digital');
+  const clockDate = document.getElementById('clock-date');
+
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+    const ms = now.getMilliseconds();
+
+    const secondDeg = (s + ms / 1000) * 6;
+    const minuteDeg = (m + s / 60) * 6;
+    const hourDeg = ((h % 12) + m / 60) * 30;
+
+    if (hourHand) hourHand.setAttribute('transform', `rotate(${hourDeg}, 180, 180)`);
+    if (minuteHand) minuteHand.setAttribute('transform', `rotate(${minuteDeg}, 180, 180)`);
+    if (secondHand) secondHand.setAttribute('transform', `rotate(${secondDeg}, 180, 180)`);
+
+    if (digitalClock) {
+      digitalClock.textContent = 
+        String(h).padStart(2, '0') + ':' + 
+        String(m).padStart(2, '0') + ':' + 
+        String(s).padStart(2, '0');
+    }
+
+    if (clockDate) {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      clockDate.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+    }
+
+    requestAnimationFrame(updateClock);
+  }
+
+  updateClock();
+
+  // ── SCROLL REVEAL ──
+  const revealElements = document.querySelectorAll('.reveal');
+  
+  const revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -60px 0px'
+  });
+
+  revealElements.forEach(function(el) {
+    revealObserver.observe(el);
+  });
+
+  // ── MAP ROUTE ANIMATION ──
+  const mapRoutes = document.querySelectorAll('.map-route');
+  const mapNodes = document.querySelector('.map-nodes');
+  const mapLabels = document.querySelector('.map-labels');
+  let mapAnimated = false;
+
+  const mapObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !mapAnimated) {
+        mapAnimated = true;
+        animateMap();
+        mapObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const mapContainer = document.querySelector('.map-study__svg-wrap');
+  if (mapContainer) mapObserver.observe(mapContainer);
+
+  function animateMap() {
+    const routes = Array.from(mapRoutes);
+    routes.forEach(function(route, i) {
+      const length = route.getAttribute('stroke-dasharray');
+      route.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.22, 1, 0.36, 1)';
+      route.style.transitionDelay = (i * 0.15) + 's';
+      route.setAttribute('stroke-dashoffset', '0');
+    });
+
+    setTimeout(function() {
+      if (mapNodes) {
+        mapNodes.style.transition = 'opacity 0.6s ease';
+        mapNodes.setAttribute('opacity', '1');
+      }
+      if (mapLabels) {
+        mapLabels.style.transition = 'opacity 0.8s ease';
+        mapLabels.setAttribute('opacity', '1');
+      }
+    }, 1200);
+  }
+
+  // ── ARCHIVE FILTER ──
+  const filterBtns = document.querySelectorAll('.archive__filter-btn');
+  const archiveItems = document.querySelectorAll('.archive__item');
+
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const filter = this.getAttribute('data-filter');
+
+      filterBtns.forEach(function(b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      this.classList.add('active');
+      this.setAttribute('aria-pressed', 'true');
+
+      archiveItems.forEach(function(item) {
+        const category = item.getAttribute('data-category');
+        if (filter === 'all' || category === filter) {
+          item.classList.remove('hidden');
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(10px)';
+          requestAnimationFrame(function() {
+            item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+          });
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // ── HEADER HIDE ON SCROLL ──
+  let lastScroll = 0;
+  const header = document.querySelector('.site-header');
+
+  window.addEventListener('scroll', function() {
+    const currentScroll = window.pageYOffset;
+    if (currentScroll > lastScroll && currentScroll > 100) {
+      header.style.transform = 'translateY(-100%)';
+    } else {
+      header.style.transform = 'translateY(0)';
+    }
+    lastScroll = currentScroll;
+  }, { passive: true });
+
+  // ── KEYBOARD NAVIGATION FOR ARCHIVE ITEMS ──
+  archiveItems.forEach(function(item) {
+    item.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>

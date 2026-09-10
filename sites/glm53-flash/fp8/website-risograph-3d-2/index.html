@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INK WEATHER — a risograph & independent print fair · 26–28 June 2026, Amsterdam</title>
+<meta name="description" content="Three days of duplicators, fluorescent ink, misprints worth framing. INK WEATHER print fair, Het Drukhuis, Amsterdam-Noord, 26–28 June 2026.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F4EDDF'/%3E%3Ccircle cx='17' cy='15' r='11' fill='%23FF4E38'/%3E%3Ccircle cx='13' cy='19' r='11' fill='%232440D6' fill-opacity='.75'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fraunces:ital,opsz,wght@1,9..144,400..600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+  --paper:#F4EDDF; --paper2:#EDE2CC; --ink:#1A140E;
+  --coral:#FF4E38; --cobalt:#2440D6; --yellow:#FFC400; --mint:#3ECF9A;
+  --dim:#5C5142;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Bricolage Grotesque",sans-serif; font-size:1rem; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+/* paper grain over everything, like a misfed sheet */
+body::after{
+  content:""; position:fixed; inset:-40px; z-index:140; pointer-events:none;
+  opacity:.055; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection{background:var(--yellow); color:var(--ink)}
+:focus-visible{outline:3px dashed var(--cobalt); outline-offset:3px}
+img,svg{max-width:100%}
+h1,h2,h3{line-height:1.05}
+a{color:inherit}
+button{font-family:inherit}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:.6rem;top:-4rem;z-index:200;background:var(--ink);color:var(--paper);padding:.7rem 1rem;font-weight:800;transition:top .2s}
+.skip:focus{top:.6rem}
+.wrap{max-width:1220px;margin:0 auto;padding:0 clamp(1.1rem,3.5vw,2.4rem);position:relative}
+.sec{padding:clamp(3.6rem,7.5vw,6.5rem) 0;position:relative;scroll-margin-top:5.2rem}
+.dotline{height:14px;max-width:1180px;margin:0 auto;background-image:radial-gradient(var(--ink) 1.6px,transparent 1.7px);background-size:13px 13px;opacity:.28}
+
+/* ---------- buttons, chips, tags ---------- */
+.btn{display:inline-flex;align-items:center;gap:.55rem;font-weight:800;letter-spacing:.02em;color:var(--ink);
+  background:var(--yellow);border:2.5px solid var(--ink);padding:.8rem 1.2rem;cursor:pointer;
+  box-shadow:4px 4px 0 var(--ink);text-decoration:none;transition:transform .14s,box-shadow .14s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
+.btn.coral{background:var(--coral)}
+.btn.mint{background:var(--mint)}
+.btn.small{padding:.45rem .75rem;font-size:.86rem;box-shadow:3px 3px 0 var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:3px 3px 0 var(--ink)}
+.tag{font-size:.66rem;font-weight:800;letter-spacing:.13em;padding:.22em .6em;border:2px solid var(--ink);text-transform:uppercase;white-space:nowrap}
+.tag.talk{background:var(--cobalt);color:var(--paper)}
+.tag.workshop{background:var(--coral);color:var(--ink)}
+.tag.together{background:var(--yellow)}
+
+/* ---------- misregistration ghosts ---------- */
+.misreg{position:relative;display:inline-block}
+.misreg::before,.misreg::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;mix-blend-mode:multiply;pointer-events:none}
+.misreg::before{color:var(--coral);z-index:-1;animation:slipA 8s ease-in-out infinite}
+.misreg::after{color:var(--cobalt);z-index:-2;animation:slipB 11s ease-in-out infinite}
+@keyframes slipA{0%,100%{transform:translate(3px,2px)}50%{transform:translate(4px,1px)}}
+@keyframes slipB{0%,100%{transform:translate(-3px,-2px)}50%{transform:translate(-4px,-1px)}}
+
+/* ---------- header ---------- */
+#hd{position:sticky;top:0;z-index:70;background:var(--paper);border-bottom:3px solid var(--ink)}
+#hd.scrolled{box-shadow:0 4px 0 rgba(26,20,14,.14)}
+.nav{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:1.1rem;padding:.6rem clamp(1rem,3vw,2rem)}
+.brand{display:flex;align-items:center;gap:.45rem;font-family:Anton;font-size:1.15rem;letter-spacing:.05em;text-decoration:none}
+.brand .ast{width:.85em;height:.85em;fill:var(--coral);animation:rot 9s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.links{display:flex;gap:1.15rem;list-style:none;margin:0 0 0 auto;padding:0;font-weight:700;font-size:.86rem;letter-spacing:.06em;text-transform:uppercase}
+.links a{text-decoration:none;padding:.3rem .1rem;border-bottom:3px solid transparent}
+.links a:hover{color:var(--coral);border-bottom-color:var(--coral);text-shadow:1.5px 1px 0 rgba(255,78,56,.35)}
+.bag{margin-left:.4rem;display:flex;align-items:center;gap:.5rem;background:var(--ink);color:var(--paper);border:2.5px solid var(--ink);padding:.5rem .85rem;font-weight:800;font-size:.86rem;cursor:pointer}
+.bag:hover{background:var(--cobalt)}
+.bag b{background:var(--coral);color:var(--ink);min-width:1.5em;text-align:center;border-radius:999px;padding:.05em .3em}
+.bag.has b{animation:pulse .5s ease}
+@keyframes pulse{50%{transform:scale(1.45)}}
+#burger{display:none;width:42px;height:38px;background:var(--paper);border:2.5px solid var(--ink);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+#burger i{display:block;width:19px;height:2.6px;background:var(--ink)}
+@media(max-width:880px){
+  .links{display:none}
+  #burger{display:flex}
+  body.mnav .links{display:flex;position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:3px solid var(--ink);flex-direction:column;gap:0;padding:.4rem 1.3rem 1rem}
+  body.mnav .links a{display:block;padding:.7rem 0;border-bottom:2px solid rgba(26,20,14,.15);font-size:1rem}
+}
+
+/* ---------- hero ---------- */
+#hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:var(--paper);border-bottom:3px solid var(--ink)}
+#gl{position:absolute;inset:0;z-index:0;pointer-events:none;cursor:crosshair}
+#gl canvas{width:100%;height:100%;display:block;opacity:0;transition:opacity .9s ease}
+#gl.on canvas{opacity:1}
+.badge{position:absolute;top:6rem;right:clamp(.7rem,3vw,2.4rem);width:120px;z-index:3;pointer-events:none}
+.badge .spin{transform-origin:60px 60px;animation:rot 16s linear infinite}
+.fb-ink{display:none}
+.no3d .fb-ink{display:block}
+.no3d #gl,.no3d .badge{display:none}
+html:not(.js) #gl{display:none}
+html:not(.js) .fb-ink{display:block}
+.hero-inner{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;padding:.5rem clamp(1rem,3vw,2rem) 1.4rem;display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap}
+.hero-plate{position:relative;max-width:680px;background:var(--paper2);padding:clamp(1.4rem,3vw,2.2rem) clamp(1.2rem,3.4vw,2.5rem) 1.5rem;transform:rotate(-.6deg);
+  clip-path:polygon(0% 6%,3% 0%,8% 4%,14% 1%,20% 5%,27% 0%,34% 4%,41% 1%,48% 6%,55% 0%,62% 4%,69% 1%,76% 5%,83% 0%,90% 4%,96% 1%,100% 5%,100% 94%,96% 100%,89% 96%,82% 100%,74% 95%,66% 100%,58% 96%,50% 100%,42% 95%,34% 100%,26% 96%,18% 100%,10% 95%,4% 100%,0% 95%);
+  filter:drop-shadow(7px 7px 0 var(--ink));
+  animation:heroIn .8s cubic-bezier(.16,.9,.3,1) both}
+@keyframes heroIn{from{opacity:0;transform:rotate(-4deg) translateY(40px)}}
+.hero-kicker{display:flex;align-items:center;gap:.55rem;font-weight:800;text-transform:uppercase;font-size:.74rem;letter-spacing:.16em;margin:0 0 .8rem}
+.hero-kicker .chip{background:var(--coral);color:var(--paper2);padding:.15em .5em;transform:rotate(-2deg)}
+h1{margin:0}
+h1 .word{display:inline-block;font-family:Anton;font-weight:400;font-size:clamp(3.4rem,13.5vw,10rem);letter-spacing:.015em;color:var(--ink)}
+.fb-ink{font-family:Anton;font-size:clamp(3.4rem,13.5vw,10rem);line-height:.95;color:var(--ink);text-shadow:.045em .03em 0 var(--coral),-.045em -.025em 0 var(--cobalt)}
+.hero-date{display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:center;margin:1rem 0 .5rem;font-weight:800;font-size:1.02rem}
+.hero-date mark{background:var(--yellow);border:2px solid var(--ink);padding:.12em .45em;box-shadow:3px 3px 0 var(--ink)}
+.hero-sub{margin:0;max-width:54ch;font-size:1.02rem}
+.cta-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.2rem}
+.hero-side{max-width:250px;display:flex;flex-direction:column;gap:1.1rem;align-items:flex-end;text-align:right;padding-bottom:.4rem}
+.hero-note{font-family:Caveat,cursive;font-size:1.35rem;line-height:1.25;color:var(--cobalt);transform:rotate(-2deg)}
+.hero-note svg{width:34px;height:22px;stroke:var(--cobalt);fill:none;stroke-width:2.4;stroke-linecap:round;transform:rotate(12deg)}
+.scrollcue{display:inline-flex;align-items:center;gap:.5rem;font-size:.74rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.scrollcue svg{width:15px;height:20px;fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;animation:bob 1.7s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(5px)}}
+@media(max-width:760px){.hero-side{display:none}}
+
+/* marquee */
+.marquee{position:relative;z-index:2;background:var(--ink);overflow:hidden}
+.mq-track{display:flex;width:max-content;animation:mq 26s linear infinite}
+.mq-set{display:flex;align-items:center;gap:2.1rem;padding:.6rem 2.1rem .6rem 0;white-space:nowrap;font-family:Anton;letter-spacing:.08em;font-size:1.02rem;color:var(--yellow)}
+.mq-set .star{width:13px;height:13px;fill:var(--coral);flex:none}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ---------- section scaffolding ---------- */
+.kicker{display:inline-flex;align-items:center;gap:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.17em;font-size:.73rem;margin:0 0 1rem}
+.kicker .no{font-family:Anton;background:var(--yellow);border:2px solid var(--ink);padding:.12em .5em .05em;transform:rotate(-3deg);letter-spacing:.06em;font-size:.95rem}
+.h2{font-family:Anton;font-weight:400;text-transform:uppercase;font-size:clamp(2.1rem,5.2vw,3.9rem);margin:0 0 .8rem;letter-spacing:.012em}
+.dek{font-family:Fraunces,serif;font-style:italic;font-size:clamp(1.05rem,1.6vw,1.28rem);max-width:58ch;margin:0;color:#3B3226}
+.wm{position:absolute;z-index:0;font-family:Anton;font-size:clamp(5rem,17vw,15rem);color:transparent;-webkit-text-stroke:2px rgba(26,20,14,.1);line-height:1;pointer-events:none;user-select:none;white-space:nowrap}
+.sec-head{position:relative;z-index:1;margin-bottom:clamp(1.8rem,4vw,3rem)}
+
+/* drifting paper scraps */
+.scrap{position:absolute;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.55;animation:drift var(--du,16s) ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0) rotate(-7deg)}50%{transform:translate(16px,-20px) rotate(6deg)}}
+
+/* ---------- ink toy ---------- */
+.toy{display:grid;grid-template-columns:1.02fr 1fr;gap:clamp(1.8rem,4vw,3.4rem);align-items:center;position:relative;z-index:1}
+.press-frame{background:#FBF5E7;border:3px solid var(--ink);box-shadow:9px 9px 0 var(--ink);padding:1rem;transform:rotate(.5deg)}
+.press{position:relative;aspect-ratio:4/3;background:var(--paper);border:2px dashed rgba(26,20,14,.4);overflow:hidden;touch-action:none;cursor:crosshair}
+.plate{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply;will-change:transform}
+.ptag{font-family:"Bricolage Grotesque";font-weight:800;font-size:11px;letter-spacing:.09em}
+.reg{position:absolute;width:16px;height:16px;z-index:5;pointer-events:none}
+.reg::before,.reg::after{content:"";position:absolute;background:var(--ink)}
+.reg::before{left:7px;top:0;bottom:0;width:2px}
+.reg::after{top:7px;left:0;right:0;height:2px}
+.reg.tl{top:8px;left:8px}.reg.tr{top:8px;right:8px}.reg.bl{bottom:8px;left:8px}.reg.br{bottom:8px;right:8px}
+.press-foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.9rem}
+.readout{font-family:Anton;font-size:1.02rem;letter-spacing:.04em}
+.readout b{color:var(--coral)}
+.readout .chip{background:var(--yellow);border:2px solid var(--ink);padding:.08em .4em;display:inline-block;transform:rotate(-1.5deg)}
+.chips{display:flex;gap:.45rem}
+.chips i{width:15px;height:15px;border:2px solid var(--ink);animation:cycle 6s steps(1) infinite}
+.chips i:nth-child(2){animation-delay:2s}.chips i:nth-child(3){animation-delay:4s}
+@keyframes cycle{0%,24%{background:var(--coral)}25%,49%{background:var(--cobalt)}50%,74%{background:var(--yellow)}75%,100%{background:var(--mint)}}
+.tips{list-style:none;margin:1.4rem 0 0;padding:0;display:grid;gap:.7rem}
+.tips li{font-family:Caveat,cursive;font-size:1.4rem;color:var(--cobalt);transform:rotate(-1deg);display:flex;gap:.6rem;align-items:center}
+.tips svg{width:30px;height:18px;stroke:var(--cobalt);fill:none;stroke-width:2.4;stroke-linecap:round;flex:none}
+@media(max-width:940px){.toy{grid-template-columns:1fr}}
+
+/* ---------- programme ---------- */
+.tabs{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.7rem 0 1.5rem}
+.tab{font-family:Anton;font-size:1.12rem;letter-spacing:.04em;background:var(--paper);border:2.5px solid var(--ink);padding:.42rem 1rem;cursor:pointer;box-shadow:3px 3px 0 var(--ink);display:flex;gap:.55rem;align-items:center}
+.tab i{font-style:normal;font-family:"Bricolage Grotesque";font-weight:800;font-size:.66rem;background:var(--ink);color:var(--paper);padding:.2em .6em;border-radius:999px}
+.tab:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--yellow)}
+.tab[aria-selected="true"] i{background:var(--coral);color:var(--ink)}
+.ev{display:grid;grid-template-columns:5.4rem 1fr minmax(190px,auto);gap:.4rem 1.4rem;padding:1.15rem .7rem;border-bottom:2.5px solid var(--ink);align-items:start;transition:background .2s}
+#evlist > .ev:first-child{border-top:2.5px solid var(--ink)}
+.ev:hover{background:rgba(255,196,0,.17)}
+.ev-t{font-family:Anton;font-size:1.42rem;padding-top:.1rem}
+.ev h3{margin:0 0 .15rem;font-size:1.14rem;position:relative;display:inline-block;transition:transform .18s}
+.ev h3::before{content:attr(data-text);position:absolute;left:0;top:0;color:var(--coral);opacity:0;transform:translate(3px,2px);mix-blend-mode:multiply;transition:.18s;z-index:-1}
+.ev:hover h3{transform:translate(-1.5px,-1px)}
+.ev:hover h3::before{opacity:.9}
+.ev p{margin:0;font-size:.94rem;max-width:56ch}
+.ev .with{font-size:.8rem;font-weight:700;color:var(--cobalt);letter-spacing:.03em}
+.ev-meta{display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;text-align:right}
+.room{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.pencil{font-size:.8rem;font-weight:800;border:2px solid var(--ink);background:var(--paper);padding:.32em .7em;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:.15s}
+.pencil:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.pencil.on{background:var(--mint)}
+@media(max-width:720px){
+  .ev{grid-template-columns:1fr}
+  .ev-meta{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;text-align:left}
+}
+
+/* ---------- printers ---------- */
+.crew{display:grid;grid-template-columns:repeat(12,1fr);gap:1.6rem;position:relative;z-index:1}
+.crew>.rv{display:flex}
+.printer{width:100%;background:#FBF5E7;border:2.5px solid var(--ink);box-shadow:7px 7px 0 var(--ink);transform:rotate(var(--rot,0deg));transition:transform .25s,box-shadow .25s;position:relative}
+.printer:hover{transform:rotate(0deg) translateY(-5px);box-shadow:11px 12px 0 var(--ink)}
+.p-pic{border-bottom:2.5px solid var(--ink);position:relative;background:var(--paper);overflow:hidden}
+.p-pic svg{display:block;width:100%;height:auto}
+.ghost{transform:translate(5px,4px);transition:transform .3s}
+.printer:hover .ghost{transform:translate(10px,8px)}
+.p-stamp{position:absolute;right:10px;bottom:10px;font-size:.6rem;font-weight:800;letter-spacing:.13em;border:2px solid var(--ink);padding:.2em .5em;background:var(--yellow);transform:rotate(-2deg)}
+.p-body{padding:1.1rem 1.2rem 1.3rem}
+.p-body h3{margin:0;font-family:Anton;font-weight:400;font-size:1.5rem;text-transform:uppercase}
+.p-studio{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:.2rem 0 .55rem}
+.p-tags{font-size:.86rem;font-weight:700;margin:.15rem 0}
+.p-bio{font-size:.93rem;margin:.5rem 0 0}
+.p-quote{font-family:Fraunces,serif;font-style:italic;margin:.8rem 0 0;padding-left:.75rem;border-left:4px solid var(--coral)}
+.pc1{grid-column:1/7;--rot:-1.1deg}
+.pc2{grid-column:8/13;--rot:1.2deg;margin-top:4.5rem}
+.pc3{grid-column:2/7;--rot:.8deg;margin-top:-1.5rem}
+.pc4{grid-column:8/13;--rot:-.9deg;margin-top:1.5rem}
+.pc5{grid-column:1/6;--rot:1deg;margin-top:1rem}
+.pc6{grid-column:7/12;--rot:-1.3deg;margin-top:-2rem}
+@media(max-width:900px){.crew>.rv{grid-column:1/-1!important;margin-top:0!important}}
+
+/* ---------- venue ---------- */
+.map-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:2.2rem;align-items:start;position:relative;z-index:1}
+.map-frame{background:#FBF5E7;border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);padding:.8rem;transform:rotate(-.4deg)}
+.map-frame svg{display:block;width:100%;height:auto;background:var(--paper)}
+.marker{transform-box:fill-box;transform-origin:center;transition:transform .25s;cursor:pointer}
+.marker.hot{transform:scale(1.45)}
+.ring{transform-box:fill-box;transform-origin:center;animation:ping 2.8s ease-out infinite}
+@keyframes ping{0%{transform:scale(.35);opacity:.9}70%,100%{transform:scale(2.1);opacity:0}}
+.mlab{font-family:"Bricolage Grotesque";font-weight:800;font-size:15px;fill:var(--ink)}
+.hand{font-family:Caveat,cursive;font-size:19px;fill:var(--cobalt)}
+.legend{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+.leg{display:flex;gap:.8rem;align-items:flex-start;width:100%;text-align:left;font:inherit;font-size:.94rem;background:#FBF5E7;border:2.5px solid var(--ink);padding:.75rem .95rem;cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:.15s}
+.leg:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.leg .dot{width:16px;height:16px;border-radius:50%;background:var(--c);border:2.5px solid var(--ink);flex:none;margin-top:.15rem}
+.leg b{display:block}
+.addr{margin-top:1.3rem;font-weight:700;line-height:1.6}
+.notes{margin-top:1rem;font-family:Caveat,cursive;font-size:1.35rem;color:var(--cobalt);transform:rotate(-1.2deg);line-height:1.35}
+@media(max-width:900px){.map-grid{grid-template-columns:1fr}}
+
+/* ---------- shop ---------- */
+.pass-bar{display:flex;gap:1.4rem;align-items:center;flex-wrap:wrap;background:var(--yellow);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);padding:1.1rem 1.3rem;transform:rotate(-.4deg);margin-bottom:2.6rem;position:relative;z-index:1}
+.pass-bar h3{font-family:Anton;font-weight:400;font-size:1.5rem;text-transform:uppercase;margin:0}
+.pass-bar p{margin:.2rem 0 0;font-size:.92rem}
+.pass-bar .pb-meta{margin-left:auto;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.price{font-family:Anton;font-size:1.5rem}
+.wall{display:grid;grid-template-columns:repeat(12,1fr);gap:2.4rem 1.6rem;position:relative;z-index:1}
+.wall>.rv{display:flex}
+.d1{grid-column:1/6;--rot:-1.3deg}
+.d2{grid-column:6/10;--rot:1.1deg;margin-top:3.4rem}
+.d3{grid-column:2/6;--rot:.9deg;margin-top:-.6rem}
+.d4{grid-column:6/11;--rot:-1.1deg;margin-top:1.4rem}
+.poster{width:100%;background:#FCF7EA;border:2.5px solid var(--ink);padding:.85rem .85rem 1rem;box-shadow:9px 10px 0 var(--ink);transform:rotate(var(--rot,0deg));transition:transform .25s,box-shadow .25s;position:relative}
+.poster:hover{transform:rotate(0deg) translateY(-6px);box-shadow:13px 14px 0 var(--ink)}
+.tape{position:absolute;top:-13px;left:50%;width:98px;height:26px;transform:translateX(-50%) rotate(-3deg);background:rgba(255,205,80,.82);border:1px solid rgba(26,20,14,.22);z-index:2}
+.poster .art{display:block;width:100%;height:auto;border:2px solid var(--ink)}
+.p-meta{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-top:.85rem}
+.p-meta h3{font-family:Anton;font-weight:400;font-size:1.28rem;text-transform:uppercase;margin:0}
+.by{font-size:.8rem;font-weight:600;color:var(--dim)}
+.ed{display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.09em;border:2px solid var(--ink);padding:.18em .5em;background:var(--paper);transform:rotate(-2deg);margin-top:.45rem}
+.left{display:block;font-size:.72rem;font-weight:700;color:var(--dim);margin-top:.4rem}
+.soldmark{display:none;position:absolute;top:37%;left:50%;transform:translate(-50%,-50%) rotate(-13deg);border:4px solid var(--coral);color:var(--coral);background:rgba(252,247,234,.88);font-family:Anton;font-size:2rem;letter-spacing:.12em;padding:.1em .45em}
+.poster.gone .soldmark{display:block}
+.poster.gone .art{opacity:.55}
+@media(max-width:900px){.wall>.rv{grid-column:1/-1!important;margin-top:0!important}}
+
+/* ---------- voices ---------- */
+.voices{display:grid;grid-template-columns:repeat(12,1fr);gap:1.6rem;position:relative;z-index:1}
+.voices>.rv{display:flex}
+.quote{width:100%;border:2.5px solid var(--ink);padding:1.6rem 1.5rem 1.4rem;box-shadow:7px 7px 0 var(--ink);transform:rotate(var(--rot,0deg));transition:transform .25s,box-shadow .25s;clip-path:polygon(0% 5%,4% 0%,11% 4%,19% 0%,28% 4%,38% 1%,48% 5%,59% 0%,69% 4%,79% 0%,89% 4%,96% 1%,100% 5%,100% 95%,95% 100%,86% 96%,76% 100%,65% 96%,54% 100%,43% 96%,32% 100%,21% 95%,11% 100%,4% 96%,0% 95%)}
+.voices>.rv:hover .quote{transform:rotate(0deg)}
+.quote{width:100%;background:var(--q,#FBF5E7);transition:transform .25s;transform:rotate(var(--rot,0deg))}
+.q1{grid-column:1/5;--rot:-1.4deg;--q:#FFE7D6}
+.q2{grid-column:5/9;--rot:1.1deg;margin-top:2.4rem;--q:#FFF1C2}
+.q3{grid-column:9/13;--rot:-.9deg;--q:#D9F2E5}
+.q4{grid-column:3/8;--rot:.7deg;margin-top:.6rem;--q:#F0E9D8}
+blockquote{margin:0;font-family:Fraunces,serif;font-style:italic;font-size:1.22rem;line-height:1.42}
+.q-mark{font-family:Anton;font-size:2.7rem;line-height:.6;color:var(--coral);display:block;margin:.5rem 0 .8rem}
+.quote cite{display:block;margin-top:1rem;font-style:normal;font-weight:800;font-size:.76rem;letter-spacing:.09em;text-transform:uppercase}
+@media(max-width:900px){.voices>.rv{grid-column:1/-1!important;margin-top:0!important}}
+
+/* ---------- faq ---------- */
+.faq{max-width:800px;margin:0 auto;position:relative;z-index:1}
+.qa{border-bottom:2.5px solid var(--ink)}
+.qa:first-of-type{border-top:2.5px solid var(--ink)}
+.qa-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;font:inherit;font-weight:800;font-size:1.05rem;text-align:left;background:none;border:0;padding:1.15rem .4rem;cursor:pointer;transition:background .2s}
+.qa-btn:hover{background:rgba(255,196,0,.16)}
+.qa-x{position:relative;width:18px;height:18px;flex:none}
+.qa-x::before,.qa-x::after{content:"";position:absolute;left:50%;top:50%;background:var(--ink);transform:translate(-50%,-50%);transition:transform .3s}
+.qa-x::before{width:18px;height:3px}
+.qa-x::after{width:3px;height:18px}
+.qa.open .qa-x::after{transform:translate(-50%,-50%) scaleY(0)}
+.qa-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.qa.open .qa-panel{grid-template-rows:1fr}
+.qa-body{overflow:hidden;min-height:0;visibility:hidden;transition:visibility .35s}
+.qa.open .qa-body{visibility:visible}
+.qa-body p{margin:0;padding:0 .4rem 1.3rem;max-width:64ch}
+
+/* ---------- newsletter ---------- */
+#news{background:var(--coral);margin-top:2.5rem;padding:clamp(4rem,7vw,6.5rem) 0;position:relative;
+  clip-path:polygon(0 16px,3% 5px,7% 17px,12% 7px,18% 16px,24% 6px,31% 14px,38% 5px,45% 15px,52% 7px,59% 16px,66% 6px,73% 13px,80% 5px,87% 15px,93% 7px,100% 13px,100% calc(100% - 14px),96% calc(100% - 5px),90% calc(100% - 15px),84% calc(100% - 7px),77% calc(100% - 16px),70% calc(100% - 6px),63% calc(100% - 14px),56% calc(100% - 5px),49% calc(100% - 15px),42% calc(100% - 7px),35% calc(100% - 16px),28% calc(100% - 6px),21% calc(100% - 13px),14% calc(100% - 5px),8% calc(100% - 15px),4% calc(100% - 7px),0 calc(100% - 13px));}
+#news .ngrid{display:grid;grid-template-columns:1.1fr 1fr;gap:2.6rem;align-items:center;position:relative;z-index:1}
+#news .h2{color:var(--ink)}
+.nform{display:flex;gap:.8rem;flex-wrap:wrap}
+.nform input{flex:1 1 240px;font:inherit;font-weight:600;padding:.85rem 1rem;border:3px solid var(--ink);background:var(--paper);color:var(--ink)}
+.nform input::placeholder{color:#8a7c66}
+.form-err{width:100%;font-weight:800;margin:.3rem 0 0}
+.fine{font-size:.82rem;margin:.9rem 0 0;font-weight:600}
+.stamp{display:inline-block;border:4px solid var(--ink);padding:.9rem 1.3rem;background:var(--yellow);font-family:Anton;font-size:1.35rem;letter-spacing:.06em;transform:rotate(-2deg);box-shadow:6px 6px 0 var(--ink);animation:stampIn .45s cubic-bezier(.2,1.5,.4,1)}
+@keyframes stampIn{from{transform:rotate(-16deg) scale(1.7);opacity:0}}
+#newsOk p{margin:1rem 0 0;font-weight:600}
+@media(max-width:860px){#news .ngrid{grid-template-columns:1fr}}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink);color:var(--paper);padding:3.5rem 0 1.6rem;position:relative;
+  clip-path:polygon(0 18px,4% 6px,9% 18px,15% 5px,21% 16px,27% 4px,34% 15px,41% 5px,48% 17px,55% 6px,62% 16px,69% 5px,76% 15px,83% 6px,90% 17px,96% 7px,100% 14px,100% 100%,0 100%);}
+.foot-word{font-family:Anton;font-weight:400;font-size:clamp(3rem,12.5vw,11.5rem);line-height:.95;letter-spacing:.02em;color:transparent;-webkit-text-stroke:2.5px var(--paper);margin:0 0 2.4rem;user-select:none}
+.foot-word span{transition:color .18s,-webkit-text-stroke-color .18s}
+.foot-word span:hover{color:var(--coral);-webkit-text-stroke-color:var(--coral)}
+.foot-word span:nth-child(4n+2):hover{color:var(--yellow);-webkit-text-stroke-color:var(--yellow)}
+.foot-word span:nth-child(4n+3):hover{color:var(--mint);-webkit-text-stroke-color:var(--mint)}
+.foot-word span:nth-child(4n):hover{color:var(--paper);-webkit-text-stroke-color:var(--paper)}
+.f-cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2rem}
+.f-cols h4{font-family:Anton;font-weight:400;font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:var(--yellow);margin:0 0 .8rem}
+.f-cols ul{list-style:none;margin:0;padding:0;display:grid;gap:.5rem;font-size:.92rem}
+.f-cols a{text-decoration:none;border-bottom:2px solid rgba(244,237,223,.3)}
+.f-cols a:hover{color:var(--coral);border-bottom-color:var(--coral)}
+.f-blurb{font-size:.92rem;max-width:36ch;color:#D9CFBC}
+.f-roller{position:relative;height:46px;margin:2.6rem 0 .8rem;overflow:hidden;border-block:2px solid rgba(244,237,223,.28)}
+.f-roller .rig{position:absolute;bottom:7px;left:-90px;animation:travel 9s linear infinite}
+@keyframes travel{to{transform:translateX(calc(100vw + 120px))}}
+.f-bottom{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid rgba(244,237,223,.28);padding-top:1.1rem;font-size:.8rem;color:#BFB49E}
+.to-top{color:var(--paper);font-weight:800;text-decoration:none;border-bottom:2px solid var(--coral)}
+.to-top:hover{color:var(--yellow)}
+@media(max-width:820px){.f-cols{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.f-cols{grid-template-columns:1fr}}
+
+/* ---------- drawer ---------- */
+#scrim{position:fixed;inset:0;background:rgba(26,20,14,.45);z-index:99;opacity:0;pointer-events:none;transition:opacity .3s}
+body.dopen #scrim{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;right:0;height:100dvh;width:min(410px,94vw);background:var(--paper);border-left:3px solid var(--ink);z-index:100;transform:translateX(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1);padding:1.4rem;display:flex;flex-direction:column;gap:1rem;overflow-y:auto}
+body.dopen #drawer{transform:none}
+.d-head{display:flex;justify-content:space-between;align-items:center}
+.d-head h3{margin:0;font-family:Anton;font-weight:400;font-size:1.7rem;text-transform:uppercase}
+.icon-btn{width:42px;height:42px;border:2.5px solid var(--ink);background:var(--paper);cursor:pointer;display:grid;place-items:center;font-weight:800;font-size:1.1rem}
+.icon-btn:hover{background:var(--yellow)}
+.d-note{margin:0;font-family:Fraunces,serif;font-style:italic;color:#4A4033}
+#dList{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+#dList li{display:flex;justify-content:space-between;align-items:center;gap:.8rem;border:2px solid var(--ink);background:#FBF5E7;padding:.6rem .75rem}
+#dList i{display:block;font-style:normal;font-size:.78rem;color:var(--dim);font-weight:700}
+.rm{border:2px solid var(--ink);background:var(--paper);font-weight:800;cursor:pointer;padding:.25em .55em;line-height:1}
+.rm:hover{background:var(--coral);color:var(--paper2)}
+.d-empty{font-family:Fraunces,serif;font-style:italic;color:var(--dim);margin:.4rem 0}
+.d-total{display:flex;justify-content:space-between;align-items:baseline;font-family:Anton;font-size:1.45rem;border-top:2.5px solid var(--ink);padding-top:.8rem;margin-top:auto}
+.d-done{display:none}
+#drawer.done .d-shop{display:none}
+#drawer.done .d-done{display:block}
+.d-code{font-family:Anton;font-size:1.6rem;letter-spacing:.1em;background:var(--ink);color:var(--yellow);padding:.4rem .8rem;display:inline-block;margin:.8rem 0}
+
+/* ---------- toasts ---------- */
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:1.2rem;z-index:130;display:flex;flex-direction:column;gap:.6rem;align-items:center;width:min(94vw,540px);pointer-events:none}
+.toast{display:flex;gap:.6rem;align-items:center;background:var(--ink);color:var(--paper);padding:.75rem 1.05rem;font-weight:700;font-size:.92rem;box-shadow:4px 4px 0 rgba(26,20,14,.35);animation:tin .3s ease;max-width:100%}
+.toast svg{width:13px;height:13px;fill:var(--coral);flex:none}
+.toast.out{animation:tout .3s forwards}
+@keyframes tin{from{transform:translateY(14px);opacity:0}}
+@keyframes tout{to{transform:translateY(14px);opacity:0}}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s cubic-bezier(.16,.8,.3,1);transition-delay:var(--rd,0s)}
+.rv.in{opacity:1;transform:translateY(0)}
+html:not(.js) .rv{opacity:1;transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the fair</a>
+
+<!-- shared svg defs: halftone patterns + star -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="star8" viewBox="0 0 24 24"><path d="M12 0 L14.4 9.6 L24 12 L14.4 14.4 L12 24 L9.6 14.4 L0 12 L9.6 9.6 Z"/></symbol>
+    <pattern id="d-coral" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(8)"><circle cx="4.5" cy="4.5" r="1.7" fill="#FF4E38"/></pattern>
+    <pattern id="d-cobalt" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-6)"><circle cx="4.5" cy="4.5" r="1.7" fill="#2440D6"/></pattern>
+    <pattern id="d-yellow" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(4)"><circle cx="4.5" cy="4.5" r="1.7" fill="#FFC400"/></pattern>
+    <pattern id="d-mint" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-10)"><circle cx="4.5" cy="4.5" r="1.7" fill="#3ECF9A"/></pattern>
+  </defs>
+</svg>
+
+<header id="hd">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="#top"><svg class="ast" width="18" height="18" aria-hidden="true"><use href="#star8"/></svg>INK WEATHER</a>
+    <button id="burger" aria-expanded="false" aria-label="Open menu"><i></i><i></i><i></i></button>
+    <ul class="links" id="mnav">
+      <li><a href="#programme">Programme</a></li>
+      <li><a href="#printers">Printers</a></li>
+      <li><a href="#venue">Venue</a></li>
+      <li><a href="#shop">Market</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <button class="bag" id="bag" aria-label="Open your poster bundle">
+      Bundle <b id="bagN">0</b>
+    </button>
+  </nav>
+</header>
+
+<main id="main">
+
+<!-- ================= HERO ================= -->
+<section id="hero" aria-label="Ink Weather festival poster">
+  <div id="gl" aria-hidden="true"></div>
+
+  <div class="badge" aria-hidden="true">
+    <svg viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="57" fill="#FFC400" stroke="#1A140E" stroke-width="3"/>
+      <g class="spin">
+        <defs><path id="cir" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/></defs>
+        <text font-family="Bricolage Grotesque" font-weight="800" font-size="11.5" letter-spacing="2.5" fill="#1A140E">
+          <textPath href="#cir" textLength="281">FRESH INK DAILY · RISO OR DIE · EST. 2024 ·</textPath>
+        </text>
+      </g>
+      <g transform="translate(60,60)"><path d="M0 -14 L3 -3 L14 0 L3 3 L0 14 L-3 3 L-14 0 L-3 -3 Z" fill="#FF4E38" stroke="#1A140E" stroke-width="1.6"/></g>
+    </svg>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-plate">
+      <p class="hero-kicker"><span class="chip">3rd edition</span> A risograph &amp; independent print fair</p>
+      <h1><span class="sr-only">Ink Weather —</span><span class="fb-ink" aria-hidden="true">INK</span><span class="word misreg" data-text="WEATHER" aria-hidden="true">WEATHER</span></h1>
+      <p class="hero-date">
+        <mark>26–28 June 2026</mark>
+        <span>Het Drukhuis · Distelweg 83 · Amsterdam-Noord</span>
+      </p>
+      <p class="hero-sub">Three days of duplicators, fluorescent ink, misprints worth framing, and weather that always calls for one more layer.</p>
+      <div class="cta-row">
+        <a class="btn coral" href="#shop">Get a print pass</a>
+        <a class="btn" href="#programme">See the programme</a>
+      </div>
+    </div>
+    <div class="hero-side" aria-hidden="true">
+      <p class="hero-note">psst — those big letters are three wet plates of ink.<br>shake your pointer and slip them out of register…
+        <svg viewBox="0 0 40 24"><path d="M38 4 C24 2 10 8 4 20 M4 20 l1 -7 M4 20 l7 -3"/></svg>
+      </p>
+      <span class="scrollcue">Scroll for fair ground
+        <svg viewBox="0 0 16 22"><path d="M8 2 V16 M2 11 L8 17 L14 11"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="mq-track">
+      <div class="mq-set">
+        <span>Ink Weather 2026</span><svg class="star"><use href="#star8"/></svg>
+        <span>26–28 June</span><svg class="star"><use href="#star8"/></svg>
+        <span>Het Drukhuis · Amsterdam-Noord</span><svg class="star"><use href="#star8"/></svg>
+        <span>42 duplicators humming</span><svg class="star"><use href="#star8"/></svg>
+        <span>Fresh pulls daily</span><svg class="star"><use href="#star8"/></svg>
+        <span>Misprints welcome</span><svg class="star"><use href="#star8"/></svg>
+        <span>Bring a tote</span><svg class="star"><use href="#star8"/></svg>
+      </div>
+      <div class="mq-set">
+        <span>Ink Weather 2026</span><svg class="star"><use href="#star8"/></svg>
+        <span>26–28 June</span><svg class="star"><use href="#star8"/></svg>
+        <span>Het Drukhuis · Amsterdam-Noord</span><svg class="star"><use href="#star8"/></svg>
+        <span>42 duplicators humming</span><svg class="star"><use href="#star8"/></svg>
+        <span>Fresh pulls daily</span><svg class="star"><use href="#star8"/></svg>
+        <span>Misprints welcome</span><svg class="star"><use href="#star8"/></svg>
+        <span>Bring a tote</span><svg class="star"><use href="#star8"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INK TOY ================= -->
+<section class="sec" id="ink">
+  <div class="wm" style="top:-1.5rem;right:-2%">SLIP</div>
+  <svg class="scrap" style="top:8%;right:6%;width:110px" viewBox="0 0 100 90" aria-hidden="true"><path d="M8 60 L45 6 L92 38 L70 84 Z" fill="#3ECF9A"/></svg>
+  <div class="wrap">
+    <header class="sec-head rv">
+      <p class="kicker"><span class="no">01</span> The medium</p>
+      <h2 class="h2 misreg" data-text="Overprint everything.">Overprint everything.</h2>
+      <p class="dek">Every risograph print is a small act of weather: layers of ink drift, slip, and settle where they please. Below, three live plates — sun, hills, sea — are being printed in front of you, in the wrong colours, on purpose.</p>
+    </header>
+    <div class="toy">
+      <div class="press-frame rv" style="--rd:.1s">
+        <div class="press" id="press">
+          <i class="reg tl"></i><i class="reg tr"></i><i class="reg bl"></i><i class="reg br"></i>
+          <svg class="plate" viewBox="0 0 400 300" aria-hidden="true">
+            <circle cx="252" cy="104" r="82" fill="#FFC400"/>
+            <rect x="-4" y="240" width="410" height="64" fill="#FFC400" opacity=".9"/>
+            <text class="ptag" x="14" y="24" fill="#B07C00">PLATE 1 — SUN</text>
+          </svg>
+          <svg class="plate" viewBox="0 0 400 300" aria-hidden="true">
+            <path d="M-10,300 Q95,140 215,300 Z" fill="#FF4E38"/>
+            <path d="M62,78 q9,-12 18,0 q9,-12 18,0" stroke="#FF4E38" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M120,56 q8,-10 16,0 q8,-10 16,0" stroke="#FF4E38" stroke-width="4.4" fill="none" stroke-linecap="round"/>
+            <text class="ptag" x="14" y="42" fill="#C21708">PLATE 2 — HILLS</text>
+          </svg>
+          <svg class="plate" viewBox="0 0 400 300" aria-hidden="true">
+            <g stroke="#2440D6" stroke-width="6" fill="none" stroke-linecap="round">
+              <path d="M-8,252 q28,-14 56,0 t56,0 t56,0 t56,0 t56,0 t56,0 t56,0"/>
+              <path d="M-10,270 q28,-14 56,0 t56,0 t56,0 t56,0 t56,0 t56,0 t56,0"/>
+              <path d="M-8,288 q28,-14 56,0 t56,0 t56,0 t56,0 t56,0 t56,0 t56,0"/>
+            </g>
+            <path d="M300,238 L326,176 L352,238 Z" fill="#2440D6"/>
+            <path d="M290,240 h72 l-11,20 h-50 Z" fill="#2440D6"/>
+            <text class="ptag" x="14" y="60" fill="#2440D6">PLATE 3 — SEA</text>
+          </svg>
+        </div>
+        <div class="press-foot">
+          <p class="readout" aria-live="off">REG <b id="regVal">0.0</b> MM <span class="chip" id="regWord">— ALARMINGLY PERFECT</span></p>
+          <div style="display:flex;gap:.9rem;align-items:center">
+            <span class="chips" aria-hidden="true"><i></i><i></i><i></i></span>
+            <button class="btn small mint" id="proofBtn" type="button">Pull a clean proof</button>
+          </div>
+        </div>
+      </div>
+      <div class="rv" style="--rd:.12s">
+        <p style="font-size:1.05rem;max-width:52ch">Move your pointer across the plates and the drums slip out of register — just like Tuesday’s cobalt run, which we do not discuss. Let go, and the ink settles where it likes. That readout is our quality control, and it has never once said “perfect”.</p>
+        <ul class="tips">
+          <li><svg viewBox="0 0 40 24"><path d="M2 12 C14 4 26 4 38 12 M38 12 l-7 -5 M38 12 l-7 5"/></svg>drag across the plates — feel the drums slip</li>
+          <li><svg viewBox="0 0 40 24"><path d="M2 6 C16 20 26 20 38 10 M38 10 l-8 -1 M38 10 l-4 7"/></svg>let go — they settle where they please</li>
+          <li><svg viewBox="0 0 40 24"><path d="M6 20 C10 6 30 6 34 18 M34 18 l-6 -2 M34 18 l1 -7"/></svg>the button pulls one clean proof (rare)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dotline" aria-hidden="true"></div>
+
+<!-- ================= PROGRAMME ================= -->
+<section class="sec" id="programme">
+  <svg class="scrap" style="top:4%;left:3%;width:90px" viewBox="0 0 100 40" aria-hidden="true"><path d="M0 0 H100 L84 40 H8 Z" fill="#FFC400"/></svg>
+  <div class="wrap">
+    <header class="sec-head rv">
+      <p class="kicker"><span class="no">02</span> Programme</p>
+      <h2 class="h2 misreg" data-text="Ink in the forecast.">Ink in the forecast.</h2>
+      <p class="dek">Talks to think about, workshops to fight for, and two all-hands pulls that will ruin your shirt in the best possible way.</p>
+    </header>
+    <div class="tabs rv" role="tablist" aria-label="Festival days">
+      <button class="tab" role="tab" id="tab-fri" data-day="fri" aria-selected="true" aria-controls="p-fri">FRI 26 <i>3 events</i></button>
+      <button class="tab" role="tab" id="tab-sat" data-day="sat" aria-selected="false" aria-controls="p-sat">SAT 27 <i>5 events</i></button>
+      <button class="tab" role="tab" id="tab-sun" data-day="sun" aria-selected="false" aria-controls="p-sun">SUN 28 <i>4 events</i></button>
+    </div>
+    <div id="p-fri" class="evlist" role="tabpanel" aria-labelledby="tab-fri"></div>
+    <div id="p-sat" class="evlist" role="tabpanel" aria-labelledby="tab-sat" hidden></div>
+    <div id="p-sun" class="evlist" role="tabpanel" aria-labelledby="tab-sun" hidden></div>
+  </div>
+</section>
+
+<!-- ================= PRINTERS ================= -->
+<section class="sec" id="printers" style="background:var(--paper2);border-block:3px solid var(--ink)">
+  <div class="wm" style="bottom:-2%;left:-1%">GUESTS</div>
+  <div class="wrap">
+    <header class="sec-head rv">
+      <p class="kicker"><span class="no">02</span> Guest studios</p>
+      <h2 class="h2 misreg" data-text="Six hands, six drums.">Six hands, six drums.</h2>
+      <p class="dek">The people feeding the drums this year — each with a studio, a city, and at least one strong opinion about paper.</p>
+    </header>
+    <div class="crew">
+
+      <div class="rv pc1"><article class="printer">
+        <div class="p-pic">
+          <svg viewBox="0 0 200 170" role="img" aria-label="Spot-colour portrait of Mara Quist in coral">
+            <rect width="200" height="170" fill="#F8F2E3"/><rect width="200" height="170" fill="url(#d-coral)" opacity=".3"/>
+            <g class="ghost" fill="#2440D6" opacity=".5"><ellipse cx="100" cy="82" rx="37" ry="41"/><path d="M60,86 Q52,28 100,26 Q148,28 140,86 L140,64 Q140,42 100,42 Q60,42 60,64 Z"/></g>
+            <path d="M28,170 Q38,128 100,124 Q162,128 172,170 Z" fill="#FF4E38" opacity=".35"/>
+            <rect x="88" y="104" width="24" height="26" fill="#FF4E38"/>
+            <ellipse cx="100" cy="82" rx="37" ry="41" fill="#FF4E38" stroke="#1A140E" stroke-width="3"/>
+            <path d="M60,86 Q52,28 100,26 Q148,28 140,86 L140,64 Q140,42 100,42 Q60,42 60,64 Z" fill="#1A140E"/>
+            <circle cx="86" cy="80" r="3.4" fill="#1A140E"/><circle cx="114" cy="80" r="3.4" fill="#1A140E"/>
+            <path d="M89,103 q11,9 22,0" stroke="#1A140E" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="p-stamp">RISO MZ790</span>
+        </div>
+        <div class="p-body">
+          <h3>Mara Quist</h3>
+          <p class="p-studio">Studio Pek · Rotterdam</p>
+          <p class="p-tags">Fluorescent duotones · tide charts for imaginary seas</p>
+          <p class="p-bio">Runs a two-drum studio above a chandlery. Insists coral ink is a mood, not a colour.</p>
+          <p class="p-quote">“Registration is a suggestion.”</p>
+        </div>
+      </article></div>
+
+      <div class="rv pc2"><article class="printer">
+        <div class="p-pic">
+          <svg viewBox="0 0 200 170" role="img" aria-label="Spot-colour portrait of Ossian Beck in cobalt, wearing a coral beanie">
+            <rect width="200" height="170" fill="#F8F2E3"/><rect width="200" height="170" fill="url(#d-cobalt)" opacity=".3"/>
+            <g class="ghost" fill="#FF4E38" opacity=".5"><ellipse cx="100" cy="82" rx="37" ry="41"/><path d="M62,72 Q64,30 100,30 Q136,30 138,72 L138,80 Q100,62 62,80 Z"/></g>
+            <path d="M28,170 Q38,128 100,124 Q162,128 172,170 Z" fill="#2440D6" opacity=".35"/>
+            <rect x="88" y="104" width="24" height="26" fill="#2440D6"/>
+            <ellipse cx="100" cy="82" rx="37" ry="41" fill="#2440D6" stroke="#1A140E" stroke-width="3"/>
+            <path d="M62,72 Q64,30 100,30 Q136,30 138,72 L138,80 Q100,62 62,80 Z" fill="#1A140E"/>
+            <path d="M62,74 q38,-14 76,0 l0,12 q-38,-12 -76,0 Z" fill="#FF4E38" stroke="#1A140E" stroke-width="2"/>
+            <path d="M80,84 h11 M109,84 h11" stroke="#1A140E" stroke-width="3.4" stroke-linecap="round"/>
+            <path d="M92,108 h16" stroke="#1A140E" stroke-width="3.4" stroke-linecap="round"/>
+          </svg>
+          <span class="p-stamp">RISO RV3700</span>
+        </div>
+        <div class="p-body">
+          <h3>Ossian Beck</h3>
+          <p class="p-studio">Nightbus Press · Glasgow</p>
+          <p class="p-tags">Cobalt nights · last buses, first trains</p>
+          <p class="p-bio">Prints the city after midnight from photos taken out of moving windows. All cobalt, always.</p>
+          <p class="p-quote">“Blue is just black with hope in it.”</p>
+        </div>
+      </article></div>
+
+      <div class="rv pc3"><article class="printer">
+        <div class="p-pic">
+          <svg viewBox="0 0 200 170" role="img" aria-label="Spot-colour portrait of Pilar Mendoza in yellow with a black bun and hoop earrings">
+            <rect width="200" height="170" fill="#F8F2E3"/><rect width="200" height="170" fill="url(#d-yellow)" opacity=".3"/>
+            <g class="ghost" fill="#3ECF9A" opacity=".5"><ellipse cx="100" cy="82" rx="37" ry="41"/><circle cx="100" cy="30" r="15"/></g>
+            <path d="M28,170 Q38,128 100,124 Q162,128 172,170 Z" fill="#FFC400" opacity=".4"/>
+            <rect x="88" y="104" width="24" height="26" fill="#FFC400"/>
+            <ellipse cx="100" cy="82" rx="37" ry="41" fill="#FFC400" stroke="#1A140E" stroke-width="3"/>
+            <circle cx="100" cy="28" r="15" fill="#1A140E"/>
+            <path d="M66,62 Q70,34 100,32 Q130,34 134,62 Q100,48 66,62 Z" fill="#1A140E"/>
+            <circle cx="61" cy="110" r="9" fill="none" stroke="#1A140E" stroke-width="3.4"/>
+            <circle cx="139" cy="110" r="9" fill="none" stroke="#1A140E" stroke-width="3.4"/>
+            <circle cx="86" cy="80" r="3.4" fill="#1A140E"/><circle cx="114" cy="80" r="3.4" fill="#1A140E"/>
+            <path d="M85,99 q15,13 30,0" stroke="#1A140E" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="p-stamp">RISO MZ1090</span>
+        </div>
+        <div class="p-body">
+          <h3>Pilar Mendoza</h3>
+          <p class="p-studio">Taller Volta · Mexico City</p>
+          <p class="p-tags">Cut-paper collisions · scissors you can hear</p>
+          <p class="p-bio">Cuts every shape by hand before it touches a drum. You can hear the scissors in the final print.</p>
+          <p class="p-quote">“Scissors first. Always.”</p>
+        </div>
+      </article></div>
+
+      <div class="rv pc4"><article class="printer">
+        <div class="p-pic">
+          <svg viewBox="0 0 200 170" role="img" aria-label="Spot-colour portrait of Jules Verhoeven in mint with curly black hair and round glasses">
+            <rect width="200" height="170" fill="#F8F2E3"/><rect width="200" height="170" fill="url(#d-mint)" opacity=".3"/>
+            <g class="ghost" fill="#FFC400" opacity=".55"><ellipse cx="100" cy="82" rx="37" ry="41"/><circle cx="74" cy="42" r="14"/><circle cx="98" cy="32" r="15"/><circle cx="122" cy="40" r="13"/></g>
+            <path d="M28,170 Q38,128 100,124 Q162,128 172,170 Z" fill="#3ECF9A" opacity=".35"/>
+            <rect x="88" y="104" width="24" height="26" fill="#3ECF9A"/>
+            <ellipse cx="100" cy="82" rx="37" ry="41" fill="#3ECF9A" stroke="#1A140E" stroke-width="3"/>
+            <circle cx="74" cy="44" r="14" fill="#1A140E"/><circle cx="98" cy="32" r="15" fill="#1A140E"/><circle cx="122" cy="36" r="14" fill="#1A140E"/><circle cx="66" cy="56" r="11" fill="#1A140E"/><circle cx="134" cy="52" r="12" fill="#1A140E"/>
+            <circle cx="86" cy="80" r="11" fill="none" stroke="#1A140E" stroke-width="3"/><circle cx="114" cy="80" r="11" fill="none" stroke="#1A140E" stroke-width="3"/>
+            <path d="M97,80 h6 M75,80 h-8 M125,80 h8" stroke="#1A140E" stroke-width="3"/>
+            <circle cx="86" cy="80" r="2.6" fill="#1A140E"/><circle cx="114" cy="80" r="2.6" fill="#1A140E"/>
+            <path d="M91,105 q9,7 18,0" stroke="#1A140E" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="p-stamp">RISO FR3950</span>
+        </div>
+        <div class="p-body">
+          <h3>Jules Verhoeven</h3>
+          <p class="p-studio">Kopieerhuis · Utrecht</p>
+          <p class="p-tags">Expired paper · urgent ideas</p>
+          <p class="p-bio">Rescues discontinued stock by the pallet. If it yellowed in a warehouse for a decade, it’s finally home.</p>
+          <p class="p-quote">“Paper expires. Ideas don’t.”</p>
+        </div>
+      </article></div>
+
+      <div class="rv pc5"><article class="printer">
+        <div class="p-pic">
+          <svg viewBox="0 0 200 170" role="img" aria-label="Spot-colour portrait of Ada Nwosu in coral with two hair puffs">
+            <rect width="200" height="170" fill="#F8F2E3"/><rect width="200" height="170" fill="url(#d-coral)" opacity=".3"/>
+            <g class="ghost" fill="#2440D6" opacity=".5"><ellipse cx="100" cy="82" rx="37" ry="41"/><circle cx="68" cy="40" r="18"/><circle cx="132" cy="40" r="18"/></g>
+            <path d="M28,170 Q38,128 100,124 Q162,128 172,170 Z" fill="#FF4E38" opacity=".35"/>
+            <rect x="88" y="104" width="24" height="26" fill="#FF4E38"/>
+            <ellipse cx="100" cy="82" rx="37" ry="41" fill="#FF4E38" stroke="#1A140E" stroke-width="3"/>
+            <circle cx="68" cy="38" r="18" fill="#1A140E"/><circle cx="132" cy="38" r="18" fill="#1A140E"/>
+            <path d="M100,46 v12" stroke="#1A140E" stroke-width="3"/>
+            <circle cx="64" cy="98" r="4.4" fill="#FFC400" stroke="#1A140E" stroke-width="2"/><circle cx="136" cy="98" r="4.4" fill="#FFC400" stroke="#1A140E" stroke-width="2"/>
+            <circle cx="86" cy="80" r="3.4" fill="#1A140E"/><circle cx="114" cy="80" r="3.4" fill="#1A140E"/>
+            <path d="M84,100 q16,13 32,0" stroke="#1A140E" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="p-stamp">RISO SF5030</span>
+        </div>
+        <div class="p-body">
+          <h3>Ada Nwosu</h3>
+          <p class="p-studio">Second Sun · London</p>
+          <p class="p-tags">Halftone photography · 53 lpi storms</p>
+          <p class="p-bio">Turns bus stops and family albums into coarse, glorious dot-fields. Screens are banned in her studio.</p>
+          <p class="p-quote">“Every photograph wants to be a poster.”</p>
+        </div>
+      </article></div>
+
+      <div class="rv pc6"><article class="printer">
+        <div class="p-pic">
+          <svg viewBox="0 0 200 170" role="img" aria-label="Spot-colour portrait of Bram de Wit: a black-ink face with a coral cap and beard">
+            <rect width="200" height="170" fill="#F8F2E3"/><rect width="200" height="170" fill="url(#d-cobalt)" opacity=".3"/>
+            <g class="ghost" fill="#FF4E38" opacity=".55"><ellipse cx="100" cy="82" rx="37" ry="41"/></g>
+            <path d="M28,170 Q38,128 100,124 Q162,128 172,170 Z" fill="#1A140E" opacity=".85"/>
+            <ellipse cx="100" cy="82" rx="37" ry="41" fill="#1A140E" stroke="#1A140E" stroke-width="3"/>
+            <path d="M60,60 Q64,26 100,26 Q136,26 140,60 L140,72 Q100,56 60,72 Z" fill="#FF4E38" stroke="#1A140E" stroke-width="2.5"/>
+            <path d="M138,64 q28,4 32,14 q-2,7 -11,7 l-25,-9 Z" fill="#FF4E38" stroke="#1A140E" stroke-width="2.5"/>
+            <path d="M74,96 Q78,140 100,142 Q122,140 126,96 Q116,116 100,116 Q84,116 74,96 Z" fill="#FF4E38"/>
+            <circle cx="86" cy="84" r="3.6" fill="#F8F2E3"/><circle cx="114" cy="84" r="3.6" fill="#F8F2E3"/>
+          </svg>
+          <span class="p-stamp">RISO RZ990</span>
+        </div>
+        <div class="p-body">
+          <h3>Bram de Wit</h3>
+          <p class="p-studio">Statief Studio · Antwerp</p>
+          <p class="p-tags">Black ink maximalism · slow mixing</p>
+          <p class="p-bio">Prints “one colour” that takes four hours to mix and three days to dry. Worth it, every single time.</p>
+          <p class="p-quote">“Black is every colour, overprinted.”</p>
+        </div>
+      </article></div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= VENUE ================= -->
+<section class="sec" id="venue">
+  <div class="wrap">
+    <header class="sec-head rv">
+      <p class="kicker"><span class="no">03</span> The ground</p>
+      <h2 class="h2 misreg" data-text="Het Drukhuis, Noord.">Het Drukhuis, Noord.</h2>
+      <p class="dek">A former dockside print works on the water: presses upstairs, a zine market in the yard, and a bindery in the basement that smells gloriously of glue.</p>
+    </header>
+    <div class="map-grid">
+      <div class="map-frame rv">
+        <svg viewBox="0 0 760 520" role="img" aria-label="Hand-drawn map of Het Drukhuis: canals in cobalt, a mint park, streets in black ink, and the coral festival block at the centre">
+          <rect width="760" height="520" fill="#F6F0E1"/>
+          <filter id="wob" x="-6%" y="-6%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="2" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="7"/></filter>
+          <g filter="url(#wob)">
+            <path d="M-20,300 C120,258 210,362 335,330 C470,296 560,182 790,148" fill="none" stroke="#2440D6" stroke-width="54" opacity=".2" stroke-linecap="round"/>
+            <path d="M-20,300 C120,260 210,362 335,330 C470,296 560,182 790,148" fill="none" stroke="#2440D6" stroke-width="4" opacity=".85"/>
+            <path d="M-20,322 C120,282 210,384 335,352" fill="none" stroke="#2440D6" stroke-width="3" stroke-dasharray="2 12" opacity=".7"/>
+            <path d="M60,58 C150,26 226,48 244,110 C260,164 196,196 122,190 C52,184 26,110 60,58 Z" fill="#3ECF9A" opacity=".28"/>
+            <path d="M60,58 C150,26 226,48 244,110 C260,164 196,196 122,190 C52,184 26,110 60,58 Z" fill="url(#d-mint)" opacity=".5"/>
+            <path d="M0,470 L760,428" stroke="#1A140E" stroke-width="9"/>
+            <path d="M252,0 L302,520" stroke="#1A140E" stroke-width="7"/>
+            <path d="M0,178 C150,190 262,150 420,118" stroke="#1A140E" stroke-width="6"/>
+            <path d="M520,520 L560,300 C572,240 622,222 700,222" stroke="#1A140E" stroke-width="6"/>
+            <rect x="330" y="56" width="92" height="58" fill="#E7DBC2" stroke="#1A140E" stroke-width="2.5" transform="rotate(-4 376 85)"/>
+            <rect x="446" y="66" width="72" height="46" fill="#E7DBC2" stroke="#1A140E" stroke-width="2.5" transform="rotate(3 482 89)"/>
+            <rect x="146" y="238" width="82" height="54" fill="#E7DBC2" stroke="#1A140E" stroke-width="2.5" transform="rotate(3 187 265)"/>
+            <rect x="618" y="326" width="88" height="58" fill="#E7DBC2" stroke="#1A140E" stroke-width="2.5" transform="rotate(-5 662 355)"/>
+            <path d="M700,176 C748,214 738,272 646,298" stroke="#FF4E38" stroke-width="3.5" stroke-dasharray="7 9" fill="none"/>
+          </g>
+          <text class="mlab" x="70" y="128" transform="rotate(-6 70 128)">Van der Pekpark</text>
+          <text class="hand" x="560" y="128" transform="rotate(-9 560 128)">the canal, obviously</text>
+          <text class="hand" x="596" y="486" transform="rotate(-2 596 486)">not to scale — vibes to scale</text>
+          <g transform="translate(712,58)" stroke="#1A140E" fill="none" stroke-width="2.5">
+            <circle r="20" fill="#FBF5E7"/><path d="M0,12 L-5,-8 L0,-4 L5,-8 Z" fill="#1A140E"/>
+            <text y="-26" text-anchor="middle" font-family="Anton" font-size="15" fill="#1A140E" stroke="none">N</text>
+          </g>
+          <g id="mk-v" class="marker" data-say="Het Drukhuis — Distelweg 83. Ring the brass bell; the front door is a litho stone.">
+            <circle class="ring" cx="430" cy="252" r="30" fill="none" stroke="#FF4E38" stroke-width="3"/>
+            <rect x="402" y="224" width="56" height="56" fill="#FF4E38" stroke="#1A140E" stroke-width="3.5" transform="rotate(-3 430 252)"/>
+            <text x="430" y="263" text-anchor="middle" font-family="Anton" font-size="28" fill="#1A140E">IW</text>
+            <text class="mlab" x="430" y="308" text-anchor="middle" font-size="17">HET DRUKHUIS</text>
+          </g>
+          <g id="mk-a" class="marker" data-say="A — Main Hall: the drum floor. Ear defenders live at the desk.">
+            <circle cx="356" cy="176" r="15" fill="#FF4E38" stroke="#1A140E" stroke-width="3"/><text x="356" y="182" text-anchor="middle" font-family="Anton" font-size="15" fill="#1A140E">A</text>
+          </g>
+          <g id="mk-b" class="marker" data-say="B — The Yard: zine market, food smoke, and the famous misprint bins.">
+            <circle cx="492" cy="342" r="15" fill="#FFC400" stroke="#1A140E" stroke-width="3"/><text x="492" y="348" text-anchor="middle" font-family="Anton" font-size="15" fill="#1A140E">B</text>
+          </g>
+          <g id="mk-c" class="marker" data-say="C — Basement Bindery: workshops, stitches, quiet. Well — quieter.">
+            <circle cx="212" cy="330" r="15" fill="#2440D6" stroke="#1A140E" stroke-width="3"/><text x="212" y="336" text-anchor="middle" font-family="Anton" font-size="15" fill="#F4EDDF">C</text>
+          </g>
+          <g id="mk-d" class="marker" data-say="D — Ferry Pontoon: arrive by water like a proper print person.">
+            <circle cx="644" cy="300" r="15" fill="#1A140E" stroke="#1A140E" stroke-width="3"/><text x="644" y="306" text-anchor="middle" font-family="Anton" font-size="15" fill="#F4EDDF">D</text>
+          </g>
+          <text class="hand" x="516" y="196" transform="rotate(-6 516 196)">ferry F3 →</text>
+        </svg>
+      </div>
+      <div class="rv" style="--rd:.1s">
+        <ul class="legend">
+          <li><button class="leg" data-mk="mk-a" style="--c:var(--coral)"><i class="dot" aria-hidden="true"></i><span><b>A — Main Hall</b> The drum floor: 42 duplicators humming in chorus.</span></button></li>
+          <li><button class="leg" data-mk="mk-b" style="--c:var(--yellow)"><i class="dot" aria-hidden="true"></i><span><b>B — The Yard</b> Zine market, food smoke, misprint bins.</span></button></li>
+          <li><button class="leg" data-mk="mk-c" style="--c:var(--cobalt)"><i class="dot" aria-hidden="true"></i><span><b>C — Basement Bindery</b> Workshops, stitches, quiet. Well — quieter.</span></button></li>
+          <li><button class="leg" data-mk="mk-d" style="--c:var(--ink)"><i class="dot" aria-hidden="true"></i><span><b>D — Ferry Pontoon</b> Arrive by water like a proper print person.</span></button></li>
+        </ul>
+        <p class="addr">Het Drukhuis · Distelweg 83<br>Amsterdam-Noord · ferry F3 from Centraal, 4 min</p>
+        <p class="notes">step-free access throughout —<br>follow the smell of fresh ink from the pontoon —<br>ring the brass bell, the door is a litho stone</p>
+        <a class="btn small" style="margin-top:1rem" href="https://www.openstreetmap.org/search?query=Distelweg%2083%20Amsterdam" target="_blank" rel="noopener">Open in OpenStreetMap ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHOP ================= -->
+<section class="sec" id="shop" style="background:var(--paper2);border-block:3px solid var(--ink)">
+  <div class="wm" style="top:-2%;right:-2%">EDITION</div>
+  <div class="wrap">
+    <header class="sec-head rv">
+      <p class="kicker"><span class="no">04</span> Misprint market</p>
+      <h2 class="h2 misreg" data-text="Limited, flawed, yours.">Limited, flawed, yours.</h2>
+      <p class="dek">Every edition below is pulled once, on this paper, by these drums. When it’s gone, it’s gone — flaws included, no returns, no apologies.</p>
+    </header>
+
+    <div class="rv"><aside class="pass-bar">
+      <svg width="120" height="76" viewBox="0 0 120 76" aria-hidden="true">
+        <rect x="4" y="8" width="112" height="60" rx="6" fill="#1A140E"/>
+        <circle cx="26" cy="38" r="5" fill="#F4EDDF"/><circle cx="94" cy="38" r="5" fill="#F4EDDF"/>
+        <text x="60" y="47" text-anchor="middle" font-family="Anton" font-size="26" fill="#FFC400">26</text>
+        <path d="M52 8 L60 20 L68 8" fill="none" stroke="#FF4E38" stroke-width="3"/>
+      </svg>
+      <div><h3>Season Print Pass</h3><p>All talks, both all-hands pulls, the yard market, and one guided pull of your own.</p></div>
+      <div class="pb-meta" style="margin-left:auto;display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap">
+        <span class="price">€35</span>
+        <button class="btn mint add" data-id="pass" data-ed="300">Add pass</button>
+      </div>
+    </aside></div>
+
+    <div class="wall">
+      <div class="rv d1"><article class="poster" data-drop="sun">
+        <span class="tape" aria-hidden="true"></span>
+        <svg class="art" viewBox="0 0 300 400" role="img" aria-label="Sun Room poster: a coral sun with a yellow misprint shadow over a wavy coral sea">
+          <rect width="300" height="400" fill="#FBF6EA"/>
+          <circle cx="158" cy="152" r="92" fill="#FFC400" opacity=".9"/>
+          <circle cx="146" cy="140" r="92" fill="#FF4E38"/>
+          <g stroke="#1A140E" stroke-width="5" stroke-linecap="round">
+            <line x1="146" y1="22" x2="146" y2="4"/><line x1="146" y1="258" x2="146" y2="276"/>
+            <line x1="52" y1="140" x2="30" y2="140"/><line x1="240" y1="140" x2="262" y2="140"/>
+            <line x1="81" y1="75" x2="66" y2="60"/><line x1="211" y1="75" x2="226" y2="60"/>
+            <line x1="81" y1="205" x2="66" y2="220"/><line x1="211" y1="205" x2="226" y2="220"/>
+          </g>
+          <rect y="312" width="300" height="88" fill="#FFC400"/>
+          <path d="M0,326 q25,-12 50,0 t50,0 t50,0 t50,0 t50,0 t50,0 V400 H0 Z" fill="#FF4E38"/>
+          <text x="24" y="374" font-family="Anton" font-size="30" letter-spacing="4" fill="#FBF6EA">SUN ROOM</text>
+          <text x="24" y="42" font-family="Bricolage Grotesque" font-weight="800" font-size="12" letter-spacing="2" fill="#1A140E">RISO EDITION · ED. 80</text>
+        </svg>
+        <div class="p-meta">
+          <div><h3>Sun Room</h3><p class="by">Mara Quist · 2 colours · A3</p><span class="ed">ED. 80</span><span class="left" data-left="sun">7 of 80 left</span></div>
+          <div style="text-align:right"><span class="price">€18</span><br><button class="btn small add" data-id="sun" data-ed="80">Add</button></div>
+        </div>
+        <span class="soldmark" aria-hidden="true">GONE</span>
+      </article></div>
+
+      <div class="rv d2"><article class="poster" data-drop="night">
+        <span class="tape" aria-hidden="true"></span>
+        <svg class="art" viewBox="0 0 300 400" role="img" aria-label="Nightbus poster: a cobalt night with wavy ink lines, a yellow moon and a small black bus">
+          <rect width="300" height="400" fill="#2440D6"/>
+          <circle cx="224" cy="82" r="42" fill="#FFC400"/>
+          <circle cx="231" cy="76" r="42" fill="#1A140E" opacity=".18"/>
+          <g stroke="#1A140E" stroke-width="7" fill="none" stroke-linecap="round">
+            <path d="M-10,178 q30,-16 60,0 t60,0 t60,0 t60,0 t60,0 t60,0"/>
+            <path d="M-10,214 q30,-16 60,0 t60,0 t60,0 t60,0 t60,0 t60,0"/>
+            <path d="M-10,282 q30,-16 60,0 t60,0 t60,0 t60,0 t60,0 t60,0"/>
+          </g>
+          <path d="M-10,248 q30,-16 60,0 t60,0 t60,0 t60,0 t60,0 t60,0" stroke="#FF4E38" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <g transform="rotate(-4 125 342)">
+            <rect x="70" y="316" width="112" height="44" rx="9" fill="#1A140E"/>
+            <rect x="82" y="326" width="21" height="15" fill="#F4EDDF"/><rect x="111" y="326" width="21" height="15" fill="#F4EDDF"/><rect x="140" y="326" width="21" height="15" fill="#FFC400"/>
+            <circle cx="95" cy="362" r="9" fill="#FF4E38"/><circle cx="152" cy="362" r="9" fill="#FF4E38"/>
+          </g>
+          <text x="24" y="50" font-family="Anton" font-size="34" letter-spacing="2" fill="#F4EDDF">NIGHTBUS</text>
+          <text x="24" y="384" font-family="Bricolage Grotesque" font-weight="800" font-size="11" letter-spacing="2" fill="#F4EDDF">OSSIAN BECK · ED. 60</text>
+        </svg>
+        <div class="p-meta">
+          <div><h3>Nightbus</h3><p class="by">Ossian Beck · 3 colours · A3</p><span class="ed">ED. 60</span><span class="left" data-left="night">12 of 60 left</span></div>
+          <div style="text-align:right"><span class="price">€22</span><br><button class="btn small add" data-id="night" data-ed="60">Add</button></div>
+        </div>
+        <span class="soldmark" aria-hidden="true">GONE</span>
+      </article></div>
+
+      <div class="rv d3"><article class="poster" data-drop="bloom">
+        <span class="tape" aria-hidden="true"></span>
+        <svg class="art" viewBox="0 0 300 400" role="img" aria-label="Static Bloom poster: broken concentric mint and coral rings around a coral dot">
+          <rect width="300" height="400" fill="#FBF6EA"/>
+          <g fill="none" stroke="#3ECF9A" stroke-width="10" stroke-dasharray="64 16 40 22">
+            <circle cx="150" cy="188" r="36"/><circle cx="150" cy="188" r="70"/><circle cx="150" cy="188" r="104"/><circle cx="150" cy="188" r="138"/>
+          </g>
+          <g fill="none" stroke="#FF4E38" stroke-width="9" stroke-dasharray="40 26" opacity=".85">
+            <circle cx="161" cy="197" r="53"/><circle cx="161" cy="197" r="121"/>
+          </g>
+          <circle cx="150" cy="188" r="13" fill="#FF4E38"/>
+          <g stroke="#1A140E" stroke-width="2.6" stroke-linecap="round">
+            <path d="M52,70 h12 M58,64 v12"/><path d="M238,110 h12 M244,104 v12"/><path d="M70,330 h12 M76,324 v12"/><path d="M244,320 h12 M250,314 v12"/>
+          </g>
+          <text x="24" y="46" font-family="Anton" font-size="30" letter-spacing="3" fill="#1A140E">STATIC BLOOM</text>
+          <text x="24" y="378" font-family="Bricolage Grotesque" font-weight="800" font-size="11" letter-spacing="2" fill="#1A140E">ADA NWOSU · ED. 50</text>
+        </svg>
+        <div class="p-meta">
+          <div><h3>Static Bloom</h3><p class="by">Ada Nwosu · 2 colours · A3</p><span class="ed">ED. 50</span><span class="left" data-left="bloom">5 of 50 left</span></div>
+          <div style="text-align:right"><span class="price">€20</span><br><button class="btn small add" data-id="bloom" data-ed="50">Add</button></div>
+        </div>
+        <span class="soldmark" aria-hidden="true">GONE</span>
+      </article></div>
+
+      <div class="rv d4"><article class="poster" data-drop="year">
+        <span class="tape" aria-hidden="true"></span>
+        <svg class="art" viewBox="0 0 300 400" role="img" aria-label="Yellow Year poster: a giant black 26 on sunflower yellow with a cobalt band">
+          <rect width="300" height="400" fill="#FFC400"/>
+          <circle cx="252" cy="52" r="30" fill="#FF4E38"/>
+          <text x="158" y="238" text-anchor="middle" font-family="Anton" font-size="204" fill="#FF4E38" opacity=".85">26</text>
+          <text x="150" y="230" text-anchor="middle" font-family="Anton" font-size="204" fill="#1A140E">26</text>
+          <rect y="258" width="300" height="26" fill="#2440D6" transform="rotate(-2.5 150 271)"/>
+          <g font-family="Bricolage Grotesque" font-weight="800" font-size="12" letter-spacing="1.6" fill="#1A140E">
+            <text x="24" y="330">TWELVE DRUMS · ONE HOARDER</text>
+            <text x="24" y="352">365 SHEETS OF QUESTIONABLE PAPER</text>
+            <text x="24" y="374">EVERY MISPRINT FRAMED</text>
+          </g>
+          <text x="24" y="30" font-family="Bricolage Grotesque" font-weight="800" font-size="11" letter-spacing="2" fill="#1A140E">JULES VERHOEVEN · ED. 100</text>
+        </svg>
+        <div class="p-meta">
+          <div><h3>Yellow Year</h3><p class="by">Jules Verhoeven · 3 colours · A3</p><span class="ed">ED. 100</span><span class="left" data-left="year">31 of 100 left</span></div>
+          <div style="text-align:right"><span class="price">€16</span><br><button class="btn small add" data-id="year" data-ed="100">Add</button></div>
+        </div>
+        <span class="soldmark" aria-hidden="true">GONE</span>
+      </article></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VOICES ================= -->
+<section class="sec" id="voices">
+  <svg class="scrap" style="top:6%;right:4%;width:80px" viewBox="0 0 90 90" aria-hidden="true"><circle cx="45" cy="45" r="42" fill="#FF4E38"/></svg>
+  <div class="wrap">
+    <header class="sec-head rv">
+      <p class="kicker"><span class="no">05</span> Word of mouth</p>
+      <h2 class="h2 misreg" data-text="Overheard last year.">Overheard last year.</h2>
+      <p class="dek">Attendee quotes, lightly cleaned up for print. The ink smudges are original.</p>
+    </header>
+    <div class="voices">
+      <div class="rv q1" style="--rd:0s"><figure class="quote"><span class="q-mark" aria-hidden="true">“</span>
+        <blockquote>I came for one zine and left with a crush on a duplicator.</blockquote>
+        <figcaption><cite>— Roo · visitor, 3rd year running</cite></figcaption>
+      </figure></div>
+      <div class="rv q2" style="--rd:.08s"><figure class="quote"><span class="q-mark" aria-hidden="true">“</span>
+        <blockquote>The misprint pile is the best gallery in Amsterdam, and it’s free.</blockquote>
+        <figcaption><cite>— Anouk K. · exhibitor since year one</cite></figcaption>
+      </figure></div>
+      <div class="rv q3" style="--rd:.16s"><figure class="quote"><span class="q-mark" aria-hidden="true">“</span>
+        <blockquote>Three days of ink fumes and I have never breathed better.</blockquote>
+        <figcaption><cite>— Sem · volunteer, drum crew</cite></figcaption>
+      </figure></div>
+      <div class="rv q4" style="--rd:.22s"><figure class="quote"><span class="q-mark" aria-hidden="true">“</span>
+        <blockquote>My tote bag now has opinions about paper weight. Thanks, Ink Weather.</blockquote>
+        <figcaption><cite>— Ilse · bought four posters, regrets nothing</cite></figcaption>
+      </figure></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="sec" id="faq" style="padding-top:1rem">
+  <div class="wrap">
+    <header class="sec-head rv" style="justify-content:center;text-align:center">
+      <div>
+        <p class="kicker" style="justify-content:center"><span class="no">06</span> Small print, enlarged</p>
+        <h2 class="h2 misreg" data-text="Asked at the desk.">Asked at the desk.</h2>
+      </div>
+    </header>
+    <div class="faq rv">
+      <div class="qa"><h3 style="margin:0"><button class="qa-btn" aria-expanded="false">What exactly is a risograph?<span class="qa-x" aria-hidden="true"></span></button></h3>
+        <div class="qa-panel"><div class="qa-body"><p>A desktop duplicator from the 1980s: it burns your artwork into a master and prints it through a rotating drum of spot-colour ink, one colour per pass. Colours overprint like weather fronts, registration is done by eye and luck, and every copy differs by a hair. That’s not a defect — that’s the whole point.</p></div></div>
+      </div>
+      <div class="qa"><h3 style="margin:0"><button class="qa-btn" aria-expanded="false">Is the venue accessible?<span class="qa-x" aria-hidden="true"></span></button></h3>
+        <div class="qa-panel"><div class="qa-body"><p>Yes. Het Drukhuis is step-free throughout, the basement bindery has a platform lift, and we run a quiet hour on Sunday morning (11:00–12:00, drums off). Large-print and high-contrast programmes sit at the front desk — tell us anything else you need and we’ll sort it.</p></div></div>
+      </div>
+      <div class="qa"><h3 style="margin:0"><button class="qa-btn" aria-expanded="false">Can I bring my kids?<span class="qa-x" aria-hidden="true"></span></button></h3>
+        <div class="qa-panel"><div class="qa-body"><p>Absolutely. Sunday’s stencil workshop is built for small people (ages 4–104), under-12s enter free with a grown-up, and ear defenders live at the desk because the big press has opinions.</p></div></div>
+      </div>
+      <div class="qa"><h3 style="margin:0"><button class="qa-btn" aria-expanded="false">What does a print pass include?<span class="qa-x" aria-hidden="true"></span></button></h3>
+        <div class="qa-panel"><div class="qa-body"><p>All talks, both all-hands pulls, the yard market, and one guided pull of your own to take home. Workshops are small, so they’re pencilled in separately at the desk — first come, first inked.</p></div></div>
+      </div>
+      <div class="qa"><h3 style="margin:0"><button class="qa-btn" aria-expanded="false">Refunds? And what about actual weather?<span class="qa-x" aria-hidden="true"></span></button></h3>
+        <div class="qa-panel"><div class="qa-body"><p>Full refunds up to seven days before the fair, no questions beyond “hope it’s nothing serious”. As for rain: the name refers to layers of ink, not the sky. Usually.</p></div></div>
+      </div>
+      <div class="qa"><h3 style="margin:0"><button class="qa-btn" aria-expanded="false">Can I sell my own zines there?<span class="qa-x" aria-hidden="true"></span></button></h3>
+        <div class="qa-panel"><div class="qa-body"><p>Yes — a half table is €15, a full table €25, and 10% goes to the ink fund that pays for visitor workshops. Apply by 1 May; misprints welcome, misers less so.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NEWSLETTER ================= -->
+<section id="news" aria-label="Newsletter signup">
+  <div class="wrap ngrid">
+    <div class="rv">
+      <p class="kicker" style="color:var(--paper2)"><span class="no" style="background:var(--paper2)">07</span> Monthly</p>
+      <h2 class="h2">Ink forecasts, monthly.</h2>
+      <p style="max-width:48ch;font-weight:600">One email a month: open-studio dates, ink restocks, and which drum is currently misbehaving. Written by humans, printed by robots.</p>
+    </div>
+    <div class="rv" style="--rd:.1s">
+      <form id="newsForm" novalidate>
+        <label class="sr-only" for="em">Email address</label>
+        <input id="em" name="email" type="email" autocomplete="email" placeholder="you@somewhere.paper">
+        <button class="btn" type="submit" style="background:var(--ink);color:var(--paper)">Sign me up</button>
+        <p class="form-err" id="newsErr" role="alert" hidden>That address won’t feed through the feeder — check it and try again.</p>
+        <p class="fine" style="color:var(--paper2)">One email a month · no sharing · no tracking pixels · unsubscribe is one click.</p>
+      </form>
+      <div id="newsOk" hidden tabindex="-1">
+        <span class="stamp">REGISTERED ✓</span>
+        <p style="font-weight:700">First forecast ships the first Monday of the month. Until then: keep your papers dry.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer id="top">
+  <div class="wrap">
+    <p class="foot-word" aria-label="Ink Weather"><span>I</span><span>N</span><span>K</span><span>&nbsp;</span><span>W</span><span>E</span><span>A</span><span>T</span><span>H</span><span>E</span><span>R</span></p>
+    <div class="f-cols">
+      <div>
+        <h4>The fair</h4>
+        <p class="f-blurb">Ink Weather is a three-day festival for risograph printing and independent publishing, run by six studios and one very patient drum technician. Fresh ink since 2024.</p>
+      </div>
+      <div>
+        <h4>Visit</h4>
+        <ul>
+          <li>Het Drukhuis</li>
+          <li>Distelweg 83</li>
+          <li>Amsterdam-Noord</li>
+          <li>Ferry F3 · 4 min</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Browse</h4>
+        <ul>
+          <li><a href="#programme">Programme</a></li>
+          <li><a href="#printers">Printers</a></li>
+          <li><a href="#shop">Misprint market</a></li>
+          <li><a href="#faq">Small print</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="#top">Are.na channel</a></li>
+          <li><a href="#top">Instagram</a></li>
+          <li><a href="#top">Radio WET 91.2</a></li>
+          <li><a href="#news">Newsletter</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-roller" aria-hidden="true">
+      <svg class="rig" width="86" height="34" viewBox="0 0 86 34">
+        <rect x="18" y="4" width="50" height="18" rx="9" fill="none" stroke="#F4EDDF" stroke-width="2.5"/>
+        <circle cx="24" cy="26" r="6" fill="none" stroke="#FF4E38" stroke-width="2.5"/>
+        <circle cx="43" cy="26" r="6" fill="none" stroke="#FFC400" stroke-width="2.5"/>
+        <circle cx="62" cy="26" r="6" fill="none" stroke="#3ECF9A" stroke-width="2.5"/>
+      </svg>
+    </div>
+    <div class="f-bottom">
+      <p style="margin:0">© 2026 Ink Weather · Set in Anton &amp; Bricolage Grotesque · Printed with four spot colours and one patient drum.</p>
+      <a class="to-top" href="#top">Back to the top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= BUNDLE DRAWER ================= -->
+<div id="scrim"></div>
+<aside id="drawer" class="d-shop" role="dialog" aria-modal="true" aria-label="Your poster bundle">
+  <div class="d-head"><h3>Your bundle</h3><button class="icon-btn" id="dClose" aria-label="Close bundle">✕</button></div>
+  <div class="d-shop">
+    <p class="d-note d-empty">We hold every edition for 48 hours. Pay &amp; collect at the fair — cash, card, or a very good trade.</p>
+    <ul id="dList"></ul>
+    <p class="d-empty" id="dEmpty" hidden>Nothing yet — the wall above has four editions and a pass waiting.</p>
+    <div class="d-total"><span>Total</span><b id="dTotal">€0</b></div>
+    <button class="btn coral" id="reserveBtn">Reserve — pay at the fair</button>
+  </div>
+  <div class="d-done">
+    <span class="stamp">RESERVED ✓</span>
+    <p style="font-weight:700;margin-top:1rem">Show this code at the market desk:</p>
+    <p class="d-code" id="dCode">IW26-0000</p>
+    <p class="d-empty">We’ll keep the sheets warm(ish) and flat.</p>
+    <button class="btn" id="dDone">Done — keep browsing</button>
+  </div>
+</aside>
+
+<div id="toasts" aria-live="polite"></div>
+
+<!-- ================= UI SCRIPT ================= -->
+<script>
+(function(){
+"use strict";
+const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* toasts */
+const tc=$('#toasts');
+function toast(msg){
+  const el=document.createElement('div'); el.className='toast';
+  el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0 L14.4 9.6 L24 12 L14.4 14.4 L12 24 L9.6 14.4 L0 12 L9.6 9.6 Z"/></svg><span></span>';
+  el.lastChild.textContent=msg; tc.appendChild(el);
+  setTimeout(()=>{el.classList.add('out'); setTimeout(()=>el.remove(),320);},3400);
+}
+window.toast=toast;
+
+/* header */
+const hd=$('#hd');
+addEventListener('scroll',()=>hd.classList.toggle('scrolled',scrollY>10),{passive:true});
+const burger=$('#burger');
+burger.addEventListener('click',()=>{
+  const o=document.body.classList.toggle('mnav');
+  burger.setAttribute('aria-expanded',o);
+});
+$$('#mnav a').forEach(a=>a.addEventListener('click',()=>{document.body.classList.remove('mnav');burger.setAttribute('aria-expanded','false');}));
+
+/* scroll reveals */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+$$('.rv').forEach(el=>io.observe(el));
+
+/* programme data + render */
+const PROG={
+ fri:[
+  {t:'18:00',title:'The opening pull',kind:'Together',room:'Main hall',d:'Every press on the floor prints one giant sheet at the same time. Loud, faintly damp, strangely emotional.'},
+  {t:'19:30',title:'The risograph is a weather system',kind:'Talk',room:'Main hall',len:'45 min',with:'Mara Quist',d:'Ink humidity, drum moods, and how to forecast a print run like a storm front.'},
+  {t:'21:00',title:'Zine battle: live',kind:'Together',room:'The yard',d:'Two tables, one mystery topic, ninety minutes. Judged by applause and by smell.'}
+ ],
+ sat:[
+  {t:'10:00',title:'Two-colour zine in three hours',kind:'Workshop',room:'Bindery',seats:12,with:'Pilar Mendoza',d:'Cut, photocopy, drum, staple. Walk out with ten copies of something true.'},
+  {t:'12:30',title:'Print economics for very small presses',kind:'Talk',room:'Main hall',len:'40 min',with:'Jules Verhoeven',d:'Pricing, hoarding, breaking even, and when to print on paper that expired in 2011.'},
+  {t:'14:30',title:'Halftone photography without fear',kind:'Workshop',room:'Press room',seats:10,with:'Ada Nwosu',d:'Bring five photos. Leave with a 53-lpi thunderstorm and a healthy distrust of your screen.'},
+  {t:'17:00',title:'Who buys zines anyway?',kind:'Talk',room:'Main hall',len:'50 min',with:'Ossian Beck & friends',d:'A frank panel on tables, tote bags, and the economics of six-euro staples.'},
+  {t:'20:00',title:'The misprint auction',kind:'Together',room:'The yard',d:'Framed accidents, sold loud. Proceeds go to the visitor ink fund.'}
+ ],
+ sun:[
+  {t:'11:00',title:'Stencils for small people',kind:'Workshop',room:'Bindery',seats:16,with:'Ossian Beck',d:'Big shapes, big rollers, no wrong moves. Aprons provided, dignity optional.'},
+  {t:'13:00',title:'Duotones & other beautiful mistakes',kind:'Talk',room:'Main hall',len:'45 min',with:'Bram de Wit',d:'Why two inks argue, and how to referee the fight.'},
+  {t:'15:00',title:'Bind a field guide to your own street',kind:'Workshop',room:'Press room',seats:12,with:'Mara Quist',d:'Observation walk, quick plates, one sewn booklet. Bring weather for your hands.'},
+  {t:'17:00',title:'The last pull',kind:'Together',room:'Main hall',d:'One sheet, everyone’s hands, the final registration of the year. Tissue paper provided for the drying.'}
+ ]
+};
+const panels={fri:$('#p-fri'),sat:$('#p-sat'),sun:$('#p-sun')};
+Object.entries(PROG).forEach(([day,evs])=>{
+  panels[day].innerHTML=evs.map(ev=>{
+    const kind=ev.kind.toLowerCase();
+    const seat=ev.seats?`<button class="pencil" type="button" data-seats="${ev.seats}">Pencil in · ${ev.seats} seats</button>`:'';
+    return `<article class="ev"><time class="ev-t">${ev.t}</time>
+      <div><h3 data-text="${ev.title}">${ev.title}</h3>${ev.with?`<p class="with">with ${ev.with}</p>`:''}<p>${ev.d}</p></div>
+      <div class="ev-meta"><span class="tag ${kind.toLowerCase()}">${ev.kind}</span><span class="room">${ev.room}${ev.len?' · '+ev.len:''}</span>${seat}</div></article>`;
+  }).join('');
+});
+const tabs=$$('.tab');
+function selectTab(tb){
+  tabs.forEach(t=>t.setAttribute('aria-selected',t===tb?'true':'false'));
+  Object.entries(panels).forEach(([k,p])=>p.hidden=(k!==tb.dataset.day));
+}
+tabs.forEach(tb=>tb.addEventListener('click',()=>selectTab(tb)));
+$('.tabs').addEventListener('keydown',e=>{
+  if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+  const i=tabs.indexOf(document.activeElement); if(i<0)return;
+  const n=tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];
+  n.focus(); selectTab(n);
+});
+$('#programme').addEventListener('click',e=>{
+  const b=e.target.closest('.pencil'); if(!b)return;
+  const on=b.classList.toggle('on');
+  if(on) b.dataset.off=b.textContent; else b.textContent=b.dataset.off||'Pencil in';
+  if(on) b.textContent='Pencilled ✓';
+  toast(on?'Pencilled in — seats release 20 minutes before start.':'Pencil removed. The drum understands.');
+});
+
+/* venue map legend */
+$$('.leg').forEach(l=>{
+  const mk=document.getElementById(l.dataset.mk);
+  const on=()=>mk.classList.add('hot'), off=()=>mk.classList.remove('hot');
+  l.addEventListener('mouseenter',on); l.addEventListener('mouseleave',off);
+  l.addEventListener('focus',on); l.addEventListener('blur',off);
+  l.addEventListener('click',()=>toast(l.querySelector('b').textContent+' — '+l.lastChild.textContent.trim()));
+});
+$$('.marker').forEach(m=>m.addEventListener('click',()=>toast(m.dataset.say)));
+
+/* shop + bundle */
+const CATALOG={
+  pass:{n:'Season Print Pass',p:35}, sun:{n:'Sun Room',p:18},
+  night:{n:'Nightbus',p:22}, bloom:{n:'Static Bloom',p:20}, year:{n:'Yellow Year',p:16}
+};
+const left={pass:86,sun:7,night:12,bloom:5,year:31};
+const bag=new Set();
+const bagBtn=$('#bag'),bagN=$('#bagN'),drawer=$('#drawer');
+function renderBag(){
+  bagN.textContent=bag.size;
+  const list=$('#dList');
+  list.innerHTML=[...bag].map(id=>
+    `<li><span><b>${CATALOG[id].n}</b><i>€${CATALOG[id].p} · held 48h</i></span><button class="rm" data-rm="${id}" aria-label="Remove ${CATALOG[id].n}">✕</button></li>`).join('');
+  $('#dEmpty').hidden=bag.size>0;
+  $('#dTotal').textContent='€'+[...bag].reduce((a,id)=>a+CATALOG[id].p,0);
+}
+renderBag();
+$$('.add').forEach(b=>b.addEventListener('click',()=>{
+  const id=b.dataset.id;
+  if(b.disabled)return;
+  if(bag.has(id)){toast('Already in your bundle — one edition per person, misprint rules.');return;}
+  bag.add(id); left[id]--;
+  const l=$(`.left[data-left="${id}"]`);
+  if(l) l.textContent=left[id]>0?`${left[id]} of ${b.dataset.ed} left`:'gone — last one is in your bundle';
+  if(left[id]===0){b.disabled=true;b.textContent='Last one!';}
+  renderBag();
+  toast(`“${CATALOG[id].n}” added — held for 48 hours.`);
+}));
+$('#dList').addEventListener('click',e=>{
+  const rm=e.target.closest('.rm'); if(!rm)return;
+  const id=rm.dataset.rm;
+  bag.delete(id); left[id]++;
+  const addB=$(`.add[data-id="${id}"]`);
+  if(addB){addB.disabled=false;addB.textContent=addB.dataset.id==='pass'?'Add pass':'Add';}
+  const l=$(`.left[data-left="${id}"]`);
+  if(l) l.textContent=`${left[id]} of ${addB?addB.dataset.ed:''} left`.replace(' of  left',' left');
+  renderBag();
+  toast(`“${CATALOG[id].n}” put back on the wall.`);
+});
+function openDrawer(){document.body.classList.add('dopen');$('#dClose').focus();}
+function closeDrawer(){document.body.classList.remove('dopen');}
+bagBtn.addEventListener('click',openDrawer);
+$('#dClose').addEventListener('click',closeDrawer);
+$('#scrim').addEventListener('click',closeDrawer);
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();document.body.classList.remove('mnav');}});
+$('#reserveBtn').addEventListener('click',()=>{
+  if(!bag.size){toast('Your bundle is empty — add a poster from the wall first.');return;}
+  $('#dCode').textContent='IW26-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  drawer.classList.add('done');
+  toast('Bundle reserved. Show the code at the market desk.');
+});
+$('#dDone').addEventListener('click',()=>{closeDrawer();setTimeout(()=>drawer.classList.remove('done'),400);});
+
+/* faq */
+$$('.qa-btn').forEach(b=>b.addEventListener('click',()=>{
+  const open=b.closest('.qa').classList.toggle('open');
+  b.setAttribute('aria-expanded',open);
+}));
+
+/* newsletter */
+$('#newsForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const em=$('#em'), v=em.value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){$('#newsErr').hidden=false;em.focus();return;}
+  $('#newsErr').hidden=true;
+  $('#newsForm').hidden=true;
+  const ok=$('#newsOk'); ok.hidden=false; ok.focus();
+});
+
+/* the live plate-alignment toy */
+(function(){
+  const press=$('#press'); if(!press)return;
+  const plates=$$('.plate',press);
+  const regVal=$('#regVal'), regWord=$('#regWord');
+  const cfg=[{fx:1,fy:-.62},{fx:-.72,fy:1},{fx:.5,fy:.85}];
+  const st=plates.map(()=>({x:0,y:0}));
+  if(RM){
+    plates.forEach((p,i)=>p.style.transform=`translate(${cfg[i].fx*3}px,${cfg[i].fy*3}px)`);
+    regVal.textContent='0.4'; regWord.textContent='— ALARMINGLY PERFECT';
+    return;
+  }
+  let px=0,py=0,inside=false,snapUntil=0;
+  press.addEventListener('pointermove',e=>{
+    const r=press.getBoundingClientRect();
+    px=(e.clientX-r.left)/r.width-.5; py=(e.clientY-r.top)/r.height-.5; inside=true;
+  });
+  press.addEventListener('pointerleave',()=>inside=false);
+  $('#proofBtn').addEventListener('click',()=>{
+    snapUntil=performance.now()+2600;
+    toast('Clean proof pulled. Enjoy it — the drums never stay quiet for long.');
+  });
+  const words=[[1,'ALARMINGLY PERFECT'],[3,'PROFESSIONALLY WONKY'],[6,'ARTISTIC LICENSE'],[1e9,'FULL WEATHER WARNING']];
+  let last=performance.now();
+  (function tick(now){
+    requestAnimationFrame(tick);
+    const t=now/1000, dt=Math.min(.05,(now-last)/1000); last=now;
+    const snap=now<snapUntil, k=snap?.24:.08;
+    let worst=0;
+    plates.forEach((p,i)=>{
+      const c=cfg[i],s=st[i],amp=3.2+i*1.7;
+      let tx,ty;
+      if(snap){tx=0;ty=0;}
+      else if(inside){tx=c.fx*px*30;ty=c.fy*py*26;}
+      else{tx=Math.sin(t*.6+c.fy*4)*amp;ty=Math.cos(t*.5+c.fx*4)*amp*.8;}
+      s.x+=(tx-s.x)*k; s.y+=(ty-s.y)*k;
+      p.style.transform=`translate(${s.x.toFixed(2)}px,${s.y.toFixed(2)}px)`;
+      worst=Math.max(worst,Math.abs(s.x),Math.abs(s.y));
+    });
+    const mm=worst/3.2;
+    regVal.textContent=mm.toFixed(1);
+    regWord.textContent='— '+words.find(w=>mm<w[0])[1];
+  })(last);
+})();
+})();
+</script>
+
+<!-- ================= 3D HERO (Three.js) ================= -->
+<script type="module">
+const hero=document.getElementById('hero'), host=document.getElementById('gl');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+try{
+  const THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+
+  const renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor('#F4EDDF',1);
+  host.appendChild(renderer.domElement);
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(34,1,.1,140);
+  scene.add(new THREE.AmbientLight(0xffffff,1.15));
+  const dl=new THREE.DirectionalLight(0xffffff,1.6); dl.position.set(4,7,9); scene.add(dl);
+  const ramp=new THREE.DataTexture(new Uint8Array([60,145,228,255]),4,1,THREE.RedFormat);
+  ramp.minFilter=ramp.magFilter=THREE.NearestFilter; ramp.needsUpdate=true;
+  const MAXA=renderer.capabilities.getMaxAnisotropy();
+
+  /* a halftone "screen" baked per ink colour: solid in the shadows, dots in the lights */
+  function halftone(hex,{cell=16,angle=-.7,solid=.5,rx=1,ry=1}={}){
+    const S=512,cv=document.createElement('canvas');cv.width=cv.height=S;
+    const g=cv.getContext('2d');
+    g.fillStyle='#fff';g.fillRect(0,0,S,S);
+    g.fillStyle=hex;
+    const dx=Math.cos(angle),dy=Math.sin(angle),R=cell*.64;
+    for(let y=0;y<S;y+=cell)for(let x=0;x<S;x+=cell){
+      let t=((x+cell/2)*dx+(y+cell/2)*dy)/S+.71; t=((t%1)+1)%1;
+      let r=R; if(t>solid) r=R*(1-.93*Math.min(1,(t-solid)/(1-solid)))+cell*.05;
+      g.beginPath();g.arc(x+cell/2,y+cell/2,r,0,6.2832);g.fill();
+    }
+    const tx=new THREE.CanvasTexture(cv);
+    tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.repeat.set(rx,ry);
+    tx.colorSpace=THREE.SRGBColorSpace;tx.anisotropy=MAXA;
+    return tx;
+  }
+  /* ink over paper: multiply blending, no depth writes — pure overprint */
+  const ink=(hex,o={})=>new THREE.MeshBasicMaterial({map:halftone(hex,o),blending:THREE.MultiplyBlending,transparent:true,depthWrite:false,toneMapped:false});
+  const flat=hex=>new THREE.MeshBasicMaterial({color:new THREE.Color(hex),blending:THREE.MultiplyBlending,transparent:true,depthWrite:false,toneMapped:false});
+
+  /* hand-drawn INK letterforms, extruded like type-high blocks */
+  const sh=p=>{const s=new THREE.Shape();s.moveTo(...p[0]);for(let i=1;i<p.length;i++)s.lineTo(...p[i]);s.closePath();return s;};
+  const glyphs=[
+    {off:0,  pts:[[0,0],[.7,0],[.7,3],[0,3]]},
+    {off:1.5,pts:[[0,0],[0,3],[.85,3],[1.65,1.5],[1.65,3],[2.5,3],[2.5,0],[1.65,0],[.85,1.455],[.85,0]]},
+    {off:4.8,pts:[[0,0],[0,3],[.85,3],[.85,2.2],[2.15,3],[2.5,3],[1.45,1.6],[2.5,0],[1.7,0],[.85,1.15],[.85,0]]}
+  ];
+  const geos=glyphs.map(g=>{
+    const geo=new THREE.ExtrudeGeometry(sh(g.pts),{depth:.75,bevelEnabled:false});
+    geo.translate(g.off-3.65,-1.5,-.375);
+    return geo;
+  });
+
+  /* three printing plates of the same word, deliberately out of register */
+  const LAYERS=[
+    {hex:'#FFC400',side:'#B07C00',base:[-.16,.06,-.3],reg:[-.55,-.9],ang:2.3,ph:0},
+    {hex:'#FF4E38',side:'#C21708',base:[.12,-.07,.02],reg:[1,-.55],ang:-.7,ph:2.1},
+    {hex:'#2440D6',side:'#14207E',base:[.04,.12,.3],reg:[-.75,.8],ang:1.15,ph:4.2}
+  ];
+  const letterRoot=new THREE.Group(); scene.add(letterRoot);
+  const groups=LAYERS.map((L,i)=>{
+    const g=new THREE.Group();
+    const fm=ink(L.hex,{angle:L.ang,rx:.2,ry:.2}), sm=ink(L.side,{cell:10,angle:L.ang+1,solid:.2,rx:.4,ry:.4});
+    geos.forEach(geo=>{const m=new THREE.Mesh(geo,[fm,sm]);m.renderOrder=4+i;g.add(m);});
+    letterRoot.add(g); return g;
+  });
+
+  /* background spot-colour scenery, one "plate" behind the type */
+  const decor=new THREE.Group(); scene.add(decor);
+  const sunM=new THREE.Mesh(new THREE.CircleGeometry(1.55,56),ink('#FFC400',{angle:2.3,solid:.2,rx:.55,ry:.55}));
+  sunM.position.set(3.1,.65,-2.4); sunM.renderOrder=1; decor.add(sunM);
+  const arc=new THREE.Mesh(new THREE.RingGeometry(1.9,2,72,1,0,4.9),ink('#2440D6',{solid:0,rx:.3,ry:.3}));
+  arc.position.copy(sunM.position); arc.renderOrder=2; decor.add(arc);
+  const wsp=new THREE.Shape(); wsp.moveTo(-6.5,0);
+  for(let x=-6.5;x<=6.55;x+=.5)wsp.lineTo(x,Math.sin(x*1.5)*.3);
+  wsp.lineTo(6.5,-1.25);wsp.lineTo(-6.5,-1.25);wsp.closePath();
+  const wave=new THREE.Mesh(new THREE.ShapeGeometry(wsp),ink('#2440D6',{angle:1.2,solid:.3,rx:.22,ry:.22}));
+  wave.position.set(-.8,-1.35,-1.6); wave.renderOrder=2; decor.add(wave);
+  const scraps=[
+    {c:'#3ECF9A',p:[[-.25,0],[.75,.1],[1,.7],[.4,1.1],[-.3,.75]],pos:[-4.7,.5,-1.4]},
+    {c:'#FF4E38',p:[[0,0],[1.05,-.05],[1.25,.7],[.5,1]],pos:[4.8,-1.05,-1.1]},
+    {c:'#FFC400',p:[[0,0],[.7,.15],[.7,.8],[-.05,.7]],pos:[-4.9,-1.25,-.8]}
+  ].map(s=>{
+    const m=new THREE.Mesh(new THREE.ShapeGeometry(sh(s.p)),ink(s.c,{cell:8,solid:.25,rx:.8,ry:.8}));
+    m.position.set(...s.pos);m.renderOrder=2;m.userData.b=s.pos;decor.add(m);return m;
+  });
+  const specks=[];
+  for(let i=0;i<12;i++){
+    const sp=new THREE.Mesh(new THREE.CircleGeometry(.045+Math.random()*.05,10),ink('#1A140E',{solid:1.2}));
+    sp.position.set((Math.random()-.5)*9.5,(Math.random()-.5)*4.4,-.6);
+    sp.renderOrder=3; decor.add(sp); specks.push(sp);
+  }
+
+  /* the proofing roller that passes over the sheet, forever */
+  const roller=new THREE.Group();
+  const toon=(hex)=>new THREE.MeshToonMaterial({color:hex,gradientMap:ramp,transparent:true,opacity:.94});
+  const cyl=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,17.5,30),toon('#3ECF9A'));
+  cyl.rotation.z=Math.PI/2; roller.add(cyl);
+  [-8.9,8.9].forEach(x=>{
+    const cap=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.5,20),toon('#1A140E'));
+    cap.rotation.z=Math.PI/2; cap.position.x=x; roller.add(cap);
+  });
+  roller.position.z=1.7; roller.renderOrder=9; roller.visible=!RM; scene.add(roller);
+
+  /* framing: the type always spans a fixed slice of the poster */
+  let camD=18,yOff=1.6,rollTop=8,rollBot=0;
+  function layout(){
+    const w=host.clientWidth||2,h=host.clientHeight||2;
+    renderer.setSize(w,h,false);
+    camera.aspect=w/h; camera.updateProjectionMatrix();
+    const tan=Math.tan(camera.fov*Math.PI/360), wide=camera.aspect>1.02;
+    camD=Math.max(3.72/((wide?.42:.5)*tan*camera.aspect),2.4/(tan*(wide?.44:.3)));
+    yOff=.34*tan*camD;
+    letterRoot.position.y=yOff; decor.position.y=yOff;
+    const hr=tan*(camD-1.7);
+    rollTop=yOff+hr*1.15+.5; rollBot=yOff-hr*.85;
+  }
+  layout(); new ResizeObserver(layout).observe(host);
+
+  /* pointer → plate drift; sudden moves knock the registration out */
+  let tx=0,ty=0,lx=0,ly=0;
+  const reg={x:0,y:0,vx:0,vy:0};
+  hero.addEventListener('pointermove',e=>{
+    if(RM)return;
+    const r=hero.getBoundingClientRect();
+    const nx=Math.max(-1,Math.min(1,((e.clientX-r.left)/r.width)*2-1));
+    const ny=Math.max(-1,Math.min(1,((e.clientY-r.top)/r.height)*2-1));
+    reg.vx=Math.max(-.5,Math.min(.5,reg.vx+(nx-lx)*.055));
+    reg.vy=Math.max(-.5,Math.min(.5,reg.vy+(ny-ly)*.055));
+    lx=nx;ly=ny;tx=nx;ty=ny;
+  });
+  hero.addEventListener('pointerleave',()=>{tx=0;ty=0;});
+
+  let run=true,last=performance.now(),t=0;
+  new IntersectionObserver(en=>{run=en[0].isIntersecting;},{threshold:0}).observe(host);
+  host.classList.add('on');
+
+  function frame(now){
+    requestAnimationFrame(frame);
+    const dt=Math.min(.05,(now-last)/1000); last=now;
+    if(!run)return;
+    t+=dt;
+    reg.vx+=(-reg.x*34-reg.vx*4.6)*dt; reg.vy+=(-reg.y*34-reg.vy*4.6)*dt;
+    reg.x=Math.max(-.5,Math.min(.5,reg.x+reg.vx));
+    reg.y=Math.max(-.5,Math.min(.5,reg.y+reg.vy));
+    groups.forEach((g,i)=>{
+      const L=LAYERS[i];
+      const wob=RM?0:1;
+      g.position.set(
+        L.base[0]+Math.sin(t*.5+L.ph)*.03*wob+reg.x*L.reg[0],
+        L.base[1]+Math.cos(t*.42+L.ph*1.3)*.028*wob+reg.y*L.reg[1],
+        L.base[2]);
+    });
+    const amp=RM?0:1;
+    letterRoot.rotation.y+=((Math.sin(t*.21)*.24+tx*.3)*amp-letterRoot.rotation.y)*.06;
+    letterRoot.rotation.x+=((-ty*.1+Math.sin(t*.31)*.05)*amp-letterRoot.rotation.x)*.06;
+    letterRoot.rotation.z=Math.sin(t*.16)*.02*amp;
+    decor.rotation.y=letterRoot.rotation.y*.5;
+    decor.rotation.x=letterRoot.rotation.x*.5;
+    sunM.position.y=.65+Math.sin(t*.5)*.14; arc.rotation.z=t*.06;
+    scraps.forEach((s,i)=>{
+      s.position.y=s.userData.b[1]+Math.sin(t*.5+i*2)*.16;
+      s.position.x=s.userData.b[0]+Math.sin(t*.3+i)*.12;
+      s.rotation.z=Math.sin(t*.24+i)*.5;
+    });
+    specks.forEach((s,i)=>s.scale.setScalar(1+.4*Math.sin(t*1.5+i*1.7)));
+    camera.position.set(tx*.5,yOff*.45-ty*.3,camD);
+    camera.lookAt(tx*.12,yOff*.45-ty*.08,0);
+    if(!RM){
+      const ph=(t%13)/13;
+      roller.position.y=rollTop+(rollBot-rollTop)*ph;
+      roller.rotation.x-=dt*4.2;
+    }
+    renderer.render(scene,camera);
+  }
+  requestAnimationFrame(frame);
+}catch(err){
+  console.warn('Ink 3D fell back to flat print:',err);
+  hero.classList.add('no3d');
+}
+</script>
+</body>
+</html>

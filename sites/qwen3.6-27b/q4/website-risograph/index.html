@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INK WEATHER — Print Fair & Risograph Festival</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--paper:#F5F0E8;
+--paper2:#EDE6D8;
+--coral:#FF6B5A;
+--cobalt:#2B4B9E;
+--yellow:#FFC93C;
+--mint:#7ED4A8;
+--black:#1A1A1A;
+--pink:#FF8BA0;
+--purple:#8B5CF6;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+font-family:'Space Grotesk',sans-serif;
+background:var(--paper);
+color:var(--black);
+line-height:1.6;
+overflow-x:hidden;
+}
+::selection{background:var(--yellow);color:var(--black)}
+
+/* Grain overlay */
+body::after{
+content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+opacity:.04;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Halftone pattern */
+.halftone{
+background-image:radial-gradient(circle,var(--black) 1px,transparent 1.5px);
+background-size:8px 8px;
+}
+
+/* Typography */
+h1,h2,h3{font-family:'Archivo Black',sans-serif;text-transform:uppercase;line-height:.95}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* Misregistration effect */
+.misreg{
+text-shadow:
+2px 0 var(--coral),
+-2px 0 var(--cobalt),
+0 3px var(--yellow);
+}
+.misreg-cyan{
+text-shadow:
+2px 0 var(--mint),
+-2px 0 var(--coral),
+0 3px var(--cobalt);
+}
+
+/* Rough edge clip */
+.rough{
+clip-path:polygon(0% 3%,2% 0%,5% 2%,8% 0%,12% 1%,15% 0%,20% 2%,25% 0%,30% 1%,35% 0%,40% 2%,45% 0%,50% 1%,55% 0%,60% 2%,65% 0%,70% 1%,75% 0%,80% 2%,85% 0%,90% 1%,95% 0%,98% 2%,100% 0%,99% 5%,100% 10%,99% 15%,100% 20%,99% 25%,100% 30%,99% 35%,100% 40%,99% 45%,100% 50%,99% 55%,100% 60%,99% 65%,100% 70%,99% 75%,100% 80%,99% 85%,100% 90%,99% 95%,100% 100%,97% 99%,95% 100%,90% 99%,85% 100%,80% 99%,75% 100%,70% 99%,65% 100%,60% 99%,55% 100%,50% 99%,45% 100%,40% 99%,35% 100%,30% 99%,25% 100%,20% 99%,15% 100%,10% 99%,5% 100%,2% 99%,0% 100%,1% 95%,0% 90%,1% 85%,0% 80%,1% 75%,0% 70%,1% 65%,0% 60%,1% 55%,0% 50%,1% 45%,0% 40%,1% 35%,0% 30%,1% 25%,0% 20%,1% 15%,0% 10%,1% 5%);
+}
+
+/* Drifting paper scraps */
+.scrap{
+position:fixed;pointer-events:none;z-index:1;
+opacity:.15;
+animation:drift 20s ease-in-out infinite;
+}
+@keyframes drift{
+0%,100%{transform:translate(0,0) rotate(0deg)}
+25%{transform:translate(20px,-30px) rotate(5deg)}
+50%{transform:translate(-10px,-50px) rotate(-3deg)}
+75%{transform:translate(15px,-20px) rotate(4deg)}
+}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .8s ease,transform .8s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+
+/* Navigation */
+nav{
+position:fixed;top:0;left:0;right:0;z-index:1000;
+display:flex;align-items:center;justify-content:space-between;
+padding:1rem 2rem;
+background:var(--paper);
+border-bottom:3px solid var(--black);
+}
+.nav-logo{font-family:'Archivo Black';font-size:1.2rem;letter-spacing:-1px}
+.nav-logo span{color:var(--coral)}
+.nav-links{display:flex;gap:1.5rem;list-style:none;font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.nav-links a{color:var(--black);text-decoration:none;position:relative;padding:.25rem 0}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:3px;background:var(--coral);transition:width .3s}
+.nav-links a:hover::after{width:100%}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.5rem}
+.nav-toggle span{width:25px;height:3px;background:var(--black)}
+
+/* Hero */
+.hero{
+min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+position:relative;padding:6rem 2rem 4rem;
+overflow:hidden;
+}
+.hero-bg{
+position:absolute;inset:0;
+background:
+radial-gradient(ellipse at 20% 80%,rgba(255,107,90,.12) 0%,transparent 50%),
+radial-gradient(ellipse at 80% 20%,rgba(43,75,158,.1) 0%,transparent 50%),
+radial-gradient(ellipse at 50% 50%,rgba(255,201,60,.08) 0%,transparent 60%);
+}
+.hero-stamp{
+position:absolute;top:3rem;right:3rem;
+width:90px;height:90px;border:3px solid var(--coral);border-radius:50%;
+display:flex;align-items:center;justify-content:center;
+font-family:'Archivo Black';font-size:.6rem;text-align:center;line-height:1.2;
+color:var(--coral);transform:rotate(-12deg);
+animation:stamp-pulse 3s ease-in-out infinite;
+}
+@keyframes stamp-pulse{0%,100%{transform:rotate(-12deg) scale(1)}50%{transform:rotate(-12deg) scale(1.05)}}
+
+.hero-title{
+font-size:clamp(3.5rem,12vw,9rem);
+text-align:center;
+position:relative;z-index:2;
+letter-spacing:-3px;
+}
+.hero-title .line1{display:block;color:var(--black)}
+.hero-title .line2{display:block;color:var(--coral);margin-left:.5em}
+.hero-title .line3{display:block;color:var(--cobalt);margin-left:-.2em}
+.hero-title .misreg{display:inline-block}
+
+.hero-sub{
+font-size:clamp(1rem,2.5vw,1.4rem);
+text-align:center;max-width:600px;margin-top:2rem;
+font-weight:300;position:relative;z-index:2;
+}
+.hero-sub strong{font-weight:700;color:var(--cobalt)}
+
+.hero-date{
+margin-top:2.5rem;padding:1rem 2.5rem;
+background:var(--yellow);border:3px solid var(--black);
+font-family:'Archivo Black';font-size:clamp(1rem,2.5vw,1.3rem);
+transform:rotate(-2deg);position:relative;z-index:2;
+box-shadow:6px 6px 0 var(--black);
+}
+.hero-date::before{
+content:'';position:absolute;inset:-8px;
+border:2px dashed var(--coral);
+transform:rotate(1deg);
+}
+
+/* Ink layers animation */
+.ink-layers{
+position:absolute;bottom:0;left:0;right:0;height:200px;
+overflow:hidden;
+}
+.ink-layer{
+position:absolute;bottom:0;width:100%;height:100%;
+opacity:.12;
+}
+.ink-layer svg{width:100%;height:100%}
+.ink-layer.l1{animation:ink-cycle 12s ease-in-out infinite}
+.ink-layer.l2{animation:ink-cycle 12s ease-in-out infinite 4s}
+.ink-layer.l3{animation:ink-cycle 12s ease-in-out infinite 8s}
+@keyframes ink-cycle{
+0%,100%{opacity:.05;transform:translateX(0)}
+50%{opacity:.15;transform:translateX(-10px)}
+}
+
+/* Print roller */
+.print-roller{
+position:relative;height:60px;margin:4rem 0 0;
+overflow:hidden;
+}
+.print-roller .roller{
+position:absolute;top:0;left:-100%;width:200%;height:100%;
+background:repeating-linear-gradient(90deg,
+var(--black) 0px,var(--black) 2px,
+transparent 2px,transparent 20px,
+var(--coral) 20px,var(--coral) 22px,
+transparent 22px,transparent 40px,
+var(--cobalt) 40px,var(--cobalt) 42px,
+transparent 42px,transparent 60px,
+var(--yellow) 60px,var(--yellow) 62px,
+transparent 62px,transparent 80px);
+animation:roll 8s linear infinite;
+}
+@keyframes roll{to{transform:translateX(50%)}}
+.print-roller .roller-frame{
+position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+width:120px;height:40px;border:3px solid var(--black);border-radius:20px;
+background:var(--paper);z-index:2;
+display:flex;align-items:center;justify-content:center;
+font-family:'Archivo Black';font-size:.7rem;
+}
+
+/* Section styling */
+section{padding:5rem 2rem;position:relative}
+.section-label{
+font-family:'IBM Plex Mono';font-size:.75rem;text-transform:uppercase;
+letter-spacing:3px;color:var(--coral);margin-bottom:1rem;
+display:flex;align-items:center;gap:.5rem;
+}
+.section-label::before{content:'';width:30px;height:3px;background:var(--coral)}
+.section-title{
+font-size:clamp(2rem,5vw,3.5rem);margin-bottom:3rem;
+}
+
+/* Date/Location banner */
+.date-banner{
+background:var(--black);color:var(--paper);
+padding:3rem 2rem;text-align:center;
+position:relative;overflow:hidden;
+}
+.date-banner::before{
+content:'';position:absolute;inset:0;
+background-image:radial-gradient(circle,rgba(255,201,60,.3) 1px,transparent 1.5px);
+background-size:12px 12px;
+}
+.date-banner h2{font-size:clamp(2.5rem,7vw,5rem);position:relative;z-index:2}
+.date-banner p{font-size:1.2rem;margin-top:1rem;position:relative;z-index:2;color:var(--yellow)}
+.date-banner .location-tag{
+display:inline-block;margin-top:1.5rem;padding:.5rem 1.5rem;
+border:2px solid var(--coral);color:var(--coral);
+font-family:'IBM Plex Mono';font-size:.9rem;
+position:relative;z-index:2;transform:rotate(-1deg);
+}
+
+/* Schedule */
+.schedule-grid{
+display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:2rem;max-width:1100px;margin:0 auto;
+}
+.schedule-item{
+border:3px solid var(--black);padding:1.5rem;
+position:relative;background:var(--paper);
+transition:transform .3s,box-shadow .3s;
+}
+.schedule-item:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--black)}
+.schedule-item .time{
+font-family:'IBM Plex Mono';font-size:.8rem;
+color:var(--coral);font-weight:700;
+}
+.schedule-item h3{font-size:1.1rem;margin:.5rem 0}
+.schedule-item p{font-size:.9rem;color:#555}
+.schedule-item .tag{
+position:absolute;top:-12px;right:12px;
+background:var(--yellow);border:2px solid var(--black);
+padding:.2rem .7rem;font-size:.7rem;font-weight:700;
+text-transform:uppercase;font-family:'IBM Plex Mono';
+}
+.schedule-item:nth-child(2) .tag{background:var(--mint)}
+.schedule-item:nth-child(3) .tag{background:var(--coral);color:white}
+.schedule-item:nth-child(4) .tag{background:var(--cobalt);color:white}
+.schedule-item:nth-child(5) .tag{background:var(--purple);color:white}
+.schedule-item:nth-child(6) .tag{background:var(--pink)}
+
+/* Printers */
+.printers-grid{
+display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:2.5rem;max-width:1200px;margin:0 auto;
+}
+.printer-card{
+position:relative;padding:2rem 1.5rem;
+border:3px solid var(--black);
+background:var(--paper);
+transition:transform .3s;
+}
+.printer-card:hover{transform:rotate(-1deg) scale(1.02)}
+.printer-card:nth-child(even):hover{transform:rotate(1deg) scale(1.02)}
+.printer-avatar{
+width:80px;height:80px;border-radius:50%;
+border:3px solid var(--black);margin-bottom:1rem;
+display:flex;align-items:center;justify-content:center;
+font-family:'Archivo Black';font-size:1.5rem;
+position:relative;overflow:hidden;
+}
+.printer-card:nth-child(1) .printer-avatar{background:var(--coral)}
+.printer-card:nth-child(2) .printer-avatar{background:var(--cobalt);color:white}
+.printer-card:nth-child(3) .printer-avatar{background:var(--yellow)}
+.printer-card:nth-child(4) .printer-avatar{background:var(--mint)}
+.printer-card:nth-child(5) .printer-avatar{background:var(--purple);color:white}
+.printer-card:nth-child(6) .printer-avatar{background:var(--pink)}
+.printer-card h3{font-size:1.1rem;margin-bottom:.3rem}
+.printer-card .role{font-family:'IBM Plex Mono';font-size:.75rem;color:var(--coral);text-transform:uppercase;letter-spacing:1px}
+.printer-card p{font-size:.85rem;margin-top:.75rem;color:#444}
+.printer-card::after{
+content:'';position:absolute;bottom:-6px;right:-6px;
+width:40px;height:40px;
+background:var(--yellow);
+clip-path:polygon(0 0,100% 0,100% 100%);
+}
+
+/* Venue map */
+.venue-section{background:var(--paper2)}
+.venue-map{
+max-width:900px;margin:0 auto;position:relative;
+border:3px solid var(--black);background:var(--paper);
+padding:2rem;
+}
+.venue-map svg{width:100%;height:auto;display:block}
+.venue-map .map-label{
+position:absolute;font-family:'IBM Plex Mono';font-size:.7rem;
+font-weight:700;text-transform:uppercase;
+}
+
+/* Shop */
+.shop-grid{
+display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:2rem;max-width:1100px;margin:0 auto;
+}
+.poster-card{
+border:3px solid var(--black);padding:1.5rem;
+position:relative;background:var(--paper);
+overflow:hidden;
+transition:transform .3s,box-shadow .3s;
+}
+.poster-card:hover{transform:translate(-4px,-4px);box-shadow:8px 8px 0 var(--black)}
+.poster-preview{
+height:280px;border:2px solid var(--black);
+position:relative;overflow:hidden;margin-bottom:1rem;
+}
+.poster-preview .ink-fill{
+position:absolute;inset:0;
+transition:transform .5s;
+}
+.poster-card:hover .ink-fill{transform:translate(-3px,-3px)}
+.poster-card:nth-child(1) .poster-preview{background:var(--coral)}
+.poster-card:nth-child(2) .poster-preview{background:var(--cobalt)}
+.poster-card:nth-child(3) .poster-preview{background:var(--yellow)}
+.poster-preview .poster-text{
+position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+font-family:'Archivo Black';font-size:1.5rem;text-align:center;
+}
+.poster-card:nth-child(1) .poster-text{color:white}
+.poster-card:nth-child(2) .poster-text{color:var(--yellow)}
+.poster-card:nth-child(3) .poster-text{color:var(--black)}
+.poster-card h3{font-size:1rem;margin-bottom:.5rem}
+.poster-card .price{font-family:'Archivo Black';font-size:1.3rem;color:var(--coral)}
+.poster-card .edition{font-family:'IBM Plex Mono';font-size:.7rem;color:#666;margin-top:.25rem}
+.buy-btn{
+display:inline-block;margin-top:1rem;padding:.6rem 1.5rem;
+background:var(--black);color:var(--paper);
+font-family:'IBM Plex Mono';font-size:.8rem;font-weight:700;
+text-transform:uppercase;letter-spacing:1px;
+border:none;cursor:pointer;transition:background .3s,transform .2s;
+}
+.buy-btn:hover{background:var(--coral);transform:scale(1.05)}
+
+/* Quotes */
+.quotes-section{background:var(--cobalt);color:var(--paper);padding:5rem 2rem;position:relative;overflow:hidden}
+.quotes-section::before{
+content:'';position:absolute;inset:0;
+background-image:radial-gradient(circle,rgba(255,201,60,.2) 1px,transparent 1.5px);
+background-size:10px 10px;
+}
+.quotes-grid{
+display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:2rem;max-width:1100px;margin:0 auto;position:relative;z-index:2;
+}
+.quote-card{
+border:2px solid var(--yellow);padding:2rem;
+position:relative;
+}
+.quote-card::before{
+content:'"';position:absolute;top:-10px;left:10px;
+font-family:'Archivo Black';font-size:4rem;color:var(--yellow);
+line-height:1;
+}
+.quote-card p{font-size:1rem;font-style:italic;margin-bottom:1rem;line-height:1.7}
+.quote-card .author{font-family:'IBM Plex Mono';font-size:.8rem;color:var(--yellow)}
+
+/* FAQ */
+.faq-list{max-width:800px;margin:0 auto}
+.faq-item{
+border-bottom:2px solid var(--black);
+}
+.faq-question{
+width:100%;text-align:left;padding:1.5rem 0;
+background:none;border:none;cursor:pointer;
+font-family:'Archivo Black';font-size:1rem;text-transform:uppercase;
+display:flex;justify-content:space-between;align-items:center;
+transition:color .3s;
+}
+.faq-question:hover{color:var(--coral)}
+.faq-question .icon{
+font-size:1.5rem;transition:transform .3s;font-family:'Space Grotesk';
+}
+.faq-item.open .faq-question .icon{transform:rotate(45deg)}
+.faq-answer{
+max-height:0;overflow:hidden;transition:max-height .4s ease;
+font-size:.9rem;color:#444;line-height:1.8;
+}
+.faq-item.open .faq-answer{max-height:300px;padding-bottom:1.5rem}
+
+/* Newsletter */
+.newsletter{
+background:var(--yellow);border-top:3px solid var(--black);
+border-bottom:3px solid var(--black);
+padding:4rem 2rem;text-align:center;
+position:relative;overflow:hidden;
+}
+.newsletter::before{
+content:'';position:absolute;top:-50px;right:-50px;
+width:150px;height:150px;border:4px solid var(--coral);border-radius:50%;
+}
+.newsletter::after{
+content:'';position:absolute;bottom:-30px;left:-30px;
+width:100px;height:100px;background:var(--mint);
+transform:rotate(15deg);
+}
+.newsletter h2{font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:1rem;position:relative;z-index:2}
+.newsletter p{margin-bottom:2rem;position:relative;z-index:2;font-size:1.1rem}
+.newsletter-form{
+display:flex;gap:.5rem;max-width:500px;margin:0 auto;
+position:relative;z-index:2;flex-wrap:wrap;justify-content:center;
+}
+.newsletter-form input{
+flex:1;min-width:200px;padding:.8rem 1.2rem;
+border:3px solid var(--black);background:var(--paper);
+font-family:'IBM Plex Mono';font-size:.9rem;
+}
+.newsletter-form button{
+padding:.8rem 2rem;background:var(--black);color:var(--paper);
+border:3px solid var(--black);font-family:'Archivo Black';
+text-transform:uppercase;font-size:.9rem;cursor:pointer;
+transition:background .3s;
+}
+.newsletter-form button:hover{background:var(--coral)}
+
+/* Footer */
+footer{
+background:var(--black);color:var(--paper);
+padding:4rem 2rem 2rem;
+}
+.footer-grid{
+display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:3rem;max-width:1100px;margin:0 auto 3rem;
+}
+.footer-col h4{font-family:'Archivo Black';font-size:.9rem;margin-bottom:1rem;color:var(--yellow)}
+.footer-col p,.footer-col a{font-size:.85rem;color:#aaa;text-decoration:none;display:block;margin-bottom:.5rem;transition:color .3s}
+.footer-col a:hover{color:var(--coral)}
+.footer-bottom{
+border-top:1px solid #333;padding-top:2rem;text-align:center;
+font-family:'IBM Plex Mono';font-size:.75rem;color:#666;
+}
+.footer-bottom .footer-logo{
+font-family:'Archivo Black';font-size:2rem;margin-bottom:1rem;
+}
+.footer-bottom .footer-logo span{color:var(--coral)}
+
+/* Responsive */
+@media(max-width:768px){
+.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);flex-direction:column;padding:1rem;gap:1rem;border-bottom:3px solid var(--black)}
+.nav-links.open{display:flex}
+.nav-toggle{display:flex}
+.hero-title{font-size:clamp(2.5rem,15vw,5rem)}
+.schedule-grid,.printers-grid,.shop-grid,.quotes-grid{grid-template-columns:1fr}
+.hero-stamp{display:none}
+}
+
+/* Accessibility */
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Ticker */
+.ticker{
+overflow:hidden;background:var(--coral);border-bottom:3px solid var(--black);
+padding:.5rem 0;
+}
+.ticker-track{
+display:flex;white-space:nowrap;animation:ticker 20s linear infinite;
+font-family:'Archivo Black';font-size:.9rem;text-transform:uppercase;
+}
+.ticker-track span{padding:0 2rem}
+@keyframes ticker{to{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+
+<!-- Drifting paper scraps -->
+<svg class="scrap" style="top:10%;left:5%;width:60px;height:60px" viewBox="0 0 60 60" aria-hidden="true">
+<polygon points="10,5 50,10 55,50 5,45" fill="none" stroke="#FF6B5A" stroke-width="2" opacity=".5"/>
+</svg>
+<svg class="scrap" style="top:30%;right:8%;width:40px;height:40px;animation-delay:-5s" viewBox="0 0 40 40" aria-hidden="true">
+<circle cx="20" cy="20" r="15" fill="none" stroke="#2B4B9E" stroke-width="2" opacity=".4"/>
+</svg>
+<svg class="scrap" style="bottom:20%;left:10%;width:50px;height:50px;animation-delay:-10s" viewBox="0 0 50 50" aria-hidden="true">
+<rect x="5" y="5" width="40" height="40" fill="none" stroke="#FFC93C" stroke-width="2" opacity=".5" transform="rotate(15 25 25)"/>
+</svg>
+<svg class="scrap" style="top:60%;right:15%;width:35px;height:35px;animation-delay:-7s" viewBox="0 0 35 35" aria-hidden="true">
+<polygon points="17,2 33,30 2,30" fill="none" stroke="#7ED4A8" stroke-width="2" opacity=".5"/>
+</svg>
+
+<!-- Navigation -->
+<nav aria-label="Main navigation">
+<div class="nav-logo">INK<span>WEATHER</span></div>
+<button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+<ul class="nav-links" role="list">
+<li><a href="#schedule">Schedule</a></li>
+<li><a href="#printers">Printers</a></li>
+<li><a href="#venue">Venue</a></li>
+<li><a href="#shop">Shop</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ul>
+</nav>
+
+<!-- Ticker -->
+<div class="ticker" aria-hidden="true">
+<div class="ticker-track">
+<span>✦ INK WEATHER 2025 ✦</span>
+<span>SEPT 12–14 ✦</span>
+<span>BERLIN, KREUZBERG ✦</span>
+<span>RISOGRAPHS &amp; ROLLERS ✦</span>
+<span>MISREGISTRATION IS A FEATURE ✦</span>
+<span>INK WEATHER 2025 ✦</span>
+<span>SEPT 12–14 ✦</span>
+<span>BERLIN, KREUZBERG ✦</span>
+<span>RISOGRAPHS &amp; ROLLERS ✦</span>
+<span>MISREGISTRATION IS A FEATURE ✦</span>
+</div>
+</div>
+
+<!-- Hero -->
+<header class="hero" id="top">
+<div class="hero-bg" aria-hidden="true"></div>
+<div class="hero-stamp" aria-hidden="true">3-DAY<br>FESTIVAL<br>2025</div>
+
+<h1 class="hero-title">
+<span class="line1 misreg">INK</span>
+<span class="line2 misreg-cyan">WEATHER</span>
+<span class="line3" style="font-size:.5em;letter-spacing:2px;color:var(--black)">PRINT FAIR &amp; RISO FESTIVAL</span>
+</h1>
+
+<p class="hero-sub">Three days of <strong>risograph madness</strong>, screen-printing workshops, zine swaps, and the loudest ink rollers in Europe. Bring your hands, leave with ink.</p>
+
+<div class="hero-date">SEPT 12–14, 2025 · BERLIN</div>
+
+<!-- Print roller -->
+<div class="print-roller" aria-hidden="true">
+<div class="roller"></div>
+<div class="roller-frame">INK ROLLER №7</div>
+</div>
+
+<!-- Ink layers -->
+<div class="ink-layers" aria-hidden="true">
+<div class="ink-layer l1">
+<svg viewBox="0 0 1200 200" preserveAspectRatio="none">
+<path d="M0,100 Q150,20 300,100 T600,100 T900,100 T1200,100 L1200,200 L0,200 Z" fill="#FF6B5A"/>
+</svg>
+</div>
+<div class="ink-layer l2">
+<svg viewBox="0 0 1200 200" preserveAspectRatio="none">
+<path d="M0,120 Q200,40 400,120 T800,120 T1200,120 L1200,200 L0,200 Z" fill="#2B4B9E"/>
+</svg>
+</div>
+<div class="ink-layer l3">
+<svg viewBox="0 0 1200 200" preserveAspectRatio="none">
+<path d="M0,140 Q100,60 250,140 T500,140 T750,140 T1000,140 T1200,140 L1200,200 L0,200 Z" fill="#FFC93C"/>
+</svg>
+</div>
+</div>
+</header>
+
+<!-- Date/Location Banner -->
+<section class="date-banner" aria-label="Festival date and location">
+<h2 class="misreg" style="color:var(--paper)">SEPT 12–14</h2>
+<p>The annual gathering of ink-obsessed makers</p>
+<span class="location-tag">📍 VOLXKULTUR · ORANIESTR. 190 · BERLIN-KREUZBERG</span>
+</section>
+
+<!-- Schedule -->
+<section id="schedule">
+<div class="section-label reveal">01 — What's On</div>
+<h2 class="section-title reveal">Workshops &amp; Talks</h2>
+<div class="schedule-grid">
+<div class="schedule-item reveal">
+<span class="tag">Workshop</span>
+<span class="time">SAT 12 · 10:00–13:00</span>
+<h3>Riso 101: Your First Pull</h3>
+<p>Learn the basics of risograph operation—ink mixing, drum prep, and running your first sheet. Machines provided.</p>
+</div>
+<div class="schedule-item reveal">
+<span class="tag">Talk</span>
+<span class="time">SAT 12 · 15:00–16:30</span>
+<h3>The Misregistration Manifesto</h3>
+<p>Why offset errors are the soul of risograph. A 90-minute love letter to imperfect printing.</p>
+</div>
+<div class="schedule-item reveal">
+<span class="tag">Workshop</span>
+<span class="time">SUN 13 · 11:00–14:00</span>
+<h3>Halftone &amp; Tone: Dots That Sing</h3>
+<p>Create custom halftone screens and learn how dot density becomes your palette.</p>
+</div>
+<div class="schedule-item reveal">
+<span class="tag">Talk</span>
+<span class="time">SUN 13 · 17:00–18:00</span>
+<h3>Print Culture in the Digital Age</h3>
+<p>A panel on why physical print is having its most vibrant renaissance since the 1980s.</p>
+</div>
+<div class="schedule-item reveal">
+<span class="tag">Workshop</span>
+<span class="time">MON 14 · 10:00–12:00</span>
+<h3>Collage &amp; Cut: Layered Zines</h3>
+<p>Hand-cut techniques for building dense, layered zine layouts with riso-printed elements.</p>
+</div>
+<div class="schedule-item reveal">
+<span class="tag">Panel</span>
+<span class="time">MON 14 · 14:00–15:30</span>
+<h3>Independent Presses: Survival Guide</h3>
+<p>How six small studios keep the presses rolling in an algorithm-driven world.</p>
+</div>
+</div>
+</section>
+
+<!-- Printers -->
+<section id="printers" style="background:var(--paper2)">
+<div class="section-label reveal">02 — The Makers</div>
+<h2 class="section-title reveal">Six Printers, Six Voices</h2>
+<div class="printers-grid">
+<article class="printer-card reveal">
+<div class="printer-avatar" aria-hidden="true">MK</div>
+<h3>Maren Kessler</h3>
+<div class="role">Riso Alchemist · Berlin</div>
+<p>Runs "Tint &amp; Grain," a studio where every print is a weather report. Known for 12-color layered posters that look like storms.</p>
+</article>
+<article class="printer-card reveal">
+<div class="printer-avatar" aria-hidden="true">JT</div>
+<h3>Jun Tanaka</h3>
+<div class="role">Screen Printer · Tokyo/Berlin</div>
+<p>Brings Japanese linocut sensibility to European riso. His halftone portraits have a ghostly, breathing quality.</p>
+</article>
+<article class="printer-card reveal">
+<div class="printer-avatar" aria-hidden="true">AO</div>
+<h3>Amara Osei</h3>
+<div class="role">Zine Publisher · Accra</div>
+<p>Founder of "Ground Press," publishing radical Afrofuturist zines on reclaimed paper. Prints with pigment made from local minerals.</p>
+</article>
+<article class="printer-card reveal">
+<div class="printer-avatar" aria-hidden="true">LS</div>
+<h3>Léa Sauvage</h3>
+<div class="role">Letterpress &amp; Riso · Lyon</div>
+<p>Hybrid printer who layers letterpress debosses under riso washes. Her textures are so tactile you'll want to lick the page.</p>
+</article>
+<article class="printer-card reveal">
+<div class="printer-avatar" aria-hidden="true">DV</div>
+<h3>Dmitri Volkov</h3>
+<div class="role">Experimental Printer · Minsk</div>
+<p>Pushes riso machines past their limits—overprinting 20+ colors, intentional jamming, and "happy accident" editions.</p>
+</article>
+<article class="printer-card reveal">
+<div class="printer-avatar" aria-hidden="true">CP</div>
+<h3>Carmen Prieto</h3>
+<div class="role">Edition Printer · Mexico City</div>
+<p>Specializes in limited-edition art prints. Her sunflower-yellow series has sold out in three continents.</p>
+</article>
+</div>
+</section>
+
+<!-- Venue -->
+<section id="venue" class="venue-section">
+<div class="section-label reveal">03 — Find Us</div>
+<h2 class="section-title reveal">The Venue</h2>
+<div class="venue-map reveal">
+<svg viewBox="0 0 800 500" role="img" aria-label="Map of the venue showing workshop areas, main hall, zine library, and food stalls">
+<!-- Background grid -->
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+<path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ddd" stroke-width="0.5"/>
+</pattern>
+<pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse">
+<circle cx="2" cy="2" r="1" fill="#FF6B5A" opacity=".3"/>
+</pattern>
+</defs>
+<rect width="800" height="500" fill="url(#grid)"/>
+
+<!-- Streets -->
+<rect x="0" y="200" width="800" height="30" fill="#E8E0D0"/>
+<rect x="350" y="0" width="30" height="500" fill="#E8E0D0"/>
+<text x="100" y="215" font-family="IBM Plex Mono" font-size="11" fill="#999">ORANIESTRASSE</text>
+<text x="360" y="100" font-family="IBM Plex Mono" font-size="11" fill="#999" transform="rotate(90 360 100)">BERLINER STR.</text>
+
+<!-- Venue building -->
+<rect x="100" y="60" width="200" height="120" fill="#FFC93C" stroke="#1A1A1A" stroke-width="3"/>
+<text x="120" y="100" font-family="Archivo Black" font-size="14" fill="#1A1A1A">MAIN HALL</text>
+<text x="120" y="120" font-family="IBM Plex Mono" font-size="10" fill="#555">Capacity: 500</text>
+
+<!-- Workshop area -->
+<rect x="100" y="240" width="220" height="100" fill="#7ED4A8" stroke="#1A1A1A" stroke-width="3"/>
+<text x="120" y="275" font-family="Archivo Black" font-size="13" fill="#1A1A1A">WORKSHOP</text>
+<text x="120" y="295" font-family="Archivo Black" font-size="13" fill="#1A1A1A">ARENA</text>
+<text x="120" y="315" font-family="IBM Plex Mono" font-size="10" fill="#555">6 riso machines · 4 screens</text>
+
+<!-- Zine library -->
+<rect x="400" y="60" width="180" height="120" fill="#FF6B5A" stroke="#1A1A1A" stroke-width="3"/>
+<text x="420" y="100" font-family="Archivo Black" font-size="13" fill="white">ZINE</text>
+<text x="420" y="120" font-family="Archivo Black" font-size="13" fill="white">LIBRARY</text>
+<text x="420" y="145" font-family="IBM Plex Mono" font-size="10" fill="rgba(255,255,255,.7)">2000+ titles · swap free</text>
+
+<!-- Food -->
+<rect x="400" y="240" width="160" height="80" fill="#2B4B9E" stroke="#1A1A1A" stroke-width="3"/>
+<text x="420" y="275" font-family="Archivo Black" font-size="12" fill="white">FOOD &amp; DRINK</text>
+<text x="420" y="295" font-family="IBM Plex Mono" font-size="10" fill="rgba(255,255,255,.7)">Vegan · Coffee · Cider</text>
+
+<!-- Talk stage -->
+<rect x="600" y="60" width="160" height="100" fill="#8B5CF6" stroke="#1A1A1A" stroke-width="3"/>
+<text x="620" y="95" font-family="Archivo Black" font-size="12" fill="white">TALK</text>
+<text x="620" y="115" font-family="Archivo Black" font-size="12" fill="white">STAGE</text>
+<text x="620" y="135" font-family="IBM Plex Mono" font-size="10" fill="rgba(255,255,255,.7)">Projector · Mic · Vibes</text>
+
+<!-- Shop -->
+<rect x="600" y="240" width="160" height="80" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="3"/>
+<text x="620" y="275" font-family="Archivo Black" font-size="12" fill="white">POSTER</text>
+<text x="620" y="295" font-family="Archivo Black" font-size="12" fill="white">SHOP</text>
+
+<!-- Entrance arrow -->
+<path d="M 50,400 L 100,360 L 90,355 L 110,340 L 105,365 L 95,360 Z" fill="#FF6B5A" stroke="#1A1A1A" stroke-width="2"/>
+<text x="20" y="420" font-family="IBM Plex Mono" font-size="10" fill="#FF6B5A" font-weight="700">ENTRANCE →</text>
+
+<!-- Compass -->
+<circle cx="740" cy="440" r="30" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+<text x="733" y="445" font-family="Archivo Black" font-size="16" fill="#1A1A1A">N</text>
+<line x1="740" y1="415" x2="740" y2="430" stroke="#FF6B5A" stroke-width="3"/>
+
+<!-- Decorative dots -->
+<rect x="50" y="50" width="30" height="30" fill="url(#dots)"/>
+<rect x="700" y="350" width="40" height="40" fill="url(#dots)"/>
+</svg>
+</div>
+<p style="text-align:center;margin-top:1.5rem;font-family:'IBM Plex Mono';font-size:.85rem;color:#666">Volxkultur · Oranierstr. 190 · 10999 Berlin-Kreuzberg · U7 Görlitzer Str.</p>
+</section>
+
+<!-- Shop -->
+<section id="shop">
+<div class="section-label reveal">04 — Limited Editions</div>
+<h2 class="section-title reveal">Poster Shop</h2>
+<div class="shop-grid">
+<article class="poster-card reveal">
+<div class="poster-preview">
+<div class="ink-fill" style="background:radial-gradient(circle at 30% 40%,#FF8BA0 0%,transparent 50%),radial-gradient(circle at 70% 60%,#FFC93C 0%,transparent 40%)"></div>
+<div class="poster-text">WEATHER<br>REPORT №3</div>
+</div>
+<h3>Weather Report №3</h3>
+<p class="price">€28</p>
+<p class="edition">Edition of 75 · 30×42cm · 4-color riso</p>
+<button class="buy-btn" aria-label="Add Weather Report number 3 to cart">Add to Cart</button>
+</article>
+<article class="poster-card reveal">
+<div class="poster-preview">
+<div class="ink-fill" style="background:repeating-linear-gradient(45deg,#FFC93C 0px,#FFC93C 3px,transparent 3px,transparent 15px)"></div>
+<div class="poster-text">SUN<br>HALFTONE</div>
+</div>
+<h3>Sun Halftone</h3>
+<p class="price">€32</p>
+<p class="edition">Edition of 50 · 30×42cm · 5-color riso</p>
+<button class="buy-btn" aria-label="Add Sun Halftone to cart">Add to Cart</button>
+</article>
+<article class="poster-card reveal">
+<div class="poster-preview">
+<div class="ink-fill" style="background:radial-gradient(circle at 50% 50%,#7ED4A8 0%,#2B4B9E 60%,#1A1A1A 100%)"></div>
+<div class="poster-text" style="color:white">MINT<br>STORM</div>
+</div>
+<h3>Mint Storm</h3>
+<p class="price">€28</p>
+<p class="edition">Edition of 100 · 30×42cm · 3-color riso</p>
+<button class="buy-btn" aria-label="Add Mint Storm to cart">Add to Cart</button>
+</article>
+</div>
+</section>
+
+<!-- Quotes -->
+<section class="quotes-section">
+<div class="section-label reveal" style="color:var(--yellow)">05 — From the Floor</div>
+<h2 class="section-title reveal" style="color:var(--paper)">What People Say</h2>
+<div class="quotes-grid">
+<blockquote class="quote-card reveal">
+<p>I came for the workshops and left with a full portfolio and a risograph addiction. The misregistration on my first print was the most beautiful mistake I've ever made.</p>
+<footer class="author">— Sofia R., first-time attendee</footer>
+</blockquote>
+<blockquote class="quote-card reveal">
+<p>The energy is unlike anything else. Three days of pure ink, paper, and human hands. I've booked every year since 2019.</p>
+<footer class="author">— Marcus W., regular printer</footer>
+</blockquote>
+<blockquote class="quote-card reveal">
+<p>The zine library alone is worth the trip. I swapped a stack of my own work and came home with treasures from Lagos, Osaka, and São Paulo.</p>
+<footer class="author">— Priya N., zine maker</footer>
+</blockquote>
+</div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+<div class="section-label reveal">06 — Questions</div>
+<h2 class="section-title reveal">Frequently Asked</h2>
+<div class="faq-list">
+<div class="faq-item reveal">
+<button class="faq-question" aria-expanded="false">Do I need my own equipment? <span class="icon" aria-hidden="true">+</span></button>
+<div class="faq-answer"><p>No! All workshops include machines, paper, and ink. Bring your ideas and an apron. For the riso sessions, we have 6 machines and plenty of drums pre-mixed with our signature palette.</p></div>
+</div>
+<div class="faq-item reveal">
+<button class="faq-question" aria-expanded="false">Is there a general admission pass? <span class="icon" aria-hidden="true">+</span></button>
+<div class="faq-answer"><p>Yes! General admission is €15/day or €35 for the full three-day pass. This includes access to the poster shop, zine library, and all talks. Workshops are booked separately and require a small material fee.</p></div>
+</div>
+<div class="faq-item reveal">
+<button class="faq-question" aria-expanded="false">Can I sell my own prints? <span class="icon" aria-hidden="true">+</span></button>
+<div class="faq-answer"><p>We have a vendor fair running all three days. Apply through our website by August 1st. We accept riso, screen, letterpress, and linocut work. No digital prints, no mass-produced items—everything must be made with intention.</p></div>
+</div>
+<div class="faq-item reveal">
+<button class="faq-question" aria-expanded="false">Is the venue accessible? <span class="icon" aria-hidden="true">+</span></button>
+<div class="faq-answer"><p>Volxkultur has ground-floor access throughout. The workshop arena and main hall are fully wheelchair accessible. We have accessible restrooms and a quiet room for sensory breaks. Please let us know if you need specific accommodations when booking.</p></div>
+</div>
+<div class="faq-item reveal">
+<button class="faq-question" aria-expanded="false">What about food and drink? <span class="icon" aria-hidden="true">+</span></button>
+<div class="faq-answer"><p>We have a food court with three vendors—all vegan, all local. Expect currywurst alternatives, fresh juices, and the best filter coffee in Kreuzberg. There's also a small bar serving craft cider and non-alcoholic options.</p></div>
+</div>
+<div class="faq-item reveal">
+<button class="faq-question" aria-expanded="false">Can I attend with kids? <span class="icon" aria-hidden="true">+</span></button>
+<div class="faq-answer"><p>Absolutely! We run a kids' print zone (ages 6+) with simplified riso machines and crayon-printing stations. Parents can drop off and pick up, or stay and print alongside. The kids' zone runs 10am–4pm each day.</p></div>
+</div>
+</div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter">
+<h2 class="reveal">Stay Inked</h2>
+<p class="reveal">Get festival updates, printer spotlights, and early-bird workshop tickets. No spam, just good print.</p>
+<form class="newsletter-form reveal" onsubmit="event.preventDefault();this.innerHTML='<p style=\'font-family:IBM Plex Mono;font-size:1rem;padding:1rem\'>✦ YOU\'RE ON THE LIST — SEE YOU IN SEPTEMBER ✦</p>'">
+<label for="email" class="sr-only">Email address</label>
+<input type="email" id="email" placeholder="your@email.com" required aria-required="true">
+<button type="submit">Subscribe</button>
+</form>
+</section>
+
+<!-- Footer -->
+<footer>
+<div class="footer-grid">
+<div class="footer-col">
+<h4>INK WEATHER</h4>
+<p>An independent print fair and risograph festival celebrating the joy of imperfect, handmade printing.</p>
+<p>Founded 2019 · Berlin, Germany</p>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<a href="#schedule">Schedule</a>
+<a href="#printers">Printers</a>
+<a href="#venue">Venue</a>
+<a href="#shop">Shop</a>
+<a href="#faq">FAQ</a>
+</div>
+<div class="footer-col">
+<h4>Connect</h4>
+<a href="#">Instagram @inkweather</a>
+<a href="#">Are.na channel</a>
+<a href="#">hello@inkweather.festival</a>
+<a href="#">Press kit</a>
+</div>
+<div class="footer-col">
+<h4>Support</h4>
+<p>INK WEATHER is run by a collective of 12 printers and designers. No sponsors, no corporate partners—just ink and community.</p>
+</div>
+</div>
+<div class="footer-bottom">
+<div class="footer-logo">INK<span>WEATHER</span></div>
+<p>© 2025 INK WEATHER FESTIVAL · PRINTED WITH LOVE &amp; MISREGISTRATION</p>
+<p style="margin-top:.5rem">All posters designed &amp; printed on Risograph machines · No pixels were harmed</p>
+</div>
+</footer>
+
+<script>
+// Mobile nav toggle
+const navToggle=document.querySelector('.nav-toggle');
+const navLinks=document.querySelector('.nav-links');
+navToggle.addEventListener('click',()=>{
+const open=navLinks.classList.toggle('open');
+navToggle.setAttribute('aria-expanded',open);
+});
+// Close nav on link click
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+navLinks.classList.remove('open');
+navToggle.setAttribute('aria-expanded','false');
+}));
+
+// Scroll reveals
+const observer=new IntersectionObserver((entries)=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.classList.add('visible');
+}
+});
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>observer.observe(el));
+
+// FAQ accordion
+document.querySelectorAll('.faq-question').forEach(btn=>{
+btn.addEventListener('click',()=>{
+const item=btn.parentElement;
+const isOpen=item.classList.contains('open');
+// Close all
+document.querySelectorAll('.faq-item').forEach(i=>{
+i.classList.remove('open');
+i.querySelector('.faq-question').setAttribute('aria-expanded','false');
+});
+// Open clicked if was closed
+if(!isOpen){
+item.classList.add('open');
+btn.setAttribute('aria-expanded','true');
+}
+});
+});
+
+// Hover misregistration on printer cards
+document.querySelectorAll('.printer-card').forEach(card=>{
+card.addEventListener('mouseenter',()=>{
+card.style.textShadow='2px 0 #FF6B5A,-2px 0 #2B4B9E';
+});
+card.addEventListener('mouseleave',()=>{
+card.style.textShadow='none';
+});
+});
+
+// Parallax on hero title
+const heroTitle=document.querySelector('.hero-title');
+if(heroTitle&&window.matchMedia('(prefers-reduced-motion: no-preference)').matches){
+window.addEventListener('scroll',()=>{
+const scrollY=window.scrollY;
+if(scrollY<window.innerHeight){
+heroTitle.style.transform=`translateY(${scrollY*0.15}px)`;
+}
+},{passive:true});
+}
+</script>
+</body>
+</html>

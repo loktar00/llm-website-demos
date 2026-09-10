@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Moss Notebook — A Naturalist's Field Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: #f5f0e1;
+  --cream-dark: #ebe4d0;
+  --ink: #2c2416;
+  --ink-light: #5a4d3a;
+  --ink-faint: #8a7d6a;
+  --green-wash: #a8c5a0;
+  --green-dark: #6b8f5e;
+  --blue-wash: #a0b8c5;
+  --ochre: #c5b078;
+  --rose-wash: #c58070;
+  --tape: rgba(245, 230, 180, 0.6);
+  --pencil: #7a7060;
+  --serif: 'Crimson Pro', Georgia, 'Times New Roman', serif;
+  --hand: 'Caveat', cursive;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--serif);
+  line-height: 1.7;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(180,160,130,0.08) 27px, rgba(180,160,130,0.08) 28px),
+    repeating-linear-gradient(90deg, transparent, transparent 27px, rgba(180,160,130,0.04) 27px, rgba(180,160,130,0.04) 28px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Paper texture overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(180,160,120,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(160,180,140,0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 80%, rgba(140,160,180,0.06) 0%, transparent 45%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+main { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+/* ====== HAND-DRAWN BORDER UTILITY ====== */
+.sketch-border {
+  border: 2px solid var(--ink-light);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+.sketch-border-alt {
+  border: 2px solid var(--ink-light);
+  border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+}
+
+/* ====== TAPE EFFECT ====== */
+.tape {
+  position: absolute;
+  width: 120px;
+  height: 28px;
+  background: var(--tape);
+  transform: rotate(-3deg);
+  z-index: 2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid rgba(200,190,160,0.3);
+}
+.tape::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.1) 3px, rgba(255,255,255,0.1) 4px);
+}
+
+/* ====== WATERCOLOR WASH ====== */
+.wash {
+  position: relative;
+  overflow: hidden;
+}
+.wash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.wash-green::before { background: radial-gradient(ellipse at 30% 40%, var(--green-wash), transparent 70%); }
+.wash-blue::before { background: radial-gradient(ellipse at 70% 30%, var(--blue-wash), transparent 65%); }
+.wash-ochre::before { background: radial-gradient(ellipse at 50% 60%, var(--ochre), transparent 70%); }
+.wash-rose::before { background: radial-gradient(ellipse at 40% 50%, var(--rose-wash), transparent 60%); }
+
+/* ====== SECTION SPACING ====== */
+section {
+  padding: 60px 0 40px;
+  position: relative;
+}
+
+/* ====== DIVIDERS ====== */
+.divider {
+  text-align: center;
+  padding: 30px 0;
+  position: relative;
+}
+.divider svg { display: inline-block; }
+
+/* ====== MARGINAL NOTES ====== */
+.marginal {
+  font-family: var(--hand);
+  font-size: 1.05rem;
+  color: var(--pencil);
+  transform: rotate(-1deg);
+  display: inline-block;
+}
+
+/* ====== SPECIMEN LABEL ====== */
+.specimen-label {
+  font-family: var(--hand);
+  background: var(--cream-dark);
+  border: 1px solid var(--ink-faint);
+  padding: 6px 14px;
+  display: inline-block;
+  transform: rotate(0.5deg);
+  box-shadow: 1px 2px 4px rgba(0,0,0,0.06);
+}
+
+/* ====== ANIMATIONS ====== */
+@keyframes sway {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes birdFly {
+  0% { transform: translateX(-40px) translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(calc(100vw + 40px)) translateY(-30px); opacity: 0; }
+}
+@keyframes bloom {
+  0%, 100% { opacity: 0.12; transform: scale(1); }
+  50% { opacity: 0.18; transform: scale(1.03); }
+}
+@keyframes inkDrop {
+  0% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; transform: scale(1); }
+}
+
+.sway { animation: sway 4s ease-in-out infinite; transform-origin: bottom center; }
+.sway-slow { animation: sway 6s ease-in-out infinite; transform-origin: bottom center; }
+
+.drawLine {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 3s ease forwards;
+}
+
+.bird-fly {
+  position: fixed;
+  top: 15%;
+  animation: birdFly 12s linear infinite;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.bloom-wash {
+  animation: bloom 8s ease-in-out infinite;
+}
+
+/* ====== PINNED NOTE HOVER ====== */
+.pinned-note {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.pinned-note:hover {
+  transform: translateY(-4px) rotate(0.5deg);
+  box-shadow: 2px 6px 16px rgba(0,0,0,0.12);
+}
+
+/* ====== REDUCED MOTION ====== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .bird-fly { display: none; }
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 700px) {
+  main { padding: 0 14px; }
+  section { padding: 40px 0 20px; }
+  .hero-title { font-size: 3rem !important; }
+  .specimen-grid { grid-template-columns: 1fr !important; }
+  .weather-grid { grid-template-columns: 1fr 1fr !important; }
+  .about-grid { grid-template-columns: 1fr !important; }
+  .habitat-map-wrap { width: 100%; }
+}
+@media (max-width: 480px) {
+  .hero-title { font-size: 2.4rem !important; }
+  .weather-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ====== SCROLL REVEAL ====== */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- Flying bird -->
+<svg class="bird-fly" width="36" height="20" viewBox="0 0 36 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M2 10 Q8 2 18 8 Q28 2 34 10" stroke="var(--ink-light)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M4 10 Q10 6 18 10 Q26 6 32 10" stroke="var(--ink-light)" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.5"/>
+</svg>
+
+<main>
+
+<!-- ====== HERO / COVER ====== -->
+<section class="hero" style="min-height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 40px; padding-bottom: 60px;">
+  <svg width="60" height="80" viewBox="0 0 60 80" fill="none" style="margin-bottom: 20px;" aria-hidden="true">
+    <!-- Acorn doodle -->
+    <ellipse cx="30" cy="52" rx="14" ry="20" stroke="var(--ink-light)" stroke-width="1.5" fill="none"/>
+    <path d="M16 42 Q30 30 44 42" stroke="var(--ink-light)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M22 36 L20 28" stroke="var(--ink-light)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M30 32 L30 22" stroke="var(--ink-light)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M38 36 L40 28" stroke="var(--ink-light)" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Shell lines -->
+    <path d="M20 38 Q25 35 30 38 Q35 35 40 38" stroke="var(--ink-faint)" stroke-width="0.8" fill="none"/>
+    <path d="M18 44 Q25 40 30 44 Q35 40 42 44" stroke="var(--ink-faint)" stroke-width="0.8" fill="none"/>
+    <path d="M17 50 Q25 46 30 50 Q35 46 43 50" stroke="var(--ink-faint)" stroke-width="0.8" fill="none"/>
+    <!-- Leaf -->
+    <path d="M44 40 Q55 32 52 22 Q48 28 44 40Z" stroke="var(--green-dark)" stroke-width="1.2" fill="rgba(168,197,160,0.2)" stroke-linecap="round"/>
+    <path d="M44 40 Q48 32 52 22" stroke="var(--green-dark)" stroke-width="0.8" fill="none"/>
+  </svg>
+
+  <h1 class="hero-title" style="font-family: var(--hand); font-size: 4.5rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: 12px; letter-spacing: -1px;">
+    The Moss Notebook
+  </h1>
+  <p style="font-family: var(--hand); font-size: 1.3rem; color: var(--ink-faint); margin-bottom: 30px; font-style: italic;">
+    a naturalist's field journal — one year, one woodland
+  </p>
+
+  <!-- Decorative hand-drawn rule -->
+  <svg width="260" height="30" viewBox="0 0 260 30" style="margin-bottom: 30px;" aria-hidden="true">
+    <path d="M10 15 Q65 8 130 15 Q195 22 250 15" stroke="var(--ink-faint)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <circle cx="130" cy="15" r="3" fill="var(--ink-faint)" opacity="0.5"/>
+    <path d="M126 15 L128 11 L130 15 L132 11 L134 15" stroke="var(--ink-faint)" stroke-width="0.8" fill="none"/>
+  </svg>
+
+  <p style="max-width: 520px; font-size: 1.05rem; color: var(--ink-light); line-height: 1.8; font-weight: 300;">
+    Over twelve months of walking the same ridge trail, I filled this notebook with everything the forest offered:
+    the first morel poking through last year's leaves, the redwing's dawn chorus from the alder thicket,
+    the way light falls through beech canopy in October. These pages are an invitation to look closely.
+  </p>
+
+  <!-- Seasonal compass rose -->
+  <svg width="120" height="120" viewBox="0 0 120 120" style="margin-top: 30px;" aria-label="Seasonal compass">
+    <circle cx="60" cy="60" r="50" stroke="var(--ink-faint)" stroke-width="1" fill="none"/>
+    <circle cx="60" cy="60" r="38" stroke="var(--ink-faint)" stroke-width="0.5" fill="none" stroke-dasharray="3 4"/>
+    <!-- Spring -->
+    <text x="60" y="22" text-anchor="middle" font-family="var(--hand)" font-size="12" fill="var(--green-dark)">Spring</text>
+    <!-- Summer -->
+    <text x="108" y="64" text-anchor="middle" font-family="var(--hand)" font-size="12" fill="var(--ochre)">Summer</text>
+    <!-- Autumn -->
+    <text x="60" y="112" text-anchor="middle" font-family="var(--hand)" font-size="12" fill="var(--rose-wash)">Autumn</text>
+    <!-- Winter -->
+    <text x="12" y="64" text-anchor="middle" font-family="var(--hand)" font-size="12" fill="var(--blue-wash)">Winter</text>
+    <!-- Arrow -->
+    <path d="M60 60 L60 28" stroke="var(--ink-light)" stroke-width="1.5" stroke-linecap="round"/>
+    <polygon points="60,24 56,32 64,32" fill="var(--ink-light)"/>
+    <circle cx="60" cy="60" r="4" fill="var(--cream)" stroke="var(--ink-light)" stroke-width="1"/>
+  </svg>
+</section>
+
+<!-- Divider -->
+<div class="divider">
+  <svg width="300" height="24" viewBox="0 0 300 24" aria-hidden="true">
+    <path d="M20 12 Q75 6 130 12 Q185 18 280 12" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <circle cx="50" cy="12" r="1.5" fill="var(--ink-faint)"/>
+    <circle cx="130" cy="12" r="1.5" fill="var(--ink-faint)"/>
+    <circle cx="210" cy="12" r="1.5" fill="var(--ink-faint)"/>
+  </svg>
+</div>
+
+<!-- ====== SEASONAL FIELD ENTRIES ====== -->
+<section>
+  <h2 style="font-family: var(--hand); font-size: 2.6rem; color: var(--ink); margin-bottom: 8px; transform: rotate(-0.5deg); display: inline-block;">
+    Field Entries
+  </h2>
+  <p class="marginal" style="margin-bottom: 30px; display: block;">— four turns of the wheel —</p>
+
+  <!-- SPRING -->
+  <div class="reveal wash wash-green sketch-border" style="padding: 30px 28px; margin-bottom: 24px; position: relative;">
+    <div class="tape" style="top: -14px; left: 40px;"></div>
+    <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+      <svg width="80" height="100" viewBox="0 0 80 100" style="flex-shrink: 0;" aria-hidden="true">
+        <!-- Spring flowers -->
+        <path d="M40 95 L40 55" stroke="var(--green-dark)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M40 75 Q28 70 22 58" stroke="var(--green-dark)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M40 75 Q52 70 58 58" stroke="var(--green-dark)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <!-- Leaves -->
+        <path d="M22 58 Q18 52 22 46 Q28 50 22 58Z" fill="rgba(168,197,160,0.4)" stroke="var(--green-dark)" stroke-width="1"/>
+        <path d="M58 58 Q62 52 58 46 Q52 50 58 58Z" fill="rgba(168,197,160,0.4)" stroke="var(--green-dark)" stroke-width="1"/>
+        <!-- Flower head -->
+        <circle cx="40" cy="48" r="10" fill="rgba(200,180,140,0.3)" stroke="var(--ochre)" stroke-width="1"/>
+        <circle cx="40" cy="48" r="4" fill="var(--ochre)" opacity="0.6"/>
+        <path d="M32 42 Q35 36 40 38 Q45 36 48 42" stroke="var(--rose-wash)" stroke-width="0.8" fill="none"/>
+        <path d="M30 46 Q34 40 40 42 Q46 40 50 46" stroke="var(--rose-wash)" stroke-width="0.8" fill="none"/>
+        <!-- Small bloom -->
+        <path d="M40 95 L40 85" stroke="var(--green-dark)" stroke-width="0.8"/>
+        <circle cx="40" cy="82" r="3" fill="rgba(168,197,160,0.5)" stroke="var(--green-dark)" stroke-width="0.8"/>
+      </svg>
+      <div style="flex: 1; min-width: 200px;">
+        <span class="specimen-label" style="margin-bottom: 8px;">March — May</span>
+        <h3 style="font-family: var(--hand); font-size: 1.6rem; color: var(--green-dark); margin-bottom: 6px;">Spring</h3>
+        <p style="font-size: 0.95rem; color: var(--ink-light);">
+          The beech floor trembles with bluebells by mid-April. On March 22, I found the year's first wood anemone beside the
+          fallen ash—its white petals cupped tight against the chill, opening only when the sun crossed the ridge.
+          Morels appeared in late April beneath the old cherry hedge: two at first, then a dozen. I sketched them
+          in the field, knees deep in leaf litter, pencil smudged with damp soil.
+        </p>
+        <p class="marginal" style="margin-top: 8px; font-size: 0.95rem;">
+          ↑ the smell of wet earth and decay — petrichore and possibility
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMER -->
+  <div class="reveal wash wash-ochre sketch-border-alt" style="padding: 30px 28px; margin-bottom: 24px; position: relative;">
+    <div class="tape" style="top: -14px; right: 60px; transform: rotate(2deg);"></div>
+    <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+      <svg width="80" height="100" viewBox="0 0 80 100" style="flex-shrink: 0;" aria-hidden="true">
+        <!-- Dragonfly -->
+        <ellipse cx="40" cy="50" rx="5" ry="20" fill="rgba(160,184,197,0.2)" stroke="var(--blue-wash)" stroke-width="1"/>
+        <circle cx="40" cy="28" r="6" fill="rgba(160,184,197,0.3)" stroke="var(--blue-wash)" stroke-width="1"/>
+        <circle cx="38" cy="27" r="1.5" fill="var(--ink-faint)"/>
+        <circle cx="42" cy="27" r="1.5" fill="var(--ink-faint)"/>
+        <!-- Wings -->
+        <path d="M35 42 Q15 30 8 38 Q18 42 35 46" fill="rgba(160,184,197,0.15)" stroke="var(--blue-wash)" stroke-width="0.8"/>
+        <path d="M45 42 Q65 30 72 38 Q62 42 45 46" fill="rgba(160,184,197,0.15)" stroke="var(--blue-wash)" stroke-width="0.8"/>
+        <path d="M35 50 Q18 46 12 54 Q22 56 35 54" fill="rgba(160,184,197,0.12)" stroke="var(--blue-wash)" stroke-width="0.8"/>
+        <path d="M45 50 Q62 46 68 54 Q58 56 45 54" fill="rgba(160,184,197,0.12)" stroke="var(--blue-wash)" stroke-width="0.8"/>
+        <!-- Wing veins -->
+        <path d="M35 44 L12 38" stroke="var(--blue-wash)" stroke-width="0.4" fill="none" opacity="0.5"/>
+        <path d="M45 44 L72 38" stroke="var(--blue-wash)" stroke-width="0.4" fill="none" opacity="0.5"/>
+      </svg>
+      <div style="flex: 1; min-width: 200px;">
+        <span class="specimen-label" style="margin-bottom: 8px;">June — August</span>
+        <h3 style="font-family: var(--hand); font-size: 1.6rem; color: var(--ochre); margin-bottom: 6px;">Summer</h3>
+        <p style="font-size: 0.95rem; color: var(--ink-light);">
+          Late June brought a procession of golden-ring dragonflies along the stream—males patrolling territories,
+          females skimming the water to lay eggs in the submerged stems. The hazel nuts were tiny fists by July,
+          and the air grew thick with the hum of bees in the clover meadow. I spent one hot afternoon simply
+          watching a spider rebuild her orb web after the morning dew had weighed it down.
+        </p>
+        <p class="marginal" style="margin-top: 8px; font-size: 0.95rem;">
+          → note: the green woodpecker returns every midday to the same sycamore stump
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTUMN -->
+  <div class="reveal wash wash-rose sketch-border" style="padding: 30px 28px; margin-bottom: 24px; position: relative;">
+    <div class="tape" style="top: -14px; left: 80px; transform: rotate(-2deg);"></div>
+    <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+      <svg width="80" height="100" viewBox="0 0 80 100" style="flex-shrink: 0;" aria-hidden="true">
+        <!-- Autumn leaf (maple-like) -->
+        <path d="M40 85 L40 50" stroke="var(--rose-wash)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M40 50 Q25 45 15 30 Q20 35 28 32 Q22 20 30 15 Q34 24 38 22 Q36 10 40 5 Q44 10 42 22 Q46 24 50 15 Q58 20 52 32 Q60 35 65 30 Q55 45 40 50Z"
+              fill="rgba(197,128,112,0.2)" stroke="var(--rose-wash)" stroke-width="1.2"/>
+        <!-- Veins -->
+        <path d="M40 50 L30 32" stroke="var(--rose-wash)" stroke-width="0.6" fill="none"/>
+        <path d="M40 50 L50 32" stroke="var(--rose-wash)" stroke-width="0.6" fill="none"/>
+        <path d="M40 50 L38 22" stroke="var(--rose-wash)" stroke-width="0.6" fill="none"/>
+        <path d="M40 50 L42 22" stroke="var(--rose-wash)" stroke-width="0.6" fill="none"/>
+        <path d="M40 50 L40 5" stroke="var(--rose-wash)" stroke-width="0.6" fill="none"/>
+        <!-- Small acorn on ground -->
+        <ellipse cx="25" cy="88" rx="6" ry="7" fill="rgba(197,176,120,0.3)" stroke="var(--ochre)" stroke-width="0.8"/>
+        <path d="M19 83 Q25 80 31 83" stroke="var(--ochre)" stroke-width="0.6" fill="none"/>
+      </svg>
+      <div style="flex: 1; min-width: 200px;">
+        <span class="specimen-label" style="margin-bottom: 8px;">September — November</span>
+        <h3 style="font-family: var(--hand); font-size: 1.6rem; color: var(--rose-wash); margin-bottom: 6px;">Autumn</h3>
+        <p style="font-size: 0.95rem; color: var(--ink-light);">
+          October turned the sweet chestnuts to fire. I collected cones along the lower path—burs split open like
+          porcelain grenades, nuts polished by woodpeckers. The first kingfisher darted across the stream on the 14th,
+          a blue flash that stopped me mid-stride. Fungi erupted overnight: waxcaps on the grazed slope, parasols
+          in the oak wood, a carpet of tiny fairy rings I had to kneel to photograph (and then immediately regret,
+          reaching for my pencil instead).
+        </p>
+        <p class="marginal" style="margin-top: 8px; font-size: 0.95rem;">
+          ↑ fairy ring of Mycena — perfect circle, 4.2m diameter
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- WINTER -->
+  <div class="reveal wash wash-blue sketch-border-alt" style="padding: 30px 28px; margin-bottom: 24px; position: relative;">
+    <div class="tape" style="top: -14px; right: 40px; transform: rotate(1deg);"></div>
+    <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+      <svg width="80" height="100" viewBox="0 0 80 100" style="flex-shrink: 0;" aria-hidden="true">
+        <!-- Bare branch with lichen -->
+        <path d="M40 90 L40 40 Q35 30 25 20 Q22 18 20 15" stroke="var(--ink-light)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M40 60 Q50 52 60 42 Q63 40 65 38" stroke="var(--ink-light)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M40 40 Q48 32 55 25" stroke="var(--ink-light)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <!-- Lichen blobs -->
+        <ellipse cx="28" cy="22" rx="5" ry="3" fill="rgba(168,197,160,0.3)" stroke="var(--green-wash)" stroke-width="0.6"/>
+        <ellipse cx="62" cy="40" rx="4" ry="2.5" fill="rgba(168,197,160,0.3)" stroke="var(--green-wash)" stroke-width="0.6"/>
+        <ellipse cx="52" cy="28" rx="3" ry="2" fill="rgba(168,197,160,0.2)" stroke="var(--green-wash)" stroke-width="0.5"/>
+        <!-- Snowflake suggestion -->
+        <circle cx="15" cy="8" r="1" fill="var(--blue-wash)" opacity="0.6"/>
+        <circle cx="68" cy="12" r="1" fill="var(--blue-wash)" opacity="0.5"/>
+        <circle cx="55" cy="6" r="0.8" fill="var(--blue-wash)" opacity="0.4"/>
+        <circle cx="72" cy="25" r="0.8" fill="var(--blue-wash)" opacity="0.3"/>
+      </svg>
+      <div style="flex: 1; min-width: 200px;">
+        <span class="specimen-label" style="margin-bottom: 8px;">December — February</span>
+        <h3 style="font-family: var(--hand); font-size: 1.6rem; color: var(--blue-wash); margin-bottom: 6px;">Winter</h3>
+        <p style="font-size: 0.95rem; color: var(--ink-light);">
+          The forest reveals its bones in winter. Without leaves, the skeletal architecture of the beech stands
+          stark against the grey sky. I walked the frost-rimed path on January 8 and found a tawny owl pellet
+          beneath the holly—dissolved it in water and sorted out five bat wings, three vole skulls, a pile of
+          cricket legs. The streams ran clear and cold, water veins silver against the dark stone.
+          In the quiet, every twig-snap was a language.
+        </p>
+        <p class="marginal" style="margin-top: 8px; font-size: 0.95rem;">
+          → silence here is not empty — it is full of listening
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="divider">
+  <svg width="300" height="30" viewBox="0 0 300 30" aria-hidden="true">
+    <!-- Small mushroom doodle as divider -->
+    <path d="M140 25 L140 18" stroke="var(--ink-faint)" stroke-width="1"/>
+    <path d="M130 18 Q140 8 150 18" stroke="var(--ink-faint)" stroke-width="1" fill="rgba(197,128,112,0.15)"/>
+    <path d="M10 15 Q75 8 130 15 Q185 22 290 15" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- ====== HABITAT MAP ====== -->
+<section>
+  <h2 style="font-family: var(--hand); font-size: 2.6rem; color: var(--ink); margin-bottom: 8px; transform: rotate(-0.5deg); display: inline-block;">
+    Habitat Map
+  </h2>
+  <p class="marginal" style="margin-bottom: 24px; display: block;">— surveyed by foot, compass, and patient wandering —</p>
+
+  <div class="reveal pinned-note" style="position: relative; background: var(--cream-dark); padding: 20px; border: 2px solid var(--ink-faint); border-radius: 3px;">
+    <div class="tape" style="top: -14px; left: 50%; transform: translateX(-50%) rotate(-1deg);"></div>
+    <div class="habitat-map-wrap" style="width: 100%; max-width: 700px; margin: 0 auto;">
+      <svg viewBox="0 0 700 480" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hand-drawn topographic map of the woodland">
+        <!-- Background -->
+        <rect width="700" height="480" fill="var(--cream)" rx="2"/>
+
+        <!-- Topographic contours -->
+        <g stroke="var(--ink-faint)" stroke-width="0.7" fill="none" opacity="0.4" stroke-linecap="round">
+          <path d="M50 400 Q150 350 250 370 Q350 390 450 340 Q550 290 650 320"/>
+          <path d="M30 380 Q130 330 230 350 Q330 370 430 320 Q530 270 670 300"/>
+          <path d="M10 360 Q110 310 210 330 Q310 350 410 300 Q510 250 690 280"/>
+          <path d="M60 340 Q160 290 260 310 Q360 330 460 280 Q560 230 660 260"/>
+          <path d="M80 320 Q180 270 280 290 Q380 310 480 260 Q580 210 640 240"/>
+          <path d="M100 300 Q200 250 300 270 Q400 290 500 240 Q580 190 620 220"/>
+          <!-- Hill -->
+          <ellipse cx="350" cy="200" rx="80" ry="60" stroke="var(--ink-faint)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <ellipse cx="350" cy="200" rx="60" ry="45" stroke="var(--ink-faint)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <ellipse cx="350" cy="200" rx="40" ry="30" stroke="var(--ink-faint)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <ellipse cx="350" cy="200" rx="20" ry="15" stroke="var(--ink-faint)" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <!-- Valley -->
+          <path d="M200 150 Q250 180 300 170 Q350 160 400 190 Q450 220 500 180" stroke="var(--ink-faint)" stroke-width="0.5" fill="none" opacity="0.25"/>
+          <path d="M180 170 Q230 200 280 190 Q330 180 380 210 Q430 240 520 200" stroke="var(--ink-faint)" stroke-width="0.5" fill="none" opacity="0.2"/>
+        </g>
+
+        <!-- Stream -->
+        <path d="M650 20 Q580 60 520 100 Q460 140 420 180 Q380 220 340 250 Q300 280 260 320 Q220 360 180 400 Q140 440 100 470"
+              stroke="var(--blue-wash)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <path d="M650 20 Q580 60 520 100 Q460 140 420 180 Q380 220 340 250 Q300 280 260 320 Q220 360 180 400 Q140 440 100 470"
+              stroke="var(--blue-wash)" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.15"/>
+        <!-- Water ripples -->
+        <g stroke="var(--blue-wash)" stroke-width="0.5" fill="none" opacity="0.3">
+          <path d="M530 95 Q540 90 550 95"/>
+          <path d="M525 105 Q540 100 555 105"/>
+          <path d="M430 175 Q440 170 450 175"/>
+          <path d="M345 245 Q355 240 365 245"/>
+          <path d="M265 315 Q275 310 285 315"/>
+        </g>
+
+        <!-- Forest areas (shaded) -->
+        <g opacity="0.12">
+          <path d="M120 100 Q180 80 240 100 Q280 120 260 180 Q240 220 180 200 Q130 180 120 100Z" fill="var(--green-dark)"/>
+          <path d="M380 80 Q440 60 500 80 Q540 100 520 160 Q500 200 440 180 Q390 160 380 80Z" fill="var(--green-dark)"/>
+        </g>
+
+        <!-- Tree symbols (oak) -->
+        <g stroke="var(--green-dark)" stroke-width="1" fill="none" opacity="0.5">
+          <!-- Cluster 1 -->
+          <circle cx="160" cy="120" r="6"/><line x1="160" y1="126" x2="160" y2="132"/>
+          <circle cx="180" cy="115" r="5"/><line x1="180" y1="120" x2="180" y2="126"/>
+          <circle cx="170" cy="130" r="5.5"/><line x1="170" y1="136" x2="170" y2="142"/>
+          <circle cx="200" cy="125" r="6"/><line x1="200" y1="131" x2="200" y2="137"/>
+          <circle cx="210" cy="140" r="5"/><line x1="210" y1="145" x2="210" y2="151"/>
+          <!-- Cluster 2 -->
+          <circle cx="420" cy="100" r="6"/><line x1="420" y1="106" x2="420" y2="112"/>
+          <circle cx="440" cy="95" r="5.5"/><line x1="440" y1="101" x2="440" y2="107"/>
+          <circle cx="460" cy="110" r="5"/><line x1="460" y1="115" x2="460" y2="121"/>
+          <circle cx="435" cy="120" r="6"/><line x1="435" y1="126" x2="435" y2="132"/>
+        </g>
+
+        <!-- Beech trees (different symbol) -->
+        <g stroke="var(--green-dark)" stroke-width="1" fill="none" opacity="0.4">
+          <path d="M280 140 L275 150 M280 140 L280 150 M280 140 L285 150" stroke-linecap="round"/>
+          <circle cx="280" cy="135" r="5"/>
+          <path d="M310 155 L305 165 M310 155 L310 165 M310 155 L315 165" stroke-linecap="round"/>
+          <circle cx="310" cy="150" r="4.5"/>
+          <path d="M250 160 L245 170 M250 160 L250 170 M250 160 L255 170" stroke-linecap="round"/>
+          <circle cx="250" cy="155" r="5"/>
+        </g>
+
+        <!-- Meadow -->
+        <g stroke="var(--ochre)" stroke-width="0.8" fill="none" opacity="0.35">
+          <line x1="500" y1="220" x2="505" y2="215"/><line x1="500" y1="220" x2="500" y2="214"/>
+          <line x1="510" y1="230" x2="515" y2="225"/><line x1="510" y1="230" x2="510" y2="224"/>
+          <line x1="520" y1="225" x2="525" y2="220"/><line x1="520" y1="225" x2="520" y2="219"/>
+          <line x1="505" y1="240" x2="510" y2="235"/><line x1="505" y1="240" x2="505" y2="234"/>
+          <line x1="515" y1="235" x2="520" y2="230"/><line x1="515" y1="235" x2="515" y2="229"/>
+        </g>
+
+        <!-- Trail (dashed) -->
+        <path d="M80 450 Q120 420 160 400 Q200 380 220 350 Q240 320 260 300 Q280 280 300 260 Q320 240 350 220 Q380 200 400 180 Q420 160 440 140 Q460 120 480 100 Q500 80 520 60 Q540 40 560 30"
+              stroke="var(--ink-faint)" stroke-width="1.5" fill="none" stroke-dasharray="8 4" stroke-linecap="round"/>
+
+        <!-- Labels -->
+        <text x="170" y="160" font-family="var(--hand)" font-size="13" fill="var(--ink-light)" transform="rotate(-8,170,160)">Oak Wood</text>
+        <text x="425" y="140" font-family="var(--hand)" font-size="12" fill="var(--ink-light)" transform="rotate(5,425,140)">Beech Copse</text>
+        <text x="300" y="210" font-family="var(--hand)" font-size="11" fill="var(--ink-faint)">The Ridge</text>
+        <text x="500" y="255" font-family="var(--hand)" font-size="11" fill="var(--ink-faint)" transform="rotate(-3,500,255)">Clover Meadow</text>
+        <text x="340" y="270" font-family="var(--hand)" font-size="11" fill="var(--blue-wash)" transform="rotate(-15,340,270)">Stream</text>
+        <text x="140" y="380" font-family="var(--hand)" font-size="11" fill="var(--ink-faint)">Holly Valley</text>
+
+        <!-- Compass rose -->
+        <g transform="translate(620, 40)">
+          <circle r="18" stroke="var(--ink-faint)" stroke-width="0.8" fill="none"/>
+          <text y="-8" font-family="var(--hand)" font-size="11" fill="var(--ink-light)" text-anchor="middle">N</text>
+          <path d="M0 -14 L0 14 M-14 0 L14 0" stroke="var(--ink-faint)" stroke-width="0.5"/>
+          <polygon points="0,-16 -3,-10 0,-12 3,-10" fill="var(--ink-light)" opacity="0.6"/>
+        </g>
+
+        <!-- Scale bar -->
+        <g transform="translate(30, 455)">
+          <line x1="0" y1="0" x2="100" y2="0" stroke="var(--ink-faint)" stroke-width="1"/>
+          <line x1="0" y1="-4" x2="0" y2="4" stroke="var(--ink-faint)" stroke-width="1"/>
+          <line x1="50" y1="-3" x2="50" y2="3" stroke="var(--ink-faint)" stroke-width="0.8"/>
+          <line x1="100" y1="-4" x2="100" y2="4" stroke="var(--ink-faint)" stroke-width="1"/>
+          <text x="50" y="14" font-family="var(--hand)" font-size="10" fill="var(--ink-faint)" text-anchor="middle">100m</text>
+        </g>
+
+        <!-- Title block -->
+        <g transform="translate(280, 455)">
+          <rect width="140" height="22" fill="var(--cream)" stroke="var(--ink-faint)" stroke-width="0.8" rx="1"/>
+          <text x="70" y="15" font-family="var(--hand)" font-size="12" fill="var(--ink-light)" text-anchor="middle">Hawkridge Wood</text>
+        </g>
+
+        <!-- North arrow small -->
+        <g transform="translate(660, 460)">
+          <text font-family="var(--hand)" font-size="10" fill="var(--ink-faint)">↑</text>
+        </g>
+      </svg>
+    </div>
+    <p class="marginal" style="margin-top: 12px; text-align: center; font-size: 0.95rem;">
+      drawn from memory and compass bearings — not for navigation, but for understanding
+    </p>
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="divider">
+  <svg width="300" height="30" viewBox="0 0 300 30" aria-hidden="true">
+    <path d="M20 15 Q75 8 130 15 Q185 22 280 15" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <!-- Feather doodle -->
+    <path d="M135 10 Q140 5 145 10 Q142 15 140 20 Q138 15 135 10Z" fill="rgba(160,184,197,0.2)" stroke="var(--blue-wash)" stroke-width="0.8"/>
+    <line x1="140" y1="5" x2="140" y2="20" stroke="var(--blue-wash)" stroke-width="0.5"/>
+  </svg>
+</div>
+
+<!-- ====== SPECIMEN NOTES ====== -->
+<section>
+  <h2 style="font-family: var(--hand); font-size: 2.6rem; color: var(--ink); margin-bottom: 8px; transform: rotate(-0.5deg); display: inline-block;">
+    Specimen Notes
+  </h2>
+  <p class="marginal" style="margin-bottom: 30px; display: block;">— seven things found, pressed, and pressed into memory —</p>
+
+  <div class="specimen-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+
+    <!-- Specimen 1: Birch leaf -->
+    <div class="reveal pinned-note wash wash-green" style="padding: 24px; border: 1.5px solid var(--ink-faint); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; position: relative;">
+      <div class="tape" style="top: -12px; left: 30px;"></div>
+      <svg width="60" height="70" viewBox="0 0 60 70" style="margin-bottom: 10px;" aria-hidden="true">
+        <!-- Birch leaf -->
+        <path d="M30 65 L30 30" stroke="var(--green-dark)" stroke-width="1" stroke-linecap="round"/>
+        <path d="M30 30 Q20 20 15 10 Q20 15 25 12 Q22 5 30 0 Q38 5 35 12 Q40 15 45 10 Q40 20 30 30Z"
+              fill="rgba(168,197,160,0.25)" stroke="var(--green-dark)" stroke-width="1.2"/>
+        <line x1="30" y1="65" x2="30" y2="0" stroke="var(--green-dark)" stroke-width="0.5"/>
+        <!-- Serrated edges suggested -->
+        <path d="M25 25 L22 22 M28 28 L24 25 M32 28 L36 25 M35 25 L38 22" stroke="var(--green-dark)" stroke-width="0.5" fill="none"/>
+      </svg>
+      <span class="specimen-label" style="font-size: 0.85rem; margin-bottom: 4px;">No. 001</span>
+      <h4 style="font-family: var(--hand); font-size: 1.3rem; color: var(--green-dark);">Silver Birch Leaf</h4>
+      <p style="font-size: 0.85rem; color: var(--ink-light); margin-top: 4px;">
+        <em> Betula pendula</em> — collected 14 June, pressed between pages of a borrowed copy of
+        Thoreau. Note the doubly serrated margin, the asymmetrical base. Smells faintly of caramel when crushed.
+      </p>
+    </div>
+
+    <!-- Specimen 2: Chanterelle -->
+    <div class="reveal pinned-note wash wash-ochre" style="padding: 24px; border: 1.5px solid var(--ink-faint); border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px; position: relative;">
+      <div class="tape" style="top: -12px; right: 20px; transform: rotate(2deg);"></div>
+      <svg width="60" height="70" viewBox="0 0 60 70" style="margin-bottom: 10px;" aria-hidden="true">
+        <!-- Chanterelle mushroom -->
+        <path d="M25 68 L28 45 Q28 42 30 40 Q32 42 32 45 L35 68" fill="rgba(197,176,120,0.25)" stroke="var(--ochre)" stroke-width="1.2"/>
+        <!-- Gill lines -->
+        <path d="M27 55 L33 55 M27 52 L33 52 M27 49 L33 49" stroke="var(--ochre)" stroke-width="0.5" fill="none"/>
+        <!-- Cap -->
+        <path d="M15 45 Q20 25 30 20 Q40 25 45 45" fill="rgba(197,176,120,0.3)" stroke="var(--ochre)" stroke-width="1.2"/>
+        <path d="M18 42 Q25 30 30 26 Q35 30 42 42" stroke="var(--ochre)" stroke-width="0.6" fill="none" opacity="0.5"/>
+        <!-- Small dots -->
+        <circle cx="25" cy="35" r="1" fill="var(--ochre)" opacity="0.3"/>
+        <circle cx="35" cy="33" r="0.8" fill="var(--ochre)" opacity="0.3"/>
+      </svg>
+      <span class="specimen-label" style="font-size: 0.85rem; margin-bottom: 4px;">No. 002</span>
+      <h4 style="font-family: var(--hand); font-size: 1.3rem; color: var(--ochre);">Golden Chanterelle</h4>
+      <p style="font-size: 0.85rem; color: var(--ink-light); margin-top: 4px;">
+        <em>Cantharellus cibarius</em> — found 3 September in the beech humus, half-buried in brown leaves.
+        Decoyed me with its apricot scent. Sketched before photographing. The gills are actually blunt ridges, not true gills.
+      </p>
+    </div>
+
+    <!-- Specimen 3: Feather -->
+    <div class="reveal pinned-note wash wash-blue" style="padding: 24px; border: 1.5px solid var(--ink-faint); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; position: relative;">
+      <div class="tape" style="top: -12px; left: 50px;"></div>
+      <svg width="60" height="70" viewBox="0 0 60 70" style="margin-bottom: 10px;" aria-hidden="true">
+        <!-- Feather -->
+        <path d="M30 68 L30 15" stroke="var(--blue-wash)" stroke-width="1" stroke-linecap="round"/>
+        <!-- Barbs -->
+        <path d="M30 60 L18 55 M30 55 L15 50 M30 50 L13 44 M30 45 L12 38 M30 40 L12 32 M30 35 L13 26 M30 30 L15 22 M30 25 L18 18"
+              stroke="var(--blue-wash)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+        <path d="M30 60 L42 55 M30 55 L45 50 M30 50 L47 44 M30 45 L48 38 M30 40 L48 32 M30 35 L47 26 M30 30 L45 22 M30 25 L42 18"
+              stroke="var(--blue-wash)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+        <!-- Vane suggestion -->
+        <path d="M18 55 Q30 40 42 55" fill="rgba(160,184,197,0.12)" stroke="none"/>
+      </svg>
+      <span class="specimen-label" style="font-size: 0.85rem; margin-bottom: 4px;">No. 003</span>
+      <h4 style="font-family: var(--hand); font-size: 1.3rem; color: var(--blue-wash);;">Jay Primary Feather</h4>
+      <p style="font-size: 0.85rem; color: var(--ink-light); margin-top: 4px;">
+        <em>Garrulus glandarius</em> — found 11 April on the path near the old gate. Bright blue with white tip and
+        buff base. The barbs had already begun to separate. I kept it for a week, then returned it to the trees.
+      </p>
+    </div>
+
+    <!-- Specimen 4: Ladybird -->
+    <div class="reveal pinned-note wash wash-rose" style="padding: 24px; border: 1.5px solid var(--ink-faint); border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px; position: relative;">
+      <div class="tape" style="top: -12px; right: 40px; transform: rotate(-1deg);"></div>
+      <svg width="60" height="70" viewBox="0 0 60 70" style="margin-bottom: 10px;" aria-hidden="true">
+        <!-- Ladybird body -->
+        <ellipse cx="30" cy="42" rx="14" ry="16" fill="rgba(197,128,112,0.3)" stroke="var(--rose-wash)" stroke-width="1.2"/>
+        <!-- Head -->
+        <ellipse cx="30" cy="24" rx="7" ry="6" fill="rgba(44,36,22,0.15)" stroke="var(--ink-light)" stroke-width="1"/>
+        <!-- Eyes -->
+        <circle cx="27" cy="23" r="1.5" fill="var(--ink-light)"/>
+        <circle cx="33" cy="23" r="1.5" fill="var(--ink-light)"/>
+        <!-- Spots -->
+        <circle cx="24" cy="36" r="2.5" fill="var(--ink-light)" opacity="0.4"/>
+        <circle cx="36" cy="36" r="2.5" fill="var(--ink-light)" opacity="0.4"/>
+        <circle cx="22" cy="46" r="2" fill="var(--ink-light)" opacity="0.35"/>
+        <circle cx="38" cy="46" r="2" fill="var(--ink-light)" opacity="0.35"/>
+        <circle cx="30" cy="48" r="1.8" fill="var(--ink-light)" opacity="0.3"/>
+        <!-- Center line -->
+        <line x1="30" y1="28" x2="30" y2="58" stroke="var(--rose-wash)" stroke-width="0.5"/>
+        <!-- Legs -->
+        <path d="M16 38 L10 35 M16 44 L10 45 M16 50 L10 52" stroke="var(--ink-light)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+        <path d="M44 38 L50 35 M44 44 L50 45 M44 50 L50 52" stroke="var(--ink-light)" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="specimen-label" style="font-size: 0.85rem; margin-bottom: 4px;">No. 004</span>
+      <h4 style="font-family: var(--hand); font-size: 1.3rem; color: var(--rose-wash);">Seven-spot Ladybird</h4>
+      <p style="font-size: 0.85rem; color: var(--ink-light); margin-top: 4px;">
+        <em>Coccinella septempunctata</em> — observed 22 July on a blackthorn leaf. Seven spots, as the name declares,
+        arranged with imperfect symmetry. The larvae look nothing like adults: elongate, spiny, almost alien.
+        Nature loves a disguise.
+      </p>
+    </div>
+
+    <!-- Specimen 5: Pine cone -->
+    <div class="reveal pinned-note wash wash-green" style="padding: 24px; border: 1.5px solid var(--ink-faint); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; position: relative;">
+      <div class="tape" style="top: -12px; left: 20px;"></div>
+      <svg width="60" height="70" viewBox="0 0 60 70" style="margin-bottom: 10px;" aria-hidden="true">
+        <!-- Pine cone -->
+        <path d="M20 55 Q25 45 20 35 Q25 25 20 15 Q25 10 30 8 Q35 10 40 15 Q35 25 40 35 Q35 45 40 55 Q35 60 30 62 Q25 60 20 55Z"
+              fill="rgba(197,176,120,0.2)" stroke="var(--ochre)" stroke-width="1.2"/>
+        <!-- Scale lines -->
+        <path d="M22 20 Q30 25 38 20" stroke="var(--ochre)" stroke-width="0.6" fill="none"/>
+        <path d="M21 28 Q30 33 39 28" stroke="var(--ochre)" stroke-width="0.6" fill="none"/>
+        <path d="M21 36 Q30 41 39 36" stroke="var(--ochre)" stroke-width="0.6" fill="none"/>
+        <path d="M22 44 Q30 49 38 44" stroke="var(--ochre)" stroke-width="0.6" fill="none"/>
+        <!-- Spiral suggestion -->
+        <path d="M25 18 Q30 22 35 18" stroke="var(--ochre)" stroke-width="0.4" fill="none" opacity="0.5"/>
+      </svg>
+      <span class="specimen-label" style="font-size: 0.85rem; margin-bottom: 4px;">No. 005</span>
+      <h4 style="font-family: var(--hand); font-size: 1.3rem; color: var(--ochre);">Scots Pine Cone</h4>
+      <p style="font-size: 0.85rem; color: var(--ink-light); margin-top: 4px;">
+        <em>Pinus sylvestris</em> — gathered 18 November after the frost had loosened them from the branches.
+        Count the spirals: eight clockwise, thirteen anticlockockwise. Fibonacci again. The scales open in dry weather
+        to release seeds, close in damp. A tiny mechanical weather station.
+      </p>
+    </div>
+
+    <!-- Specimen 6: Fern frond -->
+    <div class="reveal pinned-note wash wash-green" style="padding: 24px; border: 1.5px solid var(--ink-faint); border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px; position: relative;">
+      <div class="tape" style="top: -12px; right: 30px; transform: rotate(1.5deg);"></div>
+      <svg width="60" height="70" viewBox="0 0 60 70" style="margin-bottom: 10px;" aria-hidden="true">
+        <!-- Fern frond -->
+        <path d="M30 68 L30 10" stroke="var(--green-dark)" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- Pinnae pairs -->
+        <path d="M30 60 L18 52 M30 55 L15 46 M30 50 L14 42 M30 45 L14 37 M30 40 L15 32 M30 35 L16 27 M30 30 L18 22 M30 25 L20 18 M30 20 L23 14"
+              stroke="var(--green-dark)" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+        <path d="M30 60 L42 52 M30 55 L45 46 M30 50 L46 42 M30 45 L46 37 M30 40 L45 32 M30 35 L44 27 M30 30 L42 22 M30 25 L40 18 M30 20 L37 14"
+              stroke="var(--green-dark)" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+        <!-- Small leaflets -->
+        <path d="M18 52 Q15 50 18 48" stroke="var(--green-dark)" stroke-width="0.4" fill="none"/>
+        <path d="M15 46 Q12 44 15 42" stroke="var(--green-dark)" stroke-width="0.4" fill="none"/>
+        <path d="M42 52 Q45 50 42 48" stroke="var(--green-dark)" stroke-width="0.4" fill="none"/>
+        <path d="M45 46 Q48 44 45 42" stroke="var(--green-dark)" stroke-width="0.4" fill="none"/>
+      </svg>
+      <span class="specimen-label" style="font-size: 0.85rem; margin-bottom: 4px;">No. 006</span>
+      <h4 style="font-family: var(--hand); font-size: 1.3rem; color: var(--green-dark);">Hart's Tongue Fern</h4>
+      <p style="font-size: 0.85rem; color: var(--ink-light); margin-top: 4px;">
+        <em>Asplenium scolopendrium</em> — growing on the north face of the sandstone wall, where the moss is deepest.
+        Entire, undivided fronds — no pinnate splitting. The sori form two neat rows beneath the recurved margin.
+        Unbroken, like a green ribbon.
+      </p>
+    </div>
+
+    <!-- Specimen 7: Owl pellet contents -->
+    <div class="reveal pinned-note wash wash-ochre" style="padding: 24px; border: 1.5px solid var(--ink-faint); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; position: relative;">
+      <div class="tape" style="top: -12px; left: 60px;"></div>
+      <svg width="60" height="70" viewBox="0 0 60 70" style="margin-bottom: 10px;" aria-hidden="true">
+        <!-- Small skull -->
+        <ellipse cx="30" cy="35" rx="10" ry="8" fill="rgba(197,176,120,0.15)" stroke="var(--ink-light)" stroke-width="1"/>
+        <circle cx="26" cy="33" r="2.5" fill="none" stroke="var(--ink-light)" stroke-width="0.8"/>
+        <circle cx="34" cy="33" r="2.5" fill="none" stroke="var(--ink-light)" stroke-width="0.8"/>
+        <path d="M28 38 L30 42 L32 38" stroke="var(--ink-light)" stroke-width="0.6" fill="none"/>
+        <!-- Small bones -->
+        <path d="M15 55 L20 50" stroke="var(--ink-faint)" stroke-width="0.8" stroke-linecap="round"/>
+        <path d="M45 52 L40 58" stroke="var(--ink-faint)" stroke-width="0.8" stroke-linecap="round"/>
+        <path d="M20 62 L25 58" stroke="var(--ink-faint)" stroke-width="0.6" stroke-linecap="round"/>
+        <path d="M35 60 L40 56" stroke="var(--ink-faint)" stroke-width="0.6" stroke-linecap="round"/>
+        <!-- Wing bone -->
+        <path d="M10 42 L18 38" stroke="var(--ink-faint)" stroke-width="0.7" stroke-linecap="round"/>
+        <path d="M18 38 L22 32" stroke="var(--ink-faint)" stroke-width="0.5" stroke-linecap="round"/>
+        <path d="M18 38 L24 35" stroke="var(--ink-faint)" stroke-width="0.5" stroke-linecap="round"/>
+        <!-- Pellet -->
+        <ellipse cx="30" cy="62" rx="12" ry="4" fill="rgba(197,176,120,0.1)" stroke="var(--ink-faint)" stroke-width="0.6"/>
+      </svg>
+      <span class="specimen-label" style="font-size: 0.85rem; margin-bottom: 4px;">No. 007</span>
+      <h4 style="font-family: var(--hand); font-size: 1.3rem; color: var(--ochre);">Owl Pellet Contents</h4>
+      <p style="font-size: 0.85rem; color: var(--ink-light); margin-top: 4px;">
+        <em>Tyto alba / Myotis spp.</em> — dissected 8 January beneath the holly tree. Five bat wings, three
+        vole skulls, cricket legs, a fragment of mouse rib. The tawny owl eats what she can catch and regurgitates
+        the rest — leaving us, the scavengers of scavengers, a miniature museum.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="divider">
+  <svg width="300" height="30" viewBox="0 0 300 30" aria-hidden="true">
+    <path d="M20 15 Q75 22 130 15 Q185 8 280 15" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <!-- Small leaf -->
+    <path d="M140 12 Q145 8 150 12 Q148 16 145 18 Q142 16 140 12Z" fill="rgba(168,197,160,0.2)" stroke="var(--green-dark)" stroke-width="0.6"/>
+  </svg>
+</div>
+
+<!-- ====== FEATURED OBSERVATION ====== -->
+<section>
+  <h2 style="font-family: var(--hand); font-size: 2.6rem; color: var(--ink); margin-bottom: 8px; transform: rotate(-0.5deg); display: inline-block;">
+    Featured Observation
+  </h2>
+  <p class="marginal" style="margin-bottom: 24px; display: block;">— the one that stays with me —</p>
+
+  <div class="reveal wash wash-green sketch-border" style="padding: 36px 32px; position: relative;">
+    <div class="tape" style="top: -14px; left: 50%; transform: translateX(-50%) rotate(-0.5deg); width: 140px;"></div>
+
+    <svg width="100%" height="160" viewBox="0 0 800 160" style="margin-bottom: 20px; max-width: 800px;" aria-hidden="true">
+      <!-- Stream scene -->
+      <!-- Water -->
+      <path d="M0 120 Q100 110 200 120 Q300 130 400 118 Q500 106 600 122 Q700 138 800 115"
+            fill="rgba(160,184,197,0.12)" stroke="var(--blue-wash)" stroke-width="1"/>
+      <path d="M0 130 Q100 125 200 132 Q300 138 400 128 Q500 118 600 130 Q700 142 800 125"
+            fill="rgba(160,184,197,0.08)" stroke="var(--blue-wash)" stroke-width="0.6"/>
+      <!-- Ripples -->
+      <path d="M50 115 Q60 112 70 115" stroke="var(--blue-wash)" stroke-width="0.5" fill="none" opacity="0.5"/>
+      <path d="M200 125 Q215 122 230 125" stroke="var(--blue-wash)" stroke-width="0.5" fill="none" opacity="0.4"/>
+      <path d="M450 118 Q465 115 480 118" stroke="var(--blue-wash)" stroke-width="0.5" fill="none" opacity="0.5"/>
+      <path d="M650 128 Q665 125 680 128" stroke="var(--blue-wash)" stroke-width="0.5" fill="none" opacity="0.4"/>
+      <!-- Banks -->
+      <path d="M0 105 Q50 100 100 108 Q150 115 200 105 Q250 95 300 102 Q350 110 400 100 Q450 90 500 98 Q550 106 600 96 Q650 86 700 95 Q750 104 800 98"
+            stroke="var(--green-dark)" stroke-width="1.2" fill="none"/>
+      <!-- Reeds/grasses -->
+      <g class="sway" style="transform-origin: 80px 100px;">
+        <line x1="80" y1="102" x2="75" y2="70" stroke="var(--green-dark)" stroke-width="1"/>
+        <path d="M75 70 Q70 65 72 60" stroke="var(--green-dark)" stroke-width="0.6" fill="none"/>
+      </g>
+      <g class="sway" style="transform-origin: 150px 105px; animation-delay: 0.5s;">
+        <line x1="150" y1="106" x2="148" y2="72" stroke="var(--green-dark)" stroke-width="1"/>
+        <path d="M148 72 Q144 67 146 62" stroke="var(--green-dark)" stroke-width="0.6" fill="none"/>
+      </g>
+      <g class="sway" style="transform-origin: 320px 102px; animation-delay: 1s;">
+        <line x1="320" y1="103" x2="318" y2="68" stroke="var(--green-dark)" stroke-width="1"/>
+      </g>
+      <g class="sway" style="transform-origin: 480px 98px; animation-delay: 0.3s;">
+        <line x1="480" y1="99" x2="478" y2="65" stroke="var(--green-dark)" stroke-width="1"/>
+        <path d="M478 65 Q474 60 476 55" stroke="var(--green-dark)" stroke-width="0.6" fill="none"/>
+      </g>
+      <g class="sway" style="transform-origin: 620px 96px; animation-delay: 0.7s;">
+        <line x1="620" y1="97" x2="618" y2="62" stroke="var(--green-dark)" stroke-width="1"/>
+      </g>
+      <!-- Kingfisher silhouette -->
+      <g transform="translate(400, 40)">
+        <ellipse cx="0" cy="0" rx="12" ry="6" fill="rgba(160,184,197,0.5)" stroke="var(--blue-wash)" stroke-width="1.2"/>
+        <circle cx="-10" cy="-2" r="4" fill="rgba(160,184,197,0.6)" stroke="var(--blue-wash)" stroke-width="1"/>
+        <path d="M-14 -2 L-20 0 L-14 2" stroke="var(--ink-light)" stroke-width="1" fill="none"/>
+        <path d="M10 0 Q18 -5 22 -2 Q18 2 10 0" fill="rgba(160,184,197,0.4)" stroke="var(--blue-wash)" stroke-width="0.8"/>
+        <path d="M8 -4 Q14 -10 18 -6 Q14 -2 8 -4" fill="rgba(160,184,197,0.3)" stroke="var(--blue-wash)" stroke-width="0.6"/>
+      </g>
+      <!-- Splash -->
+      <g transform="translate(420, 95)">
+        <path d="M0 0 Q-3 -8 -6 -4" stroke="var(--blue-wash)" stroke-width="0.6" fill="none"/>
+        <path d="M0 0 Q3 -6 6 -3" stroke="var(--blue-wash)" stroke-width="0.6" fill="none"/>
+        <circle cx="-4" cy="-6" r="0.8" fill="var(--blue-wash)" opacity="0.4"/>
+        <circle cx="4" cy="-5" r="0.6" fill="var(--blue-wash)" opacity="0.3"/>
+      </g>
+      <!-- Trees in background -->
+      <g opacity="0.3">
+        <path d="M30 100 L30 50" stroke="var(--green-dark)" stroke-width="1.5"/>
+        <circle cx="30" cy="45" r="15" fill="rgba(107,143,94,0.15)" stroke="var(--green-dark)" stroke-width="0.8"/>
+        <path d="M550 96 L550 40" stroke="var(--green-dark)" stroke-width="1.5"/>
+        <circle cx="550" cy="35" r="18" fill="rgba(107,143,94,0.12)" stroke="var(--green-dark)" stroke-width="0.8"/>
+      </g>
+    </svg>
+
+    <h3 style="font-family: var(--hand); font-size: 1.8rem; color: var(--ink); margin-bottom: 12px;">
+      The Kingfisher at Dawn — 14 October
+    </h3>
+
+    <p style="font-size: 1rem; color: var(--ink-light); margin-bottom: 12px;">
+      It was just past 6:40, the light still blue and uncertain, when I heard it: a chattering rattle, like pebbles
+      tumbling in a tin cup. I froze. The sound came from the stretch of stream below the old footbridge, where
+      the water narrows between two stones and runs clear enough to see the gravel bed.
+    </p>
+
+    <p style="font-size: 10.1rem; color: var(--ink-light); margin-bottom: 12px;">
+      She appeared as a blue-grey blur against the dark water, perched on a dead hazel branch that juts from the
+      far bank. Her head cocked, scanning. The beak — that impossible, spear-straight beak — pointed down at the
+      current. I couldn't breathe. I hadn't even thought to reach for the pencil.
+    </p>
+
+    <p style="font-size: 1rem; color: var(--ink-light); margin-bottom: 12px;">
+      Then she was gone—a flash of electric blue, a silver ripple, and silence. Two seconds from perch to splash.
+      I stood there for twenty minutes more, watching that same branch. She returned once, twice, each time
+      disappearing with the same impossible speed. On the third dive, she came up with something small and silver
+      flickering at the end of her beak. A minnow, maybe. Or a large stonefly nymph.
+    </p>
+
+    <p style="font-size: 1rem; color: var(--ink-light); margin-bottom: 16px;">
+      When I finally sat down to write, my hands were shaking. Not from cold—from the sheer intensity of paying
+      attention, of being chosen as witness to a moment that didn't know it was being witnessed. I sketched the
+      scene above, knowing the drawing would never capture the flash, only the memory of it.
+    </p>
+
+    <div style="border-left: 2px solid var(--green-wash); padding-left: 16px; margin-top: 16px;">
+      <p class="marginal" style="font-size: 1.05rem; color: var(--pencil);">
+        "The kingfisher does not ask what color she is. She simply is blue, and the world makes room for it."
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="divider">
+  <svg width="300" height="30" viewBox="0 0 300 30" aria-hidden="true">
+    <path d="M20 15 Q75 8 130 15 Q185 22 280 15" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <circle cx="130" cy="15" r="2" fill="var(--ink-faint)" opacity="0.4"/>
+  </svg>
+</div>
+
+<!-- ====== WEATHER LEDGER ====== -->
+<section>
+  <h2 style="font-family: var(--hand); font-size: 2.6rem; color: var(--ink); margin-bottom: 8px; transform: rotate(-0.5deg); display: inline-block;">
+    Weather Ledger
+  </h2>
+  <p class="marginal" style="margin-bottom: 24px; display: block;">— conditions noted each walk —</p>
+
+  <div class="reveal pinned-note" style="background: var(--cream-dark); padding: 24px; border: 1.5px solid var(--ink-faint); border-radius: 3px; position: relative;">
+    <div class="tape" style="top: -14px; left: 50%; transform: translateX(-50%) rotate(0.5deg);"></div>
+
+    <div class="weather-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+
+      <div style="text-align: center; padding: 16px 8px; border-bottom: 1px dashed var(--ink-faint);">
+        <svg width="40" height="40" viewBox="0 0 40 40" style="margin-bottom: 8px;" aria-hidden="true">
+          <circle cx="20" cy="20" r="10" fill="rgba(197,176,120,0.3)" stroke="var(--ochre)" stroke-width="1"/>
+          <path d="M20 6 L20 2 M20 38 L20 34 M6 20 L2 20 M38 20 L34 20 M10 10 L8 8 M32 32 L30 30 M30 10 L32 8 M10 30 L8 32"
+                stroke="var(--ochre)" stroke-width="0.8" stroke-linecap="round"/>
+        </svg>
+        <p style="font-family: var(--hand); font-size: 1.1rem; color: var(--ink);">Sunny</p>
+        <p style="font-size: 0.8rem; color: var(--ink-faint);">47 days</p>
+      </div>
+
+      <div style="text-align: center; padding: 16px 8px; border-bottom: 1px dashed var(--ink-faint);">
+        <svg width="40" height="40" viewBox="0 0 40 40" style="margin-bottom: 8px;" aria-hidden="true">
+          <ellipse cx="22" cy="18" rx="14" ry="8" fill="rgba(160,184,197,0.2)" stroke="var(--blue-wash)" stroke-width="1"/>
+          <circle cx="14" cy="22" r="7" fill="rgba(160,184,197,0.15)" stroke="var(--blue-wash)" stroke-width="0.8"/>
+          <circle cx="30" cy="22" r="6" fill="rgba(160,184,197,0.15)" stroke="var(--blue-wash)" stroke-width="0.8"/>
+        </svg>
+        <p style="font-family: var(--hand); font-size: 1.1rem; color: var(--ink);">Cloudy</p>
+        <p style="font-size: 0.8rem; color: var(--ink-faint);">52 days</p>
+      </div>
+
+      <div style="text-align: center; padding: 16px 8px; border-bottom: 1px dashed var(--ink-faint);">
+        <svg width="40" height="40" viewBox="0 0 40 40" style="margin-bottom: 8px;" aria-hidden="true">
+          <ellipse cx="22" cy="16" rx="14" ry="8" fill="rgba(160,184,197,0.2)" stroke="var(--blue-wash)" stroke-width="1"/>
+          <path d="M12 24 L14 30 M18 22 L19 30 M24 22 L23 30 M30 24 L28 30" stroke="var(--blue-wash)" stroke-width="0.8" stroke-linecap="round"/>
+        </svg>
+        <p style="font-family: var(--hand); font-size: 1.1rem; color: var(--ink);">Rain</p>
+        <p style="font-size: 0.8rem; color: var(--ink-faint);">38 days</p>
+      </div>
+
+      <div style="text-align: center; padding: 16px 8px; border-bottom: 1px dashed var(--ink-faint);">
+        <svg width="40" height="40" viewBox="0 0 40 40" style="margin-bottom: 8px;" aria-hidden="true">
+          <ellipse cx="22" cy="16" rx="14" ry="8" fill="rgba(160,184,197,0.25)" stroke="var(--blue-wash)" stroke-width="1"/>
+          <!-- Snowflakes -->
+          <circle cx="10" cy="30" r="1" fill="var(--blue-wash)" opacity="0.6"/>
+          <circle cx="20" cy="28" r="1.2" fill="var(--blue-wash)" opacity="0.5"/>
+          <circle cx="30" cy="32" r="1" fill="var(--blue-wash)" opacity="0.6"/>
+          <circle cx="16" cy="34" r="0.8" fill="var(--blue-wash)" opacity="0.4"/>
+          <circle cx="26" cy="35" r="0.8" fill="var(--blue-wash)" opacity="0.4"/>
+        </svg>
+        <p style="font-family: var(--hand); font-size: 1.1rem; color: var(--ink);">Snow/Frost</p>
+        <p style="font-size: 0.8rem; color: var(--ink-faint);">18 days</p>
+      </div>
+
+      <div style="text-align: center; padding: 16px 8px; border-bottom: 1px dashed var(--ink-faint);">
+        <svg width="40" height="40" viewBox="0 0 40 40" style="margin-bottom: 8px;" aria-hidden="true">
+          <!-- Wind lines -->
+          <path d="M5 18 Q15 14 25 18 Q30 20 35 18" stroke="var(--ink-faint)" stroke-width="1" fill="none"/>
+          <path d="M8 24 Q18 20 28 24 Q33 26 38 24" stroke="var(--ink-faint)" stroke-width="1" fill="none"/>
+          <path d="M3 28 Q12 25 20 28" stroke="var(--ink-faint)" stroke-width="0.8" fill="none"/>
+        </svg>
+        <p style="font-family: var(--hand); font-size: 1.1rem; color: var(--ink);">Windy</p>
+        <p style="font-size: 0.8rem; color: var(--ink-faint);">22 days</p>
+      </div>
+
+      <div style="text-align: center; padding: 16px 8px; border-bottom: 1px dashed var(--ink-faint);">
+        <svg width="40" height="40" viewBox="0 0 40 40" style="margin-bottom: 8px;" aria-hidden="true">
+          <!-- Mist/fog -->
+          <path d="M5 16 Q15 12 25 16 Q35 20 38 16" stroke="var(--ink-faint)" stroke-width="1" fill="none" opacity="0.5"/>
+          <path d="M3 22 Q15 18 28 22 Q36 26 39 22" stroke="var(--ink-faint)" stroke-width="1" fill="none" opacity="0.4"/>
+          <path d="M8 28 Q18 24 30 28" stroke="var(--ink-faint)" stroke-width="0.8" fill="none" opacity="0.3"/>
+        </svg>
+        <p style="font-family: var(--hand); font-size: 1.1rem; color: var(--ink);">Misty</p>
+        <p style="font-size: 0.8rem; color: var(--ink-faint);">15 days</p>
+      </div>
+
+    </div>
+
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--ink-faint);">
+      <p style="font-family: var(--hand); font-size: 1rem; color: var(--pencil);">
+        Coldest day: −4°C, 12 January — breath hung in the beech copse like a veil.
+      </p>
+      <p style="font-family: var(--hand); font-size: 1rem; color: var(--pencil);">
+        Warmest: 28°C, 23 July — the stream was half its usual depth, the grasshoppers relentless.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="divider">
+  <svg width="300" height="30" viewBox="0 0 300 30" aria-hidden="true">
+    <path d="M20 15 Q75 22 130 15 Q185 8 280 15" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- ====== SOUNDSCAPE ====== -->
+<section>
+  <h2 style="font-family: var(--hand); font-size: 2.6rem; color: var(--ink); margin-bottom: 8px; transform: rotate(-0.5deg); display: inline-block;">
+    Soundscape
+  </h2>
+  <p class="marginal" style="margin-bottom: 24px; display: block;">— what the forest sounds like, month by month —</p>
+
+  <div class="reveal" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+
+    <div class="pinned-note" style="padding: 20px; border: 1px solid var(--ink-faint); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;">
+      <svg width="30" height="30" viewBox="0 0 30 30" style="margin-bottom: 8px;" aria-hidden="true">
+        <path d="M8 22 Q10 10 15 8 Q20 10 22 22" stroke="var(--green-dark)" stroke-width="1" fill="none"/>
+        <path d="M12 22 Q13 14 15 12 Q17 14 18 22" stroke="var(--green-dark)" stroke-width="0.6" fill="none"/>
+        <line x1="15" y1="8" x2="15" y2="4" stroke="var(--green-dark)" stroke-width="0.8"/>
+      </svg>
+      <p style="font-family: var(--hand); font-size: 1.15rem; color: var(--green-dark); margin-bottom: 4px;">Spring</p>
+      <p style="font-size: 0.9rem; color: var(--ink-light);">
+        Chiffchaff's <em>cheer-up-little-leaf</em> from the hazel. Cuckoo in the distance,
+        a metronome set to longing. The drip-drip-drip of thaw from beech leaves.
+        Woodpecker drumming — three rapid beats, pause, repeat — like a telegraph key.
+      </p>
+    </div>
+
+    <div class="pinned-note" style="padding: 20px; border: 1px solid var(--ink-faint); border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;">
+      <svg width="30" height="30" viewBox="0 0 30 30" style="margin-bottom: 8px;" aria-hidden="true">
+        <circle cx="15" cy="15" r="8" fill="rgba(197,176,120,0.2)" stroke="var(--ochre)" stroke-width="1"/>
+        <path d="M15 7 L15 2 M15 28 L15 23 M7 15 L2 15 M28 15 L23 15" stroke="var(--ochre)" stroke-width="0.6" stroke-linecap="round"/>
+      </svg>
+      <p style="font-family: var(--hand); font-size: 1.15rem; color: var(--ochre); margin-bottom: 4px;">Summer</p>
+      <p style="font-size: 0.9rem; color: var(--ink-light);">
+        The great hum: bees in clover, flies at ear-level, the low drone of the meadow.
+        Nightingale at midnight — a cascading trill that builds and breaks like waves.
+        Rustle of mice in the dead bracken. The stream's steady chatter.
+      </p>
+    </div>
+
+    <div class="pinned-note" style="padding: 20px; border: 1px solid var(--ink-faint); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;">
+      <svg width="30" height="30" viewBox="0 0 30 30" style="margin-bottom: 8px;" aria-hidden="true">
+        <path d="M10 25 Q10 15 15 10 Q20 15 20 25" stroke="var(--rose-wash)" stroke-width="1" fill="none"/>
+        <path d="M12 22 Q12 17 15 14 Q18 17 18 22" stroke="var(--rose-wash)" stroke-width="0.6" fill="none"/>
+        <circle cx="15" cy="8" r="2" fill="rgba(197,128,112,0.3)" stroke="var(--rose-wash)" stroke-width="0.6"/>
+      </svg>
+      <p style="font-family: var(--hand); font-size: 1.15rem; color: var(--rose-wash); margin-bottom: 4px;">Autumn</p>
+      <p style="font-size: 0.9rem; color: var(--ink-light);">
+        Redwing's soft <em>reer-reer</em> from the alder thickets. The crunch of frost-hardened
+        leaves under boots. Pine cones dropping — a hollow thud. The first harsh call of
+        the fieldfare, urgent and migrating. Wind in the beech, a long susurrus.
+      </p>
+    </div>
+
+    <div class="pinned-note" style="padding: 20px; border: 1px solid var(--ink-faint); border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;">
+      <svg width="30" height="30" viewBox="0 0 30 30" style="margin-bottom: 8px;" aria-hidden="true">
+        <path d="M15 5 L15 25" stroke="var(--blue-wash)" stroke-width="1" stroke-linecap="round"/>
+        <path d="M15 10 L10 7 M15 15 L20 12 M15 20 L10 17 M15 22 L20 24" stroke="var(--blue-wash)" stroke-width="0.6" stroke-linecap="round"/>
+      </svg>
+      <p style="font-family: var(--hand); font-size: 1.15rem; color: var(--blue-wash); margin-bottom: 4px;">Winter</p>
+      <p style="font-size: 0.9rem; color: var(--ink-light);">
+        Silence, mostly. Then the sudden <em>too-too</em> of a woodcock from the wet hollow.
+        The crack of freezing water in the stream. A single rook calling from the oak tops.
+        Your own breathing, loud in the stillness. The scratch of a nuthark on bark.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="divider">
+  <svg width="300" height="30" viewBox="0 0 300 30" aria-hidden="true">
+    <path d="M20 15 Q75 8 130 15 Q185 22 280 15" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- ====== SUPPLIES LIST ====== -->
+<section>
+  <h2 style="font-family: var(--hand); font-size: 2.6rem; color: var(--ink); margin-bottom: 8px; transform: rotate(-0.5deg); display: inline-block;">
+    Field Supplies
+  </h2>
+  <p class="marginal" style="margin-bottom: 24px; display: block;">— what goes in the pockets —</p>
+
+  <div class="reveal pinned-note" style="background: var(--cream-dark); padding: 28px 32px; border: 1.5px solid var(--ink-faint); border-radius: 3px; position: relative; max-width: 500px;">
+    <div class="tape" style="top: -14px; right: 30px; transform: rotate(-2deg);"></div>
+
+    <svg width="40" height="50" viewBox="0 0 40 50" style="position: absolute; top: 24px; right: 24px; opacity: 0.3;" aria-hidden="true">
+      <!-- Pencil doodle -->
+      <path d="M20 5 L20 40" stroke="var(--ink-faint)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M17 40 L20 48 L23 40" fill="var(--ochre)" stroke="var(--ink-faint)" stroke-width="0.8"/>
+      <path d="M17 5 L23 5 L23 12 L17 12Z" fill="rgba(168,197,160,0.3)" stroke="var(--ink-faint)" stroke-width="0.8"/>
+    </svg>
+
+    <ul style="list-style: none; padding: 0;">
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Roneco notebook (A5, 190gsm cream)</span>
+      </li>
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Koh-I-Noor hardtmuth pencil, 2B &amp; HB</span>
+      </li>
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Pilot V1 fountain pen, brown ink</span>
+      </li>
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Binoculars, 8×42 (well-worn)</span>
+      </li>
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Hand lens, 10× — for fungi and larvae</span>
+      </li>
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Watercolour travel set, 12 pans</span>
+      </li>
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Compass — Silva Ranger</span>
+      </li>
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Trowel — small, stainless</span>
+      </li>
+      <li style="padding: 6px 0; border-bottom: 1px dotted var(--ink-faint); display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Envelope for leaf presses</span>
+      </li>
+      <li style="padding: 6px 0; display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--ink-faint); font-size: 0.8rem;">☐</span>
+        <span style="font-family: var(--hand); font-size: 1.15rem; color: var(--ink);">Patience — the most important tool</span>
+      </li>
+    </ul>
+
+    <p class="marginal" style="margin-top: 16px; font-size: 0.95rem; color: var(--pencil);">
+      ← the watercolour set arrived with a cracked pan of cobalt. It paints like the sky anyway.
+    </p>
+  </div>
+</section>
+
+<!-- Divider -->
+<div class="divider">
+  <svg width="300" height="30" viewBox="0 0 300 30" aria-hidden="true">
+    <path d="M20 15 Q75 22 130 15 Q185 8 280 15" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- ====== ABOUT THE NATURALIST ====== -->
+<section>
+  <h2 style="font-family: var(--hand); font-size: 2.6rem; color: var(--ink); margin-bottom: 8px; transform: rotate(-0.5deg); display: inline-block;">
+    About the Naturalist
+  </h2>
+
+  <div class="reveal about-grid" style="display: grid; grid-template-columns: 200px 1fr; gap: 32px; align-items: start; margin-top: 20px;">
+
+    <!-- Portrait sketch -->
+    <div style="text-align: center;">
+      <svg width="180" height="220" viewBox="0 0 180 220" style="margin: 0 auto; display: block;" aria-label="Sketch of the naturalist">
+        <!-- Paper frame -->
+        <rect x="5" y="5" width="170" height="210" fill="var(--cream-dark)" stroke="var(--ink-faint)" stroke-width="1" rx="2"/>
+        <!-- Head -->
+        <ellipse cx="90" cy="70" rx="30" ry="35" fill="none" stroke="var(--ink-light)" stroke-width="1.5"/>
+        <!-- Hat -->
+        <path d="M55 55 Q90 35 125 55" stroke="var(--ink-light)" stroke-width="1.2" fill="rgba(168,197,160,0.1)"/>
+        <path d="M60 58 Q90 42 120 58" stroke="var(--ink-light)" stroke-width="0.8" fill="none"/>
+        <!-- Eyes -->
+        <circle cx="80" cy="65" r="2.5" fill="var(--ink-light)" opacity="0.6"/>
+        <circle cx="100" cy="65" r="2.5" fill="var(--ink-light)" opacity="0.6"/>
+        <!-- Glasses -->
+        <circle cx="80" cy="65" r="8" fill="none" stroke="var(--ink-light)" stroke-width="0.8"/>
+        <circle cx="100" cy="65" r="8" fill="none" stroke="var(--ink-light)" stroke-width="0.8"/>
+        <line x1="88" y1="65" x2="92" y2="65" stroke="var(--ink-light)" stroke-width="0.8"/>
+        <!-- Smile -->
+        <path d="M82 80 Q90 86 98 80" stroke="var(--ink-light)" stroke-width="1" fill="none"/>
+        <!-- Body/coat -->
+        <path d="M65 105 Q70 100 90 98 Q110 100 115 105 L120 160 Q90 165 60 160Z"
+              fill="rgba(168,197,160,0.1)" stroke="var(--ink-light)" stroke-width="1.2"/>
+        <!-- Collar -->
+        <path d="M75 105 L90 115 L105 105" stroke="var(--ink-light)" stroke-width="0.8" fill="none"/>
+        <!-- Pocket -->
+        <rect x="72" y="125" width="16" height="12" fill="none" stroke="var(--ink-faint)" stroke-width="0.6" rx="1"/>
+        <!-- Pencil in pocket -->
+        <line x1="80" y1="120" x2="80" y2="137" stroke="var(--ochre)" stroke-width="0.8"/>
+        <!-- Hands -->
+        <path d="M60 130 Q50 140 52 150" stroke="var(--ink-light)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M120 130 Q130 140 128 150" stroke="var(--ink-light)" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <!-- Notebook in hand -->
+        <rect x="118" y="140" width="18" height="22" fill="rgba(197,176,120,0.15)" stroke="var(--ink-faint)" stroke-width="0.6" rx="1"/>
+        <!-- Signature -->
+        <text x="90" y="200" text-anchor="middle" font-family="var(--hand)" font-size="11" fill="var(--ink-faint)">Eleanor Voss, 2024</text>
+      </svg>
+    </div>
+
+    <div>
+      <p style="font-size: 1.05rem; color: var(--ink-light); margin-bottom: 12px;">
+        I am not a professional naturalist. I am a person who, four years ago, decided to walk the same
+        four-mile ridge trail every week regardless of weather, and to write down everything I noticed.
+        This notebook is the result of one full year of that practice — from the first crocus through
+        the final frost.
+      </p>
+      <p style="font-size: 1.05rem; color: var(--ink-light); margin-bottom: 12px;">
+        I work by day as a landscape architect, which means I draw land for a living. But here, in the
+        moss-damp margins of Hawkridge Wood, I draw simply to see. The pencil slows the eye. The watercolor
+        forces patience. The act of recording transforms a walk into a conversation.
+      </p>
+      <p style="font-size: 1.05rem; color: var(--ink-light); margin-bottom: 16px;">
+        My teacher is the forest itself, and it is a generous one. It has shown me that attention is a form
+        of love, and that every small thing — a morel, a feather, the angle of light on a fern frond —
+        deserves its own sentence.
+      </p>
+
+      <div style="border-left: 2px solid var(--rose-wash); padding-left: 16px; margin-top: 16px;">
+        <p class="marginal" style="font-size: 1.05rem; color: var(--pencil);">
+          "We do not inherit the earth from our ancestors; we borrow it from our children."
+          <br><span style="font-size: 0.9rem;">— Native American proverb, as quoted by Chief Seattle</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FINAL DIVIDER ====== -->
+<div class="divider" style="padding: 50px 0 30px;">
+  <svg width="300" height="40" viewBox="0 0 300 40" aria-hidden="true">
+    <path d="M20 20 Q75 10 130 20 Q185 30 280 20" stroke="var(--ink-faint)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <!-- Small mushroom -->
+    <path d="M140 20 L140 14" stroke="var(--ink-faint)" stroke-width="0.8"/>
+    <path d="M132 14 Q140 6 148 14" stroke="var(--ink-faint)" stroke-width="0.8" fill="rgba(197,128,112,0.1)"/>
+    <path d="M120 20 Q125 16 130 20" stroke="var(--ink-faint)" stroke-width="0.5" fill="none"/>
+    <path d="M170 20 Q175 24 180 20" stroke="var(--ink-faint)" stroke-width="0.5" fill="none"/>
+    <!-- Small leaf -->
+    <path d="M100 22 Q95 18 98 14 Q102 16 100 22Z" fill="rgba(168,197,160,0.2)" stroke="var(--green-dark)" stroke-width="0.5"/>
+    <path d="M200 18 Q205 14 202 10 Q198 12 200 18Z" fill="rgba(168,197,160,0.2)" stroke="var(--green-dark)" stroke-width="0.5"/>
+  </svg>
+</div>
+
+<!-- ====== FOOTER / BACK PAGE ====== -->
+<footer style="padding: 40px 0 60px; text-align: center; position: relative;">
+  <div class="reveal" style="max-width: 500px; margin: 0 auto;">
+
+    <!-- Notebook binding suggestion -->
+    <svg width="200" height="40" viewBox="0 0 200 40" style="margin-bottom: 24px;" aria-hidden="true">
+      <path d="M20 20 Q60 10 100 20 Q140 30 180 20" stroke="var(--ink-faint)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <circle cx="50" cy="20" r="2" fill="var(--ink-faint)" opacity="0.3"/>
+      <circle cx="100" cy="20" r="2" fill="var(--ink-faint)" opacity="0.3"/>
+      <circle cx="150" cy="20" r="2" fill="var(--ink-faint)" opacity="0.3"/>
+    </svg>
+
+    <p style="font-family: var(--hand); font-size: 1.4rem; color: var(--ink-light); margin-bottom: 8px;">
+      The Moss Notebook
+    </p>
+    <p style="font-family: var(--hand); font-size: 1rem; color: var(--ink-faint); margin-bottom: 16px;">
+      A field journal by Eleanor Voss · Hawkridge Wood · 2024
+    </p>
+
+    <p style="font-size: 0.9rem; color: var(--ink-faint); font-style: italic; margin-bottom: 20px;">
+      All illustrations drawn in the field with pencil and watercolour.<br>
+      No photographs were used. No specimens were harmed.<br>
+      Every creature observed was thanked.
+    </p>
+
+    <!-- Closing doodle: small nest -->
+    <svg width="80" height="50" viewBox="0 0 80 50" style="margin: 16px auto; display: block;" aria-hidden="true">
+      <!-- Nest -->
+      <path d="M15 35 Q25 25 40 30 Q55 25 65 35" stroke="var(--ochre)" stroke-width="1.2" fill="rgba(197,176,120,0.15)"/>
+      <path d="M20 38 Q30 30 40 33 Q50 30 60 38" stroke="var(--ochre)" stroke-width="0.8" fill="none"/>
+      <!-- Twigs -->
+      <line x1="22" y1="34" x2="18" y2="28" stroke="var(--ink-faint)" stroke-width="0.6"/>
+      <line x1="58" y1="34" x2="62" y2="28" stroke="var(--ink-faint)" stroke-width="0.6"/>
+      <!-- Eggs -->
+      <ellipse cx="33" cy="32" rx="4" ry="5" fill="rgba(255,255,255,0.4)" stroke="var(--ink-faint)" stroke-width="0.6"/>
+      <ellipse cx="47" cy="32" rx="4" ry="5" fill="rgba(255,255,255,0.4)" stroke="var(--ink-faint)" stroke-width="0.6"/>
+      <!-- Branch -->
+      <path d="M10 40 L70 40" stroke="var(--ink-faint)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M30 40 L25 45 M50 40 L55 45" stroke="var(--ink-faint)" stroke-width="0.6" stroke-linecap="round"/>
+    </svg>
+
+    <p style="font-family: var(--hand); font-size: 0.95rem; color: var(--pencil); margin-top: 12px;">
+      Look closely. Walk slowly. Write everything down.
+    </p>
+
+    <svg width="120" height="20" viewBox="0 0 120 20" style="margin-top: 24px;" aria-hidden="true">
+      <path d="M10 10 Q40 5 60 10 Q80 15 110 10" stroke="var(--ink-faint)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <p style="font-size: 0.75rem; color: var(--ink-faint); margin-top: 16px; letter-spacing: 0.1em;">
+      END OF NOTEBOOK
+    </p>
+
+  </div>
+</footer>
+
+</main>
+
+<script>
+// Scroll reveal
+document.addEventListener('DOMContentLoaded', function() {
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(function(el) { observer.observe(el); });
+
+  // Reduced motion check
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (prefersReduced.matches) {
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      el.classList.add('visible');
+    });
+  }
+});
+</script>
+
+</body>
+</html>

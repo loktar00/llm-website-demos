@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INK WEATHER — Joyful Independent Print Fair & Risograph Festival • Oct 16–18 2026 Bristol</title>
+<meta name="description" content="INK WEATHER is a 3-day risograph studio festival and independent print fair. Workshops, talks, 48 printers, limited posters. Old Paper Mill, Bristol.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Space+Grotesk:wght@400;500;600;700&family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFF6E3;
+  --paper2:#F9EAC8;
+  --paper3:#FFFDF2;
+  --coral:#FF4D45;
+  --coral-deep:#E83A32;
+  --cobalt:#2137E7;
+  --cobalt-deep:#1625A8;
+  --yellow:#FFC400;
+  --yellow-soft:#FFD84D;
+  --mint:#A9EDC2;
+  --mint-deep:#5ACB90;
+  --black:#19131D;
+  --ink:#19131D;
+  --line:2.8px solid var(--black);
+  --shadow:6px 6px 0 var(--black);
+  --shadow-s:4px 4px 0 var(--black);
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{
+  margin:0;background:var(--paper);color:var(--black);
+  font-family:"Space Grotesk", system-ui, -apple-system, sans-serif;
+  font-size:17px;line-height:1.6;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--cobalt);color:#fff}
+a{color:inherit}
+img,svg{max-width:100%;display:block}
+h1,h2,h3{line-height:.95;margin:0;letter-spacing:-.01em}
+.display{font-family:"Shrikhand", cursive;font-weight:400;letter-spacing:.005em}
+.mono{font-family:"IBM Plex Mono", monospace}
+.hand{font-family:"Caveat", cursive}
+.skip{position:absolute;left:-999px;top:0;background:var(--black);color:#fff;padding:12px 18px;z-index:200;border-radius:0 0 12px 0}
+.skip:focus{left:0}
+/* grain + halftone overlays */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.55;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+}
+.halftone-bg{
+  background-image:radial-gradient(var(--black) 1.2px, transparent 1.3px);
+  background-size:12px 12px;
+}
+/* scraps */
+#scraps{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.scrap{position:absolute;opacity:.9;mix-blend-mode:multiply;animation:drift linear infinite}
+@keyframes drift{
+  0%{transform:translateY(-10vh) rotate(0deg)}
+  100%{transform:translateY(110vh) rotate(360deg)}
+}
+/* header */
+header.site{position:sticky;top:0;z-index:80;background:var(--paper);border-bottom:3px solid var(--black)}
+.top-ticker{background:var(--black);color:var(--paper);font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.08em;overflow:hidden;white-space:nowrap;padding:7px 0}
+.top-ticker .track{display:inline-block;animation:marquee 22s linear infinite;padding-left:100%}
+@keyframes marquee{to{transform:translateX(-100%)}}
+.navwrap{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:12px 20px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:"Shrikhand",cursive;font-size:22px;line-height:1}
+.logo-mark{width:44px;height:44px;background:var(--yellow);border:2.5px solid var(--black);border-radius:50% 40% 55% 45%/45% 55% 40% 60%;display:grid;place-items:center;position:relative;box-shadow:3px 3px 0 var(--black);flex-shrink:0}
+.logo-mark::after{content:"";position:absolute;inset:6px;background:var(--coral);border-radius:inherit;mix-blend-mode:multiply;opacity:.85;transform:translate(3px,2px)}
+.logo-mark span{position:relative;z-index:1;font-size:20px}
+nav.main{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+nav.main a{text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;letter-spacing:.06em;padding:8px 12px;border:2px solid transparent;border-radius:999px}
+nav.main a:hover,nav.main a:focus-visible{border-color:var(--black);background:var(--mint);box-shadow:2px 2px 0 var(--black)}
+.btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;border:var(--line);border-radius:999px;padding:13px 22px;background:#fff;box-shadow:var(--shadow-s);transition:transform .18s ease, box-shadow .18s ease, background .18s;cursor:pointer;font-size:15.5px;letter-spacing:.01em;color:var(--black)}
+.btn:hover{transform:translate(-2px,-2px) rotate(-.5deg);box-shadow:6px 6px 0 var(--black)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--black)}
+.btn-coral{background:var(--coral);color:#fff;text-shadow:1px 1px 0 var(--black)}
+.btn-cobalt{background:var(--cobalt);color:#fff}
+.btn-yellow{background:var(--yellow)}
+.btn-mint{background:var(--mint)}
+.btn-black{background:var(--black);color:var(--paper)}
+.btn.small{padding:9px 16px;font-size:14px}
+.menu-btn{display:none;margin-left:auto;background:var(--yellow);border:var(--line);border-radius:12px;padding:10px 14px;font-weight:800;box-shadow:3px 3px 0 var(--black)}
+/* layout */
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+section{padding:72px 0;position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;letter-spacing:.14em;background:var(--black);color:var(--paper);padding:8px 14px;border-radius:999px;transform:rotate(-1.5deg)}
+.eyebrow i{font-style:normal;background:var(--coral);color:#fff;border-radius:50%;width:22px;height:22px;display:grid;place-items:center}
+.sec-title{font-family:"Shrikhand",cursive;font-size:clamp(38px,6vw,72px);margin:18px 0 10px;position:relative;display:inline-block}
+.sec-title .off1{position:absolute;inset:0;color:var(--coral);z-index:-1;transform:translate(4px,4px);opacity:.9;pointer-events:none}
+.sec-title .off2{position:absolute;inset:0;color:var(--cobalt);z-index:-1;transform:translate(-3px,2px);opacity:.7;mix-blend-mode:multiply;pointer-events:none}
+.sec-sub{max-width:640px;font-size:18px}
+.torn{height:22px;background:var(--black);clip-path:polygon(0 60%,2% 20%,4% 60%,6% 15%,8% 55%,10% 10%,12% 50%,14% 15%,16% 60%,18% 20%,20% 55%,22% 10%,24% 50%,26% 20%,28% 60%,30% 15%,32% 55%,34% 10%,36% 50%,38% 20%,40% 60%,42% 15%,44% 55%,46% 10%,48% 50%,50% 20%,52% 60%,54% 15%,56% 55%,58% 10%,60% 50%,62% 20%,64% 60%,66% 15%,68% 55%,70% 10%,72% 50%,74% 20%,76% 60%,78% 15%,80% 55%,82% 10%,84% 50%,86% 20%,88% 60%,90% 15%,92% 55%,94% 10%,96% 50%,98% 20%,100% 60%,100% 100%,0 100%);margin:0}
+/* HERO POSTER */
+.hero{padding:28px 0 50px}
+.poster{border:3.5px solid var(--black);border-radius:28px;background:var(--paper3);box-shadow:10px 10px 0 var(--black);overflow:hidden;position:relative;
+  clip-path:polygon(0 1%,2% 0,5% 1%,8% 0,12% 1%,16% 0,20% 1%,24% 0,28% 1%,32% 0,36% 1%,40% 0,44% 1%,48% 0,52% 1%,56% 0,60% 1%,64% 0,68% 1%,72% 0,76% 1%,80% 0,84% 1%,88% 0,92% 1%,96% 0,100% 1%,100% 99%,98% 100%,94% 99%,90% 100%,86% 99%,82% 100%,78% 99%,74% 100%,70% 99%,66% 100%,62% 99%,58% 100%,54% 99%,50% 100%,46% 99%,42% 100%,38% 99%,34% 100%,30% 99%,26% 100%,22% 99%,18% 100%,14% 99%,10% 100%,6% 99%,2% 100%,0 99%);
+}
+.poster-inner{display:grid;grid-template-columns:1.05fr .95fr;gap:0}
+.poster-left{padding:38px 36px 0 36px;position:relative;overflow:hidden}
+.poster-left::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(25,19,29,.22) 1.4px, transparent 1.5px);background-size:14px 14px;mask-image:radial-gradient(420px 320px at 15% 20%, black, transparent 70%);pointer-events:none}
+.fair-line{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.18em;font-weight:600}
+.hero-h1{font-family:"Shrikhand",cursive;font-size:clamp(64px,9.5vw,138px);line-height:.85;margin:10px 0 6px;position:relative}
+.hero-h1 .ink{position:relative;display:inline-block;color:var(--black)}
+.hero-h1 .ink::before{content:"INK";position:absolute;left:5px;top:5px;color:var(--cobalt);z-index:-1;opacity:.85;mix-blend-mode:multiply}
+.hero-h1 .ink::after{content:"INK";position:absolute;left:-3px;top:2px;color:var(--coral);z-index:-1;opacity:.7;mix-blend-mode:multiply}
+.hero-h1 .weather{position:relative;display:inline-block;color:var(--black);-webkit-text-stroke:2.5px var(--black);text-shadow:5px 5px 0 var(--yellow), 9px 9px 0 var(--coral)}
+.hero-tag{font-size:19px;font-weight:600;max-width:460px;margin:14px 0}
+.hero-tag em{font-family:"Caveat",cursive;font-size:26px;background:var(--mint);padding:0 8px;border:2px solid var(--black);border-radius:8px;transform:rotate(-2deg);display:inline-block}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+.meta-box{border:2.5px solid var(--black);border-radius:14px;padding:12px 14px;background:#fff;box-shadow:4px 4px 0 var(--black);position:relative}
+.meta-box:nth-child(1){background:var(--yellow);transform:rotate(-1deg)}
+.meta-box:nth-child(2){background:var(--mint);transform:rotate(1deg)}
+.meta-box strong{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.12em;display:block}
+.meta-box span{font-weight:800;font-size:18px;line-height:1.2}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 18px}
+.countdown{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-family:"IBM Plex Mono",monospace;font-size:13px;margin:6px 0 18px}
+.countdown b{background:var(--black);color:#fff;border-radius:8px;padding:6px 10px;min-width:62px;text-align:center;display:inline-block}
+.countdown b small{display:block;font-size:10px;letter-spacing:.12em;opacity:.8}
+.stamp{position:absolute;right:18px;top:18px;width:118px;height:118px;border:3px dashed var(--black);border-radius:50%;display:grid;place-items:center;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;line-height:1.2;background:rgba(255,196,0,.9);transform:rotate(12deg);mix-blend-mode:multiply;animation:spinStamp 18s linear infinite}
+@keyframes spinStamp{to{transform:rotate(372deg)}}
+.poster-right{background:var(--cobalt);border-left:3.5px solid var(--black);position:relative;overflow:hidden;min-height:560px;display:flex;flex-direction:column}
+.poster-right .sky{flex:1;position:relative;padding:28px;overflow:hidden;background:linear-gradient(#2137E7 0%, #2F4BFF 55%, #FF4D45 56%, #FFF6E3 56.5%)}
+.sun{position:absolute;left:50%;top:8%;transform:translateX(-50%);width:260px;height:260px}
+.cloud{position:absolute;mix-blend-mode:multiply}
+.rain{position:absolute;inset:0}
+.roller-track{border-top:3px solid var(--black);background:var(--paper);padding:14px 18px;position:relative;overflow:hidden}
+.roller{height:54px;display:flex;align-items:center;gap:0;animation:roll 9s ease-in-out infinite}
+@keyframes roll{0%,100%{transform:translateX(-8%)}50%{transform:translateX(58%)}}
+.roller-bar{width:220px;height:46px;background:var(--black);border-radius:23px;position:relative;flex-shrink:0}
+.roller-bar::after{content:"INK WEATHER • RISO DRUM •";position:absolute;inset:8px;border:2px dashed var(--paper);border-radius:18px;color:var(--paper);font-family:"IBM Plex Mono",monospace;font-size:10px;display:grid;place-items:center;letter-spacing:.18em}
+.roller-handle{width:90px;height:12px;background:var(--black);border-radius:6px}
+.poster-badges{display:flex;gap:10px;flex-wrap:wrap;padding:0 0 22px}
+.badge{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:700;letter-spacing:.08em;border:2px solid var(--black);border-radius:999px;padding:6px 12px;background:#fff;box-shadow:2px 2px 0 var(--black)}
+.badge.c{background:var(--coral);color:#fff}.badge.b{background:var(--cobalt);color:#fff}.badge.y{background:var(--yellow)}.badge.m{background:var(--mint)}
+.hover-mis{transition:transform .2s}
+.hover-mis:hover{animation:mis .35s steps(2) 1}
+@keyframes mis{0%{text-shadow:3px 2px 0 var(--coral), -3px -1px 0 var(--cobalt);transform:translate(1px,-1px) rotate(-.5deg)}50%{text-shadow:-3px 2px 0 var(--yellow), 3px -2px 0 var(--cobalt);transform:translate(-1px,1px)}100%{text-shadow:2px 2px 0 var(--coral);transform:none}}
+/* marquee strip */
+.strip{border-top:3px solid var(--black);border-bottom:3px solid var(--black);background:var(--yellow);overflow:hidden;padding:12px 0;transform:rotate(-1deg) scale(1.02);box-shadow:4px 4px 0 var(--black)}
+.strip .inner{display:flex;gap:28px;white-space:nowrap;animation:marquee2 18s linear infinite;font-family:"Shrikhand",cursive;font-size:22px}
+@keyframes marquee2{to{transform:translateX(-50%)}}
+/* process lab */
+.lab{background:var(--black);color:var(--paper);border-radius:28px;border:3.5px solid var(--black);box-shadow:10px 10px 0 var(--cobalt);overflow:hidden;margin-top:10px}
+.lab-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.lab-left{padding:36px;border-right:3px dashed rgba(255,246,227,.35)}
+.lab-right{background:var(--paper);color:var(--black);padding:28px;position:relative;overflow:hidden}
+.sep-stage{background:#fff;border:3px solid var(--black);border-radius:18px;box-shadow:6px 6px 0 var(--black);padding:18px;position:relative;overflow:hidden}
+.sep-stage::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.18) 1px, transparent 1.2px);background-size:8px 8px;pointer-events:none}
+.sep-controls{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.sep-btn{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:700;letter-spacing:.08em;border:2.5px solid var(--black);border-radius:999px;padding:8px 14px;background:#fff;cursor:pointer;box-shadow:2px 2px 0 var(--black)}
+.sep-btn[aria-pressed="true"]{background:var(--black);color:#fff;transform:rotate(-2deg)}
+.slider-row{display:flex;align-items:center;gap:12px;font-family:"IBM Plex Mono",monospace;font-size:13px;margin-top:10px}
+input[type=range]{accent-color:var(--coral);flex:1}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.stat{border:2.5px solid var(--paper);border-radius:14px;padding:12px;text-align:center;background:rgba(255,255,255,.06)}
+.stat strong{font-family:"Shrikhand",cursive;font-size:28px;display:block}
+.stat span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em}
+/* schedule */
+.sched-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0}
+.day-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.day-tab{border:var(--line);border-radius:14px;padding:10px 16px;background:#fff;font-weight:800;cursor:pointer;box-shadow:3px 3px 0 var(--black)}
+.day-tab[aria-selected="true"]{background:var(--black);color:var(--paper);transform:rotate(-1deg)}
+.pill{border:2px solid var(--black);border-radius:999px;padding:7px 14px;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:700;letter-spacing:.06em;background:#fff;cursor:pointer}
+.pill[aria-pressed="true"]{background:var(--mint)}
+.sched-list{display:grid;gap:14px;margin-top:10px}
+.sched-item{display:grid;grid-template-columns:110px 1fr auto;gap:16px;align-items:start;background:var(--paper3);border:3px solid var(--black);border-radius:18px;padding:16px 18px;box-shadow:5px 5px 0 var(--black);position:relative;overflow:hidden;transition:transform .18s}
+.sched-item:hover{transform:translate(-2px,-2px) rotate(-.3deg);box-shadow:7px 7px 0 var(--black)}
+.sched-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--itemc, var(--coral))}
+.sched-item .time{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:15px}
+.sched-item .time small{display:block;font-size:11px;letter-spacing:.1em;background:var(--black);color:#fff;border-radius:6px;padding:2px 6px;margin-top:6px;text-align:center}
+.sched-item h3{font-size:20px;margin:2px 0 6px}
+.sched-item p{margin:0;font-size:15px}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.mini{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.08em;border:1.8px solid var(--black);border-radius:999px;padding:3px 9px;background:#fff}
+.book{white-space:nowrap}
+/* printers */
+.printers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.printer{border:3px solid var(--black);border-radius:20px;background:var(--paper3);overflow:hidden;box-shadow:6px 6px 0 var(--black);position:relative;transition:transform .2s}
+.printer:hover{transform:translateY(-4px) rotate(-.6deg)}
+.printer-art{height:220px;position:relative;overflow:hidden;border-bottom:3px solid var(--black);display:grid;place-items:center}
+.printer-art svg{width:78%;height:auto;filter:contrast(1.05)}
+.printer-body{padding:16px 18px 18px}
+.printer-body h3{font-family:"Shrikhand",cursive;font-size:24px}
+.printer-body .studio{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;font-weight:700;background:var(--black);color:#fff;display:inline-block;padding:3px 9px;border-radius:999px;margin:6px 0}
+.ink-dots{display:flex;gap:6px;margin:10px 0}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--black);mix-blend-mode:multiply}
+/* venue */
+.venue-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-top:20px;align-items:start}
+.map-box{border:3.5px solid var(--black);border-radius:20px;background:#fff;box-shadow:8px 8px 0 var(--black);overflow:hidden}
+.map-box svg{width:100%;height:auto}
+.zone{cursor:pointer;transition:opacity .2s, transform .2s}
+.zone:hover,.zone.active{filter:drop-shadow(3px 3px 0 var(--black))}
+.zone-info{border:3px solid var(--black);border-radius:18px;background:var(--mint);padding:18px;box-shadow:5px 5px 0 var(--black);margin-top:12px}
+.venue-list{display:grid;gap:12px}
+.venue-card{border:2.8px solid var(--black);border-radius:16px;padding:14px 16px;background:var(--paper3);box-shadow:4px 4px 0 var(--black)}
+.venue-card h4{margin:0 0 4px;font-size:17px}
+.venue-card p{margin:0;font-size:14.5px}
+/* shop */
+.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px}
+.product{border:3px solid var(--black);border-radius:18px;background:#fff;overflow:hidden;box-shadow:5px 5px 0 var(--black);display:flex;flex-direction:column;transition:transform .2s}
+.product:hover{transform:rotate(-1deg) translateY(-3px)}
+.poster-art{aspect-ratio:3/4;position:relative;overflow:hidden;border-bottom:3px solid var(--black);display:grid;place-items:center;padding:18px}
+.poster-art::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.2) 1px, transparent 1.2px);background-size:7px 7px;pointer-events:none;mix-blend-mode:multiply}
+.ed{position:absolute;top:10px;left:10px;z-index:2;background:var(--black);color:#fff;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px}
+.product-body{padding:14px}
+.product-body h3{font-size:18px}
+.price-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.price{font-family:"Shrikhand",cursive;font-size:22px}
+/* quotes */
+.quotes-wrap{border:3.5px solid var(--black);border-radius:22px;background:var(--yellow);box-shadow:8px 8px 0 var(--black);padding:28px;position:relative;overflow:hidden}
+.quotes-wrap::before{content:"“";position:absolute;left:10px;top:-10px;font-family:"Shrikhand",cursive;font-size:140px;opacity:.15}
+.quote-slide{display:none;gap:18px}
+.quote-slide.active{display:grid;grid-template-columns:80px 1fr;gap:18px;align-items:start}
+.avatar{width:80px;height:80px;border:3px solid var(--black);border-radius:50% 40% 55% 45%/45% 50% 50% 55%;display:grid;place-items:center;font-family:"Shrikhand",cursive;font-size:28px;box-shadow:3px 3px 0 var(--black)}
+.quote-text{font-size:20px;font-weight:600;line-height:1.45}
+.quote-who{font-family:"IBM Plex Mono",monospace;font-size:13px;margin-top:8px}
+.q-nav{display:flex;gap:10px;margin-top:18px;align-items:center}
+.q-dots{display:flex;gap:6px;margin-left:8px}
+.q-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--black);background:#fff;cursor:pointer}
+.q-dot[aria-current="true"]{background:var(--black)}
+/* faq + newsletter */
+.two-col{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-top:20px;align-items:start}
+.faq-item{border:3px solid var(--black);border-radius:16px;background:var(--paper3);margin-bottom:12px;overflow:hidden;box-shadow:4px 4px 0 var(--black)}
+.faq-q{width:100%;text-align:left;background:none;border:0;padding:16px 18px;font-weight:800;font-size:16.5px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer}
+.faq-q span.icon{flex-shrink:0;width:32px;height:32px;border:2.5px solid var(--black);border-radius:50%;display:grid;place-items:center;background:var(--yellow);font-size:18px;transition:transform .2s}
+.faq-item.open .faq-q span.icon{transform:rotate(45deg);background:var(--coral);color:#fff}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-a div{padding:0 18px 18px;font-size:15.5px}
+.news-box{border:3.5px solid var(--black);border-radius:20px;background:var(--cobalt);color:#fff;padding:26px;box-shadow:8px 8px 0 var(--black);position:relative;overflow:hidden;transform:rotate(.6deg)}
+.news-box::before{content:"";position:absolute;width:320px;height:320px;background:var(--coral);border-radius:50%;right:-110px;top:-110px;mix-blend-mode:multiply;opacity:.9}
+.news-box::after{content:"";position:absolute;width:220px;height:220px;background:var(--yellow);border-radius:50%;left:-80px;bottom:-80px;mix-blend-mode:multiply;opacity:.9}
+.news-box > *{position:relative;z-index:1}
+.news-box h3{font-family:"Shrikhand",cursive;font-size:32px;line-height:1}
+.news-box input[type=email],.news-box input[type=text]{width:100%;border:3px solid var(--black);border-radius:12px;padding:12px 14px;font-size:15px;font-family:inherit;background:var(--paper)}
+.field{margin:10px 0}
+.checks{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.checks label{border:2px solid #fff;border-radius:999px;padding:6px 12px;font-family:"IBM Plex Mono",monospace;font-size:12px;cursor:pointer}
+.checks input{accent-color:var(--yellow)}
+.form-msg{font-family:"IBM Plex Mono",monospace;font-size:13px;margin-top:10px;min-height:20px}
+/* footer */
+footer{background:var(--black);color:var(--paper);margin-top:70px;border-top:4px solid var(--black);position:relative;overflow:hidden}
+.foot-marquee{white-space:nowrap;overflow:hidden;border-bottom:2px dashed rgba(255,246,227,.3);padding:14px 0;font-family:"Shrikhand",cursive;font-size:30px}
+.foot-marquee span{display:inline-block;animation:marquee2 20s linear infinite}
+.foot-grid{max-width:1240px;margin:0 auto;padding:36px 20px;display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr;gap:24px}
+.foot-grid h4{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;opacity:.7;margin:0 0 10px}
+.foot-grid a{color:var(--paper);text-decoration:none;display:block;padding:4px 0;font-size:15px}
+.foot-grid a:hover{text-decoration:underline wavy var(--yellow) 2px}
+.foot-big{font-family:"Shrikhand",cursive;font-size:clamp(48px,7vw,92px);line-height:.9;margin:10px 0}
+.foot-big span:nth-child(1){color:var(--yellow)} .foot-big span:nth-child(2){color:var(--coral)} .foot-big span:nth-child(3){color:var(--mint)}
+.foot-bottom{border-top:2px dashed rgba(255,246,227,.3);padding:16px 20px;max-width:1240px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:12px}
+/* drawer, toast */
+.overlay{position:fixed;inset:0;background:rgba(25,19,29,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:95}
+.overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);background:var(--paper3);border-left:3.5px solid var(--black);z-index:96;transform:translateX(105%);transition:transform .32s cubic-bezier(.2,.9,.25,1.1);display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer-head{padding:18px;border-bottom:3px solid var(--black);display:flex;align-items:center;justify-content:space-between;background:var(--yellow)}
+.cart-items{flex:1;overflow:auto;padding:16px;display:grid;gap:12px;align-content:start}
+.cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:10px;border:2.5px solid var(--black);border-radius:14px;padding:10px;background:#fff;align-items:center}
+.cart-thumb{width:64px;height:80px;border:2px solid var(--black);border-radius:8px}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:26px;height:26px;border:2px solid var(--black);border-radius:50%;background:var(--mint);font-weight:800;cursor:pointer}
+.drawer-foot{border-top:3px solid var(--black);padding:16px;background:var(--paper)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px) rotate(-2deg);background:var(--black);color:var(--paper);border:3px solid var(--black);box-shadow:5px 5px 0 var(--coral);border-radius:14px;padding:12px 18px;z-index:99;font-weight:700;transition:transform .3s;max-width:90vw}
+#toast.show{transform:translate(-50%,0) rotate(-2deg)}
+.reveal{opacity:0;transform:translateY(28px) rotate(.3deg);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media (max-width:1020px){
+  .poster-inner,.lab-grid,.venue-grid,.two-col{grid-template-columns:1fr}
+  .poster-right{min-height:420px;border-left:0;border-top:3.5px solid var(--black)}
+  .printers-grid{grid-template-columns:1fr 1fr}
+  .shop-grid{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  nav.main{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:3px solid var(--black);padding:12px 20px;flex-direction:column}
+  nav.main.open{display:flex}
+  .menu-btn{display:block}
+}
+@media (max-width:640px){
+  .printers-grid,.shop-grid{grid-template-columns:1fr}
+  .sched-item{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:1fr 1fr}
+  section{padding:52px 0}
+  .meta-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001s !important;transition-duration:.001s !important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+<div id="scraps" aria-hidden="true"></div>
+
+<header class="site">
+  <div class="top-ticker" aria-hidden="true"><span class="track">★ INK WEATHER 2026 ★ 48 EXHIBITORS ★ 32 WORKSHOPS ★ RISOGRAPH • SCREEN • LETTERPRESS ★ OLD PAPER MILL BRISTOL ★ OCT 16–18 ★ FREE KIDS AREA ★&nbsp;&nbsp;★ INK WEATHER 2026 ★ 48 EXHIBITORS ★ 32 WORKSHOPS ★ RISOGRAPH • SCREEN • LETTERPRESS ★ OLD PAPER MILL BRISTOL ★ OCT 16–18 ★ FREE KIDS AREA ★&nbsp;&nbsp;</span></div>
+  <div class="navwrap">
+    <a class="logo hover-mis" href="#top" aria-label="Ink Weather home">
+      <span class="logo-mark" aria-hidden="true"><span>◍</span></span>
+      INK&nbsp;WEATHER
+    </a>
+    <nav class="main" id="mainNav" aria-label="Primary">
+      <a href="#process">Process</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#printers">Printers</a>
+      <a href="#venue">Venue</a>
+      <a href="#shop">Shop</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav">MENU ☰</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn small btn-black" id="cartBtn" aria-haspopup="dialog" aria-controls="cartDrawer">CART (<span id="cartCount">0</span>)</button>
+      <a href="#shop" class="btn small btn-coral hover-mis" style="margin-left:4px">TICKETS £12</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<!-- HERO -->
+<section class="hero wrap" id="top" aria-labelledby="heroTitle">
+  <div class="poster">
+    <div class="poster-inner">
+      <div class="poster-left">
+        <div class="stamp" aria-hidden="true">ADMIT<br>ALL<br>★<br>3 DAYS<br>OF INK</div>
+        <p class="fair-line">✺ JOYFUL INDEPENDENT PRINT FAIR — EST. 2018 — BRISTOL UK</p>
+        <h1 class="hero-h1" id="heroTitle"><span class="ink">INK</span><br><span class="weather">WEATHER</span></h1>
+        <p class="hero-tag">A risograph studio festival for <em>loud paper &amp; wet ink!</em> 48 printers, 2 drums, 1 very happy paper mill.</p>
+        <div class="meta-grid" role="list" aria-label="Festival date and location">
+          <div class="meta-box" role="listitem"><strong>◉ WHEN</strong><span>OCT 16–18, 2026<br>FRI–SUN • 10AM–6PM</span></div>
+          <div class="meta-box" role="listitem"><strong>◎ WHERE</strong><span>OLD PAPER MILL<br>48 Fog Lane, Bristol BS1</span></div>
+        </div>
+        <div class="cta-row">
+          <a href="#shop" class="btn btn-cobalt hover-mis">GET DAY TICKETS — £12</a>
+          <a href="#schedule" class="btn btn-yellow hover-mis">BROWSE PROGRAMME ↓</a>
+        </div>
+        <div class="countdown" aria-live="polite" aria-label="Countdown to festival">
+          <span>DOORS OPEN IN:</span>
+          <b><span id="cd-d">00</span><small>DAYS</small></b>
+          <b><span id="cd-h">00</span><small>HRS</small></b>
+          <b><span id="cd-m">00</span><small>MIN</small></b>
+          <b><span id="cd-s">00</span><small>SEC</small></b>
+        </div>
+        <div class="poster-badges" aria-label="Highlights">
+          <span class="badge c">✦ 48 STALLS</span><span class="badge y">✦ KIDS PRINT FREE</span><span class="badge b">✦ NIGHT MARKET SAT</span><span class="badge m">✦ DOGS IN RAINCOATS WELCOME</span>
+        </div>
+      </div>
+      <div class="poster-right" aria-hidden="false">
+        <div class="sky" role="img" aria-label="Risograph weather illustration: halftone sun over overprinted clouds raining ink drops">
+          <!-- SUN -->
+          <svg class="sun" viewBox="0 0 200 200" aria-hidden="true">
+            <defs><pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="3.2" fill="#19131D"/></pattern></defs>
+            <circle cx="100" cy="100" r="86" fill="#FFC400" stroke="#19131D" stroke-width="5"/>
+            <circle cx="104" cy="104" r="86" fill="#FF4D45" opacity=".65" style="mix-blend-mode:multiply"/>
+            <circle cx="100" cy="100" r="62" fill="url(#dots)" opacity=".9"/>
+            <circle cx="100" cy="100" r="36" fill="#FFF6E3" stroke="#19131D" stroke-width="4"/>
+            <text x="100" y="112" text-anchor="middle" font-family="Shrikhand" font-size="22" fill="#19131D">HOT!</text>
+          </svg>
+          <!-- CLOUDS overprint -->
+          <svg style="position:absolute;left:4%;top:52%;width:62%" viewBox="0 0 300 120" aria-hidden="true">
+            <g opacity=".92" style="mix-blend-mode:multiply">
+              <ellipse cx="110" cy="70" rx="90" ry="42" fill="#A9EDC2" stroke="#19131D" stroke-width="5"/>
+              <ellipse cx="118" cy="66" rx="90" ry="42" fill="#2137E7" opacity=".55"/>
+              <ellipse cx="180" cy="55" rx="58" ry="34" fill="#FFF6E3" stroke="#19131D" stroke-width="5"/>
+            </g>
+          </svg>
+          <svg style="position:absolute;right:2%;top:38%;width:54%" viewBox="0 0 300 120" aria-hidden="true">
+            <g style="mix-blend-mode:multiply">
+              <ellipse cx="130" cy="70" rx="92" ry="40" fill="#FF4D45" stroke="#19131D" stroke-width="5"/>
+              <ellipse cx="135" cy="74" rx="92" ry="40" fill="#FFC400" opacity=".7"/>
+              <circle cx="80" cy="55" r="10" fill="#19131D"/><circle cx="105" cy="48" r="9" fill="#19131D"/>
+            </g>
+          </svg>
+          <!-- RAIN -->
+          <svg class="rain" viewBox="0 0 400 500" preserveAspectRatio="none" aria-hidden="true">
+            <g fill="#19131D">
+              <g opacity=".9">
+                <ellipse cx="60" cy="360" rx="9" ry="14" fill="#2137E7"/><ellipse cx="63" cy="362" rx="9" ry="14" fill="#FF4D45" opacity=".6"/>
+                <ellipse cx="130" cy="390" rx="9" ry="14"/><ellipse cx="200" cy="370" rx="9" ry="14" fill="#FFC400" stroke="#19131D" stroke-width="2"/>
+                <ellipse cx="270" cy="400" rx="9" ry="14"/><ellipse cx="340" cy="380" rx="9" ry="14" fill="#2137E7"/>
+                <ellipse cx="95" cy="430" rx="9" ry="14" fill="#FF4D45"/><ellipse cx="235" cy="435" rx="9" ry="14"/><ellipse cx="310" cy="440" rx="9" ry="14" fill="#A9EDC2" stroke="#19131D" stroke-width="2"/>
+              </g>
+            </g>
+            <text x="20" y="480" font-family="Caveat" font-size="30" fill="#19131D" transform="rotate(-3 20 480)">100% chance of ink!</text>
+          </svg>
+          <div style="position:absolute;left:18px;top:18px;background:#FFF6E3;border:2.5px solid #19131D;border-radius:12px;padding:6px 12px;font-family:'IBM Plex Mono';font-size:12px;font-weight:700;transform:rotate(-4deg);box-shadow:3px 3px 0 #19131D">FORECAST: CORAL SHOWERS ☂</div>
+        </div>
+        <div class="roller-track" aria-hidden="true">
+          <div class="roller"><div class="roller-bar"></div><div class="roller-handle"></div></div>
+          <div class="mono" style="font-size:11px;letter-spacing:.12em;margin-top:6px">◉ DRUM 01: FLUORESCENT CORAL — 600 DPI — MISREGISTRATION ±3MM ON PURPOSE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip" aria-hidden="true"><div class="inner"><span>✦ RISOGRAPH ✦ SCREENPRINT ✦ LETTERPRESS ✦ ZINES ✦ COMICS ✦ GHOST PRINTS ✦ PAPER CUTS ✦ RISOGRAPH ✦ SCREENPRINT ✦ LETTERPRESS ✦ ZINES ✦ COMICS ✦ GHOST PRINTS ✦ PAPER CUTS ✦&nbsp;</span><span>✦ RISOGRAPH ✦ SCREENPRINT ✦ LETTERPRESS ✦ ZINES ✦ COMICS ✦ GHOST PRINTS ✦ PAPER CUTS ✦ RISOGRAPH ✦ SCREENPRINT ✦ LETTERPRESS ✦ ZINES ✦ COMICS ✦ GHOST PRINTS ✦ PAPER CUTS ✦&nbsp;</span></div></div>
+
+<!-- PROCESS LAB -->
+<section class="wrap" id="process" aria-labelledby="processTitle">
+  <span class="eyebrow reveal"><i>●</i> THE INK LAB — HOW RISO WORKS</span>
+  <h2 class="sec-title reveal" id="processTitle">One drum<br>at a time<span class="off1" aria-hidden="true">One drum<br>at a time</span><span class="off2" aria-hidden="true">One drum<br>at a time</span></h2>
+  <p class="sec-sub reveal">Risograph prints <strong>one spot colour at a time</strong>. Paper runs through, the drum rolls, translucent soy inks overprint. Misalignment? That's the magic. Toggle the separations, drag the wobble, watch it happen.</p>
+  <div class="lab reveal">
+    <div class="lab-grid">
+      <div class="lab-left">
+        <p class="mono" style="font-size:12px;letter-spacing:.14em;opacity:.7">FIG. 01 — SPOT-COLOUR SEPARATIONS • LIVE</p>
+        <h3 class="display" style="font-size:34px;margin:8px 0">Cycling separations: <span id="cycleLabel" style="background:var(--yellow);color:var(--black);padding:0 10px;border-radius:10px;border:2px solid var(--paper);display:inline-block;transform:rotate(-2deg)">ALL INKS</span></h3>
+        <p style="opacity:.9">Every INK WEATHER poster is limited to 3 inks + black. Overprint cobalt on coral and you get that bruised plum. Yellow under mint makes acid spring. It's screenprint's punk cousin.</p>
+        <div class="stat-row">
+          <div class="stat"><strong>4</strong><span>SPOT INKS</span></div>
+          <div class="stat"><strong>600</strong><span>DPI GRAIN</span></div>
+          <div class="stat"><strong>±3mm</strong><span>HAPPY WOBBLE</span></div>
+          <div class="stat"><strong>100%</strong><span>SOY INK</span></div>
+        </div>
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <label class="mono" style="font-size:12px;display:flex;gap:8px;align-items:center;border:2px solid var(--paper);border-radius:999px;padding:8px 14px;cursor:pointer"><input type="checkbox" id="autoCycle" checked style="accent-color:var(--yellow)"> AUTO-CYCLE INKS</label>
+          <span class="hand" style="font-size:22px;color:var(--yellow);transform:rotate(-4deg)">← try the buttons, love!</span>
+        </div>
+      </div>
+      <div class="lab-right">
+        <div class="sep-stage">
+          <div class="ed" style="background:var(--cobalt)">LIVE PROOF • 1/1</div>
+          <svg id="sepArt" viewBox="0 0 420 340" style="width:100%;height:auto" role="img" aria-label="Layered tiger illustration showing colour separations">
+            <rect x="10" y="10" width="400" height="320" rx="16" fill="#FFFDF2" stroke="#19131D" stroke-width="4"/>
+            <g id="L-yellow" style="mix-blend-mode:multiply;transition:opacity .5s">
+              <ellipse cx="210" cy="165" rx="125" ry="105" fill="#FFC400" opacity=".95"/>
+              <circle cx="110" cy="80" r="28" fill="#FFC400"/><circle cx="330" cy="90" r="18" fill="#FFC400"/>
+            </g>
+            <g id="L-coral" style="mix-blend-mode:multiply;transition:opacity .5s">
+              <path d="M120 240 Q160 140 210 145 Q260 140 300 240 Q260 280 210 278 Q160 280 120 240" fill="#FF4D45" opacity=".88"/>
+              <circle cx="170" cy="175" r="22" fill="#FF4D45"/><circle cx="250" cy="175" r="22" fill="#FF4D45"/>
+              <path d="M175 230 Q210 250 245 230 Q210 270 175 230" fill="#FF4D45"/>
+            </g>
+            <g id="L-cobalt" style="mix-blend-mode:multiply;transition:opacity .5s">
+              <g fill="#2137E7">
+                <rect x="150" y="120" width="28" height="10" rx="5" transform="rotate(-18 150 120)"/><rect x="242" y="120" width="28" height="10" rx="5" transform="rotate(18 242 120)"/>
+                <circle cx="170" cy="182" r="8" fill="#19131D"/><circle cx="250" cy="182" r="8" fill="#19131D"/>
+                <path d="M140 250 L170 235 L160 260 Z M280 250 L250 235 L260 260 Z" opacity=".9"/>
+                <g opacity=".85"><rect x="130" y="100" width="10" height="28" rx="5"/><rect x="150" y="92" width="10" height="28" rx="5"/><rect x="260" y="92" width="10" height="28" rx="5"/><rect x="280" y="100" width="10" height="28" rx="5"/></g>
+              </g>
+              <g fill="#19131D" font-family="IBM Plex Mono" font-size="13" font-weight="700"><circle cx="210" cy="305" r="3"/><circle cx="230" cy="305" r="3"/><circle cx="250" cy="305" r="3"/><text x="90" y="315">TIGER DANCE — 3 INKS</text></g>
+            </g>
+            <g id="L-mint" style="mix-blend-mode:multiply;transition:opacity .5s" opacity=".9">
+              <ellipse cx="310" cy="230" rx="52" ry="38" fill="#A9EDC2" stroke="#19131D" stroke-width="3"/>
+              <text x="275" y="236" font-family="Caveat" font-size="22" fill="#19131D">rawr!</text>
+            </g>
+            <g id="grainDots" opacity=".35"><g fill="#19131D"><circle cx="40" cy="40" r="1.5"/><circle cx="60" cy="40" r="1.5"/><circle cx="80" cy="40" r="1.5"/><circle cx="40" cy="60" r="1.5"/><circle cx="60" cy="60" r="1.5"/></g></g>
+          </svg>
+          <div id="misWrap" style="transition:transform .2s">
+            <div class="sep-controls" role="group" aria-label="Toggle ink separations">
+              <button class="sep-btn" data-ink="L-coral" aria-pressed="true" style="background:var(--coral);color:#fff">● CORAL</button>
+              <button class="sep-btn" data-ink="L-cobalt" aria-pressed="true" style="background:var(--cobalt);color:#fff">● COBALT</button>
+              <button class="sep-btn" data-ink="L-yellow" aria-pressed="true" style="background:var(--yellow)">● YELLOW</button>
+              <button class="sep-btn" data-ink="L-mint" aria-pressed="true" style="background:var(--mint)">● MINT</button>
+              <button class="sep-btn" id="allInks" style="background:var(--black);color:#fff">ALL</button>
+            </div>
+            <div class="slider-row"><label for="misRange"><strong>WOBBLE / MISREGISTRATION:</strong> <span id="misVal">4px</span></label><input type="range" id="misRange" min="0" max="18" value="4" aria-describedby="misVal"></div>
+          </div>
+        </div>
+        <p class="mono" style="font-size:12px;margin:12px 2px 0">TIP: hover any headline on this site for a little misprint wiggle. That's intentional — like this tiger.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section class="wrap" id="schedule" aria-labelledby="schedTitle">
+  <span class="eyebrow reveal"><i>✦</i> PROGRAMME — WORKSHOPS &amp; TALKS</span>
+  <h2 class="sec-title reveal hover-mis" id="schedTitle">Pick your<br>paper adventure<span class="off1" aria-hidden="true">Pick your<br>paper adventure</span><span class="off2" aria-hidden="true">Pick your<br>paper adventure</span></h2>
+  <p class="sec-sub reveal">All sessions are beginner-friendly. Workshops include paper + ink. Talks are pay-what-you-can. <strong class="hand" style="font-size:22px;background:var(--yellow);padding:0 8px;border:2px solid var(--black);border-radius:8px">Book ahead — drums fill fast!</strong></p>
+  <div class="sched-tools reveal" role="tablist" aria-label="Choose day">
+    <div class="day-tabs">
+      <button class="day-tab" role="tab" aria-selected="true" data-day="fri">FRI 16 OCT</button>
+      <button class="day-tab" role="tab" aria-selected="false" data-day="sat">SAT 17 OCT</button>
+      <button class="day-tab" role="tab" aria-selected="false" data-day="sun">SUN 18 OCT</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto" role="group" aria-label="Filter by type">
+      <button class="pill" data-filter="all" aria-pressed="true">ALL</button>
+      <button class="pill" data-filter="workshop" aria-pressed="false">✂ WORKSHOPS</button>
+      <button class="pill" data-filter="talk" aria-pressed="false">◉ TALKS</button>
+      <button class="pill" data-filter="demo" aria-pressed="false">◎ DEMOS</button>
+    </div>
+  </div>
+  <p class="mono reveal" style="font-size:13px" aria-live="polite">Showing <strong id="showCount">6</strong> sessions • <span id="myCount">0</span> saved to my list ♥</p>
+  <div class="sched-list" id="schedList"></div>
+</section>
+
+<!-- PRINTERS -->
+<section class="wrap" id="printers" aria-labelledby="printTitle">
+  <span class="eyebrow reveal"><i>♥</i> MEET THE PRINTERS — 6 OF 48</span>
+  <h2 class="sec-title reveal hover-mis" id="printTitle">Inky humans,<br>good hands<span class="off1" aria-hidden="true">Inky humans,<br>good hands</span><span class="off2" aria-hidden="true">Inky humans,<br>good hands</span></h2>
+  <p class="sec-sub reveal">Six studios we love — each brings a stall, a workshop, and a very specific opinion about paper weight.</p>
+  <div class="printers-grid" id="printerGrid"></div>
+</section>
+
+<!-- VENUE -->
+<section class="wrap" id="venue" aria-labelledby="venueTitle">
+  <span class="eyebrow reveal"><i>◎</i> VENUE — OLD PAPER MILL</span>
+  <h2 class="sec-title reveal hover-mis" id="venueTitle">A mill, a yard,<br>a paper garden<span class="off1" aria-hidden="true">A mill, a yard,<br>a paper garden</span><span class="off2" aria-hidden="true">A mill, a yard,<br>a paper garden</span></h2>
+  <p class="sec-sub reveal">All on one level, all step-free. Follow the coral arrows from Bristol Temple Meads (12 min walk). Tap a building on the map!</p>
+  <div class="venue-grid">
+    <div class="reveal">
+      <div class="map-box">
+        <svg viewBox="0 0 640 460" role="img" aria-label="Hand-drawn festival map of Old Paper Mill">
+          <rect width="640" height="460" fill="#FFFDF2"/>
+          <g opacity=".25"><g fill="#19131D"><circle cx="20" cy="20" r="2"/><circle cx="40" cy="20" r="2"/><circle cx="60" cy="20" r="2"/><circle cx="20" cy="40" r="2"/><circle cx="40" cy="40" r="2"/></g></g>
+          <!-- river -->
+          <path d="M0 380 Q120 350 220 380 T440 375 T640 390 L640 460 L0 460 Z" fill="#A9EDC2" stroke="#19131D" stroke-width="4"/>
+          <path d="M0 395 Q120 365 220 395 T440 390 T640 405" fill="none" stroke="#19131D" stroke-width="2" stroke-dasharray="8 8"/>
+          <text x="30" y="430" font-family="Caveat" font-size="26" fill="#19131D" transform="rotate(-2 30 430)">river Froome — ducks approve</text>
+          <!-- roads -->
+          <path d="M0 90 L640 70" stroke="#19131D" stroke-width="3" stroke-dasharray="14 10"/>
+          <text x="20" y="60" font-family="IBM Plex Mono" font-size="12" font-weight="700">FOG LANE → STATION 12 MIN</text>
+          <!-- zones -->
+          <g class="zone" data-zone="A" tabindex="0" role="button" aria-label="Print Hall details">
+            <rect x="40" y="110" width="210" height="140" rx="14" fill="#FFC400" stroke="#19131D" stroke-width="4"/>
+            <rect x="50" y="118" width="210" height="140" rx="14" fill="#FF4D45" opacity=".55" style="mix-blend-mode:multiply"/>
+            <text x="65" y="155" font-family="Shrikhand" font-size="26">PRINT</text><text x="65" y="185" font-family="Shrikhand" font-size="26">HALL A</text>
+            <text x="65" y="208" font-family="IBM Plex Mono" font-size="12" font-weight="700">48 STALLS • TILL</text>
+          </g>
+          <g class="zone" data-zone="B" tabindex="0" role="button" aria-label="Risotorium details">
+            <rect x="270" y="110" width="160" height="140" rx="90" fill="#2137E7" stroke="#19131D" stroke-width="4"/>
+            <text x="290" y="175" font-family="Shrikhand" font-size="20" fill="#fff">RISO-</text><text x="290" y="200" font-family="Shrikhand" font-size="20" fill="#fff">TORIUM</text>
+            <text x="290" y="220" font-family="IBM Plex Mono" font-size="11" font-weight="700" fill="#FFC400">TALKS B</text>
+          </g>
+          <g class="zone" data-zone="C" tabindex="0" role="button" aria-label="Paper Garden details">
+            <rect x="450" y="110" width="150" height="140" rx="14" fill="#A9EDC2" stroke="#19131D" stroke-width="4" transform="rotate(2 525 180)"/>
+            <text x="470" y="165" font-family="Shrikhand" font-size="20">PAPER</text><text x="470" y="190" font-family="Shrikhand" font-size="20">GARDEN</text><text x="470" y="212" font-family="IBM Plex Mono" font-size="11" font-weight="700">PICNIC C</text>
+            <g><ellipse cx="500" cy="225" rx="12" ry="8" fill="#FF4D45" stroke="#19131D" stroke-width="2"/><ellipse cx="545" cy="228" rx="10" ry="7" fill="#FFC400" stroke="#19131D" stroke-width="2"/></g>
+          </g>
+          <g class="zone" data-zone="D" tabindex="0" role="button" aria-label="Ink Lab details">
+            <rect x="40" y="270" width="180" height="90" rx="14" fill="#FF4D45" stroke="#19131D" stroke-width="4"/>
+            <text x="60" y="305" font-family="Shrikhand" font-size="22" fill="#fff">INK LAB D</text><text x="60" y="328" font-family="IBM Plex Mono" font-size="11" font-weight="700" fill="#fff">WORKSHOPS</text>
+          </g>
+          <g class="zone" data-zone="E" tabindex="0" role="button" aria-label="Night market details">
+            <rect x="240" y="270" width="360" height="90" rx="14" fill="#FFF6E3" stroke="#19131D" stroke-width="4" stroke-dasharray="10 6"/>
+            <text x="260" y="305" font-family="Shrikhand" font-size="20">★ NIGHT MARKET + FOOD YARD E</text><text x="260" y="330" font-family="IBM Plex Mono" font-size="12" font-weight="700">SAT 6–10PM • TACOS • NATURAL WINE</text>
+          </g>
+          <g font-family="IBM Plex Mono" font-size="11" font-weight="700"><rect x="40" y="28" width="22" height="22" fill="#FFC400" stroke="#19131D" stroke-width="2"/><text x="68" y="44">YOU ARE HERE-ish</text><circle cx="260" cy="82" r="7" fill="#FF4D45" stroke="#19131D" stroke-width="2"/><text x="272" y="86">ENTRANCE ↓</text></g>
+        </svg>
+      </div>
+      <div class="zone-info" id="zoneInfo" aria-live="polite"><strong id="zoneTitle">HALL A — PRINT HALL</strong><br><span id="zoneDesc">48 exhibitor tables, the big shop till, and the legendary free misprint bin. Loudest room, best smells (paper + coffee).</span></div>
+    </div>
+    <div class="venue-list reveal">
+      <div class="venue-card"><h4>♿ Access — step-free throughout</h4><p>Level access, accessible loos in Hall A + Garden, BSL on main talks, quiet room in Ink Lab. Blue badge parking on Fog Lane.</p></div>
+      <div class="venue-card"><h4>◉ Getting here</h4><p>Temple Meads 12 min walk • Buses 1/2 stop outside • Bike racks in yard • No car park — please walk, wheel or bus!</p></div>
+      <div class="venue-card"><h4>◎ Food &amp; drink</h4><p>Taco Rosa, Small Goods coffee, Lovely Bread + natural wine bar Sat night. Free water + oat milk everywhere.</p></div>
+      <div class="venue-card" style="background:var(--yellow)"><h4>✦ Top tip from regulars</h4><p>Bring a poster tube! Or buy our £3 recycled tube. Sunday 4pm is haggle o'clock — printers discount rather than carry stock home.</p></div>
+      <a href="#faq" class="btn btn-mint small" style="justify-content:center">READ VISITOR FAQ →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section class="wrap" id="shop" aria-labelledby="shopTitle">
+  <span class="eyebrow reveal"><i>★</i> SHOP — LIMITED EDITIONS</span>
+  <h2 class="sec-title reveal hover-mis" id="shopTitle">Fresh off<br>the drum<span class="off1" aria-hidden="true">Fresh off<br>the drum</span><span class="off2" aria-hidden="true">Fresh off<br>the drum</span></h2>
+  <p class="sec-sub reveal">Printed live at last year's fair. <strong>Numbered, stamped, never reprinted.</strong> Collect at the fair or ship worldwide in a sturdy tube.</p>
+  <div class="shop-grid" id="shopGrid"></div>
+  <p class="mono reveal" style="font-size:13px;margin-top:14px;background:#fff;border:2.5px dashed var(--black);border-radius:12px;padding:10px 14px">✦ FAIR PICKUP FREE • SHIPPING £4 UK / £12 WORLD • ALL PROFITS SPLIT 50/50 WITH ARTISTS. TICKETS ALSO IN CART → LOOK FOR “DAY TICKET”.</p>
+</section>
+
+<!-- QUOTES -->
+<section class="wrap" id="voices" aria-labelledby="voiceTitle">
+  <span class="eyebrow reveal"><i>❝</i> LOVE LETTERS — ATTENDEES</span>
+  <h2 class="sec-title reveal hover-mis" id="voiceTitle">Paper people<br>are nice<span class="off1" aria-hidden="true">Paper people<br>are nice</span><span class="off2" aria-hidden="true">Paper people<br>are nice</span></h2>
+  <div class="quotes-wrap reveal" aria-roledescription="carousel" aria-label="Attendee quotes">
+    <div id="quoteTrack"></div>
+    <div class="q-nav">
+      <button class="btn small btn-black" id="qPrev" aria-label="Previous quote">← PREV</button>
+      <button class="btn small btn-black" id="qNext" aria-label="Next quote">NEXT →</button>
+      <div class="q-dots" id="qDots" role="tablist" aria-label="Choose quote"></div>
+      <span class="mono" style="margin-left:auto;font-size:12px;font-weight:700" id="qCount">1 / 5</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ + NEWSLETTER -->
+<section class="wrap" id="faq" aria-labelledby="faqTitle">
+  <span class="eyebrow reveal"><i>?</i> GOOD QUESTIONS</span>
+  <h2 class="sec-title reveal hover-mis" id="faqTitle">FAQ &amp;<br>fair mail<span class="off1" aria-hidden="true">FAQ &amp;<br>fair mail</span><span class="off2" aria-hidden="true">FAQ &amp;<br>fair mail</span></h2>
+  <div class="two-col">
+    <div class="reveal" id="faqList"></div>
+    <div class="news-box reveal" id="newsletter">
+      <p class="mono" style="font-size:12px;letter-spacing:.14em;background:var(--black);display:inline-block;padding:6px 12px;border-radius:999px">✉ THE MISPRINT — MONTHLY-ish</p>
+      <h3>Get first dibs on workshops!</h3>
+      <p style="margin:8px 0">Tickets, open calls + one very good riso GIF per month. No spam, just paper.</p>
+      <form id="newsForm" novalidate>
+        <div class="field"><label class="sr" for="newsName">First name</label><input type="text" id="newsName" name="name" placeholder="First name (e.g. Dot)" autocomplete="given-name"></div>
+        <div class="field"><label class="sr" for="newsEmail">Email address</label><input type="email" id="newsEmail" name="email" placeholder="you@paperlove.com" required autocomplete="email"></div>
+        <div class="checks" role="group" aria-label="Interests"><label><input type="checkbox" checked> Workshops</label><label><input type="checkbox" checked> Stalls</label><label><input type="checkbox"> Volunteering</label></div>
+        <button type="submit" class="btn btn-yellow" style="width:100%;justify-content:center">SIGN ME UP ✦</button>
+        <p class="form-msg" id="newsMsg" aria-live="polite"></p>
+      </form>
+      <p class="mono" style="font-size:11px;opacity:.85">By signing up you agree to receive fair mail. Unsubscribe anytime. We treat emails like wet prints — carefully.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="foot-marquee" aria-hidden="true"><span>INK WEATHER ★ SEE YOU IN THE PAPER GARDEN ★ BRING A TUBE ★ HUG A PRINTER ★ INK WEATHER ★ SEE YOU IN THE PAPER GARDEN ★ BRING A TUBE ★ HUG A PRINTER ★&nbsp;</span></div>
+  <div class="foot-grid">
+    <div>
+      <div class="foot-big"><span>INK</span><br><span>WEATH</span><span>ER</span></div>
+      <p style="max-width:320px">A joyful independent print fair &amp; risograph studio festival. Run by printers, for paper lovers. Not-for-profit since 2018.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <a href="#top" class="btn small btn-yellow">↑ TOP</a>
+        <a href="#shop" class="btn small" style="background:var(--coral);color:#fff">TICKETS</a>
+      </div>
+    </div>
+    <div><h4>VISIT</h4><a href="#schedule">Programme</a><a href="#venue">Venue &amp; access</a><a href="#shop">Shop + tickets</a><a href="#faq">FAQ</a><a href="#newsletter">Newsletter</a></div>
+    <div><h4>JOIN IN</h4><a href="#printers">Exhibitors 2026</a><a href="#process">About riso</a><a href="#voices">Love letters</a><a href="#top">Volunteer (email hi@inkweather.club)</a><a href="#top">Open call 2027</a></div>
+    <div><h4>ELSEWHERE</h4><a href="#top">Instagram — @ink.weather</a><a href="#top">Are.na — Ink Weather</a><a href="#top">Mail — hi@inkweather.club</a><p class="mono" style="font-size:12px;margin-top:12px;opacity:.8">OLD PAPER MILL<br>48 Fog Lane<br>Bristol BS1 6QT</p></div>
+  </div>
+  <div class="foot-bottom"><span>© <span id="year">2026</span> INK WEATHER CIC • PRINTED WITH 4 DRUMS &amp; LOVE</span><span>TYPE: SHRIKHAND / SPACE GROTESK / CAVEAT • PAPER: 100% RECYCLED PIXELS</span><span>MISREGISTRATION INTENTIONAL ♥</span></div>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
+  <div class="drawer-head"><strong id="cartTitle" style="font-family:Shrikhand;font-size:22px">Your tube ♥ (<span id="cartCount2">0</span>)</strong><button class="btn small btn-black" id="closeCart" aria-label="Close cart">✕</button></div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="drawer-foot">
+    <div style="display:flex;justify-content:space-between;font-weight:800"><span>Subtotal</span><span id="cartTotal">£0.00</span></div>
+    <p class="mono" style="font-size:12px">Pickup at fair free • Shipping added at checkout • Editions reserved 20 mins</p>
+    <div style="display:grid;gap:8px;margin-top:8px">
+      <button class="btn btn-coral" id="checkoutBtn" style="justify-content:center">CHECKOUT →</button>
+      <button class="btn small" id="addTicketBtn" style="justify-content:center">+ ADD DAY TICKET £12</button>
+    </div>
+  </div>
+</aside>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+$("#year").textContent=new Date().getFullYear();
+
+/* scraps */
+const scraps=$("#scraps"), colors=["#FF4D45","#2137E7","#FFC400","#A9EDC2","#FFFDF2"];
+const shapes=["polygon(0 0,100% 8%,92% 100%,0 92%)","polygon(10% 0,100% 0,90% 100%,0 100%)","50% 0,100% 100%,0 100%"];
+for(let i=0;i<16;i++){const d=document.createElement("span");d.className="scrap";
+const s=10+Math.random()*22;d.style.cssText=`left:${Math.random()*100}vw;top:-40px;width:${s*1.4}px;height:${s}px;background:${colors[i%5]};border:2px solid #19131D;clip-path:${shapes[i%3]};animation-duration:${14+Math.random()*18}s;animation-delay:${-Math.random()*20}s;opacity:.75`;scraps.appendChild(d);}
+
+/* nav */
+const nav=$("#mainNav"), menuBtn=$("#menuBtn");
+menuBtn.addEventListener("click",()=>{const o=nav.classList.toggle("open");menuBtn.setAttribute("aria-expanded",o);menuBtn.textContent=o?"CLOSE ✕":"MENU ☰";});
+nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");menuBtn.setAttribute("aria-expanded","false");menuBtn.textContent="MENU ☰";}));
+
+/* countdown */
+const target=new Date("2026-10-16T10:00:00");
+function tick(){const n=new Date();let d=target-n;if(d<0)d=0;
+const dd=Math.floor(d/864e5),hh=Math.floor(d/36e5)%24,mm=Math.floor(d/6e4)%60,ss=Math.floor(d/1e3)%60;
+$("#cd-d").textContent=String(dd).padStart(2,"0");$("#cd-h").textContent=String(hh).padStart(2,"0");$("#cd-m").textContent=String(mm).padStart(2,"0");$("#cd-s").textContent=String(ss).padStart(2,"0");}
+tick();setInterval(tick,1000);
+
+/* separation cycling */
+const inks=["L-coral","L-cobalt","L-yellow","L-mint"];
+const labels={"L-coral":"CORAL ONLY","L-cobalt":"COBALT ONLY","L-yellow":"YELLOW ONLY","L-mint":"MINT ONLY","all":"ALL INKS"};
+let cycleIdx=-1, auto=true;
+$("#autoCycle").addEventListener("change",e=>auto=e.target.checked);
+function showOnly(id){
+  inks.forEach(k=>{document.getElementById(k).style.opacity=(id==="all"||id===k)?(k==="L-mint"?.9:1):.08;});
+  $$(".sep-btn[data-ink]").forEach(b=>b.setAttribute("aria-pressed", (id==="all"||b.dataset.ink===id)?"true":"false"));
+  $("#cycleLabel").textContent=labels[id]||id;
+}
+$$(".sep-btn[data-ink]").forEach(b=>b.addEventListener("click",()=>{auto=false;$("#autoCycle").checked=false;const cur=b.getAttribute("aria-pressed")==="true";if(cur){b.setAttribute("aria-pressed","false");document.getElementById(b.dataset.ink).style.opacity=.08;}else{b.setAttribute("aria-pressed","true");document.getElementById(b.dataset.ink).style.opacity=1;}$("#cycleLabel").textContent="CUSTOM MIX";}));
+$("#allInks").addEventListener("click",()=>showOnly("all"));
+const order=["all","L-coral","L-cobalt","L-yellow","L-mint"];
+setInterval(()=>{if(!auto||document.hidden||matchMedia("(prefers-reduced-motion: reduce)").matches)return;cycleIdx=(cycleIdx+1)%order.length;showOnly(order[cycleIdx]);},2600);
+/* wobble */
+const misRange=$("#misRange"),misWrap=$("#misWrap"),misVal=$("#misVal");
+misRange.addEventListener("input",()=>{const v=+misRange.value;misVal.textContent=v+"px";
+document.getElementById("L-coral").setAttribute("transform",`translate(${v} ${v*0.6})`);
+document.getElementById("L-cobalt").setAttribute("transform",`translate(${-v*0.7} ${v*0.3})`);
+document.getElementById("L-yellow").setAttribute("transform",`translate(${v*0.3} ${-v*0.5})`);
+misWrap.style.transform=`translate(${v*0.2}px,0)`;});
+misRange.dispatchEvent(new Event("input"));
+
+/* SCHEDULE */
+const sched=[
+{day:"fri",time:"10:30",dur:"2H",type:"workshop",color:"#FF4D45",title:"Master the Drum: Riso Basics",host:"Mabel Okonkwo • Studio Puddling",room:"Ink Lab D",seats:18,desc:"Make your first 2-colour print. Separations, grain, ghosting — leave with 10 prints + inky fingers."},
+{day:"fri",time:"12:30",dur:"1H",type:"talk",color:"#2137E7",title:"Misregistration on Purpose",host:"Otto Reyes • Wet Weather Club",room:"Risotorium B",seats:120,desc:"Why perfect is boring. A joyful talk on wobble, overprint and letting the machine talk back."},
+{day:"fri",time:"14:00",dur:"2H",type:"workshop",color:"#FFC400",title:"Halftone Heaven: Photos to Dots",host:"Yuki Ashida • Rain Press",room:"Ink Lab D",seats:16,desc:"Turn phone snaps into punchy 1-colour halftones. Bring 3 photos you love."},
+{day:"fri",time:"15:30",dur:"45M",type:"demo",color:"#A9EDC2",title:"Drum Change Live! Coral → Mint",host:"Tech Desk • Riso UK",room:"Print Hall A",seats:60,desc:"Watch a full drum swap + master make. Loud, smelly, satisfying. Earplugs provided."},
+{day:"fri",time:"17:00",dur:"1H",type:"talk",color:"#2137E7",title:"Pricing Prints Without Crying",host:"Petra Lund • Lard & Letter",room:"Risotorium B",seats:120,desc:"Editions, margins, wholesale — the money chat every indie printer needs."},
+{day:"fri",time:"19:00",dur:"2H",type:"demo",color:"#FF4D45",title:"Opening Party: Print & Pint",host:"All studios",room:"Food Yard E",seats:200,desc:"Live printing, DJs, first dibs on limited posters. Free ghost print for ticket holders."},
+{day:"sat",time:"10:00",dur:"2H",type:"workshop",color:"#A9EDC2",title:"Sunroom Collage Jam",host:"June Okafor-Bevan • Sunroom",room:"Paper Garden C",seats:24,desc:"Hand-cut collage + instant riso. Big paper, big shapes, no experience needed. Kids welcome."},
+{day:"sat",time:"11:30",dur:"1H",type:"talk",color:"#FFC400",title:"Ink Weathering: Fading & Forever",host:"Dr Ada Mensah • Paper Conservator",room:"Risotorium B",seats:120,desc:"Will fluorescent pink outlive us all? Lightfastness, framing and caring for riso."},
+{day:"sat",time:"13:30",dur:"3H",type:"workshop",color:"#2137E7",title:"Cobalt Tiger: 3-Layer Poster",host:"Tomas Fern • Fern & Fizz",room:"Ink Lab D",seats:14,desc:"Our signature workshop. Draw, separate, overprint a A3 tiger poster to take home. Sells out yearly."},
+{day:"sat",time:"16:00",dur:"45M",type:"demo",color:"#FF4D45",title:"Giant Collaborative Rain Print",host:"Wet Weather Club",room:"Print Hall A",seats:80,desc:"200 people, one 2-metre cloud. Add your raindrop. It will be gloriously wonky."},
+{day:"sat",time:"18:00",dur:"4H",type:"talk",color:"#19131D",title:"Night Market + Zine Swap",host:"48 exhibitors",room:"Food Yard E",seats:300,desc:"Tacos, wine, cheap bins, zine swap table. Bring a zine, take a zine."},
+{day:"sat",time:"12:00",dur:"1H",type:"demo",color:"#FFC400",title:"Letterpress vs Riso Smackdown",host:"Lard & Letter",room:"Print Hall A",seats:50,desc:"Same artwork, two machines. You vote. Loser buys doughnuts."},
+{day:"sun",time:"10:30",dur:"2H",type:"workshop",color:"#FF4D45",title:"Tiny Books: 8-Page Zine Sprint",host:"Rain Press",room:"Ink Lab D",seats:20,desc:"One sheet, one hour, one zine. Fold, cut, print, staple, swap."},
+{day:"sun",time:"12:00",dur:"1H",type:"talk",color:"#A9EDC2",title:"Running a Community Studio",host:"Panel: Puddling / Sunroom / Fern",room:"Risotorium B",seats:120,desc:"Rent, drums, volunteers, burnout and joy. Honest numbers included."},
+{day:"sun",time:"13:30",dur:"2H",type:"workshop",color:"#2137E7",title:"Kids Print Free: Weather Monsters",host:"Sunroom Editions",room:"Paper Garden C",seats:30,desc:"Ages 4–11 + grown-ups. Draw a weather monster, we riso it on the spot. Free, drop-in."},
+{day:"sun",time:"15:00",dur:"45M",type:"demo",color:"#FFC400",title:"Misprint Bingo Closing Party",host:"INK WEATHER team",room:"Print Hall A",seats:150,desc:"Wonky ghosts? Off-centre tigers? Shout BINGO! Prizes are… more misprints."},
+{day:"sun",time:"16:30",dur:"1H",type:"talk",color:"#FF4D45",title:"What We Printed This Weekend",host:"All + you",room:"Risotorium B",seats:120,desc:"Show-and-tell finale. Bring what you made. Cry a little. Group photo in raincoats."}
+];
+let curDay="fri", curFilter="all"; const saved=new Set();
+function renderSched(){
+  const list=$("#schedList");list.innerHTML="";
+  const items=sched.filter(s=>s.day===curDay&&(curFilter==="all"||s.type===curFilter));
+  $("#showCount").textContent=items.length;$("#myCount").textContent=saved.size;
+  if(!items.length){list.innerHTML=`<p style="border:3px dashed var(--black);border-radius:16px;padding:20px;background:#fff">No sessions here — try another filter!</p>`;return;}
+  items.forEach((s,i)=>{
+    const el=document.createElement("article");el.className="sched-item reveal in";el.style.setProperty("--itemc",s.color);
+    const id=s.day+"-"+s.time+"-"+i;const isSaved=saved.has(s.title);
+    el.innerHTML=`<div class="time">${s.time}<small>${s.dur} • ${s.type.toUpperCase()}</small></div>
+    <div><h3>${s.title}</h3><p><strong>${s.host}</strong> — ${s.room} • ${s.seats} seats</p><p style="opacity:.8">${s.desc}</p>
+    <div class="tagrow"><span class="mini">◉ ${s.room}</span><span class="mini">♥ ${s.seats} SEATS</span><span class="mini" style="background:${s.color}">${s.type.toUpperCase()}</span></div></div>
+    <div><button class="btn small ${isSaved?"btn-mint":"btn-yellow"} book" aria-pressed="${isSaved}">${isSaved?"SAVED ♥":"SAVE ♥"}</button></div>`;
+    el.querySelector(".book").addEventListener("click",e=>{const b=e.currentTarget;
+      if(saved.has(s.title)){saved.delete(s.title);toast("Removed from my list");}else{saved.add(s.title);toast("Saved: "+s.title);}
+      renderSched();});
+    list.appendChild(el);
+  });
+}
+$$(".day-tab").forEach(b=>b.addEventListener("click",()=>{$$(".day-tab").forEach(x=>x.setAttribute("aria-selected","false"));b.setAttribute("aria-selected","true");curDay=b.dataset.day;renderSched();}));
+$$(".pill").forEach(p=>p.addEventListener("click",()=>{$$(".pill").forEach(x=>x.setAttribute("aria-pressed","false"));p.setAttribute("aria-pressed","true");curFilter=p.dataset.filter;renderSched();}));
+renderSched();
+
+/* PRINTERS */
+const printers=[
+{name:"Mabel Okonkwo",studio:"STUDIO PUDDLING • BRISTOL",inks:["#FF4D45","#2137E7"],bg:"#FFC400",face:`<svg viewBox="0 0 200 160"><ellipse cx="100" cy="80" rx="62" ry="58" fill="#FFFDF2" stroke="#19131D" stroke-width="4"/><ellipse cx="104" cy="84" rx="62" ry="58" fill="#FF4D45" opacity=".6" style="mix-blend-mode:multiply"/><circle cx="78" cy="75" r="8" fill="#19131D"/><circle cx="122" cy="75" r="8" fill="#19131D"/><path d="M70 110 Q100 130 130 110" stroke="#19131D" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="45" cy="60" r="16" fill="#2137E7" opacity=".7" style="mix-blend-mode:multiply"/><path d="M40 20 Q60 40 120 28" stroke="#19131D" stroke-width="4" fill="none"/></svg>`,blurb:"Big dots, bigger laughs. 2-drum wonders about puddles, parties & public transport.",fact:"Loves: 170gsm Munken • Hates: perfect registration"},
+{name:"Tomas Fern",studio:"FERN & FIZZ • GLASGOW",inks:["#2137E7","#A9EDC2"],bg:"#FF4D45",face:`<svg viewBox="0 0 200 160"><rect x="35" y="20" width="130" height="120" rx="28" fill="#FFFDF2" stroke="#19131D" stroke-width="4"/><rect x="42" y="27" width="130" height="120" rx="28" fill="#2137E7" opacity=".45" style="mix-blend-mode:multiply"/><rect x="65" y="60" width="28" height="14" rx="7" fill="#19131D"/><rect x="107" y="60" width="28" height="14" rx="7" fill="#19131D"/><path d="M75 105 Q100 90 125 105" stroke="#19131D" stroke-width="5" fill="none"/><path d="M90 20 L95 5 L100 20 Z" fill="#FFC400" stroke="#19131D" stroke-width="3"/></svg>`,blurb:"Tigers, football & fizz. The Cobalt Tiger Dance poster broke our stall last year.",fact:"Signature: 3-layer cobalt tigers"},
+{name:"Yuki Ashida",studio:"RAIN PRESS • LONDON",inks:["#2137E7","#FFC400"],bg:"#A9EDC2",face:`<svg viewBox="0 0 200 160"><ellipse cx="100" cy="85" rx="66" ry="55" fill="#2137E7" stroke="#19131D" stroke-width="4"/><ellipse cx="100" cy="85" rx="40" ry="36" fill="#FFFDF2"/><circle cx="86" cy="82" r="6" fill="#19131D"/><circle cx="114" cy="82" r="6" fill="#19131D"/><path d="M88 102 Q100 110 112 102" stroke="#19131D" stroke-width="4" fill="none"/><g fill="#FFC400" stroke="#19131D" stroke-width="2"><ellipse cx="60" cy="125" rx="6" ry="9"/><ellipse cx="140" cy="125" rx="6" ry="9"/></g></svg>`,blurb:"Quiet photobooks that punch. Master of moody halftones & rainy bus windows.",fact:"Paper: recycled grey is the new white"},
+{name:"Petra Lund",studio:"LARD & LETTER • MALMÖ / BRISTOL",inks:["#19131D","#FFC400"],bg:"#FFFDF2",face:`<svg viewBox="0 0 200 160"><circle cx="100" cy="80" r="58" fill="#FFC400" stroke="#19131D" stroke-width="4"/><circle cx="104" cy="84" r="50" fill="#FFFDF2" stroke="#19131D" stroke-width="3"/><circle cx="84" cy="75" r="7" fill="#19131D"/><circle cx="118" cy="75" r="7" fill="#19131D"/><rect x="78" y="98" width="46" height="12" rx="6" fill="#19131D"/><text x="100" y="38" text-anchor="middle" font-family="Shrikhand" font-size="18">HEJ!</text></svg>`,blurb:"Letterpress meets riso. Swedish snark, Bristol heart. Sells out of type posters hourly.",fact:"Owns 4 tonnes of wood type (allegedly)"},
+{name:"June Okafor-Bevan",studio:"SUNROOM EDITIONS • CARDIFF",inks:["#FF4D45","#FFC400"],bg:"#2137E7",face:`<svg viewBox="0 0 200 160"><ellipse cx="100" cy="80" rx="60" ry="56" fill="#FF4D45" stroke="#19131D" stroke-width="4"/><ellipse cx="100" cy="80" rx="60" ry="20" fill="#FFC400" opacity=".7" style="mix-blend-mode:multiply"/><circle cx="80" cy="75" r="9" fill="#FFFDF2" stroke="#19131D" stroke-width="3"/><circle cx="120" cy="75" r="9" fill="#FFFDF2" stroke="#19131D" stroke-width="3"/><circle cx="80" cy="75" r="3" fill="#19131D"/><circle cx="120" cy="75" r="3" fill="#19131D"/><path d="M85 108 Q100 118 115 108" stroke="#FFFDF2" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,blurb:"Sunshine collage club. Runs kids tables where everyone leaves with a monster.",fact:"Motto: cut it wonky, print it twice"},
+{name:"Otto Reyes",studio:"WET WEATHER CLUB • MANCHESTER",inks:["#A9EDC2","#FF4D45"],bg:"#FFC400",face:`<svg viewBox="0 0 200 160"><path d="M40 90 Q60 35 100 38 Q140 35 160 90 Q140 130 100 128 Q60 130 40 90" fill="#A9EDC2" stroke="#19131D" stroke-width="4"/><path d="M48 94 Q68 45 104 44" fill="none" stroke="#FF4D45" stroke-width="6" opacity=".7" style="mix-blend-mode:multiply"/><circle cx="82" cy="85" r="6" fill="#19131D"/><circle cx="118" cy="85" r="6" fill="#19131D"/><path d="M85 105 Q100 112 115 105" stroke="#19131D" stroke-width="4" fill="none"/></svg>`,blurb:"Rain, raves & riso. Talks about wobble like it's philosophy (it is).",fact:"Talk: Misregistration on Purpose, Fri"}
+];
+const pg=$("#printerGrid");
+printers.forEach((p,i)=>{
+  const d=document.createElement("article");d.className="printer reveal";d.style.transitionDelay=(i%3*80)+"ms";
+  d.innerHTML=`<div class="printer-art hover-mis" style="background:${p.bg}"><span class="ed" style="left:12px;top:12px">0${i+1} / STALL ${12+i*3}</span>${p.face}<span class="hand" style="position:absolute;right:10px;bottom:6px;font-size:20px;background:#fff;border:2px solid var(--black);border-radius:8px;padding:0 8px;transform:rotate(3deg)">hi! i'm ${p.name.split(" ")[0].toLowerCase()}</span></div>
+  <div class="printer-body"><h3 class="hover-mis">${p.name}</h3><span class="studio">${p.studio}</span><p style="margin:8px 0 0;font-size:15px">${p.blurb}</p>
+  <div class="ink-dots" aria-label="Favourite inks">${p.inks.map(c=>`<span class="dot" style="background:${c}"></span>`).join("")}<span class="dot" style="background:#19131D"></span></div>
+  <p class="mono" style="font-size:12px;background:var(--paper2);border:2px dashed var(--black);border-radius:10px;padding:6px 10px">✦ ${p.fact}</p></div>`;
+  pg.appendChild(d);
+});
+
+/* venue zones */
+const zones={A:["HALL A — PRINT HALL","48 exhibitor tables, the big shop till, and the legendary free misprint bin. Loudest room, best smells (paper + coffee)."],B:["RISOTORIUM B — TALKS","120 raked seats, BSL interpreted, hearing loop. Cushions up front for kids + tired legs."],C:["PAPER GARDEN C — CHILL","Picnic tables, collage jam, kids printing, coffee hatch. If it's sunny, this is heaven."],D:["INK LAB D — WORKSHOPS","Two riso machines running all day. Aprons provided — wear stuff that can get coral."],E:["FOOD YARD E — NIGHT MARKET","Taco Rosa + wine bar Sat 6–10pm. Zine swap table all weekend. Fairy lights: yes."]};
+function setZone(k){$("#zoneTitle").textContent=zones[k][0];$("#zoneDesc").textContent=zones[k][1];$$(".zone").forEach(z=>z.classList.toggle("active",z.dataset.zone===k));}
+$$(".zone").forEach(z=>{z.addEventListener("click",()=>setZone(z.dataset.zone));z.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setZone(z.dataset.zone);}});});
+
+/* SHOP */
+const products=[
+{id:"sun",name:"SUN SHOWER",detail:"A2 • Coral + Yellow • Ed. 80",price:28,bg:"#FFC400",art:`<svg viewBox="0 0 200 260" style="width:85%"><circle cx="100" cy="95" r="62" fill="#FF4D45" stroke="#19131D" stroke-width="4" opacity=".9" style="mix-blend-mode:multiply"/><circle cx="100" cy="95" r="42" fill="none" stroke="#19131D" stroke-width="3" stroke-dasharray="6 6"/><g fill="#2137E7"><ellipse cx="60" cy="180" rx="7" ry="12"/><ellipse cx="100" cy="190" rx="7" ry="12"/><ellipse cx="140" cy="180" rx="7" ry="12"/></g><text x="100" y="240" text-anchor="middle" font-family="Shrikhand" font-size="22">SUN SHOWER</text></svg>`},
+{id:"coral",name:"CORAL FRONT",detail:"A3 • Coral + Cobalt • Ed. 60",price:32,bg:"#FF4D45",art:`<svg viewBox="0 0 200 260" style="width:85%"><ellipse cx="100" cy="110" rx="75" ry="48" fill="#FFF6E3" stroke="#19131D" stroke-width="4"/><ellipse cx="108" cy="115" rx="75" ry="48" fill="#2137E7" opacity=".6" style="mix-blend-mode:multiply"/><path d="M40 170 L60 150 L80 170 L100 150 L120 170 L140 150 L160 170" stroke="#19131D" stroke-width="4" fill="none"/><text x="100" y="230" text-anchor="middle" font-family="Shrikhand" font-size="20" fill="#fff" stroke="#19131D" stroke-width=".6">CORAL FRONT</text></svg>`},
+{id:"tiger",name:"COBALT TIGER DANCE",detail:"A3 • 3 inks • Ed. 100",price:24,bg:"#2137E7",art:`<svg viewBox="0 0 200 260" style="width:85%"><ellipse cx="100" cy="110" rx="68" ry="62" fill="#FFC400" stroke="#FFF6E3" stroke-width="4"/><circle cx="78" cy="105" r="10" fill="#19131D"/><circle cx="122" cy="105" r="10" fill="#19131D"/><path d="M70 135 Q100 150 130 135" stroke="#19131D" stroke-width="5" fill="none"/><text x="100" y="220" text-anchor="middle" font-family="Shrikhand" font-size="18" fill="#fff">TIGER DANCE</text></svg>`},
+{id:"ghost",name:"MINT GHOST MAP",detail:"A2 • Mint + Black • Ed. 50",price:30,bg:"#A9EDC2",art:`<svg viewBox="0 0 200 260" style="width:85%"><path d="M60 150 L60 90 Q60 60 100 60 Q140 60 140 90 L140 150 L125 135 L110 150 L95 135 L80 150 L65 135 Z" fill="#FFFDF2" stroke="#19131D" stroke-width="4"/><circle cx="85" cy="95" r="6" fill="#19131D"/><circle cx="115" cy="95" r="6" fill="#19131D"/><text x="100" y="200" text-anchor="middle" font-family="Caveat" font-size="28">boo! (in mint)</text><text x="100" y="230" text-anchor="middle" font-family="Shrikhand" font-size="18">GHOST MAP</text></svg>`}
+];
+const shopGrid=$("#shopGrid");
+products.forEach((p,i)=>{
+  const d=document.createElement("article");d.className="product reveal";d.style.transitionDelay=(i*70)+"ms";
+  d.innerHTML=`<div class="poster-art" style="background:${p.bg}"><span class="ed">ED. ${p.detail.split("Ed. ")[1]} • NUMBERED</span>${p.art}</div>
+  <div class="product-body"><h3>${p.name}</h3><p class="mono" style="font-size:12px;margin:4px 0">${p.detail}</p>
+  <div class="price-row"><span class="price">£${p.price}</span><button class="btn small btn-black" data-add="${p.id}">ADD +</button></div></div>`;
+  shopGrid.appendChild(d);
+});
+/* cart */
+let cart=[{id:"ticket",name:"DAY TICKET — SAT 17 OCT",detail:"Entry + free ghost print",price:12,qty:0,bg:"#19131D"}];
+products.forEach(p=>cart.push({...p,qty:0}));
+function cartQty(){return cart.reduce((a,c)=>a+c.qty,0);}
+function cartSum(){return cart.reduce((a,c)=>a+c.qty*c.price,0);}
+function renderCart(){
+  $("#cartCount").textContent=cartQty();$("#cartCount2").textContent=cartQty();
+  $("#cartTotal").textContent="£"+cartSum().toFixed(2);
+  const box=$("#cartItems");box.innerHTML="";
+  const active=cart.filter(c=>c.qty>0);
+  if(!active.length)box.innerHTML=`<div style="border:3px dashed var(--black);border-radius:14px;padding:18px;text-align:center;background:#fff"><p class="display" style="font-size:22px">Your tube is empty!</p><p class="mono" style="font-size:12px">Add a poster — or a £12 day ticket — and look very cultured in October.</p></div>`;
+  active.forEach(c=>{
+    const r=document.createElement("div");r.className="cart-row";
+    r.innerHTML=`<div class="cart-thumb" style="background:${c.bg};display:grid;place-items:center;font-family:Shrikhand">✦</div>
+    <div><strong style="font-size:14px">${c.name}</strong><br><span class="mono" style="font-size:11px">${c.detail} • £${c.price}</span>
+    <div class="qty" style="margin-top:6px"><button aria-label="Decrease ${c.name}" data-dec="${c.id}">−</button><strong>${c.qty}</strong><button aria-label="Increase ${c.name}" data-inc="${c.id}">+</button></div></div>
+    <button class="btn small" data-del="${c.id}" aria-label="Remove ${c.name}">✕</button>`;
+    box.appendChild(r);
+  });
+  box.querySelectorAll("[data-inc]").forEach(b=>b.onclick=()=>{cart.find(x=>x.id===b.dataset.inc).qty++;renderCart();});
+  box.querySelectorAll("[data-dec]").forEach(b=>b.onclick=()=>{const it=cart.find(x=>x.id===b.dataset.dec);it.qty=Math.max(0,it.qty-1);renderCart();});
+  box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{cart.find(x=>x.id===b.dataset.del).qty=0;renderCart();toast("Removed from tube");});
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-add]");if(b){const it=cart.find(x=>x.id===b.dataset.add);it.qty++;renderCart();openCart();toast("Added: "+it.name+" ♥");}});
+$("#addTicketBtn").addEventListener("click",()=>{cart.find(x=>x.id==="ticket").qty++;renderCart();toast("Day ticket added — see you there!");});
+const drawer=$("#cartDrawer"),overlay=$("#overlay");
+function openCart(){drawer.classList.add("open");overlay.classList.add("show");drawer.setAttribute("aria-hidden","false");$("#closeCart").focus();}
+function closeCart(){drawer.classList.remove("open");overlay.classList.remove("show");drawer.setAttribute("aria-hidden","true");}
+$("#cartBtn").addEventListener("click",openCart);$("#closeCart").addEventListener("click",closeCart);overlay.addEventListener("click",closeCart);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCart();});
+$("#checkoutBtn").addEventListener("click",()=>{if(cartQty()===0){toast("Your tube is empty — add something first!");return;}toast("★ Mock checkout: reserved! Pay at the mill till ♥");cart.forEach(c=>c.qty=0);renderCart();setTimeout(closeCart,900);});
+renderCart();
+
+/* quotes */
+const quotes=[
+{t:"“I came for an hour, stayed for six. My tote bag has never been this heavy or this loved.”",w:"PRIYA S. — FIRST-TIMER 2024",c:"#FF4D45",a:"P"},
+{t:"“The tiger workshop sold me. Three inks, one wobble, pure joy. My kitchen wall is now a shrine.”",w:"DANIEL K. — SAT WORKSHOPPER",c:"#2137E7",a:"D"},
+{t:"“As a print nerd, INK WEATHER is Glastonbury. As a mum, the free kids table saved my weekend.”",w:"ALICE M. — PAPER GARDEN REGULATOR",c:"#FFC400",a:"A"},
+{t:"“Sold half my edition, swapped zines, learned halftones. Best £12 I spend all year.”",w:"ROB T. — EXHIBITOR, GHOST PRESS",c:"#A9EDC2",a:"R"},
+{t:"“Accessible, funny, gloriously wonky. The night market tacos alone are worth the train.”",w:"SAM O. — NIGHT MARKET DEVOTEE",c:"#19131D",a:"S"}
+];
+let qi=0;const track=$("#quoteTrack"),dots=$("#qDots");
+quotes.forEach((q,i)=>{
+  const s=document.createElement("div");s.className="quote-slide"+(i===0?" active":"");s.setAttribute("role","tabpanel");
+  s.innerHTML=`<div class="avatar" style="background:${q.c};color:${q.c==="#19131D"?"#fff":"#19131D"}">${q.a}</div><div><p class="quote-text">${q.t}</p><p class="quote-who">— ${q.w} • ★★★★★</p></div>`;
+  track.appendChild(s);
+  const d=document.createElement("button");d.className="q-dot";d.setAttribute("aria-label","Show quote "+(i+1));d.setAttribute("aria-current",i===0?"true":"false");
+  d.addEventListener("click",()=>showQ(i));dots.appendChild(d);
+});
+function showQ(i){qi=(i+quotes.length)%quotes.length;$$(".quote-slide").forEach((s,k)=>s.classList.toggle("active",k===qi));$$(".q-dot").forEach((d,k)=>d.setAttribute("aria-current",k===qi?"true":"false"));$("#qCount").textContent=(qi+1)+" / "+quotes.length;}
+$("#qPrev").addEventListener("click",()=>showQ(qi-1));$("#qNext").addEventListener("click",()=>showQ(qi+1));
+setInterval(()=>{if(!document.hidden&&!matchMedia("(prefers-reduced-motion: reduce)").matches)showQ(qi+1);},7000);
+
+/* FAQ */
+const faqs=[
+["Do I need a ticket? How much?","Yes for entry — £12 day / £28 weekend / under-12s free. Talks are included, workshops are £8–£18 extra (materials included). Night Market Sat evening is free with any day ticket."],
+["What even IS a risograph?","A Japanese stencil duplicator that prints one vivid soy-ink colour at a time. Think screenprint meets photocopier, with grainy texture, neon inks and charming misalignment. You'll see two running live all weekend."],
+["Can I buy prints? Should I bring cash?","Yes! 48 stalls + our limited shop. Most take cards, but cash speeds the legendary Sunday discount hour. Bring a poster tube — or buy our £3 recycled tube."],
+["Is it kid / dog / beginner friendly?","Very. Kids print free in the Paper Garden, dogs on leads welcome (raincoats encouraged), and every workshop says beginner-friendly and means it. Step-free throughout + quiet room."],
+["Can I exhibit next year?","Open call drops in February via the newsletter. We prioritise independent, small-run printers, zinemakers and community studios. No AI-only work, no resellers — handmade heart only."],
+["What if it rains? (It's called Ink Weather…)","Then it's perfect. We're mostly indoors in the mill, plus covered yard. Last year it poured and the Coral Front poster sold out. Dress for Bristol: layers + tote bag."],
+["Refunds / access needs?","Tickets refundable to 7 days before, transferable anytime — just email hi@inkweather.club. Tell us access needs in advance and we'll sort BSL, seating, early entry, whatever helps."]
+];
+const fl=$("#faqList");
+faqs.forEach(([q,a],i)=>{
+  const d=document.createElement("div");d.className="faq-item"+(i===0?" open":"");
+  d.innerHTML=`<button class="faq-q" aria-expanded="${i===0}">${q}<span class="icon" aria-hidden="true">+</span></button><div class="faq-a" style="max-height:${i===0?"200px":"0"}"><div>${a}</div></div>`;
+  const btn=d.querySelector(".faq-q"),ans=d.querySelector(".faq-a");
+  btn.addEventListener("click",()=>{const open=d.classList.toggle("open");btn.setAttribute("aria-expanded",open);ans.style.maxHeight=open?ans.scrollHeight+"px":"0";});
+  fl.appendChild(d);
+});
+
+/* newsletter */
+$("#newsForm").addEventListener("submit",e=>{
+  e.preventDefault();const email=$("#newsEmail").value.trim(),name=$("#newsName").value.trim(),msg=$("#newsMsg");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.textContent="✕ Hmm, that email looks smudged — check it?";msg.style.color="#FFC400";$("#newsEmail").focus();return;}
+  msg.textContent="★ YES "+(name?name.toUpperCase():"FRIEND")+"! You're on the list. First Misprint lands soon ✉";msg.style.color="#A9EDC2";
+  toast("Subscribed! Welcome to The Misprint ♥");e.target.reset();
+});
+
+/* toast */
+let toastT;function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),2600);}
+
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.12});
+$$(".reveal").forEach(el=>io.observe(el));
+})();
+</script>
+</body>
+</html>

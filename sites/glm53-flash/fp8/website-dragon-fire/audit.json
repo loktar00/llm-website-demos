@@ -1,0 +1,26 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/glm53-flash/fp8/website-dragon-fire/index.html",
+  "pass": false,
+  "notes": [
+    "all canvases blank after settle",
+    "WebGL canvas under headless SwiftShader -- possible false negative; GPU-verify in a headed browser before calling it broken",
+    "1 uncaught page error(s)"
+  ],
+  "console_errors": [],
+  "page_errors": [
+    "mul32 is not defined"
+  ],
+  "canvas_nonblank": false,
+  "canvas_count": 5,
+  "canvas_kinds": [
+    "webgl",
+    "webgl",
+    "webgl",
+    "webgl",
+    "webgl"
+  ],
+  "served_by": "base",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 6103,
+  "scroll_height": 10083
+}

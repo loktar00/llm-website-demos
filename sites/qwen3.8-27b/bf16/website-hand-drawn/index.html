@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Moss Notebook — a year in Hollowfen Wood</title>
+<meta name="description" content="A naturalist's hand-drawn field journal: one year of forests, fungi, streams, birds, and tiny discoveries in Hollowfen Wood.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&display=swap" rel="stylesheet">
+<style>
+/* ============ base ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#f5eedd; --paper-2:#f8f2e3; --paper-3:#efe3c8;
+  --ink:#2a2622; --ink-soft:#4a443b; --pencil:#6e665a;
+  --green:#5f7f4c; --green-2:#8da16e;
+  --ochre:#c68b3f; --rust:#a4502f; --red:#b0402e;
+  --blue:#5d7f8d; --blue-2:#7fa0ab;
+  --serif:'Fraunces',Georgia,'Iowan Old Style',serif;
+  --body:'Newsreader',Georgia,serif;
+  --hand:'Caveat','Segoe Script','Bradley Hand',cursive;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:
+    radial-gradient(1200px 800px at 88% -10%, rgba(95,127,76,.06), transparent 60%),
+    radial-gradient(900px 700px at -8% 42%, rgba(198,139,63,.06), transparent 55%),
+    radial-gradient(1000px 900px at 70% 110%, rgba(93,127,141,.05), transparent 60%),
+    var(--paper);
+  color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.6;
+  overflow-x:clip; font-optical-sizing:auto;
+}
+::selection{background:rgba(176,64,46,.22)}
+img{max-width:100%}
+a{color:inherit}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px dashed var(--rust);outline-offset:3px}
+.page{position:relative;max-width:1180px;margin:0 auto;padding:0 clamp(16px,4.5vw,64px)}
+.marginline{position:absolute;left:clamp(10px,2vw,26px);top:60px;bottom:60px;width:2px;
+  background:linear-gradient(rgba(164,80,47,0),rgba(164,80,47,.32) 6%,rgba(164,80,47,.32) 94%,rgba(164,80,47,0));
+  pointer-events:none;z-index:0}
+@media(max-width:1080px){.marginline{display:none}}
+/* grain (canvas-filled; SVG turbulence fallback below) */
+#grain{position:fixed;inset:0;z-index:95;pointer-events:none;opacity:.6;mix-blend-mode:multiply;background-size:256px 256px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.32 0 0 0 0 0.27 0 0 0 0 0.2 0 0 0 0.045 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>");}
+/* ============ ink line draw-in / fades ============ */
+.draw{stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset var(--du,1.5s) cubic-bezier(.4,0,.25,1) var(--dd,0s)}
+.inview .draw{stroke-dashoffset:0}
+.draw.p{stroke:var(--pencil);stroke-width:1.1;opacity:.75}
+.draw.b{stroke:var(--blue)}
+.draw.g{stroke:var(--green)}
+.draw.r{stroke:var(--rust)}
+.fade{opacity:0;transition:opacity .9s ease var(--dd,.9s)}
+.inview .fade{opacity:var(--fo,1)}
+.reveal{opacity:0;transform:translateY(18px) rotate(.15deg);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.65,.25,1)}
+.reveal.inview{opacity:1;transform:none}
+/* ============ the flying bird ============ */
+#bird{position:fixed;top:14px;left:0;z-index:96;width:54px;opacity:.85;pointer-events:none;
+  animation:fly 34s linear infinite}
+@keyframes fly{0%{transform:translateX(-90px)}15%{transform:translateX(106vw)}16%,100%{transform:translateX(106vw)}}
+#bird .bbob{animation:bob 1.05s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-3px)}}
+#bird .wup{animation:fu .8s steps(1) infinite}
+#bird .wdn{animation:fd .8s steps(1) infinite}
+@keyframes fu{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes fd{0%,49%{opacity:0}50%,100%{opacity:1}}
+/* ============ tabs (notebook side) ============ */
+#tabs{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:97;display:flex;flex-direction:column;gap:7px}
+#tabs a{font-family:var(--hand);font-size:17px;line-height:1;color:var(--ink-soft);text-decoration:none;
+  background:linear-gradient(#f3ead6,#ebdfc2);border:1.5px solid rgba(42,38,34,.5);border-right:none;
+  border-radius:9px 0 0 11px / 13px 0 0 9px;padding:5px 8px 5px 13px;min-width:58px;text-align:center;
+  box-shadow:-2px 2px 5px rgba(42,38,34,.14);transform:translateX(16px);transition:transform .3s,background .3s,color .3s}
+#tabs a:hover{transform:translateX(5px)}
+#tabs a.on{transform:translateX(0);background:var(--ink);color:var(--paper)}
+@media(max-width:1080px){#tabs{display:none}}
+/* ============ cover ============ */
+.cover{position:relative;min-height:92vh;display:grid;grid-template-rows:auto 1fr auto;padding-top:30px;z-index:1}
+.washcov{position:absolute;inset:0;z-index:0;overflow:hidden}
+.washcov svg{width:100%;height:100%}
+.wshift1{animation:bloomA 26s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.wshift2{animation:bloomB 34s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes bloomA{to{transform:translate(12px,-9px) scale(1.04)}}
+@keyframes bloomB{to{transform:translate(-10px,8px) scale(1.03)}}
+.cov-top{position:relative;z-index:2;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  border-bottom:2px solid rgba(42,38,34,.5);padding-bottom:10px;margin-bottom:6px}
+.kicker{font-family:var(--serif);font-weight:500;font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
+.kicker.hand{font-family:var(--hand);font-size:19px;letter-spacing:.02em;text-transform:none;color:var(--pencil)}
+.cov-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.12fr .88fr;gap:clamp(12px,3vw,30px);align-items:end;padding-top:1vh}
+.cov-left{padding-bottom:2vh}
+h1{font-family:var(--serif);font-weight:620;font-size:clamp(54px,9.2vw,124px);line-height:.94;letter-spacing:-.018em}
+h1 em{font-style:italic;font-weight:520;color:var(--green);
+  background:linear-gradient(104deg,transparent 1%,rgba(141,161,110,.28) 10% 90%,transparent 99%);
+  box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:0 .06em}
+.h-underline{width:min(340px,70%);margin:6px 0 14px;display:block}
+.cov-sub{font-family:var(--hand);font-size:clamp(20px,2.4vw,26px);color:var(--ink-soft);line-height:1.25;max-width:34ch;margin-bottom:18px}
+.cov-body{max-width:52ch;font-size:16.5px;line-height:1.68;color:var(--ink-soft)}
+.cov-body i{font-style:italic}
+.cov-meta{font-family:var(--hand);font-size:19px;color:var(--pencil);margin-top:20px}
+.cov-note{font-family:var(--hand);font-size:19px;color:var(--ink-soft);margin-top:22px;display:flex;align-items:center;gap:8px}
+.cov-note svg{width:40px;flex:0 0 40px}
+.cov-art{position:relative;z-index:1;min-height:300px}
+.cov-art svg{width:100%;height:auto;display:block}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 7s ease-in-out infinite alternate}
+.sway.s2{animation-duration:8.8s;animation-delay:-2.4s}
+.sway.s3{animation-duration:9.7s;animation-delay:-4.1s}
+@keyframes sway{from{transform:rotate(-1.1deg)}to{transform:rotate(1.5deg)}}
+.dew{animation:dewp 5s ease-in-out infinite}
+.dew.d2{animation-delay:1.4s}.dew.d3{animation-delay:2.6s}.dew.d4{animation-delay:3.5s}
+@keyframes dewp{0%,100%{opacity:.9}50%{opacity:.35}}
+.ripp{animation:ripp 6.5s ease-in-out infinite}
+@keyframes ripp{0%,100%{opacity:.55;transform:translateY(0)}50%{opacity:.3;transform:translateY(1.6px)}}
+.stampcov{position:absolute;right:clamp(14px,4vw,44px);bottom:52px;z-index:3;width:118px;transform:rotate(-9deg);opacity:.85}
+.cue{position:absolute;left:clamp(16px,4.5vw,56px);bottom:22px;z-index:3;font-family:var(--hand);font-size:21px;
+  color:var(--ink-soft);text-decoration:none;display:flex;align-items:center;gap:6px}
+.cue:hover{color:var(--rust)}
+.cue svg{width:22px}
+.fold{position:absolute;right:0;bottom:0;width:56px;height:56px;z-index:4;pointer-events:none;
+  background:linear-gradient(315deg,transparent 47%,rgba(42,38,34,.25) 48%,#e9dcbd 51%,#f7f0de 78%,#efe3c8 100%)}
+@media(max-width:860px){.cov-grid{grid-template-columns:1fr}.cov-art{order:-1;max-width:520px}.stampcov{width:92px}}
+/* ============ section chrome ============ */
+section{position:relative;padding:clamp(52px,8.5vh,100px) 0;scroll-margin-top:20px;z-index:1}
+.shead{position:relative;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:clamp(24px,4vw,42px)}
+.snum{position:relative;width:52px;height:52px;flex:0 0 52px;align-self:center;display:grid;place-items:center}
+.snum svg{position:absolute;inset:0;width:100%;height:100%}
+.snum span{font-family:var(--serif);font-weight:500;font-size:16px;color:var(--ink-soft)}
+.shead h2{font-family:var(--serif);font-weight:560;font-size:clamp(30px,4.4vw,48px);letter-spacing:-.01em;line-height:1.05}
+.snote{font-family:var(--hand);font-size:20px;color:var(--pencil);margin-left:auto;transform:rotate(-1deg)}
+.uline{width:200px;position:absolute;left:70px;bottom:-14px}
+.pageno{position:absolute;right:0;top:-14px;font-family:var(--hand);font-size:18px;color:var(--pencil);opacity:.8}
+.divider{display:flex;justify-content:center;padding:6px 0 0}
+.divider svg{width:min(260px,60%);opacity:.85}
+.doodle{position:absolute;opacity:.55;pointer-events:none}
+/* ============ note cards, tape ============ */
+.note{position:relative;background:linear-gradient(160deg,var(--paper-2),#f1e8d0);
+  border:1.6px solid rgba(42,38,34,.62);
+  border-radius:255px 15px 225px 15px/15px 225px 15px 255px;
+  box-shadow:3px 4px 0 rgba(42,38,34,.06),0 20px 32px -24px rgba(42,38,34,.55)}
+.note.r2{border-radius:15px 225px 15px 255px/255px 15px 225px 15px}
+.note.r3{border-radius:225px 15px 255px 15px/15px 255px 15px 225px}
+.lift{transition:transform .38s cubic-bezier(.2,.7,.3,1.25),box-shadow .38s}
+.lift:hover{transform:translateY(-6px) rotate(-.5deg);
+  box-shadow:3px 4px 0 rgba(42,38,34,.06),0 30px 40px -24px rgba(42,38,34,.6)}
+.tape{position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-2deg);width:96px;height:28px;
+  background:linear-gradient(180deg,rgba(229,213,158,.78),rgba(213,193,136,.6));
+  box-shadow:0 1px 2px rgba(42,38,34,.16);opacity:.92;
+  clip-path:polygon(2% 8%,8% 0,96% 4%,100% 28%,97% 74%,100% 96%,92% 100%,6% 94%,0 66%,3% 30%)}
+.tape.tc{left:14px;top:-12px;transform:rotate(-42deg)}
+.tape.tcr{left:auto;right:14px;top:-12px;transform:rotate(42deg)}
+/* ============ seasons ============ */
+.seasons-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(26px,4.5vw,52px)}
+.season{--rot:-.8deg;transform:rotate(var(--rot));padding:24px 24px 20px}
+.season:nth-child(2){--rot:.7deg}
+.season:nth-child(3){--rot:.6deg}
+.season:nth-child(4){--rot:-.5deg}
+.season .months{font-family:var(--serif);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--pencil)}
+.season h3{font-family:var(--serif);font-weight:540;font-size:clamp(21px,2.2vw,26px);margin:4px 0 10px}
+.season .sketch{height:126px;display:flex;align-items:center;justify-content:center;margin:4px 0 8px}
+.season .sketch svg{height:100%;width:auto;max-width:100%}
+.season p{font-size:15.5px;line-height:1.62;color:var(--ink-soft)}
+.season ul{list-style:none;margin-top:12px;padding-top:10px;border-top:1.5px dashed rgba(42,38,34,.35);
+  font-size:14.5px;display:grid;gap:5px;color:var(--ink)}
+.season ul li{padding-left:18px;position:relative}
+.season ul li::before{content:"—";position:absolute;left:0;color:var(--pencil)}
+.stampmini{position:absolute;right:14px;bottom:12px;font-family:var(--hand);font-size:15.5px;color:var(--rust);
+  border:1.5px solid currentColor;padding:2px 10px;transform:rotate(-4deg);
+  border-radius:50% 46% 52% 48%/52% 48% 46% 50%;opacity:.85;background:rgba(248,242,227,.5)}
+@media(max-width:760px){.seasons-grid{grid-template-columns:1fr}.season{--rot:0deg!important}}
+/* ============ map ============ */
+.map-card{padding:clamp(10px,2vw,20px)}
+#mapsvg{width:100%;height:auto;display:block}
+#coords{position:absolute;right:22px;bottom:14px;font-family:var(--hand);font-size:17px;color:var(--pencil);
+  background:rgba(248,242,227,.75);padding:1px 10px;border:1px solid rgba(110,102,90,.3);border-radius:8px 40px 8px 40px}
+.legend{display:flex;gap:8px 18px;flex-wrap:wrap;margin-top:14px;font-size:14px;list-style:none;padding:0 6px}
+.legend li{display:flex;gap:9px;align-items:center;cursor:crosshair;padding:3px 8px;transition:background .25s;border-radius:6px}
+.legend li:hover,.legend li:focus-visible{background:rgba(95,127,76,.14)}
+.legend svg{width:26px;height:26px;flex:0 0 26px}
+.contour{stroke:var(--pencil);stroke-width:1.1;fill:none;opacity:.5}
+.contour.hot{opacity:.62}
+.stream{stroke:var(--blue);stroke-width:2.6;fill:none;opacity:.85}
+.stream.echo{stroke-width:1.1;opacity:.3}
+.rip{stroke:var(--blue);fill:none;stroke-width:1.2;opacity:.55}
+.tline{stroke:var(--rust);stroke-width:1.7;fill:none;stroke-dasharray:7 7;opacity:.85}
+.tick{stroke:var(--ink-soft);stroke-width:1.2;fill:none}
+.tl-label{font-family:var(--hand);font-size:15px;fill:var(--ink-soft)}
+.tl-num{font-family:var(--body);font-size:10px;fill:var(--pencil)}
+.needle-n{fill:rgba(176,64,46,.5);stroke:var(--ink);stroke-width:1}
+.needle-s{fill:none;stroke:var(--ink);stroke-width:1.2}
+g.layer{transition:opacity .35s}
+g.layer.dim{opacity:.14}
+.map-note{font-family:var(--hand);font-size:18px;color:var(--pencil);margin-top:10px;padding-left:8px}
+/* ============ specimens ============ */
+.spec-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(18px,2.6vw,30px)}
+.spec{grid-column:span 2;padding:18px 18px 16px;--rot:-.6deg;transform:rotate(var(--rot))}
+.spec:nth-child(2){--rot:.8deg}.spec:nth-child(3){--rot:-.4deg}.spec:nth-child(4){--rot:.5deg}
+.spec:nth-child(5){--rot:-.7deg}.spec:nth-child(6){--rot:.6deg}.spec:nth-child(7){--rot:-.5deg}
+.spec.wide{grid-column:span 3}
+.spec .lab{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  border-bottom:1.5px solid rgba(42,38,34,.5);padding-bottom:8px;margin-bottom:10px}
+.spec .no{font-family:var(--serif);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
+.spec .ref{font-family:var(--hand);font-size:15px;color:var(--pencil);white-space:nowrap}
+.spec h3{font-family:var(--serif);font-weight:560;font-size:19px;line-height:1.2}
+.spec h3 i{display:block;font-weight:400;font-size:.9em;color:var(--ink-soft)}
+.drawing{height:172px;display:flex;align-items:center;justify-content:center;margin:10px 0 4px;
+  border:1.4px dashed rgba(42,38,34,.3);border-radius:12px 120px 12px 120px/120px 12px 120px 12px;background:rgba(255,252,244,.35)}
+.drawing svg{height:100%;width:auto;max-width:100%}
+.spec .nline{font-size:14.5px;line-height:1.55;color:var(--ink-soft)}
+.spec .meta{margin-top:10px;font-size:12.5px;color:var(--pencil);letter-spacing:.03em;display:flex;gap:6px 14px;flex-wrap:wrap}
+.spec .meta b{font-weight:600;color:var(--ink-soft)}
+.spec.todo{border-style:dashed;background:transparent;box-shadow:none;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.spec.todo .q{font-family:var(--hand);font-size:70px;color:var(--pencil);line-height:1}
+.spec.todo .nline{margin-top:6px}
+.spec.todo .dots{border-bottom:2px dotted rgba(110,102,90,.6);height:1.4em;margin:8px auto 0;width:70%}
+@media(max-width:920px){.spec-grid{grid-template-columns:1fr 1fr}.spec,.spec.wide{grid-column:span 1}}
+@media(max-width:580px){.spec-grid{grid-template-columns:1fr}}
+/* ============ featured study ============ */
+.study-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:clamp(24px,4.5vw,54px);align-items:start}
+.prose p{max-width:64ch;margin-bottom:1.15em;font-size:16.5px;line-height:1.72}
+.prose .lede::first-letter{font-family:var(--serif);font-weight:600;font-size:3.7em;float:left;line-height:.8;
+  padding:6px 12px 0 0;color:var(--rust)}
+.pull{font-family:var(--serif);font-style:italic;font-weight:480;font-size:clamp(20px,2.4vw,26px);line-height:1.42;
+  padding:16px 24px;margin:26px 0;max-width:58ch;border-left:3px solid rgba(42,38,34,.65);
+  background:linear-gradient(100deg,rgba(198,139,63,.14),rgba(198,139,63,.02) 75%);
+  clip-path:polygon(0 4%,98% 0,100% 12%,99% 97%,4% 100%,0 88%)}
+.fig{margin:30px 0;padding:16px 16px 12px}
+.fig svg{width:100%;height:auto;display:block}
+.fig figcaption{font-family:var(--hand);font-size:17px;color:var(--pencil);margin-top:8px;text-align:right}
+.marginals{display:grid;gap:44px;margin-top:12px}
+.marginal{font-family:var(--hand);font-size:19px;line-height:1.32;color:var(--ink-soft);position:relative;padding-right:6px}
+.marginal svg{width:52px;display:block;margin-bottom:-6px;transform:translateX(-14px)}
+@media(max-width:960px){
+  .study-grid{grid-template-columns:1fr}
+  .marginals{gap:16px;margin:18px 0 0 8%}
+  .marginal{max-width:52ch}
+  .marginal svg{transform:rotate(90deg) translateX(6px);margin:0 0 4px -26px}
+}
+/* ============ weather ledger ============ */
+.ledger-card{padding:20px clamp(12px,2vw,22px)}
+.ledger-hint{font-family:var(--hand);font-size:18px;color:var(--pencil);margin-bottom:10px}
+.ledger-wrap{overflow-x:auto;padding-bottom:4px}
+table.ledger{border-collapse:collapse;width:100%;min-width:680px;font-size:14px}
+.ledger th{font-family:var(--serif);font-weight:500;text-transform:uppercase;letter-spacing:.14em;font-size:11px;
+  color:var(--pencil);text-align:left;padding:8px 10px;border-bottom:2px solid rgba(42,38,34,.55);white-space:nowrap}
+.ledger td{padding:8px 10px;border-bottom:1.5px solid rgba(42,38,34,.16);vertical-align:middle}
+.ledger tbody tr{transition:background .3s}
+.ledger tbody tr:hover{background:rgba(95,127,76,.09)}
+td.m{font-family:var(--serif);font-weight:560;font-size:15px;white-space:nowrap}
+td.w{color:var(--ink-soft);white-space:nowrap}
+td.note{font-family:var(--hand);font-size:17px;color:var(--ink-soft)}
+.sky{width:24px;height:24px}
+.sky *{fill:none;stroke:var(--ink-soft);stroke-width:1.4;stroke-linecap:round}
+.tally line{stroke:var(--blue);stroke-width:1.6;stroke-linecap:round}
+.tally .diag{stroke:var(--rust)}
+.dry{color:var(--pencil);font-family:var(--hand);font-size:15px}
+.tbar line.ax{stroke:rgba(110,102,90,.5);stroke-width:1}
+.tbar line.seg{stroke:var(--rust);stroke-width:3;stroke-linecap:round}
+.tbar line.tk{stroke:var(--ink);stroke-width:1.4}
+.tval{font-family:var(--serif);font-size:12.5px;color:var(--ink-soft);margin-left:8px;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--hand);font-size:13px;color:var(--rust);border:1.3px solid currentColor;
+  border-radius:50% 46% 52% 48%/52% 48% 46% 50%;padding:0 7px;margin-left:8px;transform:rotate(-3deg);vertical-align:1px}
+/* ============ soundscape ============ */
+.sound-list{border-top:2px solid rgba(42,38,34,.5)}
+.srow{display:grid;grid-template-columns:150px minmax(0,1fr) 170px;gap:10px 20px;align-items:center;
+  padding:16px 8px;border-bottom:1.5px solid rgba(42,38,34,.2);transition:background .3s}
+.srow:hover{background:rgba(93,127,141,.08)}
+.srow .when{font-family:var(--hand);font-size:18px;color:var(--pencil)}
+.srow h3{font-family:var(--serif);font-weight:560;font-size:19px;margin-bottom:2px}
+.srow p{font-size:14.5px;color:var(--ink-soft);max-width:56ch}
+.wave{width:100%;height:34px}
+.wv{fill:none;stroke:var(--blue);stroke-width:1.4;opacity:.72;stroke-dasharray:52 12;animation:wmove 12s linear infinite;transition:stroke .3s,opacity .3s}
+.srow:nth-child(2n) .wv{animation-duration:15s}
+.srow:nth-child(3n) .wv{animation-duration:9.5s}
+@keyframes wmove{to{stroke-dashoffset:-128}}
+.srow:hover .wv{stroke:var(--rust);opacity:1}
+@media(max-width:760px){.srow{grid-template-columns:1fr}.wave{order:3;max-width:280px}}
+/* ============ kit ============ */
+.kit-wrap{display:grid;grid-template-columns:minmax(0,820px) 1fr;gap:clamp(20px,4vw,60px);align-items:start}
+.kit{display:grid;grid-template-columns:1fr 1fr;gap:2px 44px}
+@media(max-width:900px){.kit{grid-template-columns:1fr}.kit-wrap{grid-template-columns:1fr}}
+.kit-item{display:flex;align-items:center;gap:14px;padding:11px 6px;border-bottom:1.5px dotted rgba(42,38,34,.28);
+  cursor:pointer;user-select:none;-webkit-user-select:none}
+.kit-item .box{width:25px;height:25px;flex:0 0 25px}
+.kit-item .bx{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.kit-item .chk{fill:none;stroke:var(--green);stroke-width:2.6;stroke-linecap:round;
+  stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .55s ease .05s}
+.kit-item.checked .chk{stroke-dashoffset:0}
+.kit-item .name{font-size:16.5px;transition:color .3s,background .3s;background:linear-gradient(transparent 76%,rgba(198,139,63,.4) 76% 94%,transparent 94%);background-size:0% 100%;background-repeat:no-repeat}
+.kit-item:hover .name{background-size:100% 100%}
+.kit-item.checked .name{color:var(--pencil);text-decoration:line-through;text-decoration-color:rgba(110,102,90,.55);text-decoration-thickness:1.5px}
+.kit-item .cm{margin-left:auto;font-family:var(--hand);font-size:16px;color:var(--pencil);text-align:right;max-width:230px;line-height:1.25}
+.kit-hint{font-family:var(--hand);font-size:19px;color:var(--pencil);margin-top:14px;transform:rotate(-.6deg)}
+.kit-sketch svg{width:100%;max-width:300px;height:auto;display:block;margin:0 auto}
+/* ============ about ============ */
+.about-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:clamp(26px,5vw,64px);align-items:start}
+@media(max-width:820px){.about-grid{grid-template-columns:1fr}.portrait{max-width:300px}}
+.portrait{padding:18px 18px 14px;--rot:.8deg;transform:rotate(var(--rot))}
+.portrait svg{width:100%;height:auto;display:block}
+.sig{font-family:var(--hand);font-size:42px;font-weight:600;margin-top:10px;transform:rotate(-2deg);display:inline-block}
+.about-bio p{max-width:60ch;font-size:16.5px;line-height:1.7;margin-bottom:1.1em}
+.principles{margin-top:24px;list-style:none;display:grid;gap:9px;font-size:15.5px;counter-reset:pr}
+.principles li{counter-increment:pr;position:relative;padding-left:34px;max-width:56ch}
+.principles li::before{content:counter(pr) ".";position:absolute;left:0;top:0;font-family:var(--serif);font-weight:600;color:var(--rust)}
+.stats{display:flex;gap:14px 30px;flex-wrap:wrap;margin-top:28px;padding-top:16px;
+  border-top:1.5px dashed rgba(42,38,34,.35);font-family:var(--hand);font-size:19px;color:var(--ink-soft)}
+.about-stamp{width:104px;margin-top:26px;transform:rotate(7deg);opacity:.8}
+/* ============ back page / footer ============ */
+.back{position:relative;margin-top:70px;padding:60px 0 40px;z-index:1}
+.sheet{position:relative;max-width:1080px;margin:0 auto;background:linear-gradient(180deg,#f3ecd9,#efe3c8);
+  border:1.6px solid rgba(42,38,34,.4);border-top:none;
+  box-shadow:0 26px 44px -30px rgba(42,38,34,.55);
+  padding:clamp(44px,6vw,70px) clamp(20px,5.5vw,64px) 44px;
+  clip-path:polygon(0 26px,2.5% 12px,6% 20px,9.5% 8px,13% 18px,17% 10px,21% 22px,25% 12px,29% 18px,33% 8px,37% 20px,41% 12px,45% 22px,49% 10px,53% 18px,57% 8px,61% 20px,65% 12px,69% 22px,73% 10px,77% 18px,81% 8px,85% 20px,89% 12px,93% 18px,96.5% 10px,100% 22px,100% 100%,0 100%)}
+.fin{font-family:var(--hand);font-size:clamp(46px,6vw,64px);font-weight:600;text-align:center;transform:rotate(-1.5deg)}
+.fin-u{width:180px;margin:0 auto;display:block}
+.belongs{text-align:center;font-family:var(--hand);font-size:clamp(19px,2.3vw,24px);color:var(--ink-soft);margin:26px auto 8px;max-width:60ch}
+.belongs .blank{display:inline-block;min-width:min(280px,40%);border-bottom:2px dotted rgba(74,68,59,.6);transform:rotate(-.5deg)}
+.fernpress{position:absolute;right:4%;top:16%;width:190px;opacity:.4;transform:rotate(14deg);pointer-events:none}
+.back-cols{display:grid;grid-template-columns:1fr 1fr;gap:26px 60px;margin-top:44px;font-size:14.5px;line-height:1.65;color:var(--ink-soft)}
+@media(max-width:700px){.back-cols{grid-template-columns:1fr}.fernpress{width:130px;opacity:.28}}
+.back-cols h4{font-family:var(--serif);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--pencil);margin-bottom:8px}
+.back-cols ul{list-style:none}
+.back-cols li{padding-left:16px;position:relative;margin-bottom:4px}
+.back-cols li::before{content:"·";position:absolute;left:2px;color:var(--rust)}
+.back-bar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-top:44px;padding-top:18px;border-top:1.5px solid rgba(42,38,34,.3);font-size:13.5px;color:var(--pencil)}
+.totop{font-family:var(--hand);font-size:19px;color:var(--ink-soft);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.totop:hover{color:var(--rust)}
+/* ============ reduced motion ============ */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .draw{stroke-dashoffset:0!important}
+  .fade{opacity:var(--fo,1)!important}
+  .reveal{opacity:1;transform:none}
+  #bird{display:none}
+}
+</style>
+<noscript><style>.draw{stroke-dashoffset:0!important}.fade{opacity:1!important}.reveal{opacity:1;transform:none}</style></noscript>
+</head>
+<body>
+
+<!-- shared sketchbook defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="wob" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.7"/>
+    </filter>
+    <filter id="wob2" x="-25%" y="-25%" width="150%" height="150%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.06" numOctaves="3" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.8"/>
+    </filter>
+    <filter id="wc1" x="-35%" y="-35%" width="170%" height="170%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="24"/>
+      <feGaussianBlur stdDeviation="0.8"/>
+    </filter>
+    <filter id="wc2" x="-35%" y="-35%" width="170%" height="170%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="4" seed="21" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="30"/>
+      <feGaussianBlur stdDeviation="1.4"/>
+    </filter>
+    <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(42)">
+      <line x1="0" y1="0" x2="0" y2="5" stroke="#6e665a" stroke-width="0.7"/>
+    </pattern>
+    <pattern id="xhatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#6e665a" stroke-width="0.6"/>
+      <line x1="0" y1="0" x2="6" y2="0" stroke="#6e665a" stroke-width="0.6"/>
+    </pattern>
+    <symbol id="conifer" viewBox="0 0 24 30">
+      <path d="M12 1 L19 12 L14 11 L20 20 L15 19 L21 26 L3 26 L9 19 L4 20 L10 11 L5 12 Z"
+        fill="rgba(95,127,76,.15)" stroke="#3f5a33" stroke-width="1.2" stroke-linejoin="round"/>
+      <line x1="12" y1="26" x2="12" y2="29.4" stroke="#6e665a" stroke-width="1.2"/>
+    </symbol>
+    <symbol id="broadleaf" viewBox="0 0 30 30">
+      <path d="M15 4 C23 5 27 12 24 18 C26 24 17 28 13 25 C7 28 3 21 6 16 C3 10 9 4 15 4 Z"
+        fill="rgba(141,161,110,.2)" stroke="#5d6b42" stroke-width="1.2"/>
+      <line x1="15" y1="24" x2="15" y2="29" stroke="#6e665a" stroke-width="1.2"/>
+    </symbol>
+    <path id="stampArc" d="M50 13 a37 37 0 1 1 -0.02 0" fill="none"/>
+  </defs>
+</svg>
+
+<div id="grain" aria-hidden="true"></div>
+
+<!-- the sketched bird that crosses the margin -->
+<svg id="bird" viewBox="0 0 64 40" aria-hidden="true">
+  <g class="bbob" fill="none" stroke="#2a2622" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 24 C14 15 24 11 32 12 C40 13 44 17 42 21 C40 25 30 27 22 26 C17 25 12 26 10 24 Z"/>
+    <path d="M42 18 l6 2 -6 3"/>
+    <path d="M11 22 l-8 -3 M12 25 l-9 2"/>
+    <circle cx="36" cy="17" r="1" fill="#2a2622"/>
+    <path class="wup" d="M22 20 C26 12 32 9 38 9"/>
+    <path class="wdn" d="M22 21 C27 24 33 22 38 18"/>
+  </g>
+</svg>
+
+<nav id="tabs" aria-label="Notebook sections">
+  <a href="#cover">cover</a><a href="#seasons">seasons</a><a href="#map">map</a>
+  <a href="#specimens">specimens</a><a href="#study">study</a><a href="#weather">weather</a>
+  <a href="#sound">sound</a><a href="#kit">kit</a><a href="#about">about</a>
+</nav>
+
+<div class="page">
+<div class="marginline" aria-hidden="true"></div>
+
+<!-- ================= COVER ================= -->
+<header class="cover" id="cover">
+  <div class="washcov" aria-hidden="true">
+    <svg viewBox="0 0 900 560" preserveAspectRatio="xMidYMid slice">
+      <g class="wshift1" filter="url(#wc1)"><ellipse cx="290" cy="250" rx="270" ry="180" fill="rgba(95,127,76,.17)"/></g>
+      <g class="wshift2" filter="url(#wc2)"><ellipse cx="560" cy="350" rx="300" ry="180" fill="rgba(198,139,63,.15)"/></g>
+      <g class="wshift1" filter="url(#wc1)"><ellipse cx="430" cy="130" rx="130" ry="80" fill="rgba(164,80,47,.1)"/></g>
+    </svg>
+  </div>
+
+  <div class="cov-top reveal inview">
+    <p class="kicker">Field Volume I · Hollowfen Wood &amp; the Little Run</p>
+    <p class="kicker hand">kept 2024–25 · in pencil &amp; sepia ink</p>
+  </div>
+
+  <div class="cov-grid">
+    <div class="cov-left reveal inview">
+      <h1>The <em>Moss</em><br>Notebook</h1>
+      <svg class="h-underline" viewBox="0 0 300 18" aria-hidden="true">
+        <path class="draw" pathLength="1" style="--dd:.5s;--du:1.6s" d="M3 9 C50 4 105 14 152 8 C200 3 258 6 297 9"/>
+        <path class="draw p" pathLength="1" style="--dd:1s;--du:1.2s" d="M12 14 C70 10 140 17 210 12 C245 10 272 11 290 13"/>
+      </svg>
+      <p class="cov-sub">one year of forests, fungi, streams, birds &amp; small wonders — recorded before they moved on</p>
+      <p class="cov-body">This is a working notebook, not a book. It has a creased spine, a corner of ink where the pen slipped in March, and a pressed bracken leaf that will outlive me. What follows is a year in one wood, drawn slowly and argued with. The drawings are honest; the memories are a little less so. <i>Nothing here was taken. Everything here was noticed.</i></p>
+      <div class="cov-meta">214 drawings · 362 pages · 14 snails · 1 smudge (March, permanent)</div>
+      <div class="cov-note">
+        <svg viewBox="0 0 44 34" aria-hidden="true">
+          <path class="draw r" pathLength="1" style="--dd:1.4s" d="M42 4 C34 16 22 24 6 29"/>
+          <path class="draw r" pathLength="1" style="--dd:1.9s" d="M6 29 l1 -9 M6 29 l9 -2"/>
+        </svg>
+        <span>moss is the wood's handwriting — start there</span>
+      </div>
+    </div>
+
+    <div class="cov-art reveal inview">
+      <svg id="coverart" viewBox="0 0 440 520" aria-hidden="true">
+        <g class="sway s1" filter="url(#wob2)">
+          <ellipse class="fade" style="--fo:.16;--dd:.4s" cx="235" cy="300" rx="125" ry="215" transform="rotate(16 235 300)" fill="rgba(141,161,110,.4)" filter="url(#wc2)"/>
+          <path class="draw" pathLength="1" style="--du:2.2s;--dd:.3s;stroke-width:2.2" d="M150 505 C205 420 215 240 300 70"/>
+          <path id="pinL" class="fade" style="--dd:1.2s" fill="none" stroke="#4a443b" stroke-width="1.1" opacity=".85"/>
+          <path id="pinR" class="fade" style="--dd:1.45s" fill="none" stroke="#4a443b" stroke-width="1.1" opacity=".85"/>
+          <path class="draw" pathLength="1" style="--dd:2.4s" d="M300 70 C310 57 323 60 321 72 C319 82 306 82 306 72 C306 66 313 64 316 69"/>
+        </g>
+        <g class="sway s2" filter="url(#wob)">
+          <path class="draw p" pathLength="1" style="--dd:.9s;stroke-width:1.6" d="M96 512 C90 440 86 380 84 302"/>
+          <path class="fade" style="--dd:1.7s" fill="none" stroke="#4a443b" stroke-width="1" opacity=".8"
+            d="M93 470 Q78 462 72 450 M93 470 Q106 458 110 446 M91 420 Q76 412 70 400 M91 420 Q104 408 108 396 M89 372 Q76 364 72 354 M89 372 Q100 360 103 350 M86 330 Q76 324 73 316 M86 330 Q96 320 98 312"/>
+        </g>
+        <g class="sway s3" filter="url(#wob)">
+          <path class="draw p" pathLength="1" style="--dd:1.1s;stroke-width:1.6" d="M386 514 C392 452 396 396 398 332"/>
+          <path class="fade" style="--dd:1.9s" fill="none" stroke="#4a443b" stroke-width="1" opacity=".8"
+            d="M388 466 Q374 458 368 448 M388 466 Q400 454 404 444 M391 414 Q377 406 372 396 M391 414 Q403 402 406 394 M395 366 Q384 358 381 350 M395 366 Q405 356 407 348"/>
+        </g>
+        <!-- wren on a twig -->
+        <g filter="url(#wob)">
+          <path class="draw" pathLength="1" style="--dd:2.2s;stroke-width:1.5" d="M234 318 C268 308 296 310 318 298"/>
+          <path class="draw" pathLength="1" style="--dd:2.6s;stroke-width:1.4" d="M294 312 C292 304 298 296 306 294 C313 293 317 297 315 302 C312 308 300 311 294 308 Z"/>
+          <path class="draw" pathLength="1" style="--dd:2.8s" d="M315 297 l5 2 -5 2 M299 308 v5"/>
+          <circle class="fade" style="--dd:3s" cx="310" cy="297" r="1" fill="#2a2622"/>
+        </g>
+        <text class="tl-label fade" style="--dd:3.1s" x="212" y="276" transform="rotate(-6 212 276)">the wren, 06:40 — first thing</text>
+        <path class="draw p" pathLength="1" style="--dd:3.3s" d="M292 282 q8 2 10 8"/>
+        <!-- pressed leaf -->
+        <g class="fade" style="--dd:2.6s;--fo:.55" transform="translate(34,132) rotate(-24)" filter="url(#wob)">
+          <path d="M0 0 C10 -15 36 -17 47 0 C36 17 10 15 0 0 Z" fill="rgba(141,161,110,.35)" stroke="#6e665a" stroke-width="1.1"/>
+          <path d="M4 0 H43 M14 -1 L11 -7 M22 -1 L19 -8 M31 -1 L28 -7 M14 1 L11 7 M22 1 L19 8" fill="none" stroke="#6e665a" stroke-width="0.8"/>
+        </g>
+        <!-- moss at the base -->
+        <g filter="url(#wob)">
+          <path class="fade" style="--fo:.9;--dd:1.4s" d="M16 508 q7 -17 20 -19 q15 -2 22 11 q5 10 -5 10 z M52 508 q6 -13 17 -14 q12 -1 16 9 q4 8 -4 8 z M92 508 q8 -19 22 -20 q16 -1 22 12 q5 10 -6 10 z M132 508 q5 -11 14 -12 q10 -1 13 8 q3 7 -3 7 z M170 508 q7 -15 19 -16 q13 -1 18 10 q4 9 -5 9 z M210 508 q6 -12 16 -13 q11 -1 15 8 q3 8 -4 8 z M248 508 q8 -18 21 -19 q15 -1 20 11 q4 10 -5 10 z M292 508 q6 -13 16 -14 q11 -1 15 9 q3 8 -4 8 z M330 508 q7 -16 19 -17 q14 -1 19 10 q4 10 -5 10 z M370 508 q5 -11 14 -12 q10 -1 13 8 q3 7 -3 7 z"
+            fill="rgba(95,127,76,.14)" stroke="#3f5a33" stroke-width="1.2"/>
+          <path class="fade" style="--dd:2.4s" d="M30 494 q3 -9 9 -11 M100 488 q3 -9 9 -11 M178 490 q3 -8 9 -10 M256 488 q3 -9 9 -11 M336 490 q3 -8 8 -10" fill="none" stroke="#3f5a33" stroke-width="0.9"/>
+          <g class="fade" style="--dd:2.8s" fill="#3f5a33">
+            <circle cx="40" cy="500" r="1.2"/><circle cx="112" cy="498" r="1.2"/><circle cx="150" cy="502" r="1.2"/><circle cx="228" cy="500" r="1.2"/><circle cx="300" cy="499" r="1.2"/><circle cx="352" cy="501" r="1.2"/>
+          </g>
+          <path class="draw p" pathLength="1" style="--dd:1s" d="M8 512 C90 508 260 508 430 511"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="stampcov reveal inview" aria-hidden="true">
+    <svg viewBox="0 0 100 100">
+      <path class="draw r" pathLength="1" style="--du:1.8s;--dd:.8s" d="M50 6 C74 6 94 26 94 50 C94 74 74 94 50 94 C26 94 6 74 6 50 C6 26 26 6 50 6 Z"/>
+      <path class="draw r" pathLength="1" style="--du:1.4s;--dd:1.4s;stroke-width:1" d="M50 24 C65 24 76 35 76 50 C76 65 65 76 50 76 C35 76 24 65 24 50 C24 35 35 24 50 24 Z"/>
+      <text style="font-family:var(--serif);font-size:8.4px;letter-spacing:1.6px" fill="#a4502f">
+        <textPath href="#stampArc">HOLLOWFEN NATURALISTS · TRUST · EST 1923 ·</textPath>
+      </text>
+      <path class="draw r" pathLength="1" style="--dd:2s" d="M50 62 C42 56 42 44 50 36 C58 44 58 56 50 62 Z"/>
+      <path class="draw r" pathLength="1" style="--dd:2.3s;stroke-width:1" d="M50 62 V70 M46 58 L54 54"/>
+    </svg>
+  </div>
+
+  <a class="cue" href="#seasons">turn the page
+    <svg viewBox="0 0 24 40" aria-hidden="true">
+      <path class="draw" pathLength="1" d="M12 2 C17 8 7 14 12 20 C17 26 7 32 12 38"/>
+      <path class="draw" pathLength="1" d="M7 32 L12 39 L17 31"/>
+    </svg>
+  </a>
+  <div class="fold" aria-hidden="true"></div>
+</header>
+
+<main>
+<!-- ================= SEASONS ================= -->
+<section id="seasons" aria-labelledby="h-seasons">
+  <span class="pageno">p. 3</span>
+  <div class="shead reveal">
+    <span class="snum" aria-hidden="true"><svg viewBox="0 0 52 52"><path class="draw" pathLength="1" style="stroke:rgba(42,38,34,.5)" d="M26 5 C38 4 48 14 47 26 C46 38 37 47 26 47 C14 47 5 38 5 26 C5 14 14 6 26 5 Z"/></svg><span>01</span></span>
+    <h2 id="h-seasons">Four Turns of the Year</h2>
+    <svg class="uline" viewBox="0 0 240 16" aria-hidden="true"><path class="draw" pathLength="1" d="M3 7 C45 3 90 12 135 7 C180 3 212 5 237 8"/><path class="draw p" pathLength="1" style="--dd:.5s" d="M10 12 C60 8 120 14 190 10 C210 9 226 10 233 11"/></svg>
+    <span class="snote">pinned in the order they happened</span>
+  </div>
+
+  <div class="seasons-grid">
+    <!-- winter -->
+    <article class="season note lift reveal">
+      <span class="tape" aria-hidden="true"></span>
+      <p class="months">December — February</p>
+      <h3>Winter · The Quiet Ledger</h3>
+      <div class="sketch" aria-hidden="true">
+        <svg viewBox="0 0 220 120" filter="url(#wob)">
+          <path class="draw" pathLength="1" d="M62 116 C64 84 66 44 74 16 M78 116 C79 84 81 44 86 18"/>
+          <path class="fade" style="--dd:1.2s" d="M64 96 h9 M66 78 h8 M67 60 h8 M70 42 h7 M72 28 h6 M79 88 h7 M81 56 h6" stroke="#2a2622" stroke-width="2.2"/>
+          <path class="draw" pathLength="1" style="--dd:.6s" d="M82 34 C98 28 112 16 122 6 M100 22 C106 18 110 12 112 8 M94 27 C96 20 96 16 95 11"/>
+          <path class="draw" pathLength="1" style="--dd:1.6s;stroke-width:1.3" d="M114 20 C115 15 121 13 125 15 C128 17 127 21 124 22 C120 24 115 24 114 20 Z M125 17 l4 1 -4 2 M119 24 v4"/>
+          <g class="fade" style="--dd:2.2s" stroke="#6e665a" stroke-width="1" opacity=".7">
+            <path d="M160 34 v10 M155 39 h10 M156 35 l8 8 M164 35 l-8 8"/>
+            <path d="M184 60 v8 M180 64 h8 M181 61 l6 6 M187 61 l-6 6"/>
+            <path d="M150 74 v7 M146.5 77.5 h7"/>
+          </g>
+          <path class="draw p" pathLength="1" style="--dd:.4s" d="M28 114 C80 111 150 111 204 113"/>
+        </svg>
+      </div>
+      <p>Blackthorn in flower while the ground is still iron. The run is a thread of dark water; I counted every crow and found the wood is mostly silence with a few opinions in it.</p>
+      <ul>
+        <li>12 Jan — first hoarfrost on the stile</li>
+        <li>19 Jan — a woodpecker, three seconds, a whole morning's worth</li>
+        <li>03 Feb — the wren sang before the light; brief as a coin</li>
+      </ul>
+      <span class="stampmini">coldest: −9°, the 14th</span>
+    </article>
+
+    <!-- spring -->
+    <article class="season note r2 lift reveal">
+      <span class="tape tc" aria-hidden="true"></span><span class="tape tcr" aria-hidden="true"></span>
+      <p class="months">March — May</p>
+      <h3>Spring · The Wood Wakes Up Late</h3>
+      <div class="sketch" aria-hidden="true">
+        <svg viewBox="0 0 220 120" filter="url(#wob)">
+          <path class="draw" pathLength="1" style="--du:1.8s" d="M46 112 C72 96 100 64 122 32"/>
+          <path class="fade" style="--dd:1.3s" d="M66 88 C58 78 60 66 70 62 C80 58 88 66 84 76 C80 86 72 90 66 88 Z M68 84 L78 68 M96 56 C90 48 92 38 100 34 C108 30 116 36 113 46 C110 56 101 58 96 56 Z M99 52 L108 40"
+            fill="rgba(141,161,110,.28)" stroke="#3f5a33" stroke-width="1.2"/>
+          <g class="fade" style="--dd:1.8s">
+            <circle cx="126" cy="26" r="4.5" fill="none" stroke="#a4502f" stroke-width="1.2"/>
+            <circle cx="134" cy="22" r="4.5" fill="none" stroke="#a4502f" stroke-width="1.2"/>
+            <circle cx="134" cy="31" r="4.5" fill="none" stroke="#a4502f" stroke-width="1.2"/>
+            <circle cx="126" cy="35" r="4.5" fill="none" stroke="#a4502f" stroke-width="1.2"/>
+            <circle cx="130" cy="28.5" r="1.6" fill="#c68b3f"/>
+          </g>
+          <path class="draw" pathLength="1" style="--dd:2s" d="M46 112 C60 108 74 108 88 110"/>
+          <path class="draw" pathLength="1" style="--dd:2.3s;stroke-width:1.4" d="M64 108 C66 96 90 94 94 106 C86 112 70 112 64 108 Z"/>
+          <g class="fade" style="--dd:2.7s" fill="rgba(198,139,63,.5)" stroke="#6e665a" stroke-width=".9">
+            <ellipse cx="72" cy="104" rx="3" ry="4"/><ellipse cx="80" cy="103" rx="3" ry="4"/><ellipse cx="87" cy="105" rx="3" ry="4"/>
+          </g>
+        </svg>
+      </div>
+      <p>March came in like rain and left like mud. The hazel dropped catkins before the leaves dared; the hawthorn took its time and paid for it in eggs. By May the ferns had uncurled enough to hide a person.</p>
+      <ul>
+        <li>14 Mar — the snail study (see field study, p. 14)</li>
+        <li>02 Apr — first eggs: three, in a hawthorn huddle</li>
+        <li>21 May — ferns at waist height; the whole ground breathing</li>
+      </ul>
+      <span class="stampmini">rainiest: March, again</span>
+    </article>
+
+    <!-- summer -->
+    <article class="season note r3 lift reveal">
+      <span class="tape" aria-hidden="true"></span>
+      <p class="months">June — August</p>
+      <h3>Summer · Long Light, Small Water</h3>
+      <div class="sketch" aria-hidden="true">
+        <svg viewBox="0 0 220 120" filter="url(#wob)">
+          <path class="draw" pathLength="1" style="--du:2.2s" d="M18 92 C58 78 88 104 138 78 C162 66 182 72 198 58" stroke-dasharray="5 6"/>
+          <g class="fade" style="--dd:1.6s" fill="none" stroke="#2a2622" stroke-width="1.2">
+            <g transform="translate(52,84)"><ellipse cx="0" cy="0" rx="4.5" ry="3"/><circle cx="5.5" cy="-1" r="2"/><path d="M-2 3 l-3 3 M2 3 l0 4 M5 2 l3 3"/></g>
+            <g transform="translate(96,92)"><ellipse cx="0" cy="0" rx="4.5" ry="3"/><circle cx="5.5" cy="-1" r="2"/><path d="M-2 3 l-3 3 M2 3 l0 4 M5 2 l3 3"/></g>
+            <g transform="translate(140,72)"><ellipse cx="0" cy="0" rx="4.5" ry="3"/><circle cx="5.5" cy="-1" r="2"/><path d="M-2 3 l-3 3 M2 3 l0 4 M5 2 l3 3"/></g>
+            <g transform="translate(172,66)"><ellipse cx="0" cy="0" rx="4.5" ry="3"/><circle cx="5.5" cy="-1" r="2"/><path d="M-2 3 l-3 3 M2 3 l0 4 M5 2 l3 3"/></g>
+          </g>
+          <path class="draw" pathLength="1" style="--dd:1s" d="M30 40 C60 34 90 34 118 38"/>
+          <circle class="fade" style="--dd:1.4s" cx="30" cy="40" r="0"/>
+          <g class="fade" style="--dd:1.6s" stroke="#c68b3f" stroke-width="1.3">
+            <circle cx="30" cy="38" r="8" fill="none"/>
+            <path d="M30 24 v-5 M30 52 v5 M16 38 h-5 M44 38 h5 M20 28 l-3.5 -3.5 M40 28 l3.5 -3.5 M20 48 l-3.5 3.5 M40 48 l3.5 3.5" fill="none"/>
+          </g>
+          <path class="fade" style="--dd:2.2s" d="M150 30 q4 -6 0 -12 M162 32 q4 -6 0 -12" stroke="#6e665a" stroke-width="1" fill="none" opacity=".6"/>
+        </svg>
+      </div>
+      <p>The run is barely a thread now, and the ants have a highway where it used to be. The light runs past nine and the notebook gets kept open until my shadow is a blue smear. Everything grows so loudly you stop hearing the wren.</p>
+      <ul>
+        <li>08 Jun — a kingfisher, one blue argument</li>
+        <li>29 Jul — longest day; drew until the ferns closed</li>
+        <li>17 Aug — heat so still the bees flew in a line</li>
+      </ul>
+      <span class="stampmini">no rain, 26 days (July)</span>
+    </article>
+
+    <!-- autumn -->
+    <article class="season note lift reveal">
+      <span class="tape tc" aria-hidden="true"></span><span class="tape tcr" aria-hidden="true"></span>
+      <p class="months">September — November</p>
+      <h3>Autumn · The Fungus Shift</h3>
+      <div class="sketch" aria-hidden="true">
+        <svg viewBox="0 0 220 120" filter="url(#wob)">
+          <path class="draw" pathLength="1" style="stroke-width:2.4" d="M22 66 L96 54 M26 74 L96 62"/>
+          <ellipse class="fade" style="--fo:.25;--dd:.6s" cx="86" cy="82" rx="34" ry="26" fill="rgba(176,64,46,.5)" filter="url(#wc1)"/>
+          <path class="draw" pathLength="1" style="--dd:.5s;--du:1.6s" d="M56 62 C54 84 76 98 98 92 C112 88 116 74 108 60 C92 68 70 66 56 62 Z"/>
+          <path class="draw p" pathLength="1" style="--dd:1.2s" d="M64 66 C63 78 76 87 90 84 M72 68 C72 75 80 80 88 78"/>
+          <path class="draw" pathLength="1" style="--dd:1.8s" d="M156 30 C166 26 176 32 174 42 C172 52 160 56 152 48 C148 42 150 34 156 30 Z M162 30 V48 M158 34 h8 M158 40 h7"/>
+          <path class="draw p" pathLength="1" style="--dd:2.2s" d="M178 56 q6 6 4 14 M188 52 q6 6 4 14"/>
+          <g class="fade" style="--dd:2.4s" stroke="#5d7f8d" stroke-width="1.2" opacity=".7">
+            <path d="M120 14 l-4 10 M136 10 l-4 10 M104 20 l-4 10"/>
+          </g>
+        </svg>
+      </div>
+      <p>September kept the sun; October took the trees. The ground underfoot went soft and honest — brackets glowing after rain, toadstools in processions, the oak laying out its galls like a tax. The wood smells of wet wool and something sweet.</p>
+      <ul>
+        <li>05 Sep — oak galls, green coins</li>
+        <li>12 Oct — a bracket the size of a hat; "the cathedral"</li>
+        <li>02 Nov — acorn tithe; the jays were in a hurry</li>
+      </ul>
+      <span class="stampmini">best fungi day: 12 Oct</span>
+    </article>
+  </div>
+</section>
+
+<div class="divider reveal" aria-hidden="true">
+  <svg viewBox="0 0 240 28">
+    <path class="draw" pathLength="1" d="M4 15 C40 10 70 19 106 14"/>
+    <path class="draw g" pathLength="1" style="--dd:.5s" d="M120 20 C118 13 120 8 125 3"/>
+    <path class="draw g" pathLength="1" style="--dd:.8s" d="M120 12 C114 10 110 6 109 1 C114 2 118 5 120 12 Z"/>
+    <path class="draw g" pathLength="1" style="--dd:1.05s" d="M122 8 C127 6 130 3 131 -1 C126 0 123 3 122 8 Z"/>
+    <path class="draw" pathLength="1" style="--dd:.5s" d="M134 14 C172 9 202 19 236 12"/>
+  </svg>
+</div>
+
+<!-- ================= HABITAT MAP ================= -->
+<section id="map" aria-labelledby="h-map">
+  <span class="pageno">p. 9</span>
+  <div class="shead reveal">
+    <span class="snum" aria-hidden="true"><svg viewBox="0 0 52 52"><path class="draw" pathLength="1" style="stroke:rgba(42,38,34,.5)" d="M26 5 C38 4 48 14 47 26 C46 38 37 47 26 47 C14 47 5 38 5 26 C5 14 14 6 26 5 Z"/></svg><span>02</span></span>
+    <h2 id="h-map">The Wood, Drawn from Memory</h2>
+    <svg class="uline" viewBox="0 0 240 16" aria-hidden="true"><path class="draw" pathLength="1" d="M3 7 C45 3 90 12 135 7 C180 3 212 5 237 8"/><path class="draw p" pathLength="1" style="--dd:.5s" d="M10 12 C60 8 120 14 190 10 C210 9 226 10 233 11"/></svg>
+    <span class="snote">surveyed on foot, 11 times</span>
+  </div>
+
+  <div class="map-card note r2 reveal">
+    <span class="tape" aria-hidden="true"></span>
+    <svg id="mapsvg" viewBox="0 0 780 540" role="img" aria-label="Hand-drawn map of Hollowfen Wood with contours, the Little Run stream, Hollowfen pond, the plantation, oak flat, footpath and old pit">
+      <!-- contours -->
+      <g id="g-contour" class="layer">
+        <path class="fade" style="--fo:.07;--dd:.2s" d="M420 300 C430 200 470 120 540 96 C610 74 680 120 690 190 C700 260 650 330 570 348 C500 362 430 350 420 300 Z" fill="#5f7f4c"/>
+        <path class="contour draw" pathLength="1" style="--du:2s" d="M420 300 C430 200 470 120 540 96 C610 74 680 120 690 190 C700 260 650 330 570 348 C500 362 430 350 420 300 Z"/>
+        <path class="contour draw" pathLength="1" style="--du:2s;--dd:.35s" d="M455 292 C462 216 495 152 550 134 C605 118 655 152 662 205 C670 258 628 308 566 322 C512 334 460 330 455 292 Z"/>
+        <path class="contour draw" pathLength="1" style="--du:2s;--dd:.7s" d="M490 282 C496 226 520 178 562 164 C604 152 636 178 640 216 C644 254 614 288 566 298 C528 306 494 300 490 282 Z"/>
+        <path class="contour draw" pathLength="1" style="--du:2s;--dd:1s" d="M522 272 C526 238 542 208 570 200 C598 192 618 210 620 234 C622 258 602 278 572 284 C546 289 525 286 522 272 Z"/>
+        <path class="contour draw" pathLength="1" style="--du:1.6s;--dd:1.3s" d="M550 264 C552 246 562 230 578 226 C594 222 604 232 604 244 C604 258 592 268 576 270 C562 272 552 270 550 264 Z"/>
+        <text class="tl-num fade" style="--dd:2.4s" x="436" y="152">112 m</text>
+        <text class="tl-num fade" style="--dd:2.6s" x="508" y="206">121 m</text>
+        <path class="fade" style="--dd:2.8s" d="M570 240 l12 12 M582 240 l-12 12" stroke="#a4502f" stroke-width="1.4"/>
+        <text class="tl-label fade" style="--dd:3s" x="592" y="258" font-size="13">top (bench)</text>
+      </g>
+      <!-- water -->
+      <g id="g-water" class="layer">
+        <path class="stream draw b" pathLength="1" style="--du:2.4s;--dd:1.2s" d="M34 66 C88 94 122 148 120 206 C118 256 150 288 196 310 C224 322 246 338 256 352"/>
+        <path class="stream echo draw b" pathLength="1" style="--du:2.4s;--dd:1.5s" transform="translate(5,7)" d="M34 66 C88 94 122 148 120 206 C118 256 150 288 196 310 C224 322 246 338 256 352"/>
+        <path class="stream draw b" pathLength="1" style="--du:2.4s;--dd:1.8s" d="M318 386 C366 404 418 398 462 420 C512 446 560 448 608 468 C648 484 692 484 746 498"/>
+        <path class="stream echo draw b" pathLength="1" style="--du:2.4s;--dd:2.1s" transform="translate(5,7)" d="M318 386 C366 404 418 398 462 420 C512 446 560 448 608 468 C648 484 692 484 746 498"/>
+        <g class="ripp">
+          <path class="rip" d="M132 300 q14 7 30 3 M136 308 q12 6 26 3 M142 315 q10 5 22 2"/>
+          <path class="rip" d="M262 368 q20 8 44 4 M270 380 q18 7 40 3"/>
+        </g>
+        <path class="fade" style="--dd:2.6s" d="M150 288 l14 3 M170 298 l14 3 M210 314 l14 3 M380 402 l15 3 M470 426 l15 3 M560 452 l14 3" stroke="#5d7f8d" stroke-width="1.2" opacity=".65" fill="none"/>
+        <path class="fade" style="--fo:.4;--dd:1.6s" d="M248 342 C278 328 318 334 332 354 C344 372 332 396 302 402 C272 408 244 396 240 376 C237 360 240 348 248 342 Z" fill="#5d7f8d" filter="url(#wc1)"/>
+        <path class="draw b" pathLength="1" style="--dd:2s;--du:1.8s;stroke-width:1.8" d="M248 342 C278 328 318 334 332 354 C344 372 332 396 302 402 C272 408 244 396 240 376 C237 360 240 348 248 342 Z"/>
+        <path class="draw p" pathLength="1" style="--dd:3s" d="M252 344 l-3 -18 M262 340 l2 -16 M310 400 l-2 14 M322 396 l3 12"/>
+        <text class="tl-label fade" style="--dd:2.8s" x="118" y="176" transform="rotate(-58 118 176)">the Little Run</text>
+        <text class="tl-label fade" style="--dd:3s" x="600" y="470" transform="rotate(-12 600 470)" font-size="13">…and on it goes</text>
+        <text class="tl-label fade" style="--dd:3s" x="256" y="424">Hollowfen</text>
+      </g>
+      <!-- conifers -->
+      <g id="g-conifer" class="layer">
+        <use href="#conifer" x="446" y="82" width="28" height="34" transform="rotate(-4 460 99)"/>
+        <use href="#conifer" x="482" y="64" width="26" height="32" transform="rotate(3 495 80)"/>
+        <use href="#conifer" x="518" y="88" width="28" height="34"/>
+        <use href="#conifer" x="554" y="60" width="24" height="30" transform="rotate(-5 566 75)"/>
+        <use href="#conifer" x="588" y="84" width="28" height="34" transform="rotate(4 602 101)"/>
+        <use href="#conifer" x="466" y="118" width="26" height="32"/>
+        <use href="#conifer" x="528" y="122" width="28" height="34" transform="rotate(-3 542 139)"/>
+        <use href="#conifer" x="592" y="118" width="26" height="32"/>
+        <use href="#conifer" x="504" y="150" width="24" height="30"/>
+        <text class="tl-label fade" style="--dd:3.2s" x="510" y="182">the Plantation</text>
+      </g>
+      <!-- broadleaf -->
+      <g id="g-broadleaf" class="layer">
+        <use href="#broadleaf" x="58" y="424" width="28" height="28"/>
+        <use href="#broadleaf" x="100" y="448" width="26" height="26" transform="rotate(6 113 461)"/>
+        <use href="#broadleaf" x="62" y="464" width="26" height="26"/>
+        <use href="#broadleaf" x="142" y="424" width="28" height="28" transform="rotate(-5 156 438)"/>
+        <use href="#broadleaf" x="110" y="482" width="26" height="26"/>
+        <use href="#broadleaf" x="160" y="468" width="24" height="24" transform="rotate(4 172 480)"/>
+        <text class="tl-label fade" style="--dd:3.2s" x="86" y="412">Oak Flat</text>
+        <!-- big oak -->
+        <path class="fade" style="--fo:.16;--dd:2.6s" d="M344 238 C342 214 362 198 380 200 C392 190 412 194 416 208 C434 214 432 238 416 246 C420 258 404 268 392 262 C382 272 362 268 358 256 C346 254 342 246 344 238 Z" fill="#5f7f4c" filter="url(#wc1)"/>
+        <path class="draw g" pathLength="1" style="--dd:2.8s;--du:1.8s" d="M344 238 C342 214 362 198 380 200 C392 190 412 194 416 208 C434 214 432 238 416 246 C420 258 404 268 392 262 C382 272 362 268 358 256 C346 254 342 246 344 238 Z"/>
+        <path class="draw" pathLength="1" style="--dd:3.4s" d="M380 262 C382 274 380 282 378 292 M372 266 C366 260 362 256 358 254 M390 266 C396 262 400 258 404 254"/>
+        <text class="tl-label fade" style="--dd:3.6s" x="352" y="192">the big oak (measured 11×)</text>
+        <ellipse class="fade" style="--fo:.08;--dd:3.4s" cx="352" cy="448" rx="62" ry="22" fill="#5f7f4c"/>
+        <text class="tl-label fade" style="--dd:3.6s" x="318" y="446">the Brake</text>
+      </g>
+      <!-- trail -->
+      <g id="g-trail" class="layer">
+        <path class="tline fade" style="--dd:3.2s" d="M92 508 C160 464 212 430 268 396 C300 378 320 358 332 334 C350 300 368 258 420 214 C468 172 520 148 556 126"/>
+        <path class="draw" pathLength="1" style="--dd:3.6s" d="M292 366 l14 -6 M296 374 l14 -6"/>
+        <text class="tl-label fade" style="--dd:3.8s" x="272" y="392" font-size="13">stile</text>
+        <path class="draw r" pathLength="1" style="--dd:3.9s;stroke-width:2.2" d="M326 324 l16 16 M342 324 l-16 16"/>
+        <text class="tl-label fade" style="--dd:4.1s" x="352" y="350">you are here (always)</text>
+      </g>
+      <!-- old pit -->
+      <g id="g-pit" class="layer">
+        <path class="fade" style="--dd:4s" d="M544 114 l22 -2 3 22 -23 2 z" fill="url(#xhatch)" stroke="#2a2622" stroke-width="1.3" stroke-dasharray="4 3" opacity=".8"/>
+        <text class="tl-label fade" style="--dd:4.2s" x="568" y="112" font-size="13">old pit</text>
+      </g>
+      <!-- compass + scale -->
+      <g class="fade" style="--dd:3.4s">
+        <circle cx="706" cy="74" r="20" fill="none" stroke="#4a443b" stroke-width="1.2"/>
+        <path d="M706 50 v6 M706 92 v-6 M682 74 h6 M724 74 h-6 M690 58 l4 4 M722 90 l-4 -4 M722 58 l-4 4 M690 90 l4 -4" class="tick"/>
+        <path class="needle-n" d="M706 58 L711 74 L706 90 L701 74 Z"/>
+        <path class="needle-s" d="M706 90 L706 96"/>
+        <text x="701" y="46" style="font-family:var(--serif);font-size:13px" fill="#4a443b">N</text>
+      </g>
+      <g class="fade" style="--dd:3.6s">
+        <path d="M60 516 H140 M60 511 v10 M100 513 v6 M140 511 v10" class="tick"/>
+        <text x="58" y="508" class="tl-num">0</text><text x="92" y="508" class="tl-num">25</text><text x="128" y="508" class="tl-num">≈50 m</text>
+      </g>
+    </svg>
+    <span id="coords">grid — hover to survey</span>
+    <ul class="legend" id="legend">
+      <li tabindex="0" data-layer="conifer"><svg viewBox="0 0 24 30"><use href="#conifer" width="24" height="30"/></svg>conifer (the plantation)</li>
+      <li tabindex="0" data-layer="broadleaf"><svg viewBox="0 0 30 30"><use href="#broadleaf" width="28" height="28"/></svg>broadleaf (oak flat)</li>
+      <li tabindex="0" data-layer="water"><svg viewBox="0 0 26 26" fill="none" stroke="#5d7f8d" stroke-width="1.6" stroke-linecap="round"><path d="M3 8 q5 -4 10 0 t10 0 M3 15 q5 -4 10 0 t10 0 M3 22 q5 -4 10 0 t10 0"/></svg>the little run</li>
+      <li tabindex="0" data-layer="trail"><svg viewBox="0 0 26 26" fill="none" stroke="#a4502f" stroke-width="1.8" stroke-dasharray="4 4" stroke-linecap="round"><path d="M3 20 C10 14 16 16 23 6"/></svg>footpath</li>
+      <li tabindex="0" data-layer="pit"><svg viewBox="0 0 26 26"><path d="M4 5 l17 -2 3 17 -19 2 z" fill="url(#xhatch)" stroke="#2a2622" stroke-width="1.2" stroke-dasharray="3 2"/></svg>old pit</li>
+      <li tabindex="0" data-layer="contour"><svg viewBox="0 0 26 26" fill="none" stroke="#6e665a" stroke-width="1.1"><path d="M4 20 C4 10 10 4 14 4 C20 4 23 10 22 15 C21 20 15 23 10 22 C7 21.5 4.5 21 4 20 Z M9 18 C9 12 12 9 14.5 9.5 C18 10 19 14 17 17 C15.5 19 11 19.5 9 18 Z"/></svg>contours, 9 m</li>
+    </ul>
+    <p class="map-note">drawn from memory &amp; eleven walks — the wood has moved since; that's the point of a wood.</p>
+  </div>
+</section>
+
+<div class="divider reveal" aria-hidden="true">
+  <svg viewBox="0 0 240 28">
+    <path class="draw" pathLength="1" d="M4 15 C44 20 76 10 108 14"/>
+    <path class="draw r" pathLength="1" style="--dd:.5s" d="M118 16 C120 10 126 8 130 12 C132 16 128 20 123 19 C120 18.5 118 17 118 16 Z"/>
+    <path class="draw r" pathLength="1" style="--dd:.8s;stroke-width:1.1" d="M124 19 v5 M121 20 v3 M127 19 v4"/>
+    <path class="draw" pathLength="1" style="--dd:.5s" d="M136 14 C174 18 204 8 236 13"/>
+  </svg>
+</div>
+
+<!-- ================= SPECIMENS ================= -->
+<section id="specimens" aria-labelledby="h-spec">
+  <span class="pageno">p. 12</span>
+  <div class="shead reveal">
+    <span class="snum" aria-hidden="true"><svg viewBox="0 0 52 52"><path class="draw" pathLength="1" style="stroke:rgba(42,38,34,.5)" d="M26 5 C38 4 48 14 47 26 C46 38 37 47 26 47 C14 47 5 38 5 26 C5 14 14 6 26 5 Z"/></svg><span>03</span></span>
+    <h2 id="h-spec">Seven Specimens, Kept on Paper</h2>
+    <svg class="uline" viewBox="0 0 240 16" aria-hidden="true"><path class="draw" pathLength="1" d="M3 7 C45 3 90 12 135 7 C180 3 212 5 237 8"/><path class="draw p" pathLength="1" style="--dd:.5s" d="M10 12 C60 8 120 14 190 10 C210 9 226 10 233 11"/></svg>
+    <span class="snote">drawn while wet · nothing was pinned, except the notes</span>
+  </div>
+
+  <div class="spec-grid">
+    <!-- 01 fly agaric -->
+    <article class="spec note lift reveal">
+      <div class="lab"><span class="no">Specimen 01</span><span class="ref">TR 342 118 · 07 Oct</span></div>
+      <h3>Fly agaric <i>Amanita muscaria</i></h3>
+      <div class="drawing" aria-hidden="true">
+        <svg viewBox="0 0 220 180" filter="url(#wob)">
+          <ellipse class="fade" style="--fo:.3;--dd:.4s" cx="104" cy="70" rx="62" ry="42" fill="rgba(176,64,46,.55)" filter="url(#wc1)"/>
+          <path class="draw" pathLength="1" style="--du:1.8s" d="M52 84 C55 48 88 28 110 30 C140 33 158 56 154 82 C122 97 80 96 52 84 Z"/>
+          <path class="draw p" pathLength="1" style="--dd:.8s" d="M64 88 l4 12 M78 92 l3 12 M92 95 l2 12 M106 96 l1 12 M120 95 l0 12 M134 92 l-1 12 M146 87 l-3 12"/>
+          <path class="draw" pathLength="1" style="--dd:1s" d="M92 94 C90 118 88 138 84 156 L122 156 C118 138 116 116 114 94"/>
+          <path class="fade" style="--dd:1.6s" d="M96 98 C95 120 94 138 92 154 L116 154 C114 136 113 118 112 98 Z" fill="url(#hatch)" opacity=".3"/>
+          <g class="fade" style="--dd:1.9s" fill="#f8f2e3" stroke="#2a2622" stroke-width=".9">
+            <ellipse cx="80" cy="56" rx="6" ry="4.6" transform="rotate(-18 80 56)"/>
+            <ellipse cx="106" cy="44" rx="6.5" ry="5" transform="rotate(8 106 44)"/>
+            <ellipse cx="132" cy="58" rx="6" ry="4.4" transform="rotate(22 132 58)"/>
+            <ellipse cx="96" cy="70" rx="5" ry="3.8" transform="rotate(-8 96 70)"/>
+            <ellipse cx="122" cy="74" rx="5" ry="3.8" transform="rotate(14 122 74)"/>
+            <ellipse cx="68" cy="72" rx="4.4" ry="3.4" transform="rotate(-24 68 72)"/>
+          </g>
+          <ellipse class="fade" style="--fo:.3;--dd:.8s" cx="176" cy="118" rx="24" ry="18" fill="rgba(176,64,46,.5)" filter="url(#wc1)"/>
+          <path class="draw" pathLength="1" style="--dd:1.3s;stroke-width:1.3" d="M156 116 C158 100 170 92 178 93 C192 95 200 106 198 116 C186 124 166 123 156 116 Z M172 121 C171 132 170 140 168 148 L188 148 C186 140 185 130 184 121"/>
+          <path class="fade" style="--dd:2.2s" d="M166 106 l5 3 M184 104 l4 4 M172 100 l5 2" stroke="#f8f2e3" stroke-width="3.4"/>
+          <path class="draw p" pathLength="1" style="--dd:.6s" d="M28 158 C70 154 150 154 196 157 M60 158 l-3 -12 M64 158 l2 -10 M150 157 l-2 -11 M155 157 l3 -10"/>
+        </svg>
+      </div>
+      <p class="nline">Cap the colour of a barn door's sign. Gills crowded, free, honest. Smells of nothing — which is how you know it means something. Left it standing. It outwants me.</p>
+      <div class="meta"><span><b>habitat</b> under oak, in a ring</span><span><b>status</b> left in situ</span><span><b>rain</b> 41 min earlier</span></div>
+    </article>
+
+    <!-- 02 feather -->
+    <article class="spec note r2 lift reveal">
+      <div class="lab"><span class="no">Specimen 02</span><span class="ref">TR 331 102 · 03 Feb</span></div>
+      <h3>Robin feather <i>Erithacus rubecula</i></h3>
+      <div class="drawing" aria-hidden="true">
+        <svg viewBox="0 0 150 220" filter="url(#wob)">
+          <ellipse class="fade" style="--fo:.28;--dd:.4s" cx="74" cy="90" rx="52" ry="80" transform="rotate(8 74 90)" fill="rgba(198,139,63,.5)" filter="url(#wc1)"/>
+          <path class="draw" pathLength="1" style="--du:1.6s;stroke-width:2" d="M66 206 C54 150 58 84 76 22"/>
+          <path id="barbsL" class="fade" style="--dd:1s" fill="none" stroke="#4a443b" stroke-width="1" opacity=".8"/>
+          <path id="barbsR" class="fade" style="--dd:1.25s" fill="none" stroke="#4a443b" stroke-width="1" opacity=".8"/>
+          <path class="draw p" pathLength="1" style="--dd:1.7s" d="M76 22 l-3 -8 M76 22 l2 -9 M76 22 l7 -6"/>
+          <path class="draw p" pathLength="1" style="--dd:.8s;stroke-width:1.2" d="M66 206 C66 210 65 214 63 218"/>
+        </svg>
+      </div>
+      <p class="nline">One bar long, found under the birch where the robin argues. Rust exactly the colour of October at four o'clock. Barbs like a comb that has forgiven itself.</p>
+      <div class="meta"><span><b>habitat</b> birch edge, the stile</span><span><b>status</b> photographed, then returned to wind</span></div>
+    </article>
+
+    <!-- 03 lady fern -->
+    <article class="spec note r3 lift reveal">
+      <div class="lab"><span class="no">Specimen 03</span><span class="ref">TR 348 121 · 21 May</span></div>
+      <h3>Lady fern <i>Athyrium filix-femina</i></h3>
+      <div class="drawing" aria-hidden="true">
+        <svg viewBox="0 0 220 190" filter="url(#wob)">
+          <ellipse class="fade" style="--fo:.2;--dd:.4s" cx="112" cy="104" rx="76" ry="56" transform="rotate(-38 112 104)" fill="rgba(141,161,110,.5)" filter="url(#wc1)"/>
+          <path class="draw" pathLength="1" style="--du:1.8s;stroke-width:1.8" d="M30 170 C78 152 142 96 170 30"/>
+          <path id="sfernL" class="fade" style="--dd:1s" fill="none" stroke="#4a443b" stroke-width="1" opacity=".85"/>
+          <path id="sfernR" class="fade" style="--dd:1.2s" fill="none" stroke="#4a443b" stroke-width="1" opacity=".85"/>
+          <path class="draw" pathLength="1" style="--dd:1.9s;stroke-width:1.3" d="M170 30 C181 24 190 28 188 38 C186 47 174 47 174 38 C174 33 180 31 183 35"/>
+          <path class="draw p" pathLength="1" style="--dd:.8s" d="M24 176 C60 172 90 172 118 174"/>
+        </svg>
+      </div>
+      <p class="nline">Uncoiled in three days; I watched one pinna do a full revolution. The frond is a ladder to somewhere the rain goes. The wood floor, in short, has a second floor.</p>
+      <div class="meta"><span><b>habitat</b> the brake, mid-slope</span><span><b>status</b> one frond measured, none taken</span></div>
+    </article>
+
+    <!-- 04 ladybird (wide) -->
+    <article class="spec note wide lift reveal">
+      <span class="tape tc" aria-hidden="true"></span>
+      <div class="lab"><span class="no">Specimen 04</span><span class="ref">TR 351 116 · 17 Aug</span></div>
+      <h3>Seven-spot ladybird <i>Coccinella septempunctata</i></h3>
+      <div class="drawing" aria-hidden="true">
+        <svg viewBox="0 0 300 160" filter="url(#wob)">
+          <ellipse class="fade" style="--fo:.3;--dd:.4s" cx="140" cy="72" rx="72" ry="48" fill="rgba(176,64,46,.5)" filter="url(#wc1)"/>
+          <path class="draw" pathLength="1" style="--du:1.8s" d="M76 84 C74 46 106 28 122 28 C138 28 172 46 170 84 C142 100 104 100 76 84 Z"/>
+          <path class="draw" pathLength="1" style="--dd:.8s;stroke-width:1.4" d="M122 28 C118 20 108 18 102 22 C96 26 98 34 104 38 C112 34 118 32 122 28 Z"/>
+          <path class="draw p" pathLength="1" style="--dd:1s" d="M123 30 C142 40 152 60 152 88"/>
+          <g class="fade" style="--dd:1.4s" fill="#2a2622">
+            <circle cx="104" cy="52" r="6.5"/><circle cx="136" cy="46" r="6"/><circle cx="98" cy="74" r="5.5"/>
+            <circle cx="158" cy="62" r="6"/><circle cx="140" cy="80" r="5"/><circle cx="162" cy="84" r="4.5"/>
+            <ellipse cx="110" cy="28" rx="3" ry="2.4"/><ellipse cx="118" cy="27" rx="3" ry="2.4"/>
+          </g>
+          <path class="draw" pathLength="1" style="--dd:1.6s;stroke-width:1.2" d="M96 92 l-8 8 M88 100 l-6 2 M104 96 l-4 9 M116 99 l0 9 M138 98 l2 9 M156 94 l6 8 M164 100 l6 3 M148 96 l8 8 M104 36 l-6 -8 M112 32 l-4 -10 M102 90 l-14 2 M170 90 l14 2"/>
+          <path class="fade" style="--dd:2s" d="M24 132 C60 126 90 138 122 128" stroke="#6e665a" stroke-width="1.2" fill="none" stroke-dasharray="4 5"/>
+          <text x="20" y="122" style="font-family:var(--hand);font-size:14px" fill="#6e665a">4 cm, in ten minutes — a journey</text>
+          <path class="draw p" pathLength="1" style="--dd:2.2s" d="M122 128 l-8 -1 M122 128 l-7 4"/>
+        </svg>
+      </div>
+      <p class="nline">Dressed for a funeral and a parade. Moved four centimetres in ten minutes — a serious distance, I was told. I was not told; I measured. It was, in fact, walking with great dignity.</p>
+      <div class="meta"><span><b>habitat</b> bramble, south face</span><span><b>weather</b> heat, still</span><span><b>status</b> accompanied briefly, then left</span></div>
+    </article>
+
+    <!-- 05 snail (wide) -->
+    <article class="spec note r2 wide lift reveal">
+      <span class="tape tcr" aria-hidden="true"></span>
+      <div class="lab"><span class="no">Specimen 05</span><span class="ref">TR 339 112 · 14 Mar</span></div>
+      <h3>Grove snail <i>Cepaea nemoralis</i></h3>
+      <div class="drawing" aria-hidden="true">
+        <svg viewBox="0 0 300 160" filter="url(#wob)">
+          <path class="fade" style="--dd:1.4s" d="M40 34 l-5 12 M78 26 l-5 12 M118 34 l-5 12 M162 24 l-5 12 M206 32 l-5 12" stroke="#5d7f8d" stroke-width="1.2" opacity=".6"/>
+          <ellipse class="fade" style="--fo:.3;--dd:.4s" cx="196" cy="88" rx="58" ry="46" fill="rgba(198,139,63,.45)" filter="url(#wc1)"/>
+          <path class="fade" style="--dd:2s" d="M168 98 A32 32 0 1 1 136 66 A23 23 0 1 1 149 88 A14 14 0 1 1 135 74 A6.5 6.5 0 1 1 142 80" fill="url(#hatch)" opacity=".26"/>
+          <path class="draw" pathLength="1" style="--du:2.4s;stroke-width:1.9" d="M168 98 A32 32 0 1 1 136 66 A23 23 0 1 1 149 88 A14 14 0 1 1 135 74 A6.5 6.5 0 1 1 142 80"/>
+          <path class="draw p" pathLength="1" style="--dd:1.4s" d="M158 60 C146 62 138 72 140 84 M150 56 C132 60 124 80 134 96"/>
+          <path class="draw" pathLength="1" style="--dd:1.2s" d="M74 120 C96 124 160 124 178 118 C182 112 178 106 172 106"/>
+          <path class="draw" pathLength="1" style="--dd:1.6s;stroke-width:1.4" d="M78 118 C72 112 66 106 64 98 M64 98 L56 82 M64 98 L70 80"/>
+          <circle class="fade" style="--dd:2.2s" cx="56" cy="82" r="1.6" fill="#2a2622"/><circle class="fade" style="--dd:2.2s" cx="70" cy="80" r="1.6" fill="#2a2622"/>
+          <path class="fade" style="--dd:2.4s" d="M62 102 l-5 2" stroke="#2a2622" stroke-width="1.2"/>
+          <path class="draw b" pathLength="1" style="--dd:1.8s;stroke-width:1.3" d="M16 128 C38 124 54 130 72 126 M16 133 C38 129 54 135 72 131"/>
+          <path class="fade" style="--dd:2.6s" d="M30 129 l8 0 M52 131 l7 0" stroke="#7fa0ab" stroke-width="2"/>
+          <path class="fade" style="--dd:2.8s" d="M232 118 q6 -12 16 -13 q10 -1 13 8 q3 7 -3 7 z M258 120 q5 -10 13 -11 q9 -1 12 7 q3 6 -3 6 z" fill="rgba(95,127,76,.15)" stroke="#3f5a33" stroke-width="1.1"/>
+          <path class="draw p" pathLength="1" style="--dd:1s" d="M24 136 C100 132 220 132 286 134"/>
+        </svg>
+      </div>
+      <p class="nline">One of fourteen, the best of them. Shell a pale keel, seams like a river chart. Trail of slime glistening — the wood's own handwriting, one word long. See field study, p. 14, for the whole morning.</p>
+      <div class="meta"><span><b>habitat</b> bank of the Little Run</span><span><b>weather</b> drizzle, then nothing</span><span><b>status</b> watched 92 minutes (see below)</span></div>
+    </article>
+
+    <!-- 06 spruce cone -->
+    <article class="spec note r3 lift reveal">
+      <div class="lab"><span class="no">Specimen 06</span><span class="ref">TR 355 109 · 02 Nov</span></div>
+      <h3>Spruce cone <i>Picea abies</i></h3>
+      <div class="drawing" aria-hidden="true">
+        <svg viewBox="0 0 200 170" filter="url(#wob)">
+          <ellipse class="fade" style="--fo:.22;--dd:.4s" cx="100" cy="88" rx="48" ry="62" fill="rgba(164,80,47,.45)" filter="url(#wc1)"/>
+          <path class="draw" pathLength="1" style="--du:1.8s" d="M100 24 C124 36 136 64 131 92 C127 118 116 136 100 144 C84 136 73 118 69 92 C64 64 76 36 100 24 Z"/>
+          <path class="draw p" pathLength="1" style="--dd:1s" d="M80 52 q8 10 18 10 q10 0 18 -10 M76 72 q9 11 20 11 q11 0 20 -11 M74 92 q10 12 22 12 q12 0 22 -12 M78 112 q9 11 19 11 q10 0 19 -11 M86 130 q7 8 13 8 q6 0 13 -8"/>
+          <path class="draw" pathLength="1" style="--dd:.6s" d="M100 24 C98 14 102 10 104 3"/>
+          <path class="fade" style="--dd:2s" d="M52 158 l-8 -14 M52 158 l-2 -16 M52 158 l4 -15 M148 160 l8 -14 M148 160 l2 -16 M148 160 l-4 -15" stroke="#6e665a" stroke-width="1"/>
+          <path class="draw p" pathLength="1" style="--dd:1.4s" d="M30 160 C70 156 130 156 172 159"/>
+        </svg>
+      </div>
+      <p class="nline">Closed tight against the damp, scales like small shutters. Smells of a whole summer it will not name. Held it; it did not open. We did not argue.</p>
+      <div class="meta"><span><b>habitat</b> the plantation, fallen</span><span><b>status</b> held 4 min, set down gently</span></div>
+    </article>
+
+    <!-- 07 spider web -->
+    <article class="spec note lift reveal">
+      <div class="lab"><span class="no">Specimen 07</span><span class="ref">TR 344 126 · 05 Sep</span></div>
+      <h3>A spider, family Linyphiidae <i>the fence constellation</i></h3>
+      <div class="drawing" aria-hidden="true">
+        <svg viewBox="0 0 220 200" filter="url(#wob)">
+          <path class="draw p" pathLength="1" style="--dd:.4s" d="M22 20 C20 70 20 130 23 180 M34 22 C32 72 33 128 34 178"/>
+          <path id="webS" class="fade" style="--dd:1s" fill="none" stroke="#4a443b" stroke-width=".9" opacity=".75"/>
+          <path id="webR" class="fade" style="--dd:1.4s" fill="none" stroke="#4a443b" stroke-width=".9" opacity=".75"/>
+          <g class="fade" style="--dd:2s" fill="#7fa0ab">
+            <circle class="dew" cx="118" cy="52" r="1.6"/><circle class="dew d2" cx="196" cy="118" r="1.6"/><circle class="dew d3" cx="112" cy="168" r="1.6"/><circle class="dew d4" cx="70" cy="120" r="1.4"/>
+          </g>
+          <path class="draw" pathLength="1" style="--dd:1.8s;stroke-width:1.3" d="M150 100 C146 92 152 86 158 88 C164 90 166 98 161 102 C156 106 152 105 150 100 Z"/>
+          <path class="draw" pathLength="1" style="--dd:2s;stroke-width:1" d="M152 92 l-8 -8 M158 90 l2 -10 M164 94 l10 -5 M164 100 l11 2 M158 108 l6 10 M150 106 l-10 7 M146 100 l-12 -1 M148 94 l-9 -7 M150 100 l-4 12"/>
+          <circle class="fade" style="--dd:2.4s" cx="157" cy="95" r=".9" fill="#2a2622"/>
+        </svg>
+      </div>
+      <p class="nline">The web caught the dew and then the light; for a moment the fence was holding a small constellation. The spider sat in the exact middle of it, as if hired.</p>
+      <div class="meta"><span><b>habitat</b> the fence line</span><span><b>status</b> constellation preserved in one page</span></div>
+    </article>
+
+    <!-- 08 tbd -->
+    <article class="spec note todo reveal">
+      <div class="lab"><span class="no">Specimen 08</span><span class="ref">TR · · · · whenever</span></div>
+      <div class="q" aria-hidden="true">?</div>
+      <p class="nline">The next one is still out there, doing its thing. Bring the 10×. Bring the bread.</p>
+      <div class="dots" aria-hidden="true"></div>
+      <div class="meta"><span><b>habitat</b> unconfirmed</span><span><b>status</b> anticipated</span></div>
+    </article>
+  </div>
+</section>
+
+<div class="divider reveal" aria-hidden="true">
+  <svg viewBox="0 0 240 28">
+    <path class="draw" pathLength="1" d="M4 14 C42 19 74 9 108 14"/>
+    <g class="fade" style="--dd:1s"><path d="M124 14 q4 -7 10 -2 q6 -5 10 2 q-4 8 -10 6 q-6 2 -10 -6 Z" fill="none" stroke="#5d7f8d" stroke-width="1.2"/><path d="M126 14 h16 M132 12 v5 M138 11 v7" stroke="#5d7f8d" stroke-width="1"/></g>
+    <path class="draw" pathLength="1" style="--dd:.5s" d="M146 13 C176 18 206 8 236 13"/>
+  </svg>
+</div>
+
+<!-- ================= FEATURED OBSERVATION ================= -->
+<section id="study" aria-labelledby="h-study">
+  <span class="pageno">p. 14</span>
+  <div class="shead reveal">
+    <span class="snum" aria-hidden="true"><svg viewBox="0 0 52 52"><path class="draw" pathLength="1" style="stroke:rgba(42,38,34,.5)" d="M26 5 C38 4 48 14 47 26 C46 38 37 47 26 47 C14 47 5 38 5 26 C5 14 14 6 26 5 Z"/></svg><span>04</span></span>
+    <h2 id="h-study">Field Study · The Hour of the Snail</h2>
+    <svg class="uline" viewBox="0 0 240 16" aria-hidden="true"><path class="draw" pathLength="1" d="M3 7 C45 3 90 12 135 7 C180 3 212 5 237 8"/><path class="draw p" pathLength="1" style="--dd:.5s" d="M10 12 C60 8 120 14 190 10 C210 9 226 10 233 11"/></svg>
+    <span class="snote">14 March · 07:40–09:12 · drizzle, then nothing</span>
+  </div>
+
+  <div class="study-grid">
+    <article class="prose reveal">
+      <p class="lede">I came to the run that morning to count the wrens, because the wrens are the wood's metronome and I have been counting them for eleven years. I met a snail instead — or rather, a snail met me on the second step of the bank, and the snail, I will not insult you by pretending, took over the morning.</p>
+      <p>It was a grove snail, one of the striped kind, its shell a pale keel with seams like a river chart, and it was working the wet ground with the seriousness of an archaeologist. Its trail of slime caught the drizzle and glistened, which is to say: the snail was carrying a small river behind it, and neither of us said anything about it.</p>
+      <p>I sat down. This is the part I have to be honest about. I came with a pencil, a pocket of crumbs, and a plan for one hour; I left with a pencil, an empty pocket, and no plan. The snail had moved four inches. I have never watched anything move four inches so convincingly.</p>
+      <blockquote class="pull">Patience, I am beginning to suspect, is just another word for paying attention longer than the moment lasts.</blockquote>
+      <p>There is a taxonomy of wet I am assembling, and the snail is its first serious subject: drizzle, which the wood drinks; mist, which the wood wears; dew, which the wood keeps on the fern tips like a promise; and then this — ground-water wet, the wet that lives below the soil and only surfaces in snail-trail and mushroom-cap and the shine of the bank at 08:12. All of them the same water, I am told. I believe the water. I am not sure the categories survive the morning.</p>
+
+      <figure class="fig note">
+        <span class="tape" aria-hidden="true"></span>
+        <svg viewBox="0 0 460 250" aria-label="Large sketch of a grove snail on a wet bank, with drizzle, grass and a distant wren" role="img">
+          <g filter="url(#wob2)">
+            <path class="fade" style="--dd:.6s" d="M60 26 l-6 14 M110 18 l-6 14 M170 28 l-6 14 M240 20 l-6 14 M320 30 l-6 14 M390 22 l-6 14" stroke="#5d7f8d" stroke-width="1.2" opacity=".5"/>
+            <ellipse class="fade" style="--fo:.08;--dd:.5s" cx="230" cy="220" rx="220" ry="34" fill="#5f7f4c"/>
+            <path class="draw b" pathLength="1" style="--du:2.2s;--dd:.8s" d="M8 216 C60 210 96 218 148 212 M8 222 C60 216 96 224 148 218"/>
+            <path class="fade" style="--dd:2.4s" d="M40 217 l10 0 M74 219 l9 0 M112 215 l9 0" stroke="#7fa0ab" stroke-width="2"/>
+            <g transform="translate(120,26) scale(1.85)">
+              <ellipse class="fade" style="--fo:.28;--dd:.5s" cx="146" cy="88" rx="46" ry="36" fill="rgba(198,139,63,.45)" filter="url(#wc1)"/>
+              <path class="fade" style="--dd:1.6s" d="M168 98 A32 32 0 1 1 136 66 A23 23 0 1 1 149 88 A14 14 0 1 1 135 74 A6.5 6.5 0 1 1 142 80" fill="url(#hatch)" opacity=".28"/>
+              <path class="draw" pathLength="1" style="--du:2.6s;--dd:.6s;stroke-width:1.8" d="M168 98 A32 32 0 1 1 136 66 A23 23 0 1 1 149 88 A14 14 0 1 1 135 74 A6.5 6.5 0 1 1 142 80"/>
+              <path class="draw p" pathLength="1" style="--dd:1.2s" d="M158 60 C146 62 138 72 140 84 M150 56 C132 60 124 80 134 96 M128 92 C120 84 122 70 132 62"/>
+              <path class="draw" pathLength="1" style="--dd:1.4s" d="M60 120 C84 124 148 124 166 118 C170 112 166 106 160 106"/>
+              <path class="draw" pathLength="1" style="--dd:1.7s;stroke-width:1.3" d="M64 118 C58 112 52 106 50 98 M50 98 L42 82 M50 98 L56 80"/>
+              <circle class="fade" style="--dd:2.3s" cx="42" cy="82" r="1.5" fill="#2a2622"/><circle class="fade" style="--dd:2.3s" cx="56" cy="80" r="1.5" fill="#2a2622"/>
+              <path class="fade" style="--dd:2.4s" d="M48 102 l-5 2" stroke="#2a2622" stroke-width="1.1"/>
+            </g>
+            <g class="sway s2" filter="url(#wob)">
+              <path class="draw p" pathLength="1" style="--dd:1.6s" d="M56 226 C54 214 55 206 58 198 M64 226 C64 212 67 205 71 199 M72 226 C74 214 78 208 83 203"/>
+            </g>
+            <g class="sway s3" filter="url(#wob)">
+              <path class="draw p" pathLength="1" style="--dd:1.9s" d="M204 230 C202 218 203 210 206 202 M212 230 C213 216 216 209 220 204 M220 230 C222 218 226 212 231 207"/>
+            </g>
+            <path class="fade" style="--dd:2.2s" d="M398 226 q7 -14 18 -15 q12 -1 16 9 q4 8 -4 8 z M428 228 q5 -11 13 -12 q10 -1 13 7 q3 7 -3 7 z" fill="rgba(95,127,76,.16)" stroke="#3f5a33" stroke-width="1.1"/>
+            <path class="draw p" pathLength="1" style="--dd:1s" d="M12 232 C140 227 320 227 450 231"/>
+            <g filter="url(#wob)">
+              <path class="draw" pathLength="1" style="--dd:2.6s;stroke-width:1.3" d="M398 76 C420 70 440 72 452 64 M436 74 C434 66 440 58 448 56 C455 55 459 59 457 64 C454 70 442 73 436 70 Z"/>
+              <path class="draw" pathLength="1" style="--dd:2.9s" d="M457 61 l5 2 -5 2 M443 72 v5"/>
+              <circle class="fade" style="--dd:3.1s" cx="452" cy="61" r="1" fill="#2a2622"/>
+            </g>
+            <text class="tl-label fade" style="--dd:3.3s" x="330" y="44" font-size="15">the wrens kept the count, whether I listened or not</text>
+            <path class="draw p" pathLength="1" style="--dd:3.5s" d="M420 50 q10 6 16 12 M436 62 l-8 0 M436 62 l0 -8"/>
+          </g>
+        </svg>
+        <figcaption>Cepaea nemoralis, one of fourteen. Sepia ink and ochre wash; twenty minutes; one apology to the wrens.</figcaption>
+      </figure>
+
+      <p>I counted fourteen snails on the bank in the end, no two of them alike, each one a small argument against my schedule. The wrens, to their credit, kept the count going whether I listened or not. I left before the snail finished what it was doing. That is the rule of the notebook: you take nothing, and you are left, slowly, with everything.</p>
+    </article>
+
+    <aside class="marginals reveal" aria-label="Marginal notes">
+      <div class="marginal">
+        <svg viewBox="0 0 60 40" aria-hidden="true">
+          <path class="draw r" pathLength="1" style="--dd:.8s" d="M56 4 C42 8 20 12 6 30"/>
+          <path class="draw r" pathLength="1" style="--dd:1.5s" d="M6 30 l1 -9 M6 30 l9 -2"/>
+        </svg>
+        <p>the slime is its own kind of weather — add to the list</p>
+      </div>
+      <div class="marginal">
+        <svg viewBox="0 0 60 40" aria-hidden="true">
+          <path class="draw r" pathLength="1" style="--dd:.8s" d="M56 10 C40 10 18 18 6 30"/>
+          <path class="draw r" pathLength="1" style="--dd:1.5s" d="M6 30 l2 -9 M6 30 l9 -3"/>
+        </svg>
+        <p>— write this on the cover someday</p>
+      </div>
+      <div class="marginal">
+        <svg viewBox="0 0 60 40" aria-hidden="true">
+          <path class="draw r" pathLength="1" style="--dd:.8s" d="M56 4 C44 10 22 16 6 30"/>
+          <path class="draw r" pathLength="1" style="--dd:1.5s" d="M6 30 l1 -9 M6 30 l9 -2"/>
+        </svg>
+        <p>14 snails. I counted twice.<br>the wrens did not forgive me. I don't blame them.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= WEATHER LEDGER ================= -->
+<section id="weather" aria-labelledby="h-weather">
+  <span class="pageno">p. 22</span>
+  <div class="shead reveal">
+    <span class="snum" aria-hidden="true"><svg viewBox="0 0 52 52"><path class="draw" pathLength="1" style="stroke:rgba(42,38,34,.5)" d="M26 5 C38 4 48 14 47 26 C46 38 37 47 26 47 C14 47 5 38 5 26 C5 14 14 6 26 5 Z"/></svg><span>05</span></span>
+    <h2 id="h-weather">The Weather Ledger</h2>
+    <svg class="uline" viewBox="0 0 240 16" aria-hidden="true"><path class="draw" pathLength="1" d="M3 7 C45 3 90 12 135 7 C180 3 212 5 237 8"/><path class="draw p" pathLength="1" style="--dd:.5s" d="M10 12 C60 8 120 14 190 10 C210 9 226 10 233 11"/></svg>
+    <span class="snote">tallied honestly, one rain at a time</span>
+  </div>
+
+  <div class="ledger-card note r2 reveal">
+    <span class="tape tc" aria-hidden="true"></span><span class="tape tcr" aria-hidden="true"></span>
+    <p class="ledger-hint">twelve months of the Little Run's moods · extremes are stamped, because someone had to</p>
+    <div class="ledger-wrap">
+      <table class="ledger">
+        <thead><tr><th>Month</th><th>Sky</th><th>Wind (from)</th><th>Rain days</th><th>Temperature</th><th>Field note</th></tr></thead>
+        <tbody>
+          <tr><td class="m">January</td><td class="sky-c" data-sky="storm"></td><td class="w">NNW · 5</td><td class="rain" data-n="9"></td><td class="temp" data-min="-3" data-max="6"></td><td class="note">the run ran brown; jackdaws argued all week <span class="tag">coldest</span></td></tr>
+          <tr><td class="m">February</td><td class="sky-c" data-sky="mix"></td><td class="w">E · 3</td><td class="rain" data-n="7"></td><td class="temp" data-min="-1" data-max="9"></td><td class="note">the wren, brief as a coin, before the light</td></tr>
+          <tr><td class="m">March</td><td class="sky-c" data-sky="rain"></td><td class="w">SW · 4</td><td class="rain" data-n="10"></td><td class="temp" data-min="1" data-max="11"></td><td class="note">the snail study — soil like coffee <span class="tag">wettest</span></td></tr>
+          <tr><td class="m">April</td><td class="sky-c" data-sky="sun"></td><td class="w">W · 2</td><td class="rain" data-n="4"></td><td class="temp" data-min="5" data-max="16"></td><td class="note">catkins before the leaves; everything arguing to grow</td></tr>
+          <tr><td class="m">May</td><td class="sky-c" data-sky="sun"></td><td class="w">SE · 2</td><td class="rain" data-n="2"></td><td class="temp" data-min="8" data-max="19"></td><td class="note">three eggs, in a hawthorn huddle</td></tr>
+          <tr><td class="m">June</td><td class="sky-c" data-sky="sun"></td><td class="w">S · 1</td><td class="rain" data-n="1"></td><td class="temp" data-min="11" data-max="23"></td><td class="note">the run a thread; the ants have the highway</td></tr>
+          <tr><td class="m">July</td><td class="sky-c" data-sky="storm"></td><td class="w">SW · 4</td><td class="rain" data-n="3"></td><td class="temp" data-min="10" data-max="26"></td><td class="note">drew until the ferns closed, 21:40</td></tr>
+          <tr><td class="m">August</td><td class="sky-c" data-sky="sun"></td><td class="w">calm</td><td class="rain" data-n="0"></td><td class="temp" data-min="12" data-max="28"></td><td class="note">heat so still the bees flew in a line <span class="tag">warmest</span></td></tr>
+          <tr><td class="m">September</td><td class="sky-c" data-sky="mix"></td><td class="w">W · 3</td><td class="rain" data-n="3"></td><td class="temp" data-min="8" data-max="21"></td><td class="note">oak galls like green coins; the spider constellation</td></tr>
+          <tr><td class="m">October</td><td class="sky-c" data-sky="rain"></td><td class="w">SW · 5</td><td class="rain" data-n="11"></td><td class="temp" data-min="3" data-max="14"></td><td class="note">brackets glowing; the wood smells of rain</td></tr>
+          <tr><td class="m">November</td><td class="sky-c" data-sky="rain"></td><td class="w">N · 4</td><td class="rain" data-n="8"></td><td class="temp" data-min="-1" data-max="8"></td><td class="note">acorn tithe; the wood is a pantry</td></tr>
+          <tr><td class="m">December</td><td class="sky-c" data-sky="frost"></td><td class="w">NE · 3</td><td class="rain" data-n="6"></td><td class="temp" data-min="-4" data-max="4"></td><td class="note">hoarfrost; the ink froze once (sorry)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOUNDSCAPE ================= -->
+<section id="sound" aria-labelledby="h-sound">
+  <span class="pageno">p. 31</span>
+  <div class="shead reveal">
+    <span class="snum" aria-hidden="true"><svg viewBox="0 0 52 52"><path class="draw" pathLength="1" style="stroke:rgba(42,38,34,.5)" d="M26 5 C38 4 48 14 47 26 C46 38 37 47 26 47 C14 47 5 38 5 26 C5 14 14 6 26 5 Z"/></svg><span>06</span></span>
+    <h2 id="h-sound">What the Wood Says</h2>
+    <svg class="uline" viewBox="0 0 240 16" aria-hidden="true"><path class="draw" pathLength="1" d="M3 7 C45 3 90 12 135 7 C180 3 212 5 237 8"/><path class="draw p" pathLength="1" style="--dd:.5s" d="M10 12 C60 8 120 14 190 10 C210 9 226 10 233 11"/></svg>
+    <span class="snote">written down, since I can't press play on a forest</span>
+  </div>
+
+  <div class="sound-list reveal">
+    <div class="srow">
+      <span class="when">06:40 · April</span>
+      <div><h3>The wren, at dawn</h3><p>One small engine of a song, impossibly loud for its chest; the wood goes still in rows, like listeners.</p></div>
+      <svg class="wave" viewBox="0 0 150 30" aria-hidden="true"><path class="wv" d="M0 15"/></svg>
+    </div>
+    <div class="srow">
+      <span class="when">anytime · the run</span>
+      <div><h3>Water over the stones</h3><p>A sentence the run repeats to itself, changing one word each time. I have not once understood it; I have never wanted to.</p></div>
+      <svg class="wave" viewBox="0 0 150 30" aria-hidden="true"><path class="wv" d="M0 15"/></svg>
+    </div>
+    <div class="srow">
+      <span class="when">15:20 · October</span>
+      <div><h3>Wind in the beech</h3><p>The whole canopy leaning, and then letting go — a long grey sigh with leaves in it.</p></div>
+      <svg class="wave" viewBox="0 0 150 30" aria-hidden="true"><path class="wv" d="M0 15"/></svg>
+    </div>
+    <div class="srow">
+      <span class="when">18:05 · November</span>
+      <div><h3>Crows, at dusk</h3><p>A parliament of static; the sky briefly rearranged, then filed under <i>again</i>.</p></div>
+      <svg class="wave" viewBox="0 0 150 30" aria-hidden="true"><path class="wv" d="M0 15"/></svg>
+    </div>
+    <div class="srow">
+      <span class="when">03:10 · March</span>
+      <div><h3>Rain on the brake</h3><p>Ten thousand small taps, all different sizes — a drum that tunes itself and never asks if you're listening.</p></div>
+      <svg class="wave" viewBox="0 0 150 30" aria-hidden="true"><path class="wv" d="M0 15"/></svg>
+    </div>
+    <div class="srow">
+      <span class="when">midnight · July</span>
+      <div><h3>The dark</h3><p>The crickets start their metronome; a bat's applause; then the owl — one low line — and silence with edges.</p></div>
+      <svg class="wave" viewBox="0 0 150 30" aria-hidden="true"><path class="wv" d="M0 15"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KIT ================= -->
+<section id="kit" aria-labelledby="h-kit">
+  <span class="pageno">p. 38</span>
+  <div class="shead reveal">
+    <span class="snum" aria-hidden="true"><svg viewBox="0 0 52 52"><path class="draw" pathLength="1" style="stroke:rgba(42,38,34,.5)" d="M26 5 C38 4 48 14 47 26 C46 38 37 47 26 47 C14 47 5 38 5 26 C5 14 14 6 26 5 Z"/></svg><span>07</span></span>
+    <h2 id="h-kit">What Fits in the Pocket</h2>
+    <svg class="uline" viewBox="0 0 240 16" aria-hidden="true"><path class="draw" pathLength="1" d="M3 7 C45 3 90 12 135 7 C180 3 212 5 237 8"/><path class="draw p" pathLength="1" style="--dd:.5s" d="M10 12 C60 8 120 14 190 10 C210 9 226 10 233 11"/></svg>
+    <span class="snote">the entire expedition, minus the dog</span>
+  </div>
+
+  <div class="kit-wrap reveal">
+    <div>
+      <div class="kit">
+        <div class="kit-item checked" role="checkbox" aria-checked="true" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">4B pencil</span><span class="cm">broken at six cm, which is the right place</span>
+        </div>
+        <div class="kit-item checked" role="checkbox" aria-checked="true" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">Sepia ink, 30 ml</span><span class="cm">the wood's own colour</span>
+        </div>
+        <div class="kit-item checked" role="checkbox" aria-checked="true" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">10× hand lens</span><span class="cm">everything changes at 10×</span>
+        </div>
+        <div class="kit-item checked" role="checkbox" aria-checked="true" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">Cotton swab</span><span class="cm">for erasing, for blots, for the conscience</span>
+        </div>
+        <div class="kit-item checked" role="checkbox" aria-checked="true" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">Torn page from the almanac</span><span class="cm">weather, plus one poem, gratis</span>
+        </div>
+        <div class="kit-item" role="checkbox" aria-checked="false" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">Thread, 30 cm</span><span class="cm">for pinning, for mending, for not losing things</span>
+        </div>
+        <div class="kit-item checked" role="checkbox" aria-checked="true" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">Bread and cheese</span><span class="cm">non-negotiable; the wrens know</span>
+        </div>
+        <div class="kit-item" role="checkbox" aria-checked="false" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">Chalk</span><span class="cm">for the path, and for the dog (once)</span>
+        </div>
+        <div class="kit-item checked" role="checkbox" aria-checked="true" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">A spare page</span><span class="cm">for the thing I didn't expect</span>
+        </div>
+        <div class="kit-item" role="checkbox" aria-checked="false" tabindex="0">
+          <svg class="box" viewBox="0 0 26 26" aria-hidden="true"><path class="bx draw" pathLength="1" d="M4 5 C10 3 18 3 22 5 C23 11 23 16 21 21 C15 23 9 23 5 21 C3 15 3 10 4 5 Z"/><path class="chk" pathLength="1" d="M6 14 C9 17 11 19 12 20 C15 14 18 9 21 7"/></svg>
+          <span class="name">Gloves</span><span class="cm">the snails do not respect them</span>
+        </div>
+      </div>
+      <p class="kit-hint">↑ tick things as you pack — it works, I promise</p>
+    </div>
+    <div class="kit-sketch" aria-hidden="true">
+      <svg viewBox="0 0 300 240" filter="url(#wob)">
+        <ellipse class="fade" style="--fo:.14;--dd:.5s" cx="150" cy="120" rx="130" ry="100" fill="rgba(198,139,63,.4)" filter="url(#wc2)"/>
+        <rect class="draw" pathLength="1" style="--du:2s;x:70" x="70" y="30" width="150" height="180" rx="4"/>
+        <line class="draw p" pathLength="1" style="--dd:1s" x1="86" y1="30" x2="86" y2="210"/>
+        <line class="draw p" pathLength="1" style="--dd:1.2s;stroke-dasharray:3 5" x1="96" y1="60" x2="204" y2="60"/>
+        <line class="draw p" pathLength="1" style="--dd:1.35s;stroke-dasharray:3 5" x1="96" y1="84" x2="204" y2="84"/>
+        <line class="draw p" pathLength="1" style="--dd:1.5s;stroke-dasharray:3 5" x1="96" y1="108" x2="204" y2="108"/>
+        <line class="draw p" pathLength="1" style="--dd:1.65s;stroke-dasharray:3 5" x1="96" y1="132" x2="180" y2="132"/>
+        <path class="draw" pathLength="1" style="--dd:1.9s;stroke-width:1.8" d="M204 168 C222 150 236 128 240 104 L252 108 C250 134 236 158 218 176 Z"/>
+        <path class="draw" pathLength="1" style="--dd:2.2s" d="M240 104 L252 108 L256 96 C252 100 244 100 240 104 Z M236 160 l8 6"/>
+        <path class="draw" pathLength="1" style="--dd:2.5s" d="M40 200 C30 176 34 148 52 132 C58 128 64 132 60 140 C48 154 46 174 52 192 C54 198 50 204 44 202 Z"/>
+        <path class="draw" pathLength="1" style="--dd:2.7s" d="M52 196 q10 4 20 2"/>
+        <path class="fade" style="--dd:3s" d="M104 158 h80 M104 176 h64" stroke="#6e665a" stroke-width="1" opacity=".5"/>
+        <text x="112" y="180" style="font-family:var(--hand);font-size:17px" fill="#4a443b">the pencil, mid-argument</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="divider reveal" aria-hidden="true">
+  <svg viewBox="0 0 240 28">
+    <path class="draw" pathLength="1" d="M4 15 C44 10 76 20 108 14"/>
+    <path class="draw g" pathLength="1" style="--dd:.5s" d="M118 16 C122 8 130 6 136 10 C140 14 136 20 129 20 C123 20 119 19 118 16 Z"/>
+    <path class="draw g" pathLength="1" style="--dd:.8s;stroke-width:1" d="M122 17 L132 10"/>
+    <path class="draw" pathLength="1" style="--dd:.5s" d="M140 14 C174 19 204 9 236 14"/>
+  </svg>
+</div>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" aria-labelledby="h-about">
+  <span class="pageno">p. 41</span>
+  <div class="shead reveal">
+    <span class="snum" aria-hidden="true"><svg viewBox="0 0 52 52"><path class="draw" pathLength="1" style="stroke:rgba(42,38,34,.5)" d="M26 5 C38 4 48 14 47 26 C46 38 37 47 26 47 C14 47 5 38 5 26 C5 14 14 6 26 5 Z"/></svg><span>08</span></span>
+    <h2 id="h-about">The Hand Behind the Pencil</h2>
+    <svg class="uline" viewBox="0 0 240 16" aria-hidden="true"><path class="draw" pathLength="1" d="M3 7 C45 3 90 12 135 7 C180 3 212 5 237 8"/><path class="draw p" pathLength="1" style="--dd:.5s" d="M10 12 C60 8 120 14 190 10 C210 9 226 10 233 11"/></svg>
+    <span class="snote">self-portrait, third attempt, most honest</span>
+  </div>
+
+  <div class="about-grid">
+    <div class="reveal">
+      <div class="portrait note">
+        <span class="tape" aria-hidden="true"></span>
+        <svg viewBox="0 0 240 260" aria-label="Hand-drawn self portrait of the naturalist in a flat cap and scarf" role="img">
+          <ellipse class="fade" style="--fo:.12;--dd:.4s" cx="120" cy="110" rx="90" ry="100" fill="rgba(141,161,110,.5)" filter="url(#wc2)"/>
+          <g filter="url(#wob)">
+            <path class="draw" pathLength="1" d="M84 62 C84 32 156 32 156 62 C158 94 152 122 120 132 C88 122 82 94 84 62 Z"/>
+            <path class="draw" pathLength="1" style="--dd:.5s" d="M72 62 C76 30 164 30 168 62"/>
+            <path class="draw" pathLength="1" style="--dd:.7s" d="M64 64 C90 54 150 54 176 64 L171 71 C148 62 92 62 69 71 Z"/>
+            <circle class="draw" pathLength="1" style="--dd:1s" cx="99" cy="88" r="13"/>
+            <circle class="draw" pathLength="1" style="--dd:1.1s" cx="141" cy="88" r="13"/>
+            <path class="draw" pathLength="1" style="--dd:1.2s" d="M112 88 C116 84 124 84 128 88 M86 88 L74 84 M154 88 L166 84"/>
+            <circle class="fade" style="--dd:1.5s" cx="99" cy="88" r="2" fill="#2a2622"/><circle class="fade" style="--dd:1.5s" cx="141" cy="88" r="2" fill="#2a2622"/>
+            <path class="draw" pathLength="1" style="--dd:1.3s" d="M120 92 C118 102 117 108 120 112 C122 110 122 108 121 106"/>
+            <path class="draw" pathLength="1" style="--dd:1.5s" d="M108 122 C114 126 126 126 132 122"/>
+            <path class="draw" pathLength="1" style="--dd:1.4s" d="M84 88 C78 88 76 98 82 102 M156 88 C162 88 164 98 158 102"/>
+            <path class="fade" style="--dd:1.8s" d="M96 114 C104 128 136 128 144 114 C140 132 100 132 96 114 Z" fill="url(#hatch)" opacity=".3"/>
+            <path class="draw" pathLength="1" style="--dd:1.9s" d="M104 132 C108 142 132 142 136 132"/>
+            <path class="draw" pathLength="1" style="--dd:2.1s" d="M76 150 C100 168 140 168 164 150 C158 176 82 176 76 150 Z"/>
+            <path class="draw" pathLength="1" style="--dd:2.4s" d="M140 160 C150 176 148 196 140 212 C132 200 130 176 136 160 Z"/>
+            <path class="draw" pathLength="1" style="--dd:2.6s" d="M60 236 C70 178 170 178 184 236"/>
+            <path class="draw" pathLength="1" style="--dd:2.9s" d="M160 70 L192 52 M192 52 l8 -4 l-2 7"/>
+            <path class="fade" style="--dd:3.2s" d="M190 53 l6 -3" stroke="#c68b3f" stroke-width="2.4"/>
+          </g>
+        </svg>
+        <span class="sig">M. Aldercott</span>
+      </div>
+      <div class="about-stamp" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <path class="draw r" pathLength="1" d="M50 6 C74 6 94 26 94 50 C94 74 74 94 50 94 C26 94 6 74 6 50 C6 26 26 6 50 6 Z"/>
+          <path class="draw r" pathLength="1" style="--dd:.6s;stroke-width:1" d="M50 24 C65 24 76 35 76 50 C76 65 65 76 50 76 C35 76 24 65 24 50 C24 35 35 24 50 24 Z"/>
+          <text style="font-family:var(--serif);font-size:8px;letter-spacing:1.4px" fill="#a4502f"><textPath href="#stampArc">HOLLOWFEN NATURALISTS · TRUST · EST 1923 ·</textPath></text>
+          <path class="draw r" pathLength="1" style="--dd:1.2s" d="M50 64 C42 58 42 46 50 38 C58 46 58 58 50 64 Z"/>
+        </svg>
+      </div>
+    </div>
+    <div class="about-bio reveal">
+      <p>M. Aldercott has been keeping this notebook for eleven years, from the same stile, in the same wood, with the same pencil broken in the same place. I am not a scientist — or I was once, before <i>once</i> was allowed. I am a person who counts. What I count is not the important thing. What I draw is the important thing. The wood corrects me; I have learned to take the corrections in pencil.</p>
+      <p>By day I repair things for a living; by dusk I am usually somewhere between the stile and the run, drawing whatever has been holding its ground. The notebook is the only house I have ever kept tidy.</p>
+      <ol class="principles">
+        <li>Count slowly.</li>
+        <li>Leave the biggest one.</li>
+        <li>Weather is a collaborator, not an excuse.</li>
+        <li>If it is moving, it is alive, or it is the wind. Check.</li>
+      </ol>
+      <div class="stats">
+        <span>362 pages</span><span>214 drawings</span><span>14 snails</span><span>1 ink smudge (March, permanent)</span>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+</div><!-- /.page -->
+
+<!-- ================= BACK PAGE ================= -->
+<footer class="back" id="back">
+  <div class="sheet">
+    <svg class="fernpress" viewBox="0 0 200 260" aria-hidden="true">
+      <g filter="url(#wob)" stroke="#8a7a5e" fill="none" opacity=".9">
+        <path id="ppRachis" d="M40 244 C80 184 100 100 172 40" stroke-width="1.6"/>
+        <path id="ppL" stroke-width=".9"/><path id="ppR" stroke-width=".9"/>
+      </g>
+    </svg>
+    <p class="fin reveal">fin.</p>
+    <svg class="fin-u reveal" viewBox="0 0 180 20" aria-hidden="true">
+      <path class="draw r" pathLength="1" style="--du:1.8s" d="M4 10 C40 4 70 16 100 9 C130 4 156 8 176 10"/>
+      <path class="draw r" pathLength="1" style="--dd:.9s;stroke-width:1.1" d="M160 8 C168 4 174 8 170 13 C167 16 161 15 162 10"/>
+    </svg>
+    <p class="belongs reveal">This notebook belongs to <span class="blank"></span> — and it has always belonged to the wood.</p>
+    <div class="back-cols reveal">
+      <div>
+        <h4>Colophon</h4>
+        <ul>
+          <li>Set in Fraunces &amp; Newsreader; noted in Caveat.</li>
+          <li>Drawn in the browser by a cursor moving very carefully.</li>
+          <li>Shaded in pencil (i.e. very fine lines) and washed in watercolour (i.e. blurred ellipses).</li>
+          <li>No photographs were used. None were needed.</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Errata</h4>
+        <ul>
+          <li>p. 112 — the heron was a lapwing.</li>
+          <li>p. 208 — the "firefly" remains unidentified; I like it better that way.</li>
+          <li>p. 233 — the owl was a badger. The wood forgives.</li>
+          <li>p. 301 — the stream is drawn on the wrong side once. So is the wood, if you walk it enough.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="back-bar reveal">
+      <span>© 2025 M. Aldercott, Hollowfen. The drawings are yours to study, not to own.</span>
+      <a class="totop" href="#cover">
+        <svg width="26" height="16" viewBox="0 0 32 18" aria-hidden="true">
+          <path d="M4 12 C6 7 12 5 17 6 C21 7 23 9 21 11 C18 14 8 14 4 12 Z M21 9 l5 1 -5 2 M27 8 v-4 M27 4 l-3 2 M27 4 l3 2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        back to the cover
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,c){return (c||document).querySelector(s)};
+var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- paper grain, generated on a canvas ---------- */
+try{
+  var c=document.createElement('canvas');c.width=c.height=256;
+  var x=c.getContext('2d'),id=x.createImageData(256,256),d=id.data;
+  for(var yy=0;yy<256;yy++){for(var xx=0;xx<256;xx++){
+    var i=(yy*256+xx)*4,r=Math.random();
+    if(r<0.045){d[i]=80;d[i+1]=68;d[i+2]=50;d[i+3]=10+Math.random()*26;}
+    else if(r<0.062){d[i]=255;d[i+1]=250;d[i+2]=235;d[i+3]=14;}
+  }}
+  x.putImageData(id,0,0);
+  var g=$('#grain');if(g)g.style.backgroundImage='url('+c.toDataURL('image/png')+')';
+}catch(e){}
+
+/* ---------- bezier helpers ---------- */
+function bez(P,t){var u=1-t;return{
+  x:u*u*u*P[0].x+3*u*u*t*P[1].x+3*u*t*t*P[2].x+t*t*t*P[3].x,
+  y:u*u*u*P[0].y+3*u*u*t*P[1].y+3*u*t*t*P[2].y+t*t*t*P[3].y};}
+function tng(P,t){var u=1-t;
+  var x=3*u*u*(P[1].x-P[0].x)+6*u*t*(P[2].x-P[1].x)+3*t*t*(P[3].x-P[2].x);
+  var y=3*u*u*(P[1].y-P[0].y)+6*u*t*(P[2].y-P[1].y)+3*t*t*(P[3].y-P[2].y);
+  var l=Math.hypot(x,y)||1;return{x:x/l,y:y/l};}
+function f1(v){return v.toFixed(1)}
+
+/* ---------- generated ferns (cover + pressed leaf) ---------- */
+function fern(lEl,rEl,pts,len,steps,jit){
+  if(!lEl||!rEl)return;
+  var dL='',dR='';
+  for(var i=1;i<=steps;i++){
+    var t=0.05+0.93*(i/(steps+1));
+    var b=bez(pts,t),tg=tng(pts,t),nx=-tg.y,ny=tg.x;
+    var L=(len*Math.pow(1-(t-0.05)/0.93,0.9)+2.5)*(1+0.10*Math.sin(i*2.7+jit)+0.05*Math.sin(i*0.7));
+    var s1x=b.x+nx*L-tg.x*L*0.72,s1y=b.y+ny*L-tg.y*L*0.72;
+    var s2x=b.x-nx*L-tg.x*L*0.72,s2y=b.y-ny*L-tg.y*L*0.72;
+    dL+='M'+f1(b.x)+' '+f1(b.y)+'Q'+f1((b.x+s1x)/2+nx*L*0.22)+' '+f1((b.y+s1y)/2+ny*L*0.22)+' '+f1(s1x)+' '+f1(s1y);
+    dR+='M'+f1(b.x)+' '+f1(b.y)+'Q'+f1((b.x+s2x)/2-nx*L*0.22)+' '+f1((b.y+s2y)/2-ny*L*0.22)+' '+f1(s2x)+' '+f1(s2y);
+  }
+  lEl.setAttribute('d',dL);rEl.setAttribute('d',dR);
+}
+fern($('#pinL'),$('#pinR'),
+  [{x:150,y:505},{x:205,y:420},{x:215,y:240},{x:300,y:70}],62,30,0);
+fern($('#sfernL'),$('#sfernR'),
+  [{x:30,y:170},{x:78,y:152},{x:142,y:96},{x:170,y:30}],34,26,1.4);
+fern($('#ppL'),$('#ppR'),
+  [{x:40,y:244},{x:80,y:184},{x:100,y:100},{x:172,y:40}],30,24,2.2);
+
+/* ---------- generated feather barbs ---------- */
+(function(){
+  var lEl=$('#barbsL'),rEl=$('#barbsR');if(!lEl||!rEl)return;
+  var P=[{x:66,y:206},{x:54,y:150},{x:58,y:84},{x:76,y:22}],dL='',dR='',n=26;
+  for(var i=1;i<=n;i++){
+    var t=0.04+0.94*(i/(n+1));
+    var b=bez(P,t),tg=tng(P,t),nx=-tg.y,ny=tg.x;
+    var w=(Math.pow(Math.sin(Math.min(1,t)*Math.PI),0.8)*26+1.5)*(1+0.08*Math.sin(i*3.1));
+    dL+='M'+f1(b.x+nx*2)+' '+f1(b.y+ny*2)+' L'+f1(b.x+nx*w-tg.x*w*0.85)+' '+f1(b.y+ny*w-tg.y*w*0.85);
+    dR+='M'+f1(b.x-nx*2)+' '+f1(b.y-ny*2)+' L'+f1(b.x-nx*w-tg.x*w*0.85)+' '+f1(b.y-ny*w-tg.y*w*0.85);
+  }
+  lEl.setAttribute('d',dL);rEl.setAttribute('d',dR);
+})();
+
+/* ---------- generated spider web ---------- */
+(function(){
+  var sEl=$('#webS'),rEl=$('#webR');if(!sEl||!rEl)return;
+  var cx=134,cy=104,R=86,S=11,dS='',dR='';
+  var jr=function(k){var v=Math.sin(k*127.3)*43758.5453;return v-Math.floor(v);};
+  var pts=[];
+  for(var j=0;j<S;j++){
+    var a=j*(Math.PI*2/S)+(jr(j)-0.5)*0.16;
+    var rr=R*(0.92+jr(j+9)*0.16);
+    var ex=cx+Math.cos(a)*rr,ey=cy+Math.sin(a)*rr;
+    dS+='M'+f1(cx)+' '+f1(cy)+' Q'+f1(cx+Math.cos(a)*rr*0.5)+' '+f1(cy+Math.sin(a)*rr*0.5+4)+' '+f1(ex)+' '+f1(ey);
+    pts.push({a:a,rr:rr});
+  }
+  for(var k=1;k<=5;k++){
+    var fr=0.16+k*0.17;
+    for(j=0;j<S;j++){
+      var p1=pts[j],p2=pts[(j+1)%S];
+      var ax=cx+Math.cos(p1.a)*p1.rr*fr,ay=cy+Math.sin(p1.a)*p1.rr*fr;
+      var bx=cx+Math.cos(p2.a)*p2.rr*fr,by=cy+Math.sin(p2.a)*p2.rr*fr;
+      var mx=(ax+bx)/2-cx,my=(ay+by)/2-cy;
+      var pull=0.80+0.05*Math.sin(j*2+k);
+      dR+='M'+f1(ax)+' '+f1(ay)+' Q'+f1(cx+mx*pull)+' '+f1(cy+my*pull+3)+' '+f1(bx)+' '+f1(by);
+    }
+  }
+  sEl.setAttribute('d',dS);rEl.setAttribute('d',dR);
+})();
+
+/* ---------- soundscape waveforms ---------- */
+$$('.wave').forEach(function(w,idx){
+  var p=w.querySelector('path');if(!p)return;
+  var L=150,m=15,d='M0 '+m;
+  for(var x2=2;x2<=L;x2+=3){
+    var env=Math.pow(Math.sin(Math.PI*x2/L),1.4);
+    var a=10*env*(0.35+0.65*Math.abs(Math.sin(x2*0.11+idx*1.9)+0.5*Math.sin(x2*0.023+idx)));
+    d+=' L'+x2+' '+f1(m+a*Math.sin(x2*0.31+idx*0.7));
+  }
+  p.setAttribute('d',d);
+});
+
+/* ---------- weather: sky icons ---------- */
+var SKY={
+  sun:'<circle cx="11" cy="11" r="4.4"/><path d="M11 3.2v2.6M11 16.2v2.6M3.2 11h2.6M16.2 11h2.6M5.5 5.5l1.8 1.8M14.7 14.7l1.8 1.8M16.5 5.5l-1.8 1.8M7.3 14.7l-1.8 1.8"/>',
+  cloud:'<path d="M6 14.5a3.2 3.2 0 0 1 .4-6.3 4.6 4.6 0 0 1 8.9-.7 3.4 3.4 0 0 1 2.3 6.4z"/><path d="M7 18.5h9"/>',
+  rain:'<path d="M6 12.5a3 3 0 0 1 .4-5.9 4.3 4.3 0 0 1 8.4-.6 3.2 3.2 0 0 1 2.1 6z"/><path d="M8 15.5l-1.6 3M12.5 15.5l-1.6 3M17 15.5l-1.6 3"/>',
+  storm:'<path d="M6 12a3 3 0 0 1 .4-5.9 4.3 4.3 0 0 1 8.4-.6 3.2 3.2 0 0 1 2.1 6z"/><path d="M11.5 14l-2.4 4h3.4l-2.4 4"/>',
+  frost:'<path d="M11 3v16M4.5 6.8l13 8.4M17.5 6.8l-13 8.4"/><path d="M8 5.5l3 2 3-2M8 16.5l3-2 3 2"/>',
+  mix:'<circle cx="15.5" cy="7" r="3.4"/><path d="M15.5 2v1.6M20.4 7h1.6M19 3.5l-1.1 1.1"/><path d="M5 15.5a3 3 0 0 1 .4-5.9 4.3 4.3 0 0 1 8.4-.6 3.2 3.2 0 0 1 2.1 6z"/>'
+};
+$$('.sky-c').forEach(function(td){
+  var k=td.dataset.sky;if(!SKY[k])return;
+  td.innerHTML='<svg class="sky" viewBox="0 0 22 22" role="img" aria-label="'+k+'">'+SKY[k]+'</svg>';
+});
+
+/* ---------- weather: rain tallies ---------- */
+function tally(n){
+  if(!n)return '<span class="dry">— dry</span>';
+  var x=3,s='',n2=n;
+  while(n2>=5){
+    s+='<line x1="'+x+'" y1="3" x2="'+x+'" y2="19"/><line x1="'+(x+6)+'" y1="3" x2="'+(x+6)+'" y2="19"/>'+
+       '<line x1="'+(x+12)+'" y1="3" x2="'+(x+12)+'" y2="19"/><line x1="'+(x+18)+'" y1="3" x2="'+(x+18)+'" y2="19"/>'+
+       '<line class="diag" x1="'+(x-2)+'" y1="20" x2="'+(x+21)+'" y2="2"/>';
+    x+=27;n2-=5;
+  }
+  for(var i=0;i<n2;i++){s+='<line x1="'+x+'" y1="3" x2="'+x+'" y2="19"/>';x+=6;}
+  return '<svg class="tally" viewBox="0 0 '+(x+3)+' 23" width="'+(x+3)+'" height="23" role="img" aria-label="'+n+' days of rain">'+s+'</svg>';
+}
+$$('td.rain').forEach(function(td){
+  var n=parseInt(td.dataset.n,10)||0;
+  td.innerHTML=tally(n);
+});
+
+/* ---------- weather: temperature bars ---------- */
+$$('td.temp').forEach(function(td){
+  var mn=+td.dataset.min,mx=+td.dataset.max,s=-8,e=32,W=86;
+  var X=function(v){return (4+(v-s)/(e-s)*(W-8)).toFixed(1)};
+  td.innerHTML='<svg class="tbar" viewBox="0 0 '+W+' 14" width="'+W+'" height="14" role="img" aria-label="'+mn+'° to '+mx+'°">'+
+    '<line class="ax" x1="3" y1="7" x2="'+(W-3)+'" y2="7"/>'+
+    '<line class="tk" x1="'+X(mn)+'" y1="1.5" x2="'+X(mn)+'" y2="12.5"/>'+
+    '<line class="tk" x1="'+X(mx)+'" y1="1.5" x2="'+X(mx)+'" y2="12.5"/>'+
+    '<line class="tk" x1="'+X(0)+'" y1="4" x2="'+X(0)+'" y2="10" style="stroke:rgba(110,102,90,.55)"/>'+
+    '<line class="seg" x1="'+X(mn)+'" y1="7" x2="'+X(mx)+'" y2="7"/></svg>'+
+    '<span class="tval">'+mn+'° / '+mx+'°</span>';
+});
+
+/* ---------- scroll reveals + ink draw-in ---------- */
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('inview');io.unobserve(e.target);}
+  });
+},{threshold:0.12,rootMargin:'0px 0px -6% 0px'});
+$$('.reveal').forEach(function(el){
+  if(RM)el.classList.add('inview');else io.observe(el);
+});
+
+/* ---------- tab scroll-spy ---------- */
+var links=$$('#tabs a');
+var spy=new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(e.isIntersecting){
+      links.forEach(function(a){
+        var on=a.getAttribute('href')==='#'+e.target.id;
+        a.classList.toggle('on',on);
+        if(on)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');
+      });
+    }
+  });
+},{rootMargin:'-40% 0px -55% 0px'});
+['cover','seasons','map','specimens','study','weather','sound','kit','about'].forEach(function(id){
+  var s=document.getElementById(id);if(s)spy.observe(s);
+});
+
+/* ---------- map: survey readout ---------- */
+var map=$('#mapsvg'),readout=$('#coords');
+if(map&&readout){
+  map.style.cursor='crosshair';
+  map.addEventListener('pointermove',function(e){
+    var r=map.getBoundingClientRect();
+    var gx=300+Math.round((e.clientX-r.left)/r.width*120);
+    var gy=80+Math.round((1-(e.clientY-r.top)/r.height)*120);
+    readout.textContent='grid TR '+gx+' '+gy;
+  });
+  map.addEventListener('pointerleave',function(){readout.textContent='grid — hover to survey';});
+}
+
+/* ---------- map: legend highlights ---------- */
+var LAYERS={conifer:'g-conifer',broadleaf:'g-broadleaf',water:'g-water',trail:'g-trail',pit:'g-pit',contour:'g-contour'};
+$$('#legend li').forEach(function(li){
+  var on=function(){
+    var k=li.dataset.layer;
+    $$('#mapsvg g.layer').forEach(function(g){g.classList.toggle('dim',g.id!==LAYERS[k]);});
+  };
+  var off=function(){$$('#mapsvg g.layer').forEach(function(g){g.classList.remove('dim');});};
+  li.addEventListener('mouseenter',on);
+  li.addEventListener('mouseleave',off);
+  li.addEventListener('focus',on);
+  li.addEventListener('blur',off);
+});
+
+/* ---------- kit: tickable checklist ---------- */
+$$('.kit-item').forEach(function(it){
+  var set=function(){it.setAttribute('aria-checked',it.classList.contains('checked')?'true':'false');};
+  var toggle=function(){it.classList.toggle('checked');set();};
+  it.addEventListener('click',toggle);
+  it.addEventListener('keydown',function(e){
+    if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle();}
+  });
+  set();
+});
+})();
+</script>
+</body>
+</html>

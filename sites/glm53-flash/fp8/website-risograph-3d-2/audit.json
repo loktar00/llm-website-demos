@@ -1,0 +1,19 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/glm53-flash/fp8/website-risograph-3d-2/index.html",
+  "pass": false,
+  "notes": [
+    "all canvases blank after settle",
+    "WebGL canvas under headless SwiftShader -- possible false negative; GPU-verify in a headed browser before calling it broken"
+  ],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": false,
+  "canvas_count": 1,
+  "canvas_kinds": [
+    "webgl"
+  ],
+  "served_by": "base",
+  "auditor": "audit_cell.py v1 (headless chromium, SwiftShader GL)",
+  "body_text_chars": 7016,
+  "scroll_height": 11090
+}

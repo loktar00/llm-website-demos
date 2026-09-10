@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCRETE INDEX — Archive of Civic Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #0a0a0a;
+  --white: #f0ece4;
+  --orange: #FF4F00;
+  --blue: #0050EF;
+  --concrete: #7a7a7a;
+  --grid-line: #2a2a2a;
+  --mono: 'Space Mono', monospace;
+  --condensed: 'Oswald', sans-serif;
+}
+
+::selection { background: var(--orange); color: var(--black); }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--condensed);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* CONCRETE GRAIN OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* GLOBAL GRID LINES */
+.grid-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.06;
+  background-image:
+    linear-gradient(90deg, var(--white) 1px, transparent 1px),
+    linear-gradient(180deg, var(--white) 1px, transparent 1px);
+  background-size: 12.5% 10vh;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--orange); }
+
+/* ===================== HEADER / NAV ===================== */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  z-index: 1000;
+  border-bottom: 1px solid var(--grid-line);
+  background: var(--black);
+}
+
+.top-bar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--concrete);
+}
+
+.top-bar-inner .issue-counter {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.nav-main {
+  position: fixed;
+  top: 32px; left: 0; width: 100%;
+  z-index: 1000;
+  background: var(--black);
+  border-bottom: 2px solid var(--white);
+  display: flex;
+  align-items: stretch;
+}
+
+.nav-brand {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-right: 1px solid var(--grid-line);
+  flex-shrink: 0;
+}
+
+.nav-brand span { color: var(--orange); }
+
+.nav-links {
+  display: flex;
+  align-items: stretch;
+  list-style: none;
+  flex: 1;
+}
+
+.nav-links li {
+  border-right: 1px solid var(--grid-line);
+}
+
+.nav-links a {
+  display: block;
+  padding: 12px 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  text-decoration: none;
+  transition: all 0s;
+}
+
+.nav-links a:hover {
+  color: var(--white);
+  background: var(--orange);
+}
+
+.nav-number {
+  padding: 12px 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--concrete);
+  border-left: 1px solid var(--grid-line);
+  flex-shrink: 0;
+}
+
+/* ===================== HERO ===================== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  border-bottom: 4px solid var(--white);
+}
+
+.hero-label {
+  grid-column: 1 / -1;
+  padding: 80px 24px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  border-bottom: 1px solid var(--grid-line);
+}
+
+.hero-left {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 24px 40px 60px;
+  position: relative;
+  border-right: 1px solid var(--grid-line);
+}
+
+.hero-title {
+  font-size: clamp(72px, 12vw, 160px);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.hero-title .line { display: block; }
+
+.hero-title .line:nth-child(2) {
+  color: var(--orange);
+  margin-left: -2vw;
+}
+
+.hero-title .line:nth-child(3) {
+  color: var(--blue);
+  font-size: 0.7em;
+}
+
+.hero-subtitle {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.8;
+  letter-spacing: 0.1em;
+  color: var(--concrete);
+  margin-top: 40px;
+  max-width: 380px;
+  text-transform: uppercase;
+}
+
+.hero-right {
+  grid-column: 2;
+  grid-row: 2;
+  position: relative;
+  overflow: hidden;
+  background: #111;
+}
+
+.hero-plan {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  will-change: transform;
+}
+
+.hero-bottom {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: flex;
+  border-top: 1px solid var(--grid-line);
+}
+
+.hero-stat {
+  flex: 1;
+  padding: 20px 24px;
+  border-right: 1px solid var(--grid-line);
+  font-family: var(--mono);
+}
+
+.hero-stat:last-child { border-right: none; }
+
+.hero-stat .label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  margin-bottom: 6px;
+}
+
+.hero-stat .value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.hero-stat .value.orange { color: var(--orange); }
+.hero-stat .value.blue { color: var(--blue); }
+
+/* REGISTRATION MARKS */
+.reg-mark {
+  position: absolute;
+  width: 20px; height: 20px;
+}
+
+.reg-mark::before, .reg-mark::after {
+  content: '';
+  position: absolute;
+  background: var(--orange);
+}
+
+.reg-mark::before {
+  top: 0; left: 0;
+  width: 100%; height: 1px;
+}
+
+.reg-mark::after {
+  top: 0; left: 0;
+  width: 1px; height: 100%;
+}
+
+.reg-mark.tr { top: 20px; right: 20px; }
+.reg-mark.tl { top: 20px; left: 20px; }
+.reg-mark.br { bottom: 20px; right: 20px; }
+.reg-mark.bl { bottom: 20px; left: 20px; }
+
+/* ANIMATED CROSSHAIR */
+.crosshair {
+  position: absolute;
+  width: 40px; height: 40px;
+  animation: crosshairPulse 3s ease-in-out infinite;
+}
+
+.crosshair::before, .crosshair::after {
+  content: '';
+  position: absolute;
+  background: var(--blue);
+  opacity: 0.5;
+}
+
+.crosshair::before {
+  top: 50%; left: 0; width: 100%; height: 1px;
+  transform: translateY(-50%);
+}
+
+.crosshair::after {
+  left: 50%; top: 0; height: 100%; width: 1px;
+  transform: translateX(-50%);
+}
+
+.crosshair .ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 20px; height: 20px;
+  border: 1px solid var(--blue);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: crosshairRing 3s ease-in-out infinite;
+}
+
+@keyframes crosshairPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes crosshairRing {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  50% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+/* MEASUREMENT ARROWS */
+.measurement {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--orange);
+  letter-spacing: 0.1em;
+}
+
+.measurement::before {
+  content: '';
+  position: absolute;
+  background: var(--orange);
+  opacity: 0.4;
+}
+
+.measurement.horiz {
+  bottom: 60px; left: 60px;
+}
+
+.measurement.horiz::before {
+  top: 4px; left: 0; width: 120px; height: 1px;
+}
+
+.measurement.horiz::after {
+  content: '';
+  position: absolute;
+  top: -3px; left: 0;
+  width: 8px; height: 10px;
+  border-top: 1px solid var(--orange);
+  border-bottom: 1px solid var(--orange);
+  opacity: 0.4;
+}
+
+.measurement.horiz .arrow-end {
+  position: absolute;
+  top: -3px; right: 0;
+  width: 8px; height: 10px;
+  border-top: 1px solid var(--orange);
+  border-bottom: 1px solid var(--orange);
+  opacity: 0.4;
+}
+
+/* ===================== TICKER ===================== */
+.ticker-bar {
+  background: var(--orange);
+  color: var(--black);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  overflow: hidden;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--black);
+  padding: 10px 0;
+}
+
+.ticker-content {
+  display: inline-block;
+  animation: tickerScroll 40s linear infinite;
+}
+
+.ticker-content span {
+  margin: 0 40px;
+}
+
+.ticker-content .sep {
+  color: var(--black);
+  opacity: 0.4;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ===================== INDEX SECTION ===================== */
+.index-section {
+  border-bottom: 4px solid var(--white);
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  border-bottom: 1px solid var(--grid-line);
+  align-items: stretch;
+}
+
+.section-number {
+  padding: 24px;
+  font-family: var(--mono);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--orange);
+  border-right: 1px solid var(--grid-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-title-wrap {
+  padding: 24px;
+  border-right: 1px solid var(--grid-line);
+}
+
+.section-title {
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.section-title small {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--concrete);
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+.section-meta {
+  padding: 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--concrete);
+  text-align: right;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.index-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--grid-line);
+}
+
+.index-card {
+  position: relative;
+  border-right: 1px solid var(--grid-line);
+  border-bottom: 1px solid var(--grid-line);
+  overflow: hidden;
+  transition: all 0s;
+  cursor: pointer;
+  min-height: 320px;
+}
+
+.index-card:nth-child(odd) { border-right: 1px solid var(--grid-line); }
+.index-card:nth-child(even) { border-right: none; }
+
+.index-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--orange);
+  transform: translateY(100%);
+  transition: transform 0.15s steps(3);
+  z-index: 2;
+}
+
+.index-card:hover::before {
+  transform: translateY(0);
+}
+
+.index-card:hover {
+  color: var(--black);
+}
+
+.index-card:hover .card-number,
+.index-card:hover .card-type,
+.index-card:hover .card-meta {
+  color: var(--black);
+}
+
+.index-card-inner {
+  position: relative;
+  z-index: 3;
+  padding: 32px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: auto;
+}
+
+.card-number {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--concrete);
+  letter-spacing: 0.15em;
+  transition: color 0s;
+}
+
+.card-type {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  border: 1px solid var(--concrete);
+  padding: 2px 8px;
+  transition: all 0s;
+}
+
+.index-card:hover .card-type {
+  color: var(--black);
+  border-color: var(--black);
+}
+
+.card-title {
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.card-location {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  margin-bottom: auto;
+  transition: color 0s;
+}
+
+.card-meta {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--concrete);
+  letter-spacing: 0.1em;
+  margin-top: 20px;
+  transition: color 0s;
+}
+
+.card-visual {
+  position: absolute;
+  top: 0; right: 0;
+  width: 50%;
+  height: 100%;
+  opacity: 0.15;
+  z-index: 1;
+  transition: opacity 0s;
+}
+
+.index-card:hover .card-visual {
+  opacity: 0.3;
+}
+
+/* ===================== EDITORIAL FEATURE ===================== */
+.editorial {
+  border-bottom: 4px solid var(--white);
+}
+
+.editorial-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--grid-line);
+}
+
+.editorial-label {
+  padding: 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--blue);
+  border-right: 1px solid var(--grid-line);
+  display: flex;
+  align-items: center;
+}
+
+.editorial-label .dot {
+  width: 6px; height: 6px;
+  background: var(--blue);
+  margin-right: 12px;
+  animation: blink 2s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.editorial-headline {
+  padding: 24px;
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.editorial-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--grid-line);
+}
+
+.editorial-text {
+  padding: 40px 32px;
+  border-right: 1px solid var(--grid-line);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 2;
+  color: var(--concrete);
+  letter-spacing: 0.02em;
+}
+
+.editorial-text:last-child { border-right: none; }
+
+.editorial-text p + p { margin-top: 20px; }
+
+.editorial-text .drop-cap {
+  font-size: 48px;
+  font-weight: 700;
+  float: left;
+  line-height: 0.8;
+  margin-right: 8px;
+  margin-top: 6px;
+  color: var(--orange);
+  font-family: var(--condensed);
+}
+
+.editorial-drawing {
+  grid-column: 1 / -1;
+  position: relative;
+  min-height: 300px;
+  background: #0d0d0d;
+  border-top: 1px solid var(--grid-line);
+  border-bottom: 1px solid var(--grid-line);
+  overflow: hidden;
+}
+
+.drawing-title {
+  position: absolute;
+  top: 24px; left: 24px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  z-index: 5;
+}
+
+.drawing-title .active { color: var(--orange); }
+
+/* ===================== SPECS TABLE ===================== */
+.specs-section {
+  border-bottom: 4px solid var(--white);
+}
+
+.specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.specs-table thead th {
+  padding: 16px 24px;
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  border-bottom: 2px solid var(--white);
+  border-right: 1px solid var(--grid-line);
+  background: #111;
+  font-weight: 400;
+}
+
+.specs-table thead th:last-child { border-right: none; }
+
+.specs-table tbody tr {
+  border-bottom: 1px solid var(--grid-line);
+  transition: background 0s;
+}
+
+.specs-table tbody tr:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.specs-table tbody tr:hover td {
+  border-color: rgba(255,255,255,0.1);
+}
+
+.specs-table td {
+  padding: 14px 24px;
+  border-right: 1px solid var(--grid-line);
+  letter-spacing: 0.05em;
+  vertical-align: top;
+}
+
+.specs-table td:last-child { border-right: none; }
+
+.specs-table td:first-child {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.specs-table .status-active {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.specs-table .status-decomm {
+  color: var(--concrete);
+}
+
+/* ===================== MANIFESTO ===================== */
+.manifesto {
+  border-bottom: 4px solid var(--white);
+  padding: 80px 60px;
+  position: relative;
+}
+
+.manifesto-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 40px;
+}
+
+.manifesto-text {
+  columns: 3;
+  column-gap: 60px;
+  column-rule: 1px solid var(--grid-line);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 2.2;
+  color: var(--concrete);
+  letter-spacing: 0.02em;
+}
+
+.manifesto-text p {
+  margin-bottom: 24px;
+}
+
+.manifesto-text .highlight {
+  color: var(--white);
+  font-weight: 700;
+}
+
+.manifesto-text .strike {
+  text-decoration: line-through;
+  color: var(--orange);
+}
+
+.manifesto-fragment {
+  position: absolute;
+  right: 60px;
+  top: 80px;
+  writing-mode: vertical-rl;
+  font-size: 120px;
+  font-weight: 700;
+  color: rgba(255,79,0,0.06);
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  pointer-events: none;
+}
+
+/* ===================== HORIZONTAL ARCHIVE STRIP ===================== */
+.archive-strip {
+  border-bottom: 4px solid var(--white);
+  overflow: hidden;
+}
+
+.archive-strip-inner {
+  display: flex;
+  animation: archiveScroll 60s linear infinite;
+  width: max-content;
+}
+
+.archive-item {
+  flex-shrink: 0;
+  width: 280px;
+  border-right: 1px solid var(--grid-line);
+  padding: 32px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0s;
+}
+
+.archive-item:hover {
+  background: var(--blue);
+}
+
+.archive-item:hover .archive-item-title { color: var(--white); }
+.archive-item:hover .archive-item-loc { color: rgba(255,255,255,0.6); }
+.archive-item:hover .archive-item-year { color: rgba(255,255,255,0.4); }
+
+.archive-item-id {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--concrete);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.archive-item-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  transition: color 0s;
+}
+
+.archive-item-loc {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--concrete);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+  transition: color 0s;
+}
+
+.archive-item-year {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--concrete);
+  transition: color 0s;
+}
+
+.archive-item svg {
+  margin-top: 16px;
+  opacity: 0.2;
+}
+
+@keyframes archiveScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ===================== FOOTER ===================== */
+.footer {
+  background: var(--black);
+  border-top: 4px solid var(--white);
+  position: relative;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--grid-line);
+}
+
+.footer-col {
+  padding: 40px 24px;
+  border-right: 1px solid var(--grid-line);
+}
+
+.footer-col:last-child { border-right: none; }
+
+.footer-col-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--orange);
+  display: inline-block;
+}
+
+.footer-col p, .footer-col a {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 2;
+  color: var(--concrete);
+  text-decoration: none;
+  display: block;
+  transition: color 0s;
+}
+
+.footer-col a:hover { color: var(--orange); }
+
+.footer-drawings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--grid-line);
+  min-height: 200px;
+}
+
+.footer-drawing {
+  border-right: 1px solid var(--grid-line);
+  position: relative;
+  padding: 24px;
+}
+
+.footer-drawing:last-child { border-right: none; }
+
+.footer-drawing-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  margin-bottom: 16px;
+}
+
+.footer-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 24px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--concrete);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.footer-bottom > div {
+  padding: 0 24px;
+  border-right: 1px solid var(--grid-line);
+}
+
+.footer-bottom > div:last-child { border-right: none; }
+
+.footer-brand {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  padding: 40px 24px;
+  border-bottom: 1px solid var(--grid-line);
+}
+
+.footer-brand span { color: var(--orange); }
+
+/* BLUE BLOCK SECTION */
+.blue-block {
+  background: var(--blue);
+  color: var(--white);
+  padding: 60px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 40px;
+  border-bottom: 4px solid var(--white);
+}
+
+.blue-block-number {
+  font-size: 120px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.3;
+}
+
+.blue-block-text {
+  font-size: clamp(24px, 3vw, 42px);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.blue-block-text small {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  margin-top: 20px;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+/* ORANGE DIVIDER */
+.orange-divider {
+  background: var(--orange);
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.orange-divider-text {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: tickerScroll 25s linear infinite;
+  display: inline-block;
+}
+
+/* LARGE TYPE SECTION */
+.large-type-section {
+  padding: 100px 60px;
+  border-bottom: 1px solid var(--grid-line);
+}
+
+.large-type {
+  font-size: clamp(48px, 8vw, 120px);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  max-width: 900px;
+}
+
+.large-type .blue { color: var(--blue); }
+.large-type .outline {
+  -webkit-text-stroke: 1px var(--white);
+  color: transparent;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-left { border-right: none; border-bottom: 1px solid var(--grid-line); }
+  .hero-right { min-height: 400px; }
+  .editorial-body { grid-template-columns: 1fr; }
+  .editorial-text { border-right: none; border-bottom: 1px solid var(--grid-line); }
+  .editorial-text:last-child { border-bottom: none; }
+  .manifesto-text { columns: 2; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-col:nth-child(2) { border-right: none; }
+  .specs-table { font-size: 10px; }
+  .specs-table td, .specs-table th { padding: 10px 16px; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-number { display: none; }
+  .hero-left { padding: 40px 24px 30px; }
+  .hero-bottom { flex-wrap: wrap; }
+  .hero-stat { flex: 1 1 50%; }
+  .hero-stat:nth-child(2) { border-right: none; }
+  .index-grid { grid-template-columns: 1fr; }
+  .index-card { border-right: none !important; }
+  .section-header { grid-template-columns: 60px 1fr; }
+  .section-meta { display: none; }
+  .section-number { font-size: 32px; padding: 16px; }
+  .manifesto { padding: 60px 24px; }
+  .manifesto-text { columns: 1; }
+  .manifesto-fragment { display: none; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-col { border-right: none; border-bottom: 1px solid var(--grid-line); }
+  .footer-drawings { grid-template-columns: 1fr; }
+  .footer-drawing { border-right: none; border-bottom: 1px solid var(--grid-line); }
+  .footer-bottom { grid-template-columns: 1fr; }
+  .footer-bottom > div { border-right: none; border-bottom: 1px solid var(--grid-line); padding: 12px 24px; }
+  .large-type-section { padding: 60px 24px; }
+  .blue-block { padding: 40px 24px; grid-template-columns: 1fr; }
+  .blue-block-number { font-size: 80px; }
+  .archive-item { width: 240px; }
+  .editorial-header { grid-template-columns: 1fr; }
+  .editorial-label { border-right: none; border-bottom: 1px solid var(--grid-line); }
+}
+
+/* UTILITY ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drawLine {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+.draw-line {
+  stroke-dasharray: 1000;
+  animation: drawLine 3s ease forwards;
+}
+
+/* HOVER HARD CUT */
+.hard-cut {
+  transition: none;
+}
+
+.hard-cut:hover {
+  transition: none;
+}
+
+/* STRUCTURAL LABEL */
+.struct-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--concrete);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.struct-label::before {
+  content: '';
+  width: 12px;
+  height: 1px;
+  background: var(--orange);
+}
+
+/* GRID LABELS */
+.grid-labels {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.grid-col-label {
+  position: absolute;
+  top: 8px;
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  color: var(--concrete);
+  opacity: 0.3;
+}
+</style>
+</head>
+<body>
+
+<div class="grid-overlay"></div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>CONCRETE INDEX <span style="margin: 0 8px; opacity: 0.3;">///</span> INDEPENDENT ARCHIVE EST. 2019</div>
+    <div class="issue-counter">ISSUE <span id="issueNum">0247</span></div>
+    <div id="dateDisplay">2025.06.15</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-main">
+  <div class="nav-brand">CONCRETE<span>/</span>INDEX</div>
+  <ul class="nav-links">
+    <li><a href="#index">INDEX</a></li>
+    <li><a href="#editorial">EDITORIAL</a></li>
+    <li><a href="#specs">SPECS</a></li>
+    <li><a href="#manifesto">MANIFESTO</a></li>
+    <li><a href="#archive">ARCHIVE</a></li>
+  </ul>
+  <div class="nav-number">V.4.2.1</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">
+    <span class="struct-label">SECTION 001 — HERO PLAN VIEW</span>
+  </div>
+
+  <div class="hero-left">
+    <h1 class="hero-title">
+      <span class="line">CON-</span>
+      <span class="line">CRETE</span>
+      <span class="line">INDEX</span>
+    </h1>
+    <p class="hero-subtitle">
+      An independent archive of remarkable civic architecture and public infrastructure. Documenting the bones of civilization — bridges, dams, stations, and the unnamed structures that hold society together.
+    </p>
+
+    <div class="crosshair" style="top: 40%; right: 30%;">
+      <div class="ring"></div>
+    </div>
+
+    <div class="measurement horiz">
+      <span class="arrow-end"></span>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-plan" id="heroPlan">
+      <svg width="100%" height="100%" viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice">
+        <!-- Site plan lines -->
+        <g stroke="rgba(255,255,255,0.12)" stroke-width="0.5" fill="none">
+          <!-- Grid -->
+          <line x1="0" y1="0" x2="600" y2="700" class="draw-line"/>
+          <line x1="600" y1="0" x2="0" y2="700" class="draw-line"/>
+          <line x1="300" y1="0" x2="300" y2="700" class="draw-line"/>
+          <line x1="0" y1="350" x2="600" y2="350" class="draw-line"/>
+          <line x1="100" y1="0" x2="100" y2="700" class="draw-line"/>
+          <line x1="500" y1="0" x2="500" y2="700" class="draw-line"/>
+          <line x1="0" y1="175" x2="600" y2="175" class="draw-line"/>
+          <line x1="0" y1="525" x2="600" y2="525" class="draw-line"/>
+
+          <!-- Building block 1 -->
+          <rect x="80" y="100" width="180" height="200" stroke="rgba(255,79,0,0.4)" stroke-width="1" fill="none"/>
+          <rect x="90" y="110" width="160" height="180" stroke="rgba(255,79,0,0.2)" stroke-width="0.5" fill="none"/>
+
+          <!-- Building block 2 -->
+          <rect x="350" y="60" width="160" height="120" stroke="rgba(0,80,239,0.4)" stroke-width="1" fill="none"/>
+          <line x1="350" y1="120" x2="510" y2="120" stroke="rgba(0,80,239,0.2)" stroke-width="0.5"/>
+          <line x1="430" y1="60" x2="430" y2="180" stroke="rgba(0,80,239,0.2)" stroke-width="0.5"/>
+
+          <!-- Circular element -->
+          <circle cx="450" cy="380" r="80" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none"/>
+          <circle cx="450" cy="380" r="60" stroke="rgba(255,79,0,0.3)" stroke-width="0.5" fill="none"/>
+          <circle cx="450" cy="380" r="40" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" fill="none"/>
+
+          <!-- Roads / pathways -->
+          <line x1="0" y1="300" x2="600" y2="300" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+          <line x1="260" y1="0" x2="260" y2="700" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+
+          <!-- Measurement markers -->
+          <line x1="80" y1="95" x2="260" y2="95" stroke="rgba(255,79,0,0.5)" stroke-width="0.5"/>
+          <line x1="80" y1="90" x2="80" y2="100" stroke="rgba(255,79,0,0.5)" stroke-width="0.5"/>
+          <line x1="260" y1="90" x2="260" y2="100" stroke="rgba(255,79,0,0.5)" stroke-width="0.5"/>
+
+          <!-- North arrow -->
+          <polygon points="120,620 130,590 110,590" fill="rgba(255,79,0,0.5)" stroke="none"/>
+          <text x="120" y="635" text-anchor="middle" fill="rgba(255,79,0,0.5)" font-family="monospace" font-size="8">N</text>
+
+          <!-- Annotation -->
+          <text x="200" y="280" fill="rgba(255,255,255,0.15)" font-family="monospace" font-size="7" letter-spacing="0.1em">BLOCK A — ADMIN</text>
+          <text x="370" y="200" fill="rgba(0,80,239,0.3)" font-family="monospace" font-size="7" letter-spacing="0.1em">BLOCK B — MECHANICAL</text>
+          <text x="450" y="384" fill="rgba(255,255,255,0.15)" font-family="monospace" font-size="7" text-anchor="middle" letter-spacing="0.1em">ROTARY</text>
+
+          <!-- Dimension lines -->
+          <line x1="350" y1="190" x2="510" y2="190" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+          <line x1="350" y1="185" x2="350" y2="195" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+          <line x1="510" y1="185" x2="510" y2="195" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+          <text x="430" y="198" text-anchor="middle" fill="rgba(0,80,239,0.3)" font-family="monospace" font-size="7">160m</text>
+
+          <!-- Hatch pattern area -->
+          <g opacity="0.15">
+            <line x1="80" y1="350" x2="80" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="90" y1="350" x2="90" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="100" y1="350" x2="100" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="110" y1="350" x2="110" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="120" y1="350" x2="120" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="130" y1="350" x2="130" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="140" y1="350" x2="140" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="150" y1="350" x2="150" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="160" y1="350" x2="160" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="170" y1="350" x2="170" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="180" y1="350" x2="180" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="190" y1="350" x2="190" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="200" y1="350" x2="200" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="210" y1="350" x2="210" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="220" y1="350" x2="220" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="230" y1="350" x2="230" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="240" y1="350" x2="240" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="250" y1="350" x2="250" y2="450" stroke="white" stroke-width="0.3"/>
+            <line x1="260" y1="350" x2="260" y2="450" stroke="white" stroke-width="0.3"/>
+          </g>
+        </g>
+
+        <!-- Animated diagram fragment -->
+        <g>
+          <rect x="520" y="520" width="60" height="60" stroke="rgba(255,79,0,0.3)" stroke-width="1" fill="none">
+            <animate attributeName="x" values="520;525;520" dur="4s" repeatCount="indefinite"/>
+            <animate attributeName="y" values="520;523;520" dur="4s" repeatCount="indefinite"/>
+          </rect>
+          <line x1="550" y1="520" x2="550" y2="580" stroke="rgba(255,79,0,0.15)" stroke-width="0.5">
+            <animate attributeName="opacity" values="0.15;0.4;0.15" dur="3s" repeatCount="indefinite"/>
+          </line>
+          <line x1="520" y1="550" x2="580" y2="550" stroke="rgba(255,79,0,0.15)" stroke-width="0.5">
+            <animate attributeName="opacity" values="0.15;0.4;0.15" dur="3s" repeatCount="indefinite"/>
+          </line>
+        </g>
+      </svg>
+    </div>
+
+    <div class="reg-mark tl"></div>
+    <div class="reg-mark tr"></div>
+    <div class="reg-mark bl"></div>
+    <div class="reg-mark br"></div>
+
+    <div class="grid-labels">
+      <span class="grid-col-label" style="left: 0%;">A</span>
+      <span class="grid-col-label" style="left: 25%;">B</span>
+      <span class="grid-col-label" style="left: 50%;">C</span>
+      <span class="grid-col-label" style="left: 75%;">D</span>
+      <span class="grid-col-label" style="left: 95%;">E</span>
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="hero-stat">
+      <div class="label">Structures Catalogued</div>
+      <div class="value orange" id="statStructures">2,847</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Countries Covered</div>
+      <div class="value blue">64</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Active Surveys</div>
+      <div class="value">12</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Archive Volume</div>
+      <div class="value orange">847 TB</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-content" id="tickerContent">
+    <span>NEW ENTRY: HANSEATIC PUMPING STATION // BERLIN // 1978</span>
+    <span class="sep">✦</span>
+    <span>SURVEY COMPLETE: KURA RIVER DAM // KYOTO PREFECTURE // 1964</span>
+    <span class="sep">✦</span>
+    <span>ARCHIVE UPDATE: ISSUE 0247 PUBLISHED</span>
+    <span class="sep">✦</span>
+    <span>FIELD REPORT: SVALBARD GLOBAL SEED VAULT INSPECTION SCHEDULED</span>
+    <span class="sep">✦</span>
+    <span>DECOMMISSIONED: OLYMPIC SWIMMING COMPLEX // SEOUL // 1988</span>
+    <span class="sep">✦</span>
+    <span>NEW ENTRY: ATLANTIC COASTAL WATER TREATMENT // CORNWALL // 2001</span>
+    <span class="sep">✦</span>
+    <span>STRUCTURAL ALERT: SEISMIC REVIEW PENDING — PACIFIC RIDGE BRIDGE</span>
+    <span class="sep">✦</span>
+    <span>NEW ENTRY: HANSEATIC PUMPING STATION // BERLIN // 1978</span>
+    <span class="sep">✦</span>
+    <span>SURVEY COMPLETE: KURA RIVER DAM // KYOTO PREFECTURE // 1964</span>
+    <span class="sep">✦</span>
+    <span>ARCHIVE UPDATE: ISSUE 0247 PUBLISHED</span>
+    <span class="sep">✦</span>
+    <span>FIELD REPORT: SVALBARD GLOBAL SEED VAULT INSPECTION SCHEDULED</span>
+    <span class="sep">✦</span>
+    <span>DECOMMISSIONED: OLYMPIC SWIMMING COMPLEX // SEOUL // 1988</span>
+    <span class="sep">✦</span>
+    <span>NEW ENTRY: ATLANTIC COASTAL WATER TREATMENT // CORNWALL // 2001</span>
+    <span class="sep">✦</span>
+    <span>STRUCTURAL ALERT: SEISMIC REVIEW PENDING — PACIFIC RIDGE BRIDGE</span>
+  </div>
+</div>
+
+<!-- INDEX SECTION -->
+<section class="index-section" id="index">
+  <div class="section-header">
+    <div class="section-number">002</div>
+    <div class="section-title-wrap">
+      <h2 class="section-title">
+        STRUCTURE<br>INDEX
+        <small>Selected entries from the master catalog — 2,847 total records</small>
+      </h2>
+    </div>
+    <div class="section-meta">
+      <div>LAST UPDATED</div>
+      <div style="color: var(--white); margin-top: 4px;">2025.06.14</div>
+      <div style="margin-top: 16px;">SORT: CHRONOLOGICAL</div>
+    </div>
+  </div>
+
+  <div class="index-grid">
+    <!-- Card 1 -->
+    <div class="index-card">
+      <div class="card-visual">
+        <svg width="100%" height="100%" viewBox="0 0 300 400">
+          <rect x="50" y="80" width="200" height="250" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+          <line x1="50" y1="150" x2="250" y2="150" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+          <line x1="50" y1="220" x2="250" y2="220" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+          <line x1="50" y1="290" x2="250" y2="290" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+          <line x1="150" y1="80" x2="150" y2="330" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+          <rect x="100" y="100" width="80" height="30" fill="none" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="index-card-inner">
+        <div class="card-top">
+          <span class="card-number">CI-00197</span>
+          <span class="card-type">Water Treatment</span>
+        </div>
+        <h3 class="card-title">VORTEX<br>FILTER PLANT</h3>
+        <p class="card-location">Duisburg, Germany</p>
+        <p class="card-meta">1968 — 142,000 m³ — Reinf. Concrete</p>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="index-card">
+      <div class="card-visual">
+        <svg width="100%" height="100%" viewBox="0 0 300 400">
+          <polygon points="40,300 150,60 260,300" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+          <line x1="40" y1="300" x2="260" y2="300" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+          <line x1="150" y1="60" x2="150" y2="300" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+          <circle cx="150" cy="200" r="40" fill="none" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="index-card-inner">
+        <div class="card-top">
+          <span class="card-number">CI-00234</span>
+          <span class="card-type">Bridge</span>
+        </div>
+        <h3 class="card-title">PACIFIC<br>RIDGE<br>CROSSING</h3>
+        <p class="card-location">Hokkaido, Japan</p>
+        <p class="card-meta">1982 — 2,180m span — Steel/Concrete Composite</p>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="index-card">
+      <div class="card-visual">
+        <svg width="100%" height="100%" viewBox="0 0 300 400">
+          <rect x="30" y="100" width="240" height="200" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+          <rect x="60" y="120" width="50" height="80" fill="none" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+          <rect x="130" y="120" width="50" height="80" fill="none" stroke="rgba(0,80,239,0.2)" stroke-width="0.5"/>
+          <rect x="200" y="120" width="50" height="80" fill="none" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+          <line x1="30" y1="260" x2="270" y2="260" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="index-card-inner">
+        <div class="card-top">
+          <span class="card-number">CI-00312</span>
+          <span class="card-type">Power Station</span>
+        </div>
+        <h3 class="card-title">BLACK HILL<br>GENERATOR</h3>
+        <p class="card-location">South Australia</p>
+        <p class="card-meta">1986 — 1,450 MW — Gravity Dam</p>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="index-card">
+      <div class="card-visual">
+        <svg width="100%" height="100%" viewBox="0 0 300 400">
+          <path d="M30,300 L150,50 L270,300 Z" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <rect x="80" y="150" width="140" height="150" fill="none" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+          <line x1="80" y1="200" x2="220" y2="200" stroke="rgba(0,80,239,0.15)" stroke-width="0.5"/>
+          <line x1="80" y1="250" x2="220" y2="250" stroke="rgba(0,80,239,0.15)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="index-card-inner">
+        <div class="card-top">
+          <span class="card-number">CI-00401</span>
+          <span class="card-type">Terminal</span>
+        </div>
+        <h3 class="card-title">RAKUSAN<br>STATION</h3>
+        <p class="card-location">Osaka, Japan</p>
+        <p class="card-meta">1994 — 48,000 m² — In-Situ Concrete</p>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="index-card">
+      <div class="card-visual">
+        <svg width="100%" height="100%" viewBox="0 0 300 400">
+          <rect x="40" y="80" width="220" height="260" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+          <line x1="40" y1="80" x2="260" y2="340" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+          <line x1="260" y1="80" x2="40" y2="340" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+          <rect x="100" y="140" width="100" height="100" fill="none" stroke="rgba(255,79,0,0.15)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="index-card-inner">
+        <div class="card-top">
+          <span class="card-number">CI-00489</span>
+          <span class="card-type">Archive Facility</span>
+        </div>
+        <h3 class="card-title">FROST VAULT<br>COMPLEX</h3>
+        <p class="card-location">Svalbard, Norway</p>
+        <p class="card-meta">2008 — Bedrock Excavation — Reinforced Shell</p>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="index-card">
+      <div class="card-visual">
+        <svg width="100%" height="100%" viewBox="0 0 300 400">
+          <ellipse cx="150" cy="200" rx="120" ry="150" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <ellipse cx="150" cy="200" rx="80" ry="100" fill="none" stroke="rgba(0,80,239,0.25)" stroke-width="0.5"/>
+          <ellipse cx="150" cy="200" rx="40" ry="50" fill="none" stroke="rgba(0,80,239,0.15)" stroke-width="0.5"/>
+          <line x1="150" y1="50" x2="150" y2="350" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+          <line x1="30" y1="200" x2="270" y2="200" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="index-card-inner">
+        <div class="card-top">
+          <span class="card-number">CI-00523</span>
+          <span class="card-type">Observatory</span>
+        </div>
+        <h3 class="card-title">ATLAS<br>DEEP FIELD</h3>
+        <p class="card-location">Atacama, Chile</p>
+        <p class="card-meta">2015 — 32m aperture — Concrete Foundation Ring</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLUE BLOCK -->
+<div class="blue-block">
+  <div class="blue-block-number">03</div>
+  <div class="blue-block-text">
+    Infrastructure is the most honest form of architecture. It does not pretend to be art — it is art pretending to be utility.
+    <small>— From the CONCRETE INDEX manifesto, section IV</small>
+  </div>
+</div>
+
+<!-- EDITORIAL FEATURE -->
+<section class="editorial" id="editorial">
+  <div class="editorial-header">
+    <div class="editorial-label">
+      <span class="dot"></span>
+      EDITORIAL FEATURE
+    </div>
+    <div class="editorial-headline">
+      Atlantic Coastal<br>Water Plant No. 7
+    </div>
+  </div>
+
+  <div class="editorial-body">
+    <div class="editorial-text">
+      <p><span class="drop-cap">S</span>eated on the wild Atlantic coast of Cornwall, the Atlantic Coastal Water Plant No. 7 is not a building you can accidentally pass. It commands the headland the way a fortress once would have — massive, unapologetic, and built to outlast every storm the ocean can throw at it.</p>
+      <p>Completed in 2001, the facility processes 18 million liters of seawater daily through a series of concrete vortex filters, sand beds, and ultraviolet chambers housed within a single brutalist shell. The architect, Elara Voss, described the brief as "design a machine for water that doesn't hide its mechanics."</p>
+    </div>
+    <div class="editorial-text">
+      <p>The structure's defining feature is its intake tower — a 42-meter concrete cylinder driven into the bedrock, channeling raw seawater through a series of sedimentation chambers that double as public viewing platforms. The transparency of the process is deliberate: visitors can watch turbidity drop from 40 NTU to under 0.5 as water cascades through exposed concrete channels.</p>
+      <p>Voss's team used 14,000 cubic meters of C50/60 grade concrete, mixed with pulverized fly ash for durability against salt crystallization. Every surface was board-marked with Baltic oak, leaving a horizontal striation that reads like geological strata.</p>
+    </div>
+    <div class="editorial-text">
+      <p>The control room sits behind a wall of laminated glass, offering a panoramic view of both the treatment process and the Atlantic horizon. Inside, analog gauges from the original commission still operate alongside PLC systems installed during the 2018 retrofit. The juxtaposition is intentional — the plant was designed to make the invisible visible, to render water treatment as legible as a bridge or a dam.</p>
+      <p>"We don't celebrate infrastructure," Voss wrote in her project notes. "We document it. The difference is everything."</p>
+    </div>
+  </div>
+
+  <!-- EDITORIAL DRAWING -->
+  <div class="editorial-drawing">
+    <div class="drawing-title">FIG. 3A — <span class="active">CROSS SECTION</span> // INTAKE TOWER // SCALE 1:200</div>
+    <svg width="100%" height="100%" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid slice">
+      <g stroke="rgba(255,255,255,0.15)" stroke-width="0.5" fill="none">
+        <!-- Ground line -->
+        <line x1="0" y1="250" x2="1200" y2="250" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+
+        <!-- Ocean -->
+        <g opacity="0.15">
+          <path d="M0,250 Q100,240 200,250 Q300,260 400,250 Q500,240 600,250" stroke="rgba(0,80,239,0.4)" stroke-width="1" fill="none"/>
+          <path d="M0,260 Q100,250 200,260 Q300,270 400,260 Q500,250 600,260" stroke="rgba(0,80,239,0.3)" stroke-width="0.5" fill="none"/>
+        </g>
+
+        <!-- Intake Tower -->
+        <rect x="100" y="60" width="80" height="190" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+        <line x1="100" y1="120" x2="180" y2="120" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <line x1="100" y1="180" x2="180" y2="180" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <line x1="100" y1="220" x2="180" y2="220" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+
+        <!-- Sedimentation Chambers -->
+        <rect x="250" y="140" width="120" height="110" stroke="rgba(0,80,239,0.3)" stroke-width="1"/>
+        <line x1="250" y1="180" x2="370" y2="180" stroke="rgba(0,80,239,0.15)" stroke-width="0.5"/>
+        <line x1="250" y1="210" x2="370" y2="210" stroke="rgba(0,80,239,0.15)" stroke-width="0.5"/>
+        <line x1="310" y1="140" x2="310" y2="250" stroke="rgba(0,80,239,0.15)" stroke-width="0.5"/>
+
+        <!-- Main Building -->
+        <rect x="450" y="80" width="300" height="170" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+        <rect x="470" y="100" width="60" height="40" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <rect x="550" y="100" width="60" height="40" stroke="rgba(0,80,239,0.2)" stroke-width="0.5"/>
+        <rect x="630" y="100" width="60" height="40" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <rect x="710" y="100" width="60" height="40" stroke="rgba(0,80,239,0.2)" stroke-width="0.5"/>
+        <line x1="450" y1="170" x2="750" y2="170" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+        <line x1="450" y1="220" x2="750" y2="220" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+        <!-- Control Room (glass) -->
+        <rect x="550" y="40" width="100" height="40" stroke="rgba(0,80,239,0.4)" stroke-width="1" fill="rgba(0,80,239,0.05)"/>
+        <line x1="550" y1="60" x2="650" y2="60" stroke="rgba(0,80,239,0.2)" stroke-width="0.5"/>
+
+        <!-- Pipe connections -->
+        <line x1="180" y1="180" x2="250" y2="180" stroke="rgba(255,79,0,0.3)" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <line x1="370" y1="180" x2="450" y2="180" stroke="rgba(0,80,239,0.3)" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+        <!-- Output pipe -->
+        <line x1="750" y1="200" x2="900" y2="200" stroke="rgba(255,79,0,0.3)" stroke-width="1.5"/>
+        <rect x="900" y="180" width="60" height="40" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+
+        <!-- Dimension annotations -->
+        <line x1="100" y1="50" x2="180" y2="50" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+        <line x1="100" y1="45" x2="100" y2="55" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+        <line x1="180" y1="45" x2="180" y2="55" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+        <text x="140" y="48" text-anchor="middle" fill="rgba(255,79,0,0.5)" font-family="monospace" font-size="8">8.0m</text>
+
+        <line x1="100" y1="55" x2="100" y2="250" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+        <text x="85" y="160" text-anchor="middle" fill="rgba(255,79,0,0.4)" font-family="monospace" font-size="8" transform="rotate(-90 85 160)">42.0m</text>
+
+        <!-- Labels -->
+        <text x="140" y="300" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="monospace" font-size="8" letter-spacing="0.1em">INTAKE TOWER</text>
+        <text x="310" y="280" text-anchor="middle" fill="rgba(0,80,239,0.3)" font-family="monospace" font-size="8" letter-spacing="0.1em">SEDIMENTATION</text>
+        <text x="600" y="30" text-anchor="middle" fill="rgba(0,80,239,0.3)" font-family="monospace" font-size="8" letter-spacing="0.1em">CONTROL ROOM</text>
+        <text x="930" y="235" text-anchor="middle" fill="rgba(255,79,0,0.3)" font-family="monospace" font-size="8" letter-spacing="0.1em">OUTPUT</text>
+
+        <!-- Flow arrows -->
+        <g fill="rgba(0,80,239,0.3)">
+          <polygon points="200,177 210,180 200,183"/>
+          <polygon points="280,177 290,180 280,183"/>
+          <polygon points="400,177 410,180 400,183"/>
+          <polygon points="780,197 790,200 780,203"/>
+        </g>
+
+        <!-- Animated water flow -->
+        <g opacity="0.4">
+          <circle r="2" fill="rgba(0,80,239,0.6)">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M140,230 L140,180 L250,180 L310,180 L370,180 L450,180 L600,180 L750,200 L930,200"/>
+          </circle>
+          <circle r="2" fill="rgba(0,80,239,0.4)">
+            <animateMotion dur="3s" begin="1s" repeatCount="indefinite" path="M140,230 L140,180 L250,180 L310,180 L370,180 L450,180 L600,180 L750,200 L930,200"/>
+          </circle>
+          <circle r="2" fill="rgba(0,80,239,0.3)">
+            <animateMotion dur="3s" begin="2s" repeatCount="indefinite" path="M140,230 L140,180 L250,180 L310,180 L370,180 L450,180 L600,180 L750,200 L930,200"/>
+          </circle>
+        </g>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- LARGE TYPE -->
+<div class="large-type-section">
+  <p class="large-type">
+    WE DOCUMENT THE <span class="blue">BONES</span> OF <span class="outline">CIVILIZATION</span>
+  </p>
+</div>
+
+<!-- SPECS TABLE -->
+<section class="specs-section" id="specs">
+  <div class="section-header">
+    <div class="section-number">004</div>
+    <div class="section-title-wrap">
+      <h2 class="section-title">
+        TECHNICAL<br>SPECIFICATIONS
+        <small>Consolidated data from the master index — filtered, verified, cross-referenced</small>
+      </h2>
+    </div>
+    <div class="section-meta">
+      <div>RECORDS</div>
+      <div style="color: var(--white); margin-top: 4px;">6 ACTIVE</div>
+      <div style="margin-top: 16px;">STATUS: VERIFIED</div>
+    </div>
+  </div>
+
+  <table class="specs-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Structure Name</th>
+        <th>Type</th>
+        <th>Year</th>
+        <th>Location</th>
+        <th>Volume / Span</th>
+        <th>Material</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>CI-00197</td>
+        <td>Vortex Filter Plant</td>
+        <td>Water Treatment</td>
+        <td>1968</td>
+        <td>Duisburg, DE</td>
+        <td>142,000 m³</td>
+        <td>Reinf. Concrete</td>
+        <td class="status-active">ACTIVE</td>
+      </tr>
+      <tr>
+        <td>CI-00234</td>
+        <td>Pacific Ridge Crossing</td>
+        <td>Bridge</td>
+        <td>1982</td>
+        <td>Hokkaido, JP</td>
+        <td>2,180 m span</td>
+        <td>Steel/Concrete</td>
+        <td class="status-active">ACTIVE</td>
+      </tr>
+      <tr>
+        <td>CI-00312</td>
+        <td>Black Hill Generator</td>
+        <td>Power Station</td>
+        <td>1986</td>
+        <td>S. Australia</td>
+        <td>1,450 MW</td>
+        <td>Gravity Dam</td>
+        <td class="status-active">ACTIVE</td>
+      </tr>
+      <tr>
+        <td>CI-00401</td>
+        <td>Rakusan Station</td>
+        <td>Terminal</td>
+        <td>1994</td>
+        <td>Osaka, JP</td>
+        <td>48,000 m²</td>
+        <td>In-Situ Concrete</td>
+        <td class="status-active">ACTIVE</td>
+      </tr>
+      <tr>
+        <td>CI-00489</td>
+        <td>Frost Vault Complex</td>
+        <td>Archive</td>
+        <td>2008</td>
+        <td>Svalbard, NO</td>
+        <td>Bedrock Exc.</td>
+        <td>Reinf. Shell</td>
+        <td class="status-active">ACTIVE</td>
+      </tr>
+      <tr>
+        <td>CI-00523</td>
+        <td>Atlas Deep Field</td>
+        <td>Observatory</td>
+        <td>2015</td>
+        <td>Atacama, CL</td>
+        <td>32m aperture</td>
+        <td>Concrete Ring</td>
+        <td class="status-decomm">DECOMM.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ORANGE DIVIDER -->
+<div class="orange-divider">
+  <span class="orange-divider-text">
+    CONCRETE INDEX /// INDEPENDENT ARCHIVE /// CIVIC INFRASTRUCTURE /// PUBLIC WORKS /// BRIDGES /// DAMS /// STATIONS /// PLANTS /// TERMINALS /// FORTRESSES OF UTILITY /// CONCRETE INDEX /// INDEPENDENT ARCHIVE /// CIVIC INFRASTRUCTURE /// PUBLIC WORKS /// BRIDGES /// DAMS /// STATIONS /// PLANTS /// TERMINALS /// FORTRESSES OF UTILITY
+  </span>
+</div>
+
+<!-- MANIFESTO -->
+<section class="manifesto" id="manifesto">
+  <div class="manifesto-fragment">CONCRETE</div>
+  <div class="manifesto-label">/// MANIFESTO — FRAGMENT 07 — REVISED 2024</div>
+  <div class="manifesto-text">
+    <p>We do not catalog <span class="highlight">beautiful</span> buildings. We catalog buildings that <span class="highlight">work</span>. The cathedral of pure function — the pumping station, the treatment plant, the load-bearing wall that has held back water for forty years without complaint — this is the architecture that deserves documentation.</p>
+
+    <p>The private commission is a <span class="strike">temple to ego</span>. The civic structure is a <span class="highlight">temple to necessity</span>. One ages like wine; the other ages like concrete — gaining character, developing cracks that tell the story of every load it has borne, every freeze-thaw cycle, every ton of water or steel or human bodies it has supported.</p>
+
+    <p>We reject the <span class="strike">curated</span> aesthetic. We document the <span class="highlight">raw</span>. The board-marked surface. The exposed rebar stub. The patch repair from 1983 that sits alongside the original pour like a scar alongside skin. These are not flaws — they are records.</p>
+
+    <p>Every structure in this index was built to serve the public. Not the market. Not the developer. Not the architect's portfolio. The <span class="highlight">public</span>. That is the radical act. To build something enormous, permanent, and entirely useful is the most political gesture architecture can make.</p>
+
+    <p>We are the archivists of the <span class="highlight">uncelebrated</span>. The surveyors of the essential. When the last glass tower has been demolished for a newer glass tower, these structures will remain — because they were never meant to be temporary. They were built in <span class="highlight">concrete</span>. They are the <span class="highlight">index</span>.</p>
+  </div>
+</section>
+
+<!-- HORIZONTAL ARCHIVE STRIP -->
+<section class="archive-strip" id="archive">
+  <div class="section-header" style="border-bottom: 1px solid var(--grid-line);">
+    <div class="section-number">005</div>
+    <div class="section-title-wrap">
+      <h2 class="section-title">
+        HORIZONTAL<br>ARCHIVE
+        <small>Beyond the index — selected structures from the extended catalog</small>
+      </h2>
+    </div>
+    <div class="section-meta">
+      <div>EXTENDED CATALOG</div>
+      <div style="color: var(--white); margin-top: 4px;">SCROLLING VIEW</div>
+    </div>
+  </div>
+
+  <div class="archive-strip-inner" id="archiveStrip">
+    <!-- Items will be duplicated for infinite scroll -->
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00067</div>
+      <div class="archive-item-title">Hanseatic Pump Station</div>
+      <div class="archive-item-loc">Berlin, Germany</div>
+      <div class="archive-item-year">1978</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <rect x="10" y="10" width="180" height="40" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <circle cx="50" cy="30" r="10" fill="none" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+        <circle cx="100" cy="30" r="10" fill="none" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+        <circle cx="150" cy="30" r="10" fill="none" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00112</div>
+      <div class="archive-item-title">Kura River Dam</div>
+      <div class="archive-item-loc">Kyoto Prefecture, Japan</div>
+      <div class="archive-item-year">1964</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <path d="M10,50 L60,10 L140,10 L190,50" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="60" y1="10" x2="60" y2="50" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+        <line x1="140" y1="10" x2="140" y2="50" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00156</div>
+      <div class="archive-item-title">Nordhavn Wastewater</div>
+      <div class="archive-item-loc">Copenhagen, Denmark</div>
+      <div class="archive-item-year">1981</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <rect x="20" y="15" width="160" height="30" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="20" y1="30" x2="180" y2="30" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <rect x="40" y="20" width="30" height="20" fill="none" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+        <rect x="130" y="20" width="30" height="20" fill="none" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00198</div>
+      <div class="archive-item-title">Granite Peak Substation</div>
+      <div class="archive-item-loc">Colorado, USA</div>
+      <div class="archive-item-year">1973</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <rect x="30" y="5" width="140" height="50" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="60" y1="5" x2="60" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <line x1="100" y1="5" x2="100" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <line x1="140" y1="5" x2="140" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00245</div>
+      <div class="archive-item-title">Murmansk Harbor Wall</div>
+      <div class="archive-item-loc">Murmansk, Russia</div>
+      <div class="archive-item-year">1958</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <path d="M10,50 L10,15 Q50,5 100,15 Q150,25 190,15 L190,50" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="10" y1="30" x2="190" y2="30" stroke="rgba(0,80,239,0.2)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00289</div>
+      <div class="archive-item-title">Olympic Swim Complex</div>
+      <div class="archive-item-loc">Seoul, South Korea</div>
+      <div class="archive-item-year">1988</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <ellipse cx="100" cy="30" rx="80" ry="25" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <ellipse cx="100" cy="30" rx="50" ry="15" fill="none" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00334</div>
+      <div class="archive-item-title">Ticino Cantilever</div>
+      <div class="archive-item-loc">Bellinzona, Switzerland</div>
+      <div class="archive-item-year">1971</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <line x1="10" y1="50" x2="190" y2="50" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <rect x="20" y="20" width="40" height="30" fill="none" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+        <path d="M60,35 L150,20 L190,20" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00401</div>
+      <div class="archive-item-title">Caribou Range Road</div>
+      <div class="archive-item-loc">Alberta, Canada</div>
+      <div class="archive-item-year">1967</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <path d="M10,40 Q50,10 100,30 Q150,50 190,20" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="10" y1="40" x2="10" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <line x1="190" y1="20" x2="190" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <!-- DUPLICATE FOR INFINITE SCROLL -->
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00067</div>
+      <div class="archive-item-title">Hanseatic Pump Station</div>
+      <div class="archive-item-loc">Berlin, Germany</div>
+      <div class="archive-item-year">1978</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <rect x="10" y="10" width="180" height="40" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <circle cx="50" cy="30" r="10" fill="none" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+        <circle cx="100" cy="30" r="10" fill="none" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+        <circle cx="150" cy="30" r="10" fill="none" stroke="rgba(255,79,0,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00112</div>
+      <div class="archive-item-title">Kura River Dam</div>
+      <div class="archive-item-loc">Kyoto Prefecture, Japan</div>
+      <div class="archive-item-year">1964</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <path d="M10,50 L60,10 L140,10 L190,50" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="60" y1="10" x2="60" y2="50" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+        <line x1="140" y1="10" x2="140" y2="50" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00156</div>
+      <div class="archive-item-title">Nordhavn Wastewater</div>
+      <div class="archive-item-loc">Copenhagen, Denmark</div>
+      <div class="archive-item-year">1981</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <rect x="20" y="15" width="160" height="30" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="20" y1="30" x2="180" y2="30" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <rect x="40" y="20" width="30" height="20" fill="none" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+        <rect x="130" y="20" width="30" height="20" fill="none" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00198</div>
+      <div class="archive-item-title">Granite Peak Substation</div>
+      <div class="archive-item-loc">Colorado, USA</div>
+      <div class="archive-item-year">1973</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <rect x="30" y="5" width="140" height="50" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="60" y1="5" x2="60" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <line x1="100" y1="5" x2="100" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <line x1="140" y1="5" x2="140" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00245</div>
+      <div class="archive-item-title">Murmansk Harbor Wall</div>
+      <div class="archive-item-loc">Murmansk, Russia</div>
+      <div class="archive-item-year">1958</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <path d="M10,50 L10,15 Q50,5 100,15 Q150,25 190,15 L190,50" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="10" y1="30" x2="190" y2="30" stroke="rgba(0,80,239,0.2)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00289</div>
+      <div class="archive-item-title">Olympic Swim Complex</div>
+      <div class="archive-item-loc">Seoul, South Korea</div>
+      <div class="archive-item-year">1988</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <ellipse cx="100" cy="30" rx="80" ry="25" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <ellipse cx="100" cy="30" rx="50" ry="15" fill="none" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00334</div>
+      <div class="archive-item-title">Ticino Cantilever</div>
+      <div class="archive-item-loc">Bellinzona, Switzerland</div>
+      <div class="archive-item-year">1971</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <line x1="10" y1="50" x2="190" y2="50" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <rect x="20" y="20" width="40" height="30" fill="none" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+        <path d="M60,35 L150,20 L190,20" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="archive-item">
+      <div class="archive-item-id">CI-00401</div>
+      <div class="archive-item-title">Caribou Range Road</div>
+      <div class="archive-item-loc">Alberta, Canada</div>
+      <div class="archive-item-year">1967</div>
+      <svg width="100%" height="60" viewBox="0 0 200 60">
+        <path d="M10,40 Q50,10 100,30 Q150,50 190,20" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        <line x1="10" y1="40" x2="10" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+        <line x1="190" y1="20" x2="190" y2="55" stroke="rgba(255,79,0,0.2)" stroke-width="0.5"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">CONCRETE<span>/</span>INDEX</div>
+
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-col-title">Navigation</div>
+      <a href="#index">Structure Index</a>
+      <a href="#editorial">Editorial Features</a>
+      <a href="#specs">Technical Specs</a>
+      <a href="#manifesto">Manifesto</a>
+      <a href="#archive">Horizontal Archive</a>
+      <a href="#">API Access</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">About</div>
+      <p>CONCRETE INDEX is an independent, non-profit archive dedicated to the documentation of civic architecture and public infrastructure worldwide.</p>
+      <p style="margin-top: 12px;">Founded 2019. Operated by a distributed team of architects, engineers, and surveyors.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Coordinates</div>
+      <p>51.5074° N</p>
+      <p>0.1278° W</p>
+      <p style="margin-top: 12px;">London, United Kingdom</p>
+      <p style="margin-top: 12px; color: var(--orange);">archive@concrete-index.org</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Legal</div>
+      <a href="#">Data License (CC BY 4.0)</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Survey Protocols</a>
+      <a href="#">Contribution Guidelines</a>
+      <a href="#">Style Guide v4.2</a>
+    </div>
+  </div>
+
+  <div class="footer-drawings">
+    <div class="footer-drawing">
+      <div class="footer-drawing-label">DETAIL A — REBAR LAYOUT // TYPICAL WALL SECTION</div>
+      <svg width="100%" height="120" viewBox="0 0 400 120">
+        <g stroke="rgba(255,255,255,0.2)" stroke-width="0.5" fill="none">
+          <rect x="10" y="10" width="380" height="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+          <!-- Vertical rebars -->
+          <line x1="40" y1="10" x2="40" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="70" y1="10" x2="70" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="100" y1="10" x2="100" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="130" y1="10" x2="130" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="160" y1="10" x2="160" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="190" y1="10" x2="190" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="220" y1="10" x2="220" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="250" y1="10" x2="250" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="280" y1="10" x2="280" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="310" y1="10" x2="310" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="340" y1="10" x2="340" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <line x1="370" y1="10" x2="370" y2="110" stroke="rgba(255,79,0,0.4)" stroke-width="1"/>
+          <!-- Horizontal rebars -->
+          <line x1="10" y1="30" x2="390" y2="30" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+          <line x1="10" y1="60" x2="390" y2="60" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+          <line x1="10" y1="90" x2="390" y2="90" stroke="rgba(0,80,239,0.3)" stroke-width="0.5"/>
+          <!-- Hooks -->
+          <path d="M40,15 Q45,10 40,10" stroke="rgba(255,79,0,0.4)" stroke-width="1" fill="none"/>
+          <path d="M370,115 Q375,110 370,110" stroke="rgba(255,79,0,0.4)" stroke-width="1" fill="none"/>
+        </g>
+        <text x="200" y="118" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-family="monospace" font-size="7" letter-spacing="0.1em">SCALE 1:20</text>
+      </svg>
+    </div>
+    <div class="footer-drawing">
+      <div class="footer-drawing-label">DETAIL B — FOUNDATION PLAN // COLUMN GRID</div>
+      <svg width="100%" height="120" viewBox="0 0 400 120">
+        <g stroke="rgba(255,255,255,0.2)" stroke-width="0.5" fill="none">
+          <!-- Grid -->
+          <line x1="50" y1="10" x2="50" y2="110" stroke="rgba(255,255,255,0.15)"/>
+          <line x1="150" y1="10" x2="150" y2="110" stroke="rgba(255,255,255,0.15)"/>
+          <line x1="250" y1="10" x2="250" y2="110" stroke="rgba(255,255,255,0.15)"/>
+          <line x1="350" y1="10" x2="350" y2="110" stroke="rgba(255,255,255,0.15)"/>
+          <line x1="10" y1="30" x2="390" y2="30" stroke="rgba(255,255,255,0.15)"/>
+          <line x1="10" y1="60" x2="390" y2="60" stroke="rgba(255,255,255,0.15)"/>
+          <line x1="10" y1="90" x2="390" y2="90" stroke="rgba(255,255,255,0.15)"/>
+          <!-- Column footings -->
+          <circle cx="50" cy="30" r="8" fill="rgba(255,79,0,0.2)" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+          <circle cx="150" cy="30" r="8" fill="rgba(255,79,0,0.2)" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+          <circle cx="250" cy="30" r="8" fill="rgba(255,79,0,0.2)" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+          <circle cx="350" cy="30" r="8" fill="rgba(255,79,0,0.2)" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+          <circle cx="50" cy="60" r="8" fill="rgba(0,80,239,0.2)" stroke="rgba(0,80,239,0.4)" stroke-width="0.5"/>
+          <circle cx="150" cy="60" r="8" fill="rgba(0,80,239,0.2)" stroke="rgba(0,80,239,0.4)" stroke-width="0.5"/>
+          <circle cx="250" cy="60" r="8" fill="rgba(0,80,239,0.2)" stroke="rgba(0,80,239,0.4)" stroke-width="0.5"/>
+          <circle cx="350" cy="60" r="8" fill="rgba(0,80,239,0.2)" stroke="rgba(0,80,239,0.4)" stroke-width="0.5"/>
+          <circle cx="50" cy="90" r="8" fill="rgba(255,79,0,0.2)" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+          <circle cx="150" cy="90" r="8" fill="rgba(255,79,0,0.2)" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+          <circle cx="250" cy="90" r="8" fill="rgba(255,79,0,0.2)" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+          <circle cx="350" cy="90" r="8" fill="rgba(255,79,0,0.2)" stroke="rgba(255,79,0,0.4)" stroke-width="0.5"/>
+          <!-- Diagonal bracing -->
+          <line x1="50" y1="30" x2="150" y2="60" stroke="rgba(255,79,0,0.15)" stroke-width="0.5" stroke-dasharray="3,3"/>
+          <line x1="150" y1="30" x2="250" y2="60" stroke="rgba(255,79,0,0.15)" stroke-width="0.5" stroke-dasharray="3,3"/>
+          <line x1="250" y1="30" x2="350" y2="60" stroke="rgba(255,79,0,0.15)" stroke-width="0.5" stroke-dasharray="3,3"/>
+        </g>
+        <text x="200" y="118" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-family="monospace" font-size="7" letter-spacing="0.1em">SCALE 1:100</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div>© 2019–2025 CONCRETE INDEX. ALL RIGHTS RESERVED.</div>
+    <div>BUILT WITH CONCRETE AND INTENT. NO COOKIES. NO TRACKING. NO APOLOGIES.</div>
+    <div>LAST BROADCAST: 2025.06.15 03:42 UTC</div>
+  </div>
+</footer>
+
+<script>
+// TICKING ISSUE COUNTER
+function tickIssue() {
+  const el = document.getElementById('issueNum');
+  let num = parseInt(el.textContent);
+  // Slowly increment to simulate live counter
+  if (Math.random() > 0.7) {
+    num++;
+    el.textContent = String(num).padStart(4, '0');
+  }
+}
+setInterval(tickIssue, 8000);
+
+// DATE DISPLAY
+function updateDate() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  document.getElementById('dateDisplay').textContent = `${y}.${m}.${d}`;
+}
+updateDate();
+
+// HERO PARALLAX
+const heroPlan = document.getElementById('heroPlan');
+let ticking = false;
+
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const scrollY = window.scrollY;
+      if (heroPlan) {
+        heroPlan.style.transform = `translateY(${scrollY * 0.15}px)`;
+      }
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// ANIMATED CROSSHAIR MOVEMENT
+const crosshairs = document.querySelectorAll('.crosshair');
+let crosshairTime = 0;
+
+function animateCrosshairs() {
+  crosshairTime += 0.005;
+  crosshairs.forEach((ch, i) => {
+    const baseX = 30 + (i * 15);
+    const baseY = 40 + (i * 10);
+    const x = baseX + Math.sin(crosshairTime + i) * 10;
+    const y = baseY + Math.cos(crosshairTime * 0.7 + i) * 8;
+    ch.style.left = x + '%';
+    ch.style.top = y + '%';
+  });
+  requestAnimationFrame(animateCrosshairs);
+}
+animateCrosshairs();
+
+// STRUCTURES COUNTER ANIMATION
+function animateCounter(el, target, duration) {
+  const start = 0;
+  const startTime = performance.now();
+
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(start + (target - start) * eased);
+    el.textContent = current.toLocaleString();
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// Intersection Observer for counter animation
+const statEl = document.getElementById('statStructures');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounter(statEl, 2847, 2000);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+observer.observe(statEl);
+
+// DRAW LINE ANIMATION ON SCROLL
+const drawLines = document.querySelectorAll('.draw-line');
+const drawObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
+    }
+  });
+}, { threshold: 0.1 });
+
+drawLines.forEach(line => {
+  line.style.animationPlayState = 'paused';
+  drawObserver.observe(line);
+});
+
+// MEASUREMENT ARROW ANIMATION
+const measurements = document.querySelectorAll('.measurement');
+measurements.forEach(m => {
+  const before = m.querySelector('::before');
+  let width = 0;
+  const targetWidth = 120;
+  const mObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        width = 0;
+        const animateWidth = () => {
+          width += 2;
+          if (width <= targetWidth) {
+            m.style.setProperty('--w', width + 'px');
+            requestAnimationFrame(animateWidth);
+          }
+        };
+        animateWidth();
+        mObserver.unobserve(entry.target);
+      }
+    });
+  });
+  mObserver.observe(m);
+});
+
+// PAUSE ARCHIVE SCROLL ON HOVER
+const archiveStrip = document.getElementById('archiveStrip');
+if (archiveStrip) {
+  archiveStrip.addEventListener('mouseenter', () => {
+    archiveStrip.style.animationPlayState = 'paused';
+  });
+  archiveStrip.addEventListener('mouseleave', () => {
+    archiveStrip.style.animationPlayState = 'running';
+  });
+}
+
+// PAUSE TICKER ON HOVER
+const tickerContent = document.getElementById('tickerContent');
+if (tickerContent) {
+  tickerContent.parentElement.addEventListener('mouseenter', () => {
+    tickerContent.style.animationPlayState = 'paused';
+  });
+  tickerContent.parentElement.addEventListener('mouseleave', () => {
+    tickerContent.style.animationPlayState = 'running';
+  });
+}
+</script>
+
+</body>
+</html>

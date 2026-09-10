@@ -1,0 +1,10 @@
+{
+  "url": "http://127.0.0.1:8792/model-benchmarks/muse-spark-13/api/virtual-boy-website-hand-patched/index.html",
+  "pass": true,
+  "notes": ["hand-patched: canvas.clientElementRect (hallucinated API) replaced with canvas.getBoundingClientRect(). audit_cell.py pass, and verify_offscreen.py (real GPU) confirms: canvas_nonblank=true, 0 page errors, screenshot shows the LIVE STEREOSCOPIC FEED panel now rendering a wireframe scene (previously two empty static circles)."],
+  "console_errors": [],
+  "page_errors": [],
+  "canvas_nonblank": true,
+  "auditor": "audit_cell.py v1 + verify_offscreen.py (real GPU)",
+  "hand_patch_of": "virtual-boy-website"
+}

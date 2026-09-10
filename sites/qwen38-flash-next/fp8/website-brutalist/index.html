@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCRETE INDEX — Independent Archive of Civic Concrete</title>
+<meta name="description" content="CONCRETE INDEX is an independent, unlicensed archive of remarkable civic architecture and public infrastructure. Records are permanent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CONCRETE INDEX — MASTER STYLESHEET
+   DO NOT SCALE. DO SOFTEN. PRINT 1:1.
+   ============================================================ */
+:root{
+  --paper:#e9e6df;
+  --paper-2:#dedad1;
+  --ink:#0c0c0c;
+  --orange:#ff4d00;
+  --blue:#0026ff;
+  --grey:#8a8780;
+  --hair:1px solid rgba(12,12,12,.35);
+  --rule:3px solid var(--ink);
+  --rule-thick:10px solid var(--ink);
+  --mono:"Space Mono",ui-monospace,monospace;
+  --disp:"Anton","Arial Narrow",Impact,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.45;
+  overflow-x:hidden;
+  padding-bottom:44px; /* ticker bar */
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--blue);color:#fff;}
+
+/* ---------- CONCRETE GRAIN OVERLAY ---------- */
+.grain{
+  position:fixed;inset:-50%;width:200%;height:200%;
+  pointer-events:none;z-index:2000;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ---------- UTILITY ---------- */
+.mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:11px;}
+.tag{
+  display:inline-block;border:2px solid var(--ink);
+  padding:3px 10px;font-family:var(--mono);font-size:11px;
+  text-transform:uppercase;letter-spacing:.14em;background:transparent;
+}
+.tag--solid{background:var(--ink);color:var(--paper);}
+.tag--orange{background:var(--orange);color:#fff;border-color:var(--orange);}
+.tag--blue{background:var(--blue);color:#fff;border-color:var(--blue);}
+.mark-plus{position:absolute;width:22px;height:22px;opacity:.6;}
+.mark-plus::before,.mark-plus::after{content:"";position:absolute;background:var(--ink);}
+.mark-plus::before{left:50%;top:0;width:1.5px;height:100%;transform:translateX(-50%);}
+.mark-plus::after{top:50%;left:0;height:1.5px;width:100%;transform:translateY(-50%);}
+
+/* ---------- FIXED HEADER ---------- */
+header.master{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:var(--paper);
+  border-bottom:var(--rule-thick);
+  display:flex;align-items:stretch;justify-content:space-between;
+}
+.master__logo{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 18px;border-right:3px solid var(--ink);
+  font-family:var(--disp);font-size:20px;letter-spacing:.02em;
+  text-decoration:none;color:var(--ink);white-space:nowrap;
+}
+.master__logo .block{width:16px;height:16px;background:var(--orange);}
+.master__meta{display:flex;}
+.master__meta span{
+  display:flex;align-items:center;padding:0 16px;
+  border-left:1px solid rgba(12,12,12,.4);
+}
+.master__counter{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 18px;background:var(--ink);color:var(--paper);
+  border-left:3px solid var(--ink);
+}
+.master__counter b{font-family:var(--mono);font-size:15px;letter-spacing:.05em;color:#fff;}
+.counter-flash{color:var(--orange)!important;}
+.master nav{display:flex;}
+.master nav a{
+  display:flex;align-items:center;padding:0 18px;
+  border-left:3px solid var(--ink);text-decoration:none;color:var(--ink);
+  font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.16em;
+}
+.master nav a:hover{background:var(--ink);color:var(--paper);}
+.master nav a:nth-child(2):hover{background:var(--orange);color:#fff;}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;min-height:100svh;overflow:hidden;
+  border-bottom:var(--rule-thick);
+  display:grid;grid-template-rows:auto 1fr auto;
+}
+.hero__plan{position:absolute;inset:0;z-index:1;}
+.hero__plan svg{width:100%;height:100%;display:block;}
+.hero__top{
+  position:relative;z-index:3;display:flex;justify-content:space-between;
+  padding:120px 26px 0 26px;gap:20px;flex-wrap:wrap;
+}
+.hero__mid{
+  position:relative;z-index:3;display:flex;flex-direction:column;justify-content:center;
+  padding:40px 26px;
+}
+.hero h1{
+  font-family:var(--disp);
+  font-size:clamp(4.2rem,17.5vw,16.5rem);
+  line-height:.82;letter-spacing:-.015em;text-transform:uppercase;
+  margin-left:-.02em;
+}
+.hero h1 .row-b{display:block;color:transparent;-webkit-text-stroke:2px var(--ink);}
+.hero h1 .slash{color:var(--orange);-webkit-text-stroke:0;}
+.hero__orange-bar{width:min(38vw,420px);height:26px;background:var(--orange);margin:26px 0 18px;}
+.hero__sub{
+  max-width:640px;font-weight:700;font-size:clamp(1rem,1.6vw,1.35rem);
+  text-transform:uppercase;letter-spacing:.02em;line-height:1.25;
+}
+.hero__sub em{font-style:normal;background:var(--blue);color:#fff;padding:0 6px;}
+.hero__bottom{
+  position:relative;z-index:3;
+  border-top:var(--rule);background:rgba(233,230,223,.9);
+  display:grid;grid-template-columns:repeat(4,1fr);
+}
+.hero__bottom>div{
+  padding:16px 20px;border-right:var(--hair);
+  font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+}
+.hero__bottom>div:last-child{border-right:none;}
+.hero__bottom b{display:block;font-size:15px;margin-top:4px;}
+.hero__scrollcue{
+  position:absolute;right:26px;bottom:120px;z-index:4;
+  writing-mode:vertical-rl;font-family:var(--mono);font-size:11px;
+  letter-spacing:.3em;text-transform:uppercase;
+  border-left:2px solid var(--ink);padding-left:10px;
+}
+.hero__scrollcue .arrow-down{display:inline-block;animation:cue 1.6s steps(4,end) infinite;}
+@keyframes cue{0%{transform:translateY(0)}50%{transform:translateY(10px)}100%{transform:translateY(0)}}
+
+/* ---------- SECTION CHROME ---------- */
+.sec-rule{
+  display:flex;align-items:stretch;justify-content:space-between;
+  border-top:var(--rule-thick);border-bottom:var(--rule);
+  background:var(--paper);
+}
+.sec-rule__l{
+  font-family:var(--disp);font-size:clamp(1.6rem,4vw,3rem);text-transform:uppercase;
+  padding:14px 26px;letter-spacing:.01em;
+}
+.sec-rule__r{
+  display:flex;align-items:center;padding:0 26px;border-left:var(--rule);
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  white-space:nowrap;
+}
+section{position:relative;}
+.pad{padding:0 26px;}
+
+/* ---------- REVEAL (HARD CUT) ---------- */
+.rv{opacity:0;}
+.rv.in{opacity:1;transition:opacity .01s steps(1,end);animation:cutin .28s steps(3,end);}
+@keyframes cutin{0%{transform:translateY(14px)}100%{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;}*{animation-duration:.001s!important;transition-duration:.001s!important;}
+}
+
+/* ---------- INDEX ---------- */
+#index{border-bottom:var(--rule-thick);}
+.index-intro{
+  display:grid;grid-template-columns:1fr 4fr;gap:30px;
+  padding:44px 26px;border-bottom:var(--rule);align-items:start;
+}
+.index-intro p{max-width:62ch;font-size:1.05rem;}
+.index-intro p b{background:var(--orange);color:#fff;padding:0 5px;}
+.rec{
+  display:grid;
+  grid-template-columns:130px 190px 1fr 220px 130px;
+  align-items:stretch;border-bottom:var(--hair);
+  text-decoration:none;color:var(--ink);position:relative;
+}
+.rec>*{padding:22px 18px;border-left:var(--hair);display:flex;flex-direction:column;justify-content:center;}
+.rec>*:first-child{border-left:none;}
+.rec__num{
+  font-family:var(--disp);font-size:clamp(2rem,3.4vw,3.2rem);line-height:1;
+  background:var(--paper-2);color:var(--ink)!important;padding-top:14px!important;
+}
+.rec__thumb{background:#fff;padding:16px!important;}
+.rec__thumb svg{width:100%;height:100%;min-height:96px;}
+.rec__name{font-family:var(--disp);font-size:clamp(1.3rem,2.2vw,2rem);text-transform:uppercase;line-height:.95;}
+.rec__name small{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--grey);margin-top:8px;text-transform:uppercase;}
+.rec__meta{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.09em;gap:6px;}
+.rec__meta span b{font-weight:700;}
+.rec__cta{
+  align-items:center!important;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;gap:8px;
+}
+.rec:hover{background:var(--ink);color:var(--paper);}
+.rec:hover .rec__num{background:var(--orange);color:#fff!important;}
+.rec:hover .rec__meta span b{color:var(--paper);}
+.rec:hover .rec__name small{color:var(--paper);}
+.rec:hover .rec__cta{background:var(--blue);color:#fff;}
+.rec:hover .rec__thumb svg [stroke]{stroke:var(--paper);}
+.rec:hover .rec__thumb svg [fill]:not([fill="none"]){fill:var(--paper);}
+.rec:hover .rec__thumb svg .acc{fill:var(--orange);stroke:none;}
+.rec:nth-child(even){background:rgba(12,12,12,.03);}
+.rec:nth-child(even) .rec__num{padding-left:42px;} /* asymmetric stair */
+.index-foot{
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  padding:22px 26px;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+}
+.index-foot .orange{color:var(--orange);}
+
+/* ---------- FEATURE ---------- */
+#feature{background:var(--ink);color:var(--paper);border-bottom:10px solid var(--orange);}
+.feat-head{
+  display:grid;grid-template-columns:2fr 1fr;gap:0;border-bottom:2px solid rgba(233,230,223,.35);
+}
+.feat-head__title{padding:60px 26px 40px;}
+.feat-head__title .kicker{color:var(--orange);}
+.feat-head__title h2{
+  font-family:var(--disp);text-transform:uppercase;
+  font-size:clamp(2.6rem,7.2vw,6.4rem);line-height:.88;margin-top:18px;letter-spacing:-.01em;
+}
+.feat-head__title h2 .u{color:transparent;-webkit-text-stroke:1.5px var(--paper);}
+.feat-head__facts{
+  border-left:2px solid rgba(233,230,223,.35);padding:40px 26px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:14px;
+}
+.feat-head__facts b{color:var(--orange);display:block;font-size:15px;margin-top:2px;}
+/* the drawing */
+.feat-visual{
+  position:relative;overflow:hidden;border-bottom:2px solid rgba(233,230,223,.35);
+  background:#060a1a;aspect-ratio:21/9;min-height:380px;
+}
+.sv-plot{position:absolute;inset:0;}
+.sv-plot svg{width:100%;height:100%;display:block;}
+.crosshair{
+  position:absolute;top:0;left:0;z-index:6;pointer-events:none;
+  width:0;height:0;transition:transform .5s steps(5,end);
+}
+.crosshair .ch-h,.crosshair .ch-v{position:absolute;background:var(--orange);}
+.crosshair .ch-h{width:100vw;height:1px;top:0;left:-50vw;}
+.crosshair .ch-v{height:100vh;width:1px;top:-50vh;left:0;}
+.crosshair .ch-ring{
+  position:absolute;width:34px;height:34px;border:1.5px solid var(--orange);border-radius:50%;
+  top:-17px;left:-17px;
+}
+.crosshair .ch-ring::before,.crosshair .ch-ring::after{
+  content:"";position:absolute;background:var(--orange);
+}
+.crosshair .ch-ring::before{width:8px;height:1.5px;top:15px;left:-12px;}
+.crosshair .ch-ring::after{width:8px;height:1.5px;top:15px;left:38px;}
+.crosshair .ch-label{
+  position:absolute;top:14px;left:22px;color:var(--orange);
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;white-space:nowrap;
+}
+.feat-read{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+}
+.feat-read>div{padding:44px 26px;border-top:2px solid rgba(233,230,223,.35);}
+.feat-read>div+div{border-left:2px solid rgba(233,230,223,.35);}
+.feat-read h3{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--grey);margin-bottom:16px;
+}
+.feat-read p{font-size:1.02rem;line-height:1.6;max-width:52ch;}
+.feat-read p+p{margin-top:14px;}
+.feat-pull{
+  grid-column:1/-1;border-left:26px solid var(--orange);
+  padding:36px 26px;background:#111;
+}
+.feat-pull blockquote{
+  font-family:var(--disp);text-transform:uppercase;line-height:.95;
+  font-size:clamp(1.7rem,4.4vw,3.6rem);
+}
+.feat-pull blockquote .b{background:var(--blue);color:#fff;padding:0 8px;}
+.feat-pull cite{display:block;margin-top:16px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;font-style:normal;text-transform:uppercase;color:var(--grey);}
+/* animated water tank diagram */
+.tankdiag{border:2px solid rgba(233,230,223,.35);padding:0;margin-top:22px;}
+.tankdiag .td-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  padding:8px 12px;border-bottom:2px solid rgba(233,230,223,.35);color:var(--grey);
+  display:flex;justify-content:space-between;
+}
+.tankdiag .td-body{position:relative;height:120px;background:#0a0a0a;overflow:hidden;}
+.tankdiag .water{
+  position:absolute;left:0;right:0;bottom:0;height:35%;
+  background:
+    repeating-linear-gradient(-45deg,var(--blue) 0 6px,#001480 6px 12px);
+  animation:pump 5s steps(10,end) infinite alternate;
+}
+@keyframes pump{0%{height:28%}100%{height:78%}}
+.tankdiag .wl{
+  position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0 23px,rgba(233,230,223,.28) 23px 24px);
+}
+.tankdiag .wl-num{
+  position:absolute;right:6px;font-family:var(--mono);font-size:9px;color:rgba(233,230,223,.6);transform:translateY(-12px);
+}
+
+/* ---------- SPEC TABLE ---------- */
+#specs{border-bottom:var(--rule-thick);background:var(--paper);}
+.spec-wrap{overflow-x:auto;padding:0 26px 50px;}
+table.spec{
+  width:100%;min-width:720px;border-collapse:collapse;margin-top:40px;
+  font-family:var(--mono);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;
+}
+table.spec caption{
+  text-align:left;font-family:var(--disp);font-size:clamp(1.4rem,3vw,2.4rem);
+  text-transform:uppercase;padding:0 0 6px;letter-spacing:0;
+}
+table.spec caption small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--grey);margin-top:6px;}
+table.spec th,table.spec td{border:1px solid rgba(12,12,12,.5);padding:10px 12px;text-align:left;vertical-align:top;}
+table.spec thead th{background:var(--ink);color:var(--paper);font-size:10.5px;letter-spacing:.16em;position:sticky;top:56px;}
+table.spec tbody tr:nth-child(4n+2){background:rgba(12,12,12,.05);}
+table.spec tbody tr:hover{background:var(--blue);color:#fff;}
+table.spec tbody tr:hover td:first-child{color:#fff;}
+table.spec td:first-child{font-weight:700;width:26%;}
+table.spec .unit{color:var(--grey);}
+table.spec tr.flag td{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:700;}
+table.spec tr.flag:hover td{background:var(--blue);border-color:var(--blue);}
+.spec-notes{padding:0 26px 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:var(--hair);}
+.spec-notes div{padding:20px;border-right:var(--hair);font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;line-height:1.7;text-transform:uppercase;}
+.spec-notes div:last-child{border-right:none;}
+.spec-notes b{color:var(--orange);}
+
+/* ---------- MANIFESTO ---------- */
+#manifesto{background:var(--paper-2);border-bottom:var(--rule-thick);overflow:hidden;}
+.mani-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:0;}
+.frag{padding:34px 24px;border-top:var(--hair);position:relative;}
+.frag .no{font-family:var(--disp);font-size:clamp(2.6rem,5vw,4.6rem);line-height:1;display:block;margin-bottom:14px;}
+.frag p{font-size:clamp(1.05rem,1.5vw,1.3rem);font-weight:600;line-height:1.35;text-transform:uppercase;letter-spacing:.01em;}
+.frag.dark{background:var(--ink);color:var(--paper);}
+.frag.orange{background:var(--orange);color:#fff;border-color:var(--orange);}
+.frag.orange .no{color:rgba(255,255,255,.55);}
+.frag.blue{background:var(--blue);color:#fff;border-color:var(--blue);}
+.frag.outline .no{color:transparent;-webkit-text-stroke:1.5px var(--ink);}
+.frag .stamp{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  border:1.5px dashed currentColor;padding:4px 8px;display:inline-block;margin-top:18px;transform:rotate(-2deg);
+}
+.f-a{grid-column:1/6;}   .f-b{grid-column:6/13;}
+.f-c{grid-column:1/4;}   .f-d{grid-column:4/9;}  .f-e{grid-column:9/13;}
+.f-f{grid-column:1/8;}   .f-g{grid-column:8/13;}
+.f-h{grid-column:1/13;display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;}
+.f-h p{max-width:60ch;font-size:clamp(1.3rem,2.6vw,2.1rem);font-family:var(--disp);text-transform:uppercase;letter-spacing:.005em;font-weight:400;}
+.f-h .rot{transform:rotate(-3deg);}
+
+/* ---------- ARCHIVE STRIP ---------- */
+#strip{background:var(--paper);border-bottom:var(--rule-thick);}
+.strip-hint{
+  display:flex;justify-content:space-between;padding:14px 26px;
+  border-bottom:var(--rule);font-family:var(--mono);font-size:11px;
+  letter-spacing:.16em;text-transform:uppercase;background:var(--paper);
+}
+.strip-hint .drag{animation:nudge 1.4s steps(3,end) infinite;color:var(--orange);font-weight:700;}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(10px)}}
+.strip{
+  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:thin;scrollbar-color:var(--ink) var(--paper-2);
+  background:var(--paper-2);
+}
+.strip::-webkit-scrollbar{height:10px;}
+.strip::-webkit-scrollbar-track{background:var(--paper-2);border-top:1px solid var(--ink);}
+.strip::-webkit-scrollbar-thumb{background:var(--ink);}
+.strip-item{
+  flex:0 0 clamp(240px,26vw,320px);scroll-snap-align:start;
+  border-right:2px solid var(--ink);min-height:380px;display:flex;flex-direction:column;
+  background:var(--paper);color:var(--ink);text-decoration:none;position:relative;
+}
+.strip-item .thumb{flex:1;padding:20px;background:var(--paper);transition:none;}
+.strip-item .thumb svg{width:100%;height:100%;}
+.strip-item .lbl{border-top:2px solid var(--ink);padding:14px 20px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;}
+.strip-item .lbl b{display:block;font-size:14px;letter-spacing:.05em;margin-bottom:6px;}
+.strip-item .idx{
+  position:absolute;top:0;left:0;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;padding:5px 9px;letter-spacing:.14em;z-index:2;
+}
+.strip-item:hover{background:var(--ink);color:var(--paper);}
+.strip-item:hover .thumb{background:var(--ink);}
+.strip-item:hover .thumb svg [stroke]{stroke:var(--paper);}
+.strip-item:hover .thumb svg [fill]:not([fill="none"]){fill:var(--paper);}
+.strip-item:hover .thumb svg .acc{fill:var(--blue);stroke:none;}
+.strip-item:hover .lbl{border-top-color:var(--paper);}
+.strip-item:hover .idx{background:var(--orange);color:#fff;}
+.strip-item.more{justify-content:center;align-items:center;background:var(--orange);color:#fff;border-right:none;}
+.strip-item.more .big{font-family:var(--disp);font-size:clamp(2rem,4vw,3.4rem);text-transform:uppercase;line-height:.9;text-align:center;}
+.strip-item.more:hover{background:var(--blue);}
+
+/* ---------- FOOTER / CONSTRUCTION DOC ---------- */
+footer.doc{background:var(--ink);color:var(--paper);}
+.titleblock{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:3px solid var(--paper);
+}
+.titleblock .cell{padding:16px 18px;border-left:1px solid rgba(233,230,223,.4);font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;}
+.titleblock .cell:first-child{border-left:none;}
+.titleblock .cell b{display:block;font-size:9px;color:var(--grey);margin-bottom:6px;}
+.titleblock .cell span{font-size:13px;}
+.titleblock .cell.accent{background:var(--orange);color:#fff;border-color:var(--orange);}
+.doc-cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;border-bottom:3px solid var(--paper);}
+.doc-cols>div{padding:34px 22px;border-left:1px solid rgba(233,230,223,.4);}
+.doc-cols>div:first-child{border-left:none;}
+.doc-cols h4{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:16px;}
+.doc-cols ul{list-style:none;font-size:.92rem;line-height:2;}
+.doc-cols a{color:var(--paper);text-decoration:none;border-bottom:1px solid rgba(233,230,223,.35);}
+.doc-cols a:hover{background:var(--orange);border-color:var(--orange);}
+.doc-cols .stampbox{border:2px dashed rgba(233,230,223,.6);padding:16px;transform:rotate(-4deg);text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;line-height:2;color:var(--paper);}
+.doc-cols .stampbox b{color:var(--orange);font-size:12px;}
+.doc-note{padding:22px 26px;border-bottom:1px solid rgba(233,230,223,.4);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.mega{
+  font-family:var(--disp);text-transform:uppercase;line-height:.78;
+  font-size:clamp(3.4rem,15.5vw,15rem);letter-spacing:-.01em;
+  padding:34px 26px 10px;color:transparent;-webkit-text-stroke:1.5px rgba(233,230,223,.75);
+  user-select:none;white-space:nowrap;overflow:hidden;
+}
+.doc-final{
+  padding:14px 26px 26px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);
+}
+
+/* ---------- BOTTOM TICKER ---------- */
+.ticker{
+  position:fixed;left:0;right:0;bottom:0;height:44px;z-index:1500;
+  background:var(--ink);color:var(--paper);border-top:4px solid var(--orange);
+  display:flex;align-items:center;overflow:hidden;
+}
+.ticker__label{
+  flex:0 0 auto;background:var(--orange);color:#fff;height:100%;
+  display:flex;align-items:center;padding:0 16px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  border-right:2px solid #fff;
+}
+.ticker__win{overflow:hidden;flex:1;position:relative;}
+.ticker__track{
+  display:flex;width:max-content;white-space:nowrap;
+  animation:tick 38s linear infinite;
+}
+.ticker__track span{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:0 26px;
+}
+.ticker__track .sep{color:var(--orange);}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:1080px){
+  .master__meta span:nth-child(3){display:none;}
+  .rec{grid-template-columns:90px 150px 1fr 110px;}
+  .rec__meta{display:none;}
+  .feat-head{grid-template-columns:1fr;}
+  .feat-head__facts{border-left:none;border-top:2px solid rgba(233,230,223,.35);}
+  .feat-read{grid-template-columns:1fr;}
+  .feat-read>div+div{border-left:none;}
+  .f-a,.f-b,.f-c,.f-d,.f-e,.f-f,.f-g{grid-column:1/13;}
+  .spec-notes{grid-template-columns:1fr;}
+  .spec-notes div{border-right:none;border-bottom:var(--hair);}
+  .doc-cols{grid-template-columns:1fr 1fr;}
+  .doc-cols>div:nth-child(3){border-left:none;}
+  .titleblock{grid-template-columns:1fr 1fr;}
+  .titleblock .cell:nth-child(3){border-left:none;}
+  .hero__bottom{grid-template-columns:1fr 1fr;}
+  .hero__bottom>div:nth-child(2){border-right:none;}
+  .hero__bottom>div:nth-child(-n+2){border-bottom:var(--hair);}
+}
+@media (max-width:720px){
+  .master__meta{display:none;}
+  .master__logo{font-size:16px;}
+  .master nav a{padding:0 12px;letter-spacing:.1em;}
+  .hero__top{padding-top:96px;}
+  .hero h1 .row-b{-webkit-text-stroke:1.5px var(--ink);}
+  .rec{grid-template-columns:70px 1fr;grid-auto-rows:auto;}
+  .rec__num{grid-row:span 2;justify-content:flex-start;}
+  .rec__thumb{padding:12px!important;}
+  .rec__thumb svg{min-height:70px;}
+  .rec__cta{grid-column:1/3;flex-direction:row;justify-content:space-between;padding:10px 18px!important;}
+  .rec>*{border-left:none;border-top:var(--hair);}
+  .rec__num{border-top:none;}
+  .index-intro{grid-template-columns:1fr;}
+  .feat-visual{aspect-ratio:4/3;}
+  .f-h{flex-direction:column;align-items:flex-start;}
+  .doc-cols{grid-template-columns:1fr;}
+  .doc-cols>div{border-left:none;border-top:1px solid rgba(233,230,223,.4);}
+  .doc-cols>div:first-child{border-top:none;}
+  .ticker__label{display:none;}
+  .hero__scrollcue{display:none;}
+  table.spec thead th{position:static;}
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ==================== FIXED HEADER ==================== -->
+<header class="master">
+  <a class="master__logo" href="#top"><span class="block"></span>CONCRETE&nbsp;INDEX</a>
+  <div class="master__meta mono">
+    <span>FILE 09 / REV C</span>
+    <span id="dateline">— — —</span>
+    <span>UNLICENSED · UNSPONSORED</span>
+  </div>
+  <div class="master__counter" title="Records indexed since 2019">
+    <span class="mono">REC</span><b id="counter">047216</b>
+  </div>
+  <nav aria-label="Primary">
+    <a href="#index">Index</a>
+    <a href="#feature">Feature</a>
+    <a href="#manifesto">Manifesto</a>
+    <a href="#strip">Archive</a>
+  </nav>
+</header>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero" id="top">
+  <!-- Site-plan parallax drawing -->
+  <div class="hero__plan" aria-hidden="true">
+    <svg id="heroPlan" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid60" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M60 0H0V60" fill="none" stroke="rgba(12,12,12,.13)" stroke-width="1"/>
+        </pattern>
+        <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="8" height="8" fill="none"/>
+          <line x1="0" y1="0" x2="0" y2="8" stroke="#0c0c0c" stroke-width="1.4"/>
+        </pattern>
+        <pattern id="hatchO" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+          <line x1="0" y1="0" x2="0" y2="7" stroke="#ff4d00" stroke-width="1.6"/>
+        </pattern>
+        <marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0L10 5L0 10z" fill="#0c0c0c"/>
+        </marker>
+        <marker id="arrB" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0L10 5L0 10z" fill="#0026ff"/>
+        </marker>
+      </defs>
+
+      <!-- FAR LAYER: survey grid + contours -->
+      <g class="p-layer" data-speed="0.06">
+        <rect x="-200" y="-200" width="1840" height="1300" fill="url(#grid60)"/>
+        <path d="M-50 640 C 260 600, 420 690, 700 640 S 1200 560, 1500 630" fill="none" stroke="#0026ff" stroke-width="1.2" opacity=".4"/>
+        <path d="M-50 690 C 280 650, 460 740, 740 690 S 1240 610, 1500 680" fill="none" stroke="#0026ff" stroke-width="1.2" opacity=".3"/>
+        <path d="M-50 740 C 300 700, 480 790, 760 740 S 1260 660, 1500 730" fill="none" stroke="#0026ff" stroke-width="1.2" opacity=".22"/>
+        <text x="60" y="120" font-family="Space Mono, monospace" font-size="13" fill="rgba(12,12,12,.45)" letter-spacing="3">DATUM ±0.000 / SHEET A-101 / GRID REV. B</text>
+      </g>
+
+      <!-- MID LAYER: site plan blocks -->
+      <g class="p-layer" data-speed="0.14">
+        <rect x="150" y="330" width="300" height="190" fill="url(#hatch)" opacity=".7"/>
+        <rect x="150" y="330" width="300" height="190" fill="none" stroke="#0c0c0c" stroke-width="2.5"/>
+        <rect x="520" y="250" width="150" height="380" fill="none" stroke="#0c0c0c" stroke-width="2.5"/>
+        <rect x="520" y="250" width="150" height="80" fill="#0c0c0c"/>
+        <circle cx="905" cy="430" r="130" fill="none" stroke="#0c0c0c" stroke-width="2.5"/>
+        <circle cx="905" cy="430" r="96" fill="none" stroke="#0c0c0c" stroke-width="1.2" stroke-dasharray="6 5"/>
+        <circle cx="905" cy="430" r="14" fill="#ff4d00"/>
+        <rect x="1120" y="300" width="220" height="260" fill="url(#hatchO)" opacity=".9"/>
+        <rect x="1120" y="300" width="220" height="260" fill="none" stroke="#ff4d00" stroke-width="2.5"/>
+        <line x1="150" y1="290" x2="450" y2="290" stroke="#0c0c0c" stroke-width="1.4" marker-start="url(#arr)" marker-end="url(#arr)"/>
+        <text x="240" y="278" font-family="Space Mono, monospace" font-size="12" fill="#0c0c0c">42.000 m</text>
+        <line x1="1080" y1="300" x2="1080" y2="560" stroke="#0026ff" stroke-width="1.4" marker-start="url(#arrB)" marker-end="url(#arrB)"/>
+        <text x="995" y="440" font-family="Space Mono, monospace" font-size="12" fill="#0026ff" transform="rotate(-90 995 440)">R = 14.500</text>
+      </g>
+
+      <!-- NEAR LAYER: section cut + tower silhouette -->
+      <g class="p-layer" data-speed="0.26">
+        <path d="M980 900 V 520 h 44 v -90 h 90 v 90 h 44 V 900 Z" fill="#0c0c0c" opacity=".9"/>
+        <rect x="700" y="700" width="240" height="200" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <line x1="700" y1="760" x2="940" y2="760" stroke="#0c0c0c" stroke-width="1.6"/>
+        <line x1="700" y1="820" x2="940" y2="820" stroke="#0c0c0c" stroke-width="1.6"/>
+        <line x1="760" y1="700" x2="760" y2="900" stroke="#0c0c0c" stroke-width="1.6"/>
+        <line x1="880" y1="700" x2="880" y2="900" stroke="#0c0c0c" stroke-width="1.6"/>
+        <text x="700" y="688" font-family="Space Mono, monospace" font-size="12" fill="#0c0c0c" letter-spacing="2">SECTION A—A · 1:200</text>
+        <line x1="960" y1="640" x2="1012" y2="640" stroke="#ff4d00" stroke-width="2"/>
+        <circle cx="1012" cy="640" r="4" fill="#ff4d00"/>
+      </g>
+    </svg>
+  </div>
+
+  <span class="mark-plus" style="top:88px;left:16px;"></span>
+  <span class="mark-plus" style="top:88px;right:16px;"></span>
+
+  <div class="hero__top">
+    <span class="tag tag--solid">INDEPENDENT ARCHIVE / EST. 2019</span>
+    <span class="tag">NO ADVERTISING · NO DEVELOPERS · NO MERCY</span>
+  </div>
+
+  <div class="hero__mid">
+    <h1>CONCRETE<span class="slash">/</span><span class="row-b">INDEX</span></h1>
+    <div class="hero__orange-bar" aria-hidden="true"></div>
+    <p class="hero__sub">A permanent register of civic structures too stubborn to demolish. We measure them, we document them, <em>we do not ask permission.</em></p>
+  </div>
+
+  <div class="hero__bottom">
+    <div>Records on file<b id="counterBig">047216</b></div>
+    <div>Structures listed<b>01,132</b></div>
+    <div>Demolitions logged<b>0287</b></div>
+    <div>Appeals rejected<b id="appeals">0000</b></div>
+  </div>
+
+  <div class="hero__scrollcue" aria-hidden="true">SCROLL TO INDEX <span class="arrow-down">▼</span></div>
+</div>
+
+<!-- ==================== INDEX ==================== -->
+<section id="index">
+  <div class="sec-rule">
+    <div class="sec-rule__l">§01 — OPENING INDEX</div>
+    <div class="sec-rule__r">SAMPLE OF SIX / FULL REGISTER BY REQUEST</div>
+  </div>
+  <div class="index-intro rv">
+    <span class="tag tag--solid">INDEX / A—F</span>
+    <p>Six records pulled from the open shelf. Each entry is surveyed in person, measured with handheld optical equipment, and photographed without filters or renderings. Names of architects are given <b>where the record survives.</b> Where it does not, the structure stands under the name of the public that paid for it.</p>
+  </div>
+
+  <!-- REC 001 -->
+  <a class="rec rv" href="#feature">
+    <div class="rec__num">001</div>
+    <div class="rec__thumb" aria-hidden="true">
+      <svg viewBox="0 0 120 80">
+        <rect x="8" y="24" width="104" height="22" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <rect x="8" y="24" width="104" height="22" fill="#0c0c0c" opacity=".08"/>
+        <line x1="18" y1="46" x2="18" y2="72" stroke="#0c0c0c" stroke-width="4"/>
+        <line x1="50" y1="46" x2="50" y2="72" stroke="#0c0c0c" stroke-width="4"/>
+        <line x1="82" y1="46" x2="82" y2="72" stroke="#0c0c0c" stroke-width="4"/>
+        <line x1="108" y1="46" x2="108" y2="72" stroke="#0c0c0c" stroke-width="4"/>
+        <rect class="acc" x="92" y="14" width="10" height="10" fill="#ff4d00"/>
+      </svg>
+    </div>
+    <div class="rec__name">KESTREL MUNICIPAL LIBRARY<small>EASTHAM WORKS DISTRICT</small></div>
+    <div class="rec__meta">
+      <span>YEAR <b>1974</b></span><span>SYSTEM <b>PORTAL FRAME</b></span><span>STATUS <b>THREATENED</b></span><span>REF <b>KML-74/011</b></span>
+    </div>
+    <div class="rec__cta">OPEN RECORD ⟶</div>
+  </a>
+
+  <!-- REC 002 -->
+  <a class="rec rv" href="#feature">
+    <div class="rec__num">002</div>
+    <div class="rec__thumb" aria-hidden="true">
+      <svg viewBox="0 0 120 80">
+        <path d="M10 72 V40 a25 25 0 0 1 50 0 V72" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <path d="M60 72 V40 a25 25 0 0 1 50 0 V72" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <line x1="4" y1="72" x2="116" y2="72" stroke="#0c0c0c" stroke-width="3"/>
+        <line x1="35" y1="42" x2="35" y2="72" stroke="#0c0c0c" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <line x1="85" y1="42" x2="85" y2="72" stroke="#0c0c0c" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <rect class="acc" x="28" y="58" width="14" height="14" fill="#ff4d00"/>
+      </svg>
+    </div>
+    <div class="rec__name">BRANNAN TRANSIT HALL<small>PORTO VEX / LINE 4 TERMINUS</small></div>
+    <div class="rec__meta">
+      <span>YEAR <b>1968</b></span><span>SYSTEM <b>FOLDED SHELL</b></span><span>STATUS <b>ACTIVE</b></span><span>REF <b>BTH-68/203</b></span>
+    </div>
+    <div class="rec__cta">OPEN RECORD ⟶</div>
+  </a>
+
+  <!-- REC 003 -->
+  <a class="rec rv" href="#feature">
+    <div class="rec__num">003</div>
+    <div class="rec__thumb" aria-hidden="true">
+      <svg viewBox="0 0 120 80">
+        <rect x="8" y="46" width="40" height="26" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <rect x="48" y="34" width="34" height="38" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <rect x="82" y="20" width="18" height="52" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <circle cx="91" cy="12" r="6" fill="none" stroke="#0c0c0c" stroke-width="2.4"/>
+        <line x1="4" y1="72" x2="116" y2="72" stroke="#0c0c0c" stroke-width="3"/>
+        <rect class="acc" x="54" y="42" width="8" height="30" fill="#ff4d00"/>
+      </svg>
+    </div>
+    <div class="rec__name">PILL ROCK WATER WORKS<small>CAPE MOEN / COASTAL ZONE</small></div>
+    <div class="rec__meta">
+      <span>YEAR <b>1981</b></span><span>SYSTEM <b>SHEAR WALL</b></span><span>STATUS <b>FEATURED ↓</b></span><span>REF <b>PRW-81/001</b></span>
+    </div>
+    <div class="rec__cta">OPEN RECORD ⟶</div>
+  </a>
+
+  <!-- REC 004 -->
+  <a class="rec rv" href="#feature">
+    <div class="rec__num">004</div>
+    <div class="rec__thumb" aria-hidden="true">
+      <svg viewBox="0 0 120 80">
+        <path d="M14 72 L26 26 H94 L106 72 Z" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <line x1="44" y1="26" x2="44" y2="72" stroke="#0c0c0c" stroke-width="1.4"/>
+        <line x1="76" y1="26" x2="76" y2="72" stroke="#0c0c0c" stroke-width="1.4"/>
+        <line x1="4" y1="72" x2="116" y2="72" stroke="#0c0c0c" stroke-width="3"/>
+        <rect class="acc" x="56" y="44" width="8" height="28" fill="#ff4d00"/>
+      </svg>
+    </div>
+    <div class="rec__name">SAINT-ORER BURIAL HALL<small>HaUTE-VALLÉE / NON-SECTARIAL</small></div>
+    <div class="rec__meta">
+      <span>YEAR <b>1977</b></span><span>SYSTEM <b>BUTTRESSED</b></span><span>STATUS <b>SEALED</b></span><span>REF <b>SOB-77/060</b></span>
+    </div>
+    <div class="rec__cta">OPEN RECORD ⟶</div>
+  </a>
+
+  <!-- REC 005 -->
+  <a class="rec rv" href="#feature">
+    <div class="rec__num">005</div>
+    <div class="rec__thumb" aria-hidden="true">
+      <svg viewBox="0 0 120 80">
+        <rect x="10" y="16" width="100" height="56" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <line x1="10" y1="30" x2="110" y2="30" stroke="#0c0c0c" stroke-width="1.6"/>
+        <line x1="10" y1="44" x2="110" y2="44" stroke="#0c0c0c" stroke-width="1.6"/>
+        <line x1="10" y1="58" x2="110" y2="58" stroke="#0c0c0c" stroke-width="1.6"/>
+        <line x1="14" y1="72" x2="106" y2="16" stroke="#0c0c0c" stroke-width="2.4"/>
+        <rect class="acc" x="84" y="16" width="12" height="14" fill="#ff4d00"/>
+      </svg>
+    </div>
+    <div class="rec__name">FORBAX DECK &amp; MARKET<small>SOUTHFORBAX / LEVELS −2 TO 6</small></div>
+    <div class="rec__meta">
+      <span>YEAR <b>1971</b></span><span>SYSTEM <b>WAFFLE SLAB</b></span><span>STATUS <b>PART-DEROGATED</b></span><span>REF <b>FDM-71/344</b></span>
+    </div>
+    <div class="rec__cta">OPEN RECORD ⟶</div>
+  </a>
+
+  <!-- REC 006 -->
+  <a class="rec rv" href="#feature">
+    <div class="rec__num">006</div>
+    <div class="rec__thumb" aria-hidden="true">
+      <svg viewBox="0 0 120 80">
+        <line x1="46" y1="72" x2="52" y2="22" stroke="#0c0c0c" stroke-width="3"/>
+        <line x1="74" y1="72" x2="68" y2="22" stroke="#0c0c0c" stroke-width="3"/>
+        <rect x="42" y="6" width="36" height="18" fill="none" stroke="#0c0c0c" stroke-width="3"/>
+        <line x1="48" y1="40" x2="72" y2="40" stroke="#0c0c0c" stroke-width="1.4"/>
+        <line x1="50" y1="56" x2="70" y2="56" stroke="#0c0c0c" stroke-width="1.4"/>
+        <line x1="4" y1="72" x2="116" y2="72" stroke="#0c0c0c" stroke-width="3"/>
+        <rect class="acc" x="56" y="10" width="8" height="10" fill="#ff4d00"/>
+      </svg>
+    </div>
+    <div class="rec__name">LOWRY-SOUTH SIGNAL TOWER<small>MARSH JUNCTION / DECOMMISSIONED</small></div>
+    <div class="rec__meta">
+      <span>YEAR <b>1986</b></span><span>SYSTEM <b>SLIPFORM</b></span><span>STATUS <b>GUARDED</b></span><span>REF <b>LST-86/002</b></span>
+    </div>
+    <div class="rec__cta">OPEN RECORD ⟶</div>
+  </a>
+
+  <div class="index-foot">
+    <span>END OF SAMPLE / PULL 6 FROM 1,132</span>
+    <span class="orange">STATUS KEY: ACTIVE · THREATENED · SEALED · GUARDED · DEROGATED</span>
+    <span>NO CONDITION IS A VERDICT. ALL ARE.</span>
+  </div>
+</section>
+
+<!-- ==================== FEATURE ==================== -->
+<section id="feature">
+  <div class="feat-head">
+    <div class="feat-head__title rv">
+      <span class="mono kicker">§02 — FEATURE RECORD / PRW-81/001 / 14 PAGES ON FILE</span>
+      <h2>THE MONUMENT<br>AT <span class="u">PILL ROCK</span><br>COASTAL WATER&nbsp;WORKS</h2>
+    </div>
+    <div class="feat-head__facts rv">
+      <div>CAPE MOEN, NORTH REACH<b>54°41′N 06°02′W</b></div>
+      <div>COMMISSIONED<b>1975 / OPENED 1981</b></div>
+      <div>ENGINEER OF RECORD<b>M. HALDANE &amp; ASSOC.</b></div>
+      <div>CONCRETE VOLUME<b>41,300 m³</b></div>
+      <div>DEMOTE ORDER<b>2 PENDING — BOTH APPEALED</b></div>
+    </div>
+  </div>
+
+  <!-- CSS/SVG drawing of the plant with live crosshair -->
+  <div class="feat-visual" id="featVisual">
+    <div class="sv-plot" aria-hidden="true">
+      <svg viewBox="0 0 1440 620" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <pattern id="gridS" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M40 0H0V40" fill="none" stroke="rgba(233,230,223,.10)" stroke-width="1"/>
+          </pattern>
+          <pattern id="hatchL" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="9" stroke="rgba(233,230,223,.5)" stroke-width="1.1"/>
+          </pattern>
+          <pattern id="waves" width="46" height="14" patternUnits="userSpaceOnUse">
+            <path d="M0 10 q11.5 -8 23 0 t23 0" fill="none" stroke="#ff4d00" stroke-width="1.6"/>
+          </pattern>
+        </defs>
+        <rect width="1440" height="620" fill="url(#gridS)"/>
+        <!-- horizon -->
+        <line x1="0" y1="470" x2="1440" y2="470" stroke="rgba(233,230,223,.5)" stroke-width="2"/>
+        <rect x="0" y="470" width="1440" height="150" fill="url(#waves)" opacity=".8"/>
+        <!-- plant massing -->
+        <g>
+          <rect x="120" y="360" width="260" height="110" fill="#0c0c0c" stroke="rgba(233,230,223,.7)" stroke-width="2.5"/>
+          <rect x="380" y="300" width="200" height="170" fill="#0c0c0c" stroke="rgba(233,230,223,.7)" stroke-width="2.5"/>
+          <rect x="580" y="240" width="150" height="230" fill="url(#hatchL)" stroke="#ff4d00" stroke-width="3"/>
+          <rect x="730" y="180" width="120" height="290" fill="#0c0c0c" stroke="rgba(233,230,223,.7)" stroke-width="2.5"/>
+          <!-- filter stacks -->
+          <rect x="900" y="90" width="46" height="380" fill="#0c0c0c" stroke="rgba(233,230,223,.7)" stroke-width="2.5"/>
+          <rect x="964" y="140" width="46" height="330" fill="#0c0c0c" stroke="rgba(233,230,223,.7)" stroke-width="2.5"/>
+          <circle cx="923" cy="78" r="16" fill="none" stroke="#0026ff" stroke-width="3"/>
+          <circle cx="987" cy="128" r="12" fill="none" stroke="#0026ff" stroke-width="3"/>
+          <!-- pipe runs -->
+          <path d="M1060 420 H1330 V300 H1180" fill="none" stroke="#ff4d00" stroke-width="8"/>
+          <path d="M1060 448 H1360" fill="none" stroke="rgba(233,230,223,.6)" stroke-width="3" stroke-dasharray="12 8"/>
+          <circle cx="1180" cy="300" r="15" fill="none" stroke="#ff4d00" stroke-width="5"/>
+          <!-- outfall to sea -->
+          <path d="M380 470 H210 V560 H60" fill="none" stroke="#0026ff" stroke-width="6"/>
+          <path d="M40 548 l16 6 -16 6 z" fill="#0026ff"/>
+        </g>
+        <!-- dimensions -->
+        <line x1="120" y1="520" x2="850" y2="520" stroke="rgba(233,230,223,.6)" stroke-width="1.3"/>
+        <line x1="120" y1="512" x2="120" y2="528" stroke="rgba(233,230,223,.6)" stroke-width="1.6"/>
+        <line x1="850" y1="512" x2="850" y2="528" stroke="rgba(233,230,223,.6)" stroke-width="1.6"/>
+        <text x="430" y="540" font-family="Space Mono, monospace" font-size="15" fill="rgba(233,230,223,.8)" letter-spacing="2">172.400 m — WEST RANGE</text>
+        <line x1="880" y1="90" x2="880" y2="470" stroke="#0026ff" stroke-width="1.3"/>
+        <text x="836" y="290" font-family="Space Mono, monospace" font-size="15" fill="#0026ff" transform="rotate(-90 836 290)" letter-spacing="2">+ 58.200</text>
+        <text x="40" y="60" font-family="Space Mono, monospace" font-size="14" fill="rgba(233,230,223,.55)" letter-spacing="4">ELEVATION EAST / AS-BUILT / SURVEYED SPRING</text>
+        <!-- registration marks -->
+        <g stroke="rgba(233,230,223,.55)" stroke-width="1.4">
+          <path d="M30 30 h18 M39 21 v18"/>
+          <path d="M1410 30 h-18 M1401 21 v18"/>
+        </g>
+      </svg>
+    </div>
+    <!-- live crosshair -->
+    <div class="crosshair" id="crosshair">
+      <div class="ch-h"></div><div class="ch-v"></div>
+      <div class="ch-ring"></div>
+      <div class="ch-label" id="chLabel">X 000.000 / Y 000.000</div>
+    </div>
+  </div>
+
+  <div class="feat-read">
+    <div class="rv">
+      <h3>01 — THE STRUCTURE</h3>
+      <p>Pill Rock is five rooms of board-marked concrete holding back the Atlantic's appetite for fresh water. The primary filtration hall spans 34 metres without a column. The ceiling still carries the timber grain of the 1979 formwork — an accidental fresco of every plank the crew ever nailed.</p>
+      <p>Nothing was added that could be justified by maintenance manuals. Nothing was removed that carried load.</p>
+    </div>
+    <div class="rv">
+      <h3>02 — THE THREAT</h3>
+      <p>Two demotion orders name the plant "operationally redundant." Both were filed within eleven days of a coastal land-bidding notice. The archive does not draw conclusions. The archive files the dates side by side and lets the reader bring the hammer.</p>
+      <div class="tankdiag">
+        <div class="td-label"><span>CUTAWAY / SETTLEMENT TANK 3</span><span>LEVEL FLUCTUATION LIVE</span></div>
+        <div class="td-body">
+          <div class="water"></div>
+          <div class="wl">
+            <span class="wl-num" style="bottom:24px">−3.0</span>
+            <span class="wl-num" style="bottom:48px">−6.0</span>
+            <span class="wl-num" style="bottom:72px">−9.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rv">
+      <h3>03 — THE RECORD</h3>
+      <p>We hold 14 pages: original tender sheets, two survey passes, one sealed letter from the engineer of record, and 312 photographs taken across four seasons of storm access. The file is complete. The file is copyable. The file will outlive every office that issued a demolition permit against it.</p>
+      <p class="mono" style="margin-top:18px;color:var(--orange);">REQUEST FORMAT: PDF/A · UNRESTRICTED · NO CREDIT REQUIRED</p>
+    </div>
+    <div class="feat-pull rv">
+      <blockquote>"A WATER PLANT IS A PROMISE THE COAST MAKES TO THE CITY. <span class="b">YOU DO NOT RESCIND A PROMISE TO SAVE PAPER.</span>"</blockquote>
+      <cite>— M. HALDANE, ENGINEER OF RECORD, TENDER OPENING, 1975 · VERBATIM, TRANSCRIPT PRW-81/001/APP.C</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SPEC TABLE ==================== -->
+<section id="specs">
+  <div class="sec-rule">
+    <div class="sec-rule__l">§03 — SPECIFICATIONS</div>
+    <div class="sec-rule__r">PRW-81/001 / ALL FIGURES AS-SURVEYED, NOT AS-TENDERED</div>
+  </div>
+  <div class="spec-wrap rv">
+    <table class="spec">
+      <caption>PILL ROCK COASTAL WATER WORKS — RECORD SCHEDULE
+        <small>SHEET 02 OF 02 · SURVEY PASS 2 · OPTICAL LEVEL + TAPE · NO DRONES PERMITTED ON SEA DEFENCES</small>
+      </caption>
+      <thead>
+        <tr><th>ITEM</th><th>DESCRIPTOR</th><th>VALUE</th><th>UNIT</th><th>SOURCE</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>S-01</td><td>STRUCTURAL SYSTEM</td><td>R.C. SHEAR WALL + PORTAL FRAME</td><td class="unit">—</td><td>DWG 114</td></tr>
+        <tr><td>S-02</td><td>FOOTPRINT (EXCL. SEA WALL)</td><td>172.4 × 96.1</td><td class="unit">m</td><td>SURVEY 2</td></tr>
+        <tr><td>S-03</td><td>TOTAL CONCRETE VOLUME</td><td>41,300</td><td class="unit">m³</td><td>TENDER</td></tr>
+        <tr class="flag"><td>S-04</td><td>CONCRETE GRADE (PRIMARY)</td><td>C45/55 — MARINE MIX, 6% silica fume</td><td class="unit">—</td><td>SURVEY 2</td></tr>
+        <tr><td>S-05</td><td>FORMWORK FINISH</td><td>BOARD-MARKED, SAWN SCOTS PINE</td><td class="unit">—</td><td>PHOTO LOG</td></tr>
+        <tr><td>S-06</td><td>FILTRATION HALL SPAN</td><td>34.000</td><td class="unit">m</td><td>SURVEY 2</td></tr>
+        <tr><td>S-07</td><td>MAX. HEADROOM UNDER COFFERDAM</td><td>+ 58.200</td><td class="unit">m DATUM</td><td>SURVEY 1</td></tr>
+        <tr><td>S-08</td><td>SETTLEMENT TANKS</td><td>6 — EACH 1,900</td><td class="unit">m³</td><td>DWG 207</td></tr>
+        <tr><td>S-09</td><td>DESIGN THROUGHPUT</td><td>68</td><td class="unit">ML/D</td><td>TENDER</td></tr>
+        <tr><td>S-10</td><td>CURRENT THROUGHPUT</td><td>22.4 — DECLINING 0.9% ANN.</td><td class="unit">ML/D</td><td>UTILITY RETURN</td></tr>
+        <tr><td>S-11</td><td>OUTFALL PIPE INTERNAL Ø</td><td>2.400</td><td class="unit">m</td><td>SURVEY 2</td></tr>
+        <tr><td>S-12</td><td>REINFORCEMENT (EST. FROM COVER METER)</td><td>3,180</td><td class="unit">t</td><td>SURVEY 2</td></tr>
+        <tr><td>S-13</td><td>CHLORIDE INGRESS (MAX. MEASURED)</td><td>0.31 — BELOW ACTION LIMIT</td><td class="unit">% BY CEMENT MASS</td><td>CORE TEST C-4</td></tr>
+        <tr><td>S-14</td><td>CARBONATION DEPTH (MAX.)</td><td>4.2 — AT 44 YRS EXPOSURE</td><td class="unit">mm</td><td>CORE TEST C-4</td></tr>
+        <tr class="flag"><td>S-15</td><td>STRUCTURAL CONDITION</td><td>SOUND. DEMOLITION UNJUSTIFIABLE ON ENGINEERING GROUNDS.</td><td class="unit">—</td><td>ARCHIVE VERDICT</td></tr>
+        <tr><td>S-16</td><td>HERITAGE STATUS</td><td>UNLISTED — APPLICATION REFUSED ×2</td><td class="unit">—</td><td>REGISTER</td></tr>
+        <tr><td>S-17</td><td>DEMOTE ORDERS PENDING</td><td>2 — DO-2411 / DO-2417</td><td class="unit">—</td><td>GAZETTE</td></tr>
+        <tr><td>S-18</td><td>ARCHIVE APPEALS FILED</td><td>2 — BOTH ADMITTED FOR HEARING</td><td class="unit">—</td><td>THIS OFFICE</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="spec-notes rv">
+    <div><b>NOTE 1 —</b> ALL DIMENSIONS TAKEN UNDER STORM-ACCESS PERMIT SP-118. TIDE WINDOW 4H. FIGURES NOT TO BE REPRODUCED BY INTERPOLATION.</div>
+    <div><b>NOTE 2 —</b> "ARCHIVE VERDICT" IS A STRUCTURAL OPINION ONLY. IT IS NOT LEGAL ADVICE. IT IS ALSO NOT WRONG.</div>
+    <div><b>NOTE 3 —</b> IF THIS STRUCTURE IS DESTROYED, ITEM S-03 WILL BE RECARVED AS A MEMORIAL VOLUME ON THE DEMOLITIONS LEDGER.</div>
+  </div>
+</section>
+
+<!-- ==================== MANIFESTO ==================== -->
+<section id="manifesto">
+  <div class="sec-rule">
+    <div class="sec-rule__l">§04 — POSITION</div>
+    <div class="sec-rule__r">FRAGMENTED BY DESIGN / READ IN ANY ORDER / ORDER CHANGEABLE</div>
+  </div>
+  <div class="mani-grid">
+    <div class="frag outline rv f-a"><span class="no">01</span><p>The building does not explain itself. It stands. Our job is the opposite of PR: describe, measure, shut up, file.</p></div>
+    <div class="frag dark rv f-b"><span class="no">02</span><p>Every demolished civic structure takes the memory of its use with it. We keep the receipt <em style="color:var(--orange);font-style:normal;background:var(--orange);color:#0c0c0c;">and the building's side of the story.</em></p></div>
+    <div class="frag rv f-c"><span class="no">03</span><p>No renderings. No filters. No drone shots of places we weren't allowed to enter on foot.</p></div>
+    <div class="frag orange rv f-d"><span class="no">04</span><p>Heritage listing is a committee. An archive is a witness. We have found committees to be slower and less honest.</p><span class="stamp">FILED · NOT FORGIVEN</span></div>
+    <div class="frag rv f-e"><span class="no">05</span><p>Concrete is a record medium. The formwork remembers the carpenter. We merely transcribe.</p></div>
+    <div class="frag dark rv f-f"><span class="no">06</span><p>Accept no sponsorship from any party that has ever filed a demolition notice. That is most parties. So: none. Funded by 2,109 members and absolutely no one else.</p></div>
+    <div class="frag blue rv f-g"><span class="no">07</span><p>A city that names its towers after debt and its water plants after no one at all has a memory problem, not a housing problem.</p></div>
+    <div class="frag orange rv f-h"><p class="rot">THE REGISTER IS PERMANENT.<br>THE REGISTER IS COPYABLE.<br>THE REGISTER IS COMING FOR THE DRAWING BOARDS.</p><span class="no" style="margin:0;">08</span></div>
+  </div>
+</section>
+
+<!-- ==================== ARCHIVE STRIP ==================== -->
+<section id="strip">
+  <div class="sec-rule">
+    <div class="sec-rule__l">§05 — ARCHIVE STRIP</div>
+    <div class="sec-rule__r">OPEN SHELF / RECENT SURVEYS / CONTINUOUS ACQUISITION</div>
+  </div>
+  <div class="strip-hint">
+    <span>PLATES 0212—0219</span>
+    <span class="drag">DRAG / SCROLL SIDEWAYS →</span>
+  </div>
+  <div class="strip" tabindex="0" aria-label="Horizontal archive of surveyed structures, scrollable">
+    <a class="strip-item" href="#index">
+      <span class="idx">0212</span>
+      <div class="thumb" aria-hidden="true"><svg viewBox="0 0 120 90"><rect x="14" y="30" width="92" height="14" fill="none" stroke="#0c0c0c" stroke-width="3"/><line x1="24" y1="44" x2="24" y2="80" stroke="#0c0c0c" stroke-width="4"/><line x1="60" y1="44" x2="60" y2="80" stroke="#0c0c0c" stroke-width="4"/><line x1="96" y1="44" x2="96" y2="80" stroke="#0c0c0c" stroke-width="4"/><line x1="6" y1="80" x2="114" y2="80" stroke="#0c0c0c" stroke-width="3"/><rect class="acc" x="14" y="18" width="12" height="12" fill="#0026ff"/></svg></div>
+      <div class="lbl"><b>GRINDWALL SWIM HALL</b>NORTHPORT · 1969 · SHELL ROOF</div>
+    </a>
+    <a class="strip-item" href="#index">
+      <span class="idx">0213</span>
+      <div class="thumb" aria-hidden="true"><svg viewBox="0 0 120 90"><rect x="20" y="14" width="30" height="66" fill="none" stroke="#0c0c0c" stroke-width="3"/><rect x="50" y="34" width="50" height="46" fill="none" stroke="#0c0c0c" stroke-width="3"/><line x1="20" y1="50" x2="50" y2="50" stroke="#0c0c0c" stroke-width="1.5"/><line x1="6" y1="80" x2="114" y2="80" stroke="#0c0c0c" stroke-width="3"/><rect class="acc" x="58" y="44" width="10" height="36" fill="#0026ff"/></svg></div>
+      <div class="lbl"><b>MARSH GATE PUMP HOUSE</b>LOWDEEN · 1963 · STANDING</div>
+    </a>
+    <a class="strip-item" href="#index">
+      <span class="idx">0214</span>
+      <div class="thumb" aria-hidden="true"><svg viewBox="0 0 120 90"><path d="M10 80 V50 L60 20 L110 50 V80" fill="none" stroke="#0c0c0c" stroke-width="3"/><line x1="10" y1="50" x2="110" y2="50" stroke="#0c0c0c" stroke-width="1.5"/><line x1="6" y1="80" x2="114" y2="80" stroke="#0c0c0c" stroke-width="3"/><rect class="acc" x="52" y="58" width="16" height="22" fill="#0026ff"/></svg></div>
+      <div class="lbl"><b>VEX MARKET FOYER</b>SOUTHFORBAX · 1972 · AT RISK</div>
+    </a>
+    <a class="strip-item" href="#index">
+      <span class="idx">0215</span>
+      <div class="thumb" aria-hidden="true"><svg viewBox="0 0 120 90"><rect x="34" y="10" width="22" height="70" fill="none" stroke="#0c0c0c" stroke-width="3"/><rect x="56" y="26" width="22" height="54" fill="none" stroke="#0c0c0c" stroke-width="3"/><circle cx="45" cy="10" r="7" fill="none" stroke="#0c0c0c" stroke-width="2"/><line x1="6" y1="80" x2="114" y2="80" stroke="#0c0c0c" stroke-width="3"/><rect class="acc" x="38" y="40" width="14" height="8" fill="#0026ff"/></svg></div>
+      <div class="lbl"><b>HAZEL BAY GRAIN SILOS</b>CAPE MOEN · 1958 · SEALED</div>
+    </a>
+    <a class="strip-item" href="#index">
+      <span class="idx">0216</span>
+      <div class="thumb" aria-hidden="true"><svg viewBox="0 0 120 90"><path d="M12 80 L28 24 H92 L108 80" fill="none" stroke="#0c0c0c" stroke-width="3"/><line x1="40" y1="24" x2="40" y2="80" stroke="#0c0c0c" stroke-width="1.5"/><line x1="80" y1="24" x2="80" y2="80" stroke="#0c0c0c" stroke-width="1.5"/><line x1="12" y1="52" x2="108" y2="52" stroke="#0c0c0c" stroke-width="1.5"/><line x1="6" y1="80" x2="114" y2="80" stroke="#0c0c0c" stroke-width="3"/><rect class="acc" x="54" y="56" width="12" height="24" fill="#0026ff"/></svg></div>
+      <div class="lbl"><b>ORER CREMATORIUM ANNEX</b>HAUTE-VALLÉE · 1981 · GUARDED</div>
+    </a>
+    <a class="strip-item" href="#index">
+      <span class="idx">0217</span>
+      <div class="thumb" aria-hidden="true"><svg viewBox="0 0 120 90"><rect x="12" y="22" width="96" height="16" fill="none" stroke="#0c0c0c" stroke-width="3"/><rect x="12" y="38" width="96" height="16" fill="none" stroke="#0c0c0c" stroke-width="3"/><line x1="30" y1="54" x2="30" y2="80" stroke="#0c0c0c" stroke-width="5"/><line x1="90" y1="54" x2="90" y2="80" stroke="#0c0c0c" stroke-width="5"/><line x1="6" y1="80" x2="114" y2="80" stroke="#0c0c0c" stroke-width="3"/><rect class="acc" x="52" y="10" width="16" height="12" fill="#0026ff"/></svg></div>
+      <div class="lbl"><b>VIA MOEN FLYOVER PIERS</b>EASTHAM · 1966 · PART-DEMOLISHED</div>
+    </a>
+    <a class="strip-item" href="#index">
+      <span class="idx">0218</span>
+      <div class="thumb" aria-hidden="true"><svg viewBox="0 0 120 90"><path d="M14 80 V44 a46 30 0 0 1 92 0 V80" fill="none" stroke="#0c0c0c" stroke-width="3"/><line x1="42" y1="46" x2="42" y2="80" stroke="#0c0c0c" stroke-width="1.4" stroke-dasharray="4 3"/><line x1="78" y1="46" x2="78" y2="80" stroke="#0c0c0c" stroke-width="1.4" stroke-dasharray="4 3"/><line x1="6" y1="80" x2="114" y2="80" stroke="#0c0c0c" stroke-width="3"/><rect class="acc" x="54" y="60" width="12" height="20" fill="#0026ff"/></svg></div>
+      <div class="lbl"><b>BRANNAN WEST SUBSTATION</b>PORTO VEX · 1975 · ACTIVE</div>
+    </a>
+    <a class="strip-item" href="#index">
+      <span class="idx">0219</span>
+      <div class="thumb" aria-hidden="true"><svg viewBox="0 0 120 90"><rect x="16" y="40" width="88" height="40" fill="none" stroke="#0c0c0c" stroke-width="3"/><rect x="30" y="20" width="26" height="20" fill="none" stroke="#0c0c0c" stroke-width="3"/><line x1="16" y1="56" x2="104" y2="56" stroke="#0c0c0c" stroke-width="1.5"/><line x1="6" y1="80" x2="114" y2="80" stroke="#0c0c0c" stroke-width="3"/><rect class="acc" x="70" y="46" width="20" height="8" fill="#0026ff"/></svg></div>
+      <div class="lbl"><b>KESTREL DEPOT CONTROL</b>EASTHAM WORKS · 1961 · THREATENED</div>
+    </a>
+    <a class="strip-item more" href="#index">
+      <div class="big">+ 1,113<br>PLATES<br>ON SHELF ⟶</div>
+    </a>
+  </div>
+</section>
+
+<!-- ==================== FOOTER / CONSTRUCTION DOC ==================== -->
+<footer class="doc">
+  <div class="titleblock">
+    <div class="cell"><b>PROJECT / REGISTER</b><span>CONCRETE INDEX — PERMANENT CIVIC REGISTER</span></div>
+    <div class="cell"><b>SHEET</b><span>01 OF 01 · ALL SECTIONS AS SHOWN</span></div>
+    <div class="cell"><b>SCALE</b><span>1:1 — NO FIGURES SCALED FOR TASTE</span></div>
+    <div class="cell accent"><b>STATUS</b><span>ISSUED FOR PUBLIC USE · UNRESTRICTED</span></div>
+    <div class="cell"><b>DRAWN</b><span>THE ARCHIVE (ALL SURVEYS IN PERSON)</span></div>
+    <div class="cell"><b>CHECKED</b><span>THE ARCHIVE (AGAIN, 3 MONTHS LATER)</span></div>
+    <div class="cell"><b>REV / DATE</b><span>REV C — <span class="footdate">CURRENT</span></span></div>
+    <div class="cell"><b>NEXT REVISION</b><span>WHENEVER THEY BRING THE BULLDOZERS</span></div>
+  </div>
+
+  <div class="doc-cols">
+    <div>
+      <h4>REGISTER / SECTIONS</h4>
+      <ul>
+        <li><a href="#index">§01 — OPENING INDEX</a></li>
+        <li><a href="#feature">§02 — FEATURE: PILL ROCK</a></li>
+        <li><a href="#specs">§03 — SPECIFICATION SCHEDULE</a></li>
+        <li><a href="#manifesto">§04 — POSITION (FRAGMENTED)</a></li>
+        <li><a href="#strip">§05 — ARCHIVE STRIP</a></li>
+        <li><a href="#top">§00 — RETURN TO DATUM ±0.000</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>THIS OFFICE</h4>
+      <ul>
+        <li>UNIT 4, FORMER WEIGHHOUSE, EASTHAM WORKS</li>
+        <li><a href="#top">RECORDS@CONCRETE-INDEX.ARCHIVE</a></li>
+        <li>OPEN THU 10:00—17:00 · BRING TAPE MEASURE</li>
+        <li>MEMBERSHIP: 1 MONTH = 1 PLATE</li>
+      </ul>
+    </div>
+    <div>
+      <h4>COLOPHON</h4>
+      <ul>
+        <li>DISPLAY: ANTON (1997, LATECHE)</li>
+        <li>BODY: ARCHIVO · MONO: SPACE MONO</li>
+        <li>ALL IMAGERY DRAWN IN-PAGE. NONE PHOTOGRAPHED.</li>
+        <li>NO TRACKERS. NO TREES. NO RENDERINGS.</li>
+      </ul>
+    </div>
+    <div>
+      <div class="stampbox">
+        APPROVED FOR<br><b>PUBLICATION</b><br>CONCRETE INDEX · No. 0417<br>SIGNED — THE REGISTRAR<br>SEAL AFFIXED UNDER GRID C—4
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-note">
+    <span>STANDARD DETAIL: RECORDS MAY BE COPIED, QUOTED, SCREEN-PRINTED, OR TATTOOED. ATTRIBUTION NOT REQUIRED. CORRECTIONS ARE.</span>
+    <span>PRESS THIS SHEET FLAT. DO NOT ROUNDED-CORNER.</span>
+  </div>
+
+  <div class="mega" aria-hidden="true">CONCRETE INDEX CI/CI</div>
+  <div class="doc-final">
+    <span>© CONCRETE INDEX — AN INDEPENDENT ARCHIVE · FICTIONAL ENTITIES, REAL SPITE</span>
+    <span id="footclock">SYSTEM CLOCK —</span>
+    <span>END OF DOCUMENT ///</span>
+  </div>
+</footer>
+
+<!-- ==================== BOTTOM TICKER ==================== -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__label">◉ LIVE REGISTER</div>
+  <div class="ticker__win">
+    <div class="ticker__track" id="tickerTrack"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- DATELINE + CLOCK ---------- */
+  function pad(n,l){n=String(n);while(n.length<(l||2))n="0"+n;return n;}
+  var now=new Date();
+  var ds=now.getFullYear()+"."+pad(now.getMonth()+1)+"."+pad(now.getDate())+" / "+pad(now.getHours())+":"+pad(now.getMinutes());
+  var dl=document.getElementById("dateline"); if(dl)dl.textContent=ds;
+  var fd=document.getElementsByClassName("footdate"); if(fd[0])fd[0].textContent=ds.split(" / ")[0];
+  var fc=document.getElementById("footclock");
+  if(fc){ setInterval(function(){var d=new Date();fc.textContent="SYSTEM CLOCK — "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds());},1000); }
+
+  /* ---------- TICKING COUNTER ---------- */
+  var base=47216, appealsN=0, t0=Date.now();
+  var elC=document.getElementById("counter"),
+      elB=document.getElementById("counterBig"),
+      elA=document.getElementById("appeals");
+  function tickCounter(){
+    var secs=Math.floor((Date.now()-t0)/1000);
+    var v=base+Math.floor(secs/3); /* one record every ~3 seconds */
+    var s=pad(v,6);
+    if(elC){elC.textContent=s; if(!reduced){elC.classList.add("counter-flash"); setTimeout(function(){elC.classList.remove("counter-flash");},140);}}
+    if(elB)elB.textContent=s;
+    if(elA)elA.textContent=pad(287+Math.floor(secs/17),4);
+  }
+  tickCounter(); setInterval(tickCounter,1000);
+
+  /* ---------- TICKER BUILD (duplicated for seamless loop) ---------- */
+  var items=[
+    "REC 0417 — SUBSTATION K — PORTO VEX — LISTED ACTIVE",
+    "ALERT — DO-2417 HEARING — CAPE MOEN — PUBLIC BENCH 09:00",
+    "NEW SURVEY — GRINDWALL SWIM HALL — PLATE 0212 FILED",
+    "DEMOLITION LOGGED — VIA MOEN PIER B3 — 03:40 — NO WITNESS",
+    "REC 0418 — HAZEL BAY SILOS — CORE TESTS RETURNED CLEAN",
+    "APPEAL ADMITTED — PRW-81/001 — PILL ROCK STANDS FOR NOW",
+    "MEMBERS +14 THIS WEEK — REGISTER FULLY MEMBER-FUNDED",
+    "PLATE 0219 — KESTREL DEPOT CONTROL — STATUS: THREATENED"
+  ];
+  var track=document.getElementById("tickerTrack");
+  if(track){
+    var half=items.map(function(t){
+      var s=document.createElement("span");
+      s.innerHTML='<span class="sep">◼</span>&nbsp;'+t;
+      return s.outerHTML;
+    }).join("");
+    track.innerHTML=half+half;
+  }
+
+  /* ---------- HERO PARALLAX (scroll + pointer) ---------- */
+  var layers=[].slice.call(document.querySelectorAll(".p-layer"));
+  var mx=0,my=0,sy=0,raf=false;
+  function applyParallax(){
+    raf=false;
+    for(var i=0;i<layers.length;i++){
+      var sp=parseFloat(layers[i].getAttribute("data-speed"))||0;
+      var ty=-sy*sp + my*30*sp;
+      var tx= mx*60*sp;
+      layers[i].setAttribute("transform","translate("+tx.toFixed(1)+","+ty.toFixed(1)+")");
+    }
+  }
+  function req(){ if(!raf&&(!reduced)){raf=true;requestAnimationFrame(applyParallax);} }
+  if(!reduced){
+    window.addEventListener("scroll",function(){sy=window.scrollY;req();},{passive:true});
+    window.addEventListener("mousemove",function(e){
+      mx=(e.clientX/window.innerWidth-0.5);
+      my=(e.clientY/window.innerHeight-0.5);
+      req();
+    },{passive:true});
+  }
+
+  /* ---------- REVEAL (HARD CUT) ---------- */
+  var rvs=document.querySelectorAll(".rv");
+  if("IntersectionObserver" in window && !reduced){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}
+      });
+    },{threshold:0.12});
+    rvs.forEach(function(el){io.observe(el);});
+  }else{
+    rvs.forEach(function(el){el.classList.add("in");});
+  }
+
+  /* ---------- FEATURE CROSSHAIR SWEEP ---------- */
+  var ch=document.getElementById("crosshair"),
+      chl=document.getElementById("chLabel"),
+      vis=document.getElementById("featVisual");
+  if(ch&&vis&&!reduced){
+    var stations=[
+      {fx:0.16,fy:0.30, x:"172.400", y:"+58.200"},
+      {fx:0.42,fy:0.62, x:"291.000", y:"+12.050"},
+      {fx:0.66,fy:0.24, x:"402.800", y:"+44.100"},
+      {fx:0.82,fy:0.70, x:"511.250", y:"−03.000"},
+      {fx:0.30,fy:0.50, x:"238.750", y:"+21.900"},
+      {fx:0.58,fy:0.16, x:"356.100", y:"+58.200"}
+    ];
+    var si=0, active=false;
+    function moveCh(){
+      if(!active)return;
+      var st=stations[si%stations.length];
+      var r=vis.getBoundingClientRect();
+      ch.style.transform="translate("+(st.fx*r.width).toFixed(0)+"px,"+(st.fy*r.height).toFixed(0)+"px)";
+      chl.textContent="X "+st.x+" / Y "+st.y;
+      si++;
+    }
+    var chTimer=null;
+    var io2=new IntersectionObserver(function(en){
+      active=en[0].isIntersecting;
+      if(active){moveCh();chTimer=setInterval(moveCh,2400);}
+      else if(chTimer){clearInterval(chTimer);chTimer=null;}
+    },{threshold:0.25});
+    io2.observe(vis);
+    window.addEventListener("resize",function(){if(active)moveCh();},{passive:true});
+  }
+
+  /* ---------- STRIP: wheel → horizontal drag feel ---------- */
+  var strip=document.querySelector(".strip");
+  if(strip){
+    strip.addEventListener("wheel",function(e){
+      if(Math.abs(e.deltaX)<Math.abs(e.deltaY)){
+        var max=strip.scrollWidth-strip.clientWidth;
+        var next=strip.scrollLeft+e.deltaY;
+        if((e.deltaY>0&&strip.scrollLeft<max)||(e.deltaY<0&&strip.scrollLeft>0)){
+          e.preventDefault(); strip.scrollLeft=next;
+        }
+      }
+    },{passive:false});
+  }
+
+  /* ---------- HARD-CUT PRESS ON RECORDS ---------- */
+  document.querySelectorAll(".rec").forEach(function(r){
+    r.addEventListener("mousedown",function(){r.style.transform="translate(4px,4px)";});
+    ["mouseup","mouseleave"].forEach(function(ev){
+      r.addEventListener(ev,function(){r.style.transform="";});
+    });
+  });
+})();
+</script>
+</body>
+</html>

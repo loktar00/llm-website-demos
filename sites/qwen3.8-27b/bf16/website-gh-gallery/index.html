@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qwen3.8-27B - Release Day Demos</title>
+<style>
+  :root{
+    --bg:#0d0e0b;
+    --surface:#161714;
+    --surface-2:#1d1e1a;
+    --ink:#ece9dd;
+    --ink-dim:#9a978a;
+    --line:#2a2b26;
+    --acid:#c8f542;
+    --acid-deep:#8fae22;
+    --paper:#f4f1e6;
+    --serif:"Didot","Bodoni MT","Playfair Display",Georgia,"Times New Roman",serif;
+    --mono:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;
+    --sans:"Avenir Next","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(200,245,66,.06), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(143,174,34,.05), transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    border-bottom:1px solid var(--line);
+    padding:16px 0;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .dot{
+    display:inline-block;width:8px;height:8px;border-radius:50%;
+    background:var(--acid);margin-right:10px;vertical-align:1px;
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(200,245,66,.5)}50%{opacity:.55;box-shadow:0 0 0 6px rgba(200,245,66,0)}}
+  .topbar b{color:var(--ink);font-weight:600}
+
+  /* ---------- hero ---------- */
+  .hero{padding:84px 0 60px}
+  .hero-kicker{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--acid);
+    margin-bottom:22px;
+    animation:rise .8s .1s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .hero h1{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(52px,8.4vw,118px);
+    line-height:.98;
+    letter-spacing:-.01em;
+    max-width:14ch;
+    animation:rise .9s .2s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .hero h1 em{font-style:italic;color:var(--acid)}
+  .hero-tag{
+    margin-top:26px;
+    max-width:52ch;
+    font-size:clamp(16px,1.7vw,19px);
+    color:var(--ink-dim);
+    animation:rise .9s .34s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .hero-meta{
+    margin-top:34px;
+    display:flex;gap:36px;flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    animation:rise .9s .46s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .hero-meta span{border-top:1px solid var(--line);padding-top:12px;min-width:120px}
+  .hero-meta b{display:block;color:var(--acid);font-size:20px;font-weight:600;letter-spacing:0;margin-bottom:2px}
+  @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+  /* ---------- grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:22px;
+    padding-bottom:90px;
+  }
+  .card{
+    display:flex;flex-direction:column;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    text-decoration:none;
+    color:var(--ink);
+    transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .35s,box-shadow .35s;
+    animation:cardIn .8s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .grid .card:nth-child(4n+1){animation-delay:.05s}
+  .grid .card:nth-child(4n+2){animation-delay:.13s}
+  .grid .card:nth-child(4n+3){animation-delay:.21s}
+  .grid .card:nth-child(4n+4){animation-delay:.29s}
+  @keyframes cardIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+  .card:hover,.card:focus-visible{
+    transform:translateY(-6px);
+    border-color:var(--acid-deep);
+    box-shadow:0 18px 40px -18px rgba(0,0,0,.8),0 0 0 1px rgba(200,245,66,.25);
+    outline:none;
+  }
+  .thumb{
+    position:relative;
+    aspect-ratio:4/3;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+    background:#000;
+  }
+  .thumb svg{display:block;width:100%;height:100%}
+  .card-body{
+    padding:18px 20px 22px;
+    display:flex;flex-direction:column;gap:6px;
+    flex:1;
+  }
+  .idx{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.2em;
+    color:var(--acid);
+  }
+  .card h3{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:23px;
+    letter-spacing:.01em;
+    line-height:1.15;
+    transition:color .3s;
+  }
+  .card:hover h3{color:var(--acid)}
+  .card p{font-size:14px;color:var(--ink-dim);line-height:1.5}
+  .arrow{
+    margin-top:auto;
+    padding-top:12px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    transition:color .3s,transform .3s;
+  }
+  .card:hover .arrow{color:var(--acid);transform:translateX(6px)}
+
+  /* ---------- thumbnail artwork ---------- */
+  .t-pagoda{background:#0f2016}
+  .t-pagoda .v-dots circle{animation:twinkle 3s ease-in-out infinite}
+  .t-pagoda .v-dots circle:nth-child(2){animation-delay:.7s}
+  .t-pagoda .v-dots circle:nth-child(3){animation-delay:1.4s}
+  .t-pagoda .v-dots circle:nth-child(4){animation-delay:2.1s}
+  @keyframes twinkle{0%,100%{opacity:.9}50%{opacity:.25}}
+
+  .t-dither{background:var(--paper);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:6px;padding:14px}
+  .t-dither i{display:block;border-radius:2px;background:conic-gradient(#141410 25%,#f4f1e6 0 50%,#141410 0 75%,#f4f1e6 0);background-size:9px 9px}
+  .t-dither i:nth-child(2){background-size:6px 6px;animation:shift 2.6s steps(2) infinite}
+  .t-dither i:nth-child(3){background-size:12px 12px}
+  .t-dither i:nth-child(4){background:#141410}
+  .t-dither i:nth-child(5){background:#f4f1e6}
+  .t-dither i:nth-child(6){background-size:4px 4px;animation:shift 1.4s steps(2) infinite}
+  @keyframes shift{50%{background-position:4.5px 4.5px}}
+
+  .t-stationery{background:#f6f1e2;position:relative}
+  .t-stationery::before{
+    content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(90deg,transparent 0 34px,#e0705a 34px 36px,transparent 36px),
+      repeating-linear-gradient(transparent 0 21px,#c5cfdd 21px 22px);
+  }
+  .t-stationery .stamp{
+    position:absolute;right:16px;bottom:14px;
+    width:62px;height:62px;border:2.5px solid #b8452e;border-radius:50%;
+    transform:rotate(-12deg);
+    display:flex;align-items:center;justify-content:center;
+    color:#b8452e;font-family:var(--mono);font-size:9px;letter-spacing:.15em;
+    text-align:center;line-height:1.4;
+    border-style:dashed;
+    animation:stampIn 5s ease-in-out infinite;
+  }
+  @keyframes stampIn{0%,70%,100%{opacity:.9}80%,90%{opacity:.4}}
+  .t-stationery .tag{
+    position:absolute;left:14px;top:14px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    color:#5c5648;border:1px solid #b9b2a0;padding:4px 8px;background:#fbf8ee;
+  }
+
+  .t-vb{background:#000;display:flex;align-items:center;justify-content:center;position:relative}
+  .t-vb::before{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(rgba(255,0,70,.08) 0 2px,transparent 2px 5px);
+    animation:scan 7s linear infinite;
+  }
+  @keyframes scan{to{background-position-y:50px}}
+  .t-vb::after{
+    content:"";position:absolute;inset:14px;border:2px solid #ff0f3c;
+    box-shadow:0 0 24px rgba(255,15,60,.5),inset 0 0 18px rgba(255,15,60,.3);
+  }
+  .t-vb .vb-word{
+    font-family:var(--mono);font-weight:700;font-size:56px;letter-spacing:.06em;
+    color:#ff0f3c;
+    text-shadow:0 0 14px #ff0f3c,0 0 40px rgba(255,15,60,.7);
+    animation:flicker 3.2s steps(1) infinite;
+    position:relative;z-index:1;
+  }
+  @keyframes flicker{0%,88%,92%,100%{opacity:1}89%{opacity:.35}90%{opacity:.8}94%{opacity:.5}}
+
+  .t-moss{background:#f2eedd;position:relative}
+  .t-moss .moss-scr{animation:grow 4s ease-out infinite both}
+  @keyframes grow{from{stroke-dashoffset:260}to{stroke-dashoffset:0}}
+  .t-moss::after{
+    content:"";position:absolute;inset:10px;border:1.5px dashed #a9b08c;border-radius:3px;
+  }
+  .t-moss .leaf{animation:sway 5s ease-in-out infinite}
+  @keyframes sway{0%,100%{transform:rotate(0deg)}50%{transform:rotate(8deg)}}
+
+  .t-terrain{background:#0d1620;position:relative}
+  .t-terrain i{
+    position:absolute;inset:-30%;
+    border-radius:50%;
+    filter:blur(4px);
+    animation:breathe 8s ease-in-out infinite;
+  }
+  .t-terrain i:nth-child(1){background:radial-gradient(circle at 30% 72%,#3d7fa8 0%,transparent 55%);animation-duration:9s}
+  .t-terrain i:nth-child(2){background:radial-gradient(circle at 70% 40%,#2a5d8a 0%,transparent 50%);animation-duration:12s;animation-delay:-4s}
+  .t-terrain i:nth-child(3){background:radial-gradient(circle at 55% 85%,#7fb6d9 0%,transparent 42%);animation-duration:7s;animation-delay:-2s}
+  @keyframes breathe{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.18) translateY(-14px)}}
+  .t-terrain .ridge{
+    position:absolute;left:0;right:0;bottom:0;height:34%;
+    background:linear-gradient(180deg,transparent,rgba(13,22,32,.9));
+  }
+
+  .t-molten{background:#180a04}
+  .t-molten .m1{animation:orb1 5s ease-in-out infinite}
+  .t-molten .m2{animation:orb2 6s ease-in-out infinite}
+  .t-molten .m3{animation:orb3 4.4s ease-in-out infinite}
+  @keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(14px,-12px)}}
+  @keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(-16px,10px)}}
+  @keyframes orb3{0%,100%{transform:translate(0,0)}50%{transform:translate(6px,16px)}}
+
+  .t-blob{background:#141024;display:flex;align-items:center;justify-content:center}
+  .t-blob .blob{
+    width:130px;height:130px;
+    background:conic-gradient(from 0deg,#ff5fa2,#ffb45f,#ffe75f,#6fffb0,#5fd6ff,#a573ff,#ff5fa2);
+    border-radius:58% 42% 55% 45% / 48% 58% 42% 52%;
+    filter:blur(1px) saturate(1.3);
+    animation:morph 9s ease-in-out infinite,hueshift 12s linear infinite;
+  }
+  @keyframes morph{
+    0%,100%{border-radius:58% 42% 55% 45% / 48% 58% 42% 52%;transform:rotate(0deg) scale(1)}
+    33%{border-radius:45% 55% 40% 60% / 60% 40% 58% 42%;transform:rotate(60deg) scale(1.08)}
+    66%{border-radius:60% 40% 62% 38% / 42% 62% 38% 58%;transform:rotate(120deg) scale(.94)}
+  }
+  @keyframes hueshift{to{filter:blur(1px) saturate(1.3) hue-rotate(360deg)}}
+
+  .t-zombie{background:#15130a;position:relative;display:flex;align-items:center;justify-content:center}
+  .t-zombie::before,.t-zombie::after{
+    content:"";position:absolute;left:0;right:0;height:18px;
+    background:repeating-linear-gradient(45deg,#d9a91f 0 14px,#100e07 14px 28px);
+  }
+  .t-zombie::before{top:0}
+  .t-zombie::after{bottom:0}
+  .t-zombie .treads{
+    position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.75) 46px 54px,transparent 54px 78px,rgba(0,0,0,.75) 78px 86px,transparent 86px 132px);
+    mask:linear-gradient(90deg,transparent,#000 30%,#000 70%,transparent);
+    -webkit-mask:linear-gradient(90deg,transparent,#000 30%,#000 70%,transparent);
+    animation:roll 2.2s linear infinite;
+  }
+  @keyframes roll{to{background-position-x:132px}}
+  .t-zombie .z-word{
+    font-family:var(--mono);font-weight:700;font-size:21px;letter-spacing:.12em;
+    color:#8d9a3d;text-shadow:2px 2px 0 #000;position:relative;z-index:1;
+  }
+  .t-zombie .rec{
+    position:absolute;top:28px;right:16px;z-index:1;
+    font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:#ff3b30;
+  }
+  .t-zombie .rec::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3b30;margin-right:7px;animation:blink 1s steps(1) infinite;vertical-align:1px}
+  @keyframes blink{50%{opacity:0}}
+
+  .t-brutal{background:#eeebe0;display:flex;align-items:center;justify-content:center}
+  .t-brutal .slab{
+    width:76%;height:64%;
+    background:#fff;border:4px solid #000;
+    box-shadow:10px 10px 0 #000;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    animation:slabShift 4s ease-in-out infinite;
+  }
+  @keyframes slabShift{0%,100%{transform:translate(0,0);box-shadow:10px 10px 0 #000}50%{transform:translate(3px,3px);box-shadow:7px 7px 0 #000}}
+  .t-brutal .slab b{
+    font-family:var(--sans);font-weight:900;font-size:38px;letter-spacing:-.02em;
+    color:#000;line-height:1;
+  }
+  .t-brutal .slab .red{
+    position:absolute;top:-16px;right:-16px;width:34px;height:34px;background:#e02b1c;border:3px solid #000;
+  }
+  .t-brutal .slab .rule{position:absolute;left:14px;right:14px;bottom:20px;height:3px;background:#000}
+
+  .t-riso{background:#f3efe4;position:relative;overflow:hidden}
+  .t-riso i{position:absolute;inset:-10%;mix-blend-mode:multiply}
+  .t-riso i:nth-child(1){
+    background:radial-gradient(circle,#e34582 2.4px,transparent 3px);
+    background-size:10px 10px;
+    clip-path:circle(46% at 40% 45%);
+  }
+  .t-riso i:nth-child(2){
+    background:radial-gradient(circle,#2fa6c9 2.4px,transparent 3px);
+    background-size:10px 10px;
+    clip-path:circle(46% at 60% 55%);
+    animation:drift 6s ease-in-out infinite;
+  }
+  @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(-8px,6px)}}
+  .t-riso .r-label{
+    position:absolute;left:16px;bottom:14px;z-index:1;
+    font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:#33312a;
+    background:#f3efe4;padding:2px 6px;
+  }
+
+  .t-swiss{background:#fff;position:relative;padding:22px;display:flex;flex-direction:column;justify-content:flex-end}
+  .t-swiss::before{
+    content:"";position:absolute;top:22px;left:22px;width:34px;height:34px;background:#e02b1c;
+  }
+  .t-swiss::after{
+    content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:#d8d5cc;
+  }
+  .t-swiss .s-title{
+    font-family:var(--sans);font-weight:800;font-size:44px;letter-spacing:-.03em;color:#111;line-height:.9;
+  }
+  .t-swiss .s-meta{
+    margin-top:10px;padding-top:10px;border-top:1px solid #111;
+    font-family:var(--sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#111;
+  }
+
+  .t-term{background:#040a05;padding:18px;font-family:var(--mono);font-size:12.5px;line-height:1.9;color:#57e88a}
+  .t-term .ln{white-space:nowrap;overflow:hidden}
+  .t-term .dim{color:#2f8a52}
+  .t-term .hl{color:#c9ff5e}
+  .t-term .cur{
+    display:inline-block;width:9px;height:14px;background:#57e88a;
+    vertical-align:-2px;animation:blink 1.05s steps(1) infinite;
+  }
+  .t-term .p{color:#2f8a52;margin-right:6px}
+
+  /* ---------- footer / credit ---------- */
+  .foot{
+    border-top:1px solid var(--line);
+    padding:44px 0 60px;
+  }
+  .foot .mark{
+    font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--acid);margin-bottom:14px;
+  }
+  .foot .credit{
+    font-family:var(--serif);font-size:clamp(17px,2.2vw,21px);
+    max-width:56ch;color:var(--ink);line-height:1.55;
+  }
+  .foot .credit b{color:var(--acid);font-weight:400;font-style:italic}
+  .foot .fine{
+    margin-top:18px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.12em;color:var(--ink-dim);text-transform:uppercase;
+  }
+
+  @media (max-width:640px){
+    .hero{padding:56px 0 44px}
+    .hero-meta{gap:22px}
+    .hero-meta span{min-width:96px}
+    .grid{grid-template-columns:1fr;gap:18px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+    .t-moss .moss-scr{stroke-dashoffset:0 !important}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <span><span class="dot"></span><b>Qwen3.8-27B</b> · release day build</span>
+    <span>13 demos · 1 day · 0 templates</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-kicker">Model Release · Showcase Edition</div>
+    <h1>Release Day, <em>Thirteen Ways</em></h1>
+    <p class="hero-tag">A curated set of demo pages generated by Qwen3.8-27B the moment it shipped. No template library, no asset folder. Every pixel below was written out by the model in a single sitting.</p>
+    <div class="hero-meta">
+      <span><b>13</b>demos</span>
+      <span><b>1</b>day of output</span>
+      <span><b>0</b>external assets</span>
+      <span><b>∞</b>range of taste</span>
+    </div>
+  </section>
+
+  <section class="grid">
+
+    <a class="card" href="pagoda-voxel/">
+      <div class="thumb t-pagoda">
+        <svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="200" height="150" fill="#0f2016"/>
+          <g class="v-dots" fill="#c8f542">
+            <circle cx="24" cy="30" r="2"/><circle cx="170" cy="22" r="1.6"/>
+            <circle cx="34" cy="120" r="1.8"/><circle cx="176" cy="112" r="2"/>
+          </g>
+          <rect x="40" y="122" width="120" height="12" fill="#1c3527"/>
+          <rect x="46" y="112" width="108" height="10" fill="#24412f"/>
+          <rect x="80" y="86" width="40" height="26" fill="#33603f"/>
+          <rect x="88" y="92" width="8" height="14" fill="#0f2016"/>
+          <rect x="104" y="92" width="8" height="14" fill="#0f2016"/>
+          <polygon points="58,86 142,86 128,72 72,72" fill="#7fbf4d"/>
+          <rect x="86" y="54" width="28" height="18" fill="#33603f"/>
+          <polygon points="66,54 134,54 122,42 78,42" fill="#9bd45f"/>
+          <rect x="95" y="18" width="10" height="24" fill="#c8f542"/>
+          <rect x="97" y="8" width="6" height="10" fill="#e4ff8a"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <span class="idx">01</span>
+        <h3>Voxel Pagoda Garden</h3>
+        <p>A zen garden built from isometric voxels that bloom in time as you scroll.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="bento-grid-1bit-dither/">
+      <div class="thumb t-dither">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="card-body">
+        <span class="idx">02</span>
+        <h3>Dithered Bento Grid</h3>
+        <p>A one-bit bento board where every tile breathes in pure checkerboard dither.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="stationery-retail-catalogue/">
+      <div class="thumb t-stationery">
+        <span class="tag">CAT. NO. 04</span>
+        <span class="stamp">INK<br>SHOP</span>
+      </div>
+      <div class="card-body">
+        <span class="idx">03</span>
+        <h3>Stationery Retail Catalogue</h3>
+        <p>A print shop catalogue with paper stock, ink swatches and a wax-style seal.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="virtual-boy-website/">
+      <div class="thumb t-vb"><span class="vb-word">VB</span></div>
+      <div class="card-body">
+        <span class="idx">04</span>
+        <h3>Virtual Boy Microsite</h3>
+        <p>A red-on-black fever dream faithful to 1995 hardware and its glow.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="website-hand-drawn/">
+      <div class="thumb t-moss">
+        <svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g fill="none" stroke="#5c7a45" stroke-width="2.4" stroke-linecap="round">
+            <path class="moss-scr" stroke-dasharray="260" d="M18 46 q12 -10 24 0 t24 0 t24 0 t24 0 t24 0 t24 0"/>
+            <path class="moss-scr" stroke-dasharray="260" d="M28 78 q10 -8 20 0 t20 0 t20 0 t20 0 t20 0" style="animation-delay:.5s"/>
+            <path class="moss-scr" stroke-dasharray="260" d="M18 110 q12 -9 24 0 t24 0 t24 0 t24 0" style="animation-delay:1s"/>
+          </g>
+          <g class="leaf" transform-origin="150 40">
+            <circle cx="152" cy="42" r="5" fill="#6f8f52"/>
+            <circle cx="163" cy="36" r="4" fill="#8aa76c"/>
+            <circle cx="145" cy="33" r="3.4" fill="#8aa76c"/>
+            <line x1="150" y1="47" x2="150" y2="66" stroke="#5c7a45" stroke-width="2" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-body">
+        <span class="idx">05</span>
+        <h3>The Moss Notebook</h3>
+        <p>Hand-drawn ink lines, mossy margins and slow seasonal doodles.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="fbm-color-breathing-terrain/">
+      <div class="thumb t-terrain">
+        <i></i><i></i><i></i><span class="ridge"></span>
+      </div>
+      <div class="card-body">
+        <span class="idx">06</span>
+        <h3>Breathing Terrain</h3>
+        <p>A shader landscape of fbm noise that inhales, holds and exhales.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="shader-molten-metaballs/">
+      <div class="thumb t-molten">
+        <svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <filter id="goo" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/>
+              <feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"/>
+            </filter>
+          </defs>
+          <g filter="url(#goo)">
+            <circle class="m1" cx="72" cy="92" r="26" fill="#ff5a1f"/>
+            <circle class="m2" cx="126" cy="82" r="22" fill="#ff9d2e"/>
+            <circle class="m3" cx="98" cy="58" r="17" fill="#ffd23e"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-body">
+        <span class="idx">07</span>
+        <h3>Molten Metaballs</h3>
+        <p>Gooey lava blobs fusing and splitting in real time over a dark crust.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="organic-iridescent-blob/">
+      <div class="thumb t-blob"><span class="blob"></span></div>
+      <div class="card-body">
+        <span class="idx">08</span>
+        <h3>Iridescent Blob</h3>
+        <p>A single oil-slick shape slowly cycling through its entire spectrum.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="zombie-car-apocalypse/">
+      <div class="thumb t-zombie">
+        <span class="treads"></span>
+        <span class="z-word">APCALYPSE</span>
+        <span class="rec">REC</span>
+      </div>
+      <div class="card-body">
+        <span class="idx">09</span>
+        <h3>Zombie Car Apocalypse</h3>
+        <p>A grimy, hazard-striped diorama of a post-collapse highway at dusk.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="website-brutalist/">
+      <div class="thumb t-brutal">
+        <div class="slab"><span class="red"></span><b>BRUT</b><span class="rule"></span></div>
+      </div>
+      <div class="card-body">
+        <span class="idx">10</span>
+        <h3>Brutalist</h3>
+        <p>Raw concrete UI with hard borders, offset shadows and zero apology.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="website-risograph/">
+      <div class="thumb t-riso">
+        <i></i><i></i>
+        <span class="r-label">2-PASS PRINT</span>
+      </div>
+      <div class="card-body">
+        <span class="idx">11</span>
+        <h3>Risograph</h3>
+        <p>Two-pass riso printing with misregistered magenta and cyan halftones.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="website-swiss/">
+      <div class="thumb t-swiss">
+        <span class="s-title">SWISS</span>
+        <span class="s-meta">Grid / Type / Red</span>
+      </div>
+      <div class="card-body">
+        <span class="idx">12</span>
+        <h3>Swiss</h3>
+        <p>International typography on a strict grid with a single red accent.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+    <a class="card" href="saas-pricing-terminal/">
+      <div class="thumb t-term">
+        <div class="ln"><span class="p">$</span>qwen plan scale <span class="hl">pro</span></div>
+        <div class="ln dim">→ seats ... 1-50</div>
+        <div class="ln dim">→ rate ... 1.99/day</div>
+        <div class="ln"><span class="p">$</span><span class="cur"></span></div>
+      </div>
+      <div class="card-body">
+        <span class="idx">13</span>
+        <h3>Pricing Terminal</h3>
+        <p>A pricing page you interrogate from a blinking terminal prompt.</p>
+        <span class="arrow">Open demo →</span>
+      </div>
+    </a>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="mark">QWEN3.8-27B · Release Day Build</div>
+    <p class="credit">This gallery page, and every demo linked from it, was generated by <b>Qwen3.8-27B</b> on release day. One model, one day, thirteen directions.</p>
+    <p class="fine">All visuals rendered in-page with CSS, SVG and a touch of patience.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONCRETE INDEX — Issue Nº 047 — An Archive of Civic Architecture</title>
+<meta name="description" content="CONCRETE INDEX — an independent archive of remarkable civic architecture and public infrastructure. Six records per issue. No sponsors, no renders, no mercy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --paper:#E8E4DA; --paper2:#DCD7C9; --ink:#101010;
+  --orange:#FF4D00; --blue:#2032FF; --blueL:#5A6BFF;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.7 0.7 0.7 0 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+  --rule:2px solid var(--ink);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{background:var(--paper);color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--orange);color:var(--ink)}
+a{color:inherit}
+img,svg{display:block}
+button{font-family:inherit}
+::-webkit-scrollbar{width:12px;height:12px;background:var(--paper)}
+::-webkit-scrollbar-thumb{background:var(--ink);border:3px solid var(--paper)}
+::-webkit-scrollbar-thumb:hover{background:var(--orange)}
+.disp{font-family:Anton,sans-serif;font-weight:400;text-transform:uppercase;line-height:.86;letter-spacing:.01em}
+
+/* ============ ATMOSPHERE LAYERS ============ */
+.colgrid{position:fixed;inset:0;z-index:350;pointer-events:none;mix-blend-mode:difference;opacity:.5;
+  background-image:linear-gradient(to right,rgba(255,255,255,.10) 1px,transparent 1px);
+  background-size:calc(100%/12) 100%}
+.grain{position:fixed;inset:0;z-index:900;pointer-events:none;opacity:.45;mix-blend-mode:multiply;background-image:var(--grain)}
+.lrule{display:none;position:fixed;left:0;top:55px;bottom:0;width:34px;z-index:360;pointer-events:none;
+  mix-blend-mode:difference;border-right:1px solid rgba(255,255,255,.5);opacity:.7;
+  background:linear-gradient(to bottom,rgba(255,255,255,.5) 1px,transparent 1px) 0 0/100% 84px repeat-y}
+.lrule span{position:absolute;top:14px;left:8px;writing-mode:vertical-rl;font-size:9px;letter-spacing:.3em;color:rgba(255,255,255,.7)}
+@media(min-width:1150px){.lrule{display:block}}
+
+/* ============ UTILITIES ============ */
+.slab{display:flex;align-items:center;gap:16px;background:var(--ink);color:var(--paper);padding:10px 4vw;font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase}
+.slab .lead{flex:1;border-bottom:2px dotted rgba(232,228,218,.4);transform:translateY(-3px)}
+.slab .reg{flex:none}
+.slab b{color:var(--orange);font-weight:700;margin-right:6px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper);border:2px solid var(--ink);padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--orange);color:var(--ink);border-color:var(--ink)}
+.chip{display:inline-block;border:2px solid currentColor;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.skip{position:fixed;top:-60px;left:12px;z-index:999;background:var(--orange);color:var(--ink);padding:10px 16px;font-weight:700;text-decoration:none}
+.skip:focus{top:10px}
+
+/* stepped reveal — hidden only when JS is live */
+html.js .rv{clip-path:inset(0 100% 0 0)}
+html.js .rv.in{animation:wipe .55s steps(7) forwards}
+@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+
+/* ============ SHARED SVG VOCABULARY ============ */
+.mf{fill:currentColor;stroke:none}
+.ms{stroke:currentColor;fill:none;stroke-width:2.4}
+.m1{stroke:currentColor;fill:none;stroke-width:1.2}
+.ld{stroke:currentColor;fill:none;stroke-width:1.6;stroke-dasharray:6 5}
+.lp{stroke:var(--paper);stroke-width:1.3;fill:none}
+.ao{fill:var(--orange);stroke:none}
+.ab{fill:var(--blue);stroke:none}
+.hp{fill:url(#hatch)}
+.hl{fill:url(#louver)}
+.hr{fill:url(#rib)}
+.hsw{fill:url(#seaW)}
+.hrw{fill:url(#ribW)}
+.ovl{opacity:0}
+.rec:hover .ovl,.plate:hover .ovl{opacity:1}
+.ovl .dl{stroke:currentColor;stroke-width:1.5;fill:none}
+.ovl .dt{fill:currentColor;font-size:11px;font-weight:700;letter-spacing:.06em}
+.ovl .regc{transform-box:fill-box;transform-origin:center}
+.rec:hover .ovl .regc{animation:rot 3s steps(8) infinite}
+.ovl .dim{stroke-dasharray:220;stroke-dashoffset:220}
+.rec:hover .ovl .dim{animation:dimdraw .55s steps(8) forwards}
+@keyframes dimdraw{to{stroke-dashoffset:0}}
+@keyframes rot{to{transform:rotate(360deg)}}
+@keyframes blink{50%{opacity:0}}
+.blinker{animation:blink 1s steps(1) infinite}
+@keyframes flow{to{stroke-dashoffset:-64}}
+@keyframes scan{to{transform:translateX(190px)}}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(-16px,9px)}}
+@keyframes tickd{0%{transform:translateY(-38%);background:var(--ink);color:var(--paper)}100%{transform:none}}
+
+/* ============ TOP BAR ============ */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:600;display:flex;align-items:stretch;height:54px;background:var(--paper);border-bottom:3px solid var(--ink)}
+.brand{display:flex;align-items:center;gap:11px;padding:0 16px;border-right:var(--rule);text-decoration:none}
+.brand .bx{width:27px;height:27px;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-family:Anton;font-size:15px}
+.brand b{font-family:Anton;font-weight:400;font-size:19px;letter-spacing:.03em}
+.brand small{font-size:9px;letter-spacing:.16em;opacity:.7}
+.topnav{display:flex;flex:1}
+.topnav a{display:flex;align-items:center;padding:0 15px;border-right:var(--rule);font-size:11px;font-weight:500;letter-spacing:.14em;text-decoration:none;color:var(--ink)}
+.topnav a i{font-style:normal;color:var(--orange);font-weight:700;margin-right:8px}
+.topnav a:hover{background:var(--ink);color:var(--paper)}
+.topnav a:hover i{color:var(--orange)}
+.top-right{margin-left:auto;display:flex;align-items:stretch}
+.iss{display:flex;align-items:center;gap:8px;padding:0 14px;border-left:var(--rule);font-size:11px;font-weight:700;letter-spacing:.14em}
+.iss b{background:var(--orange);padding:2px 7px}
+#clock{display:flex;align-items:center;padding:0 14px;border-left:var(--rule);font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+#menuBtn{display:none;border:none;border-left:var(--rule);background:var(--ink);color:var(--paper);padding:0 18px;font-size:11px;font-weight:700;letter-spacing:.16em;cursor:pointer}
+#menuBtn:hover{background:var(--orange);color:var(--ink)}
+@media(max-width:1080px){.topnav{display:none}#menuBtn{display:flex;align-items:center}}
+@media(max-width:560px){.iss{display:none}.brand small{display:none}}
+
+/* ============ MENU OVERLAY ============ */
+.menu{position:fixed;inset:0;z-index:500;background:var(--ink);color:var(--paper);display:none;flex-direction:column;justify-content:center;padding:110px 6vw 40px;overflow:auto}
+html.menu-open{overflow:hidden}
+html.menu-open .menu{display:flex}
+.menu-nav a{display:flex;align-items:baseline;gap:20px;font-family:Anton;font-size:clamp(38px,8.4vh,104px);line-height:1.04;text-transform:uppercase;color:var(--paper);text-decoration:none;border-bottom:1px solid rgba(232,228,218,.3);padding:.6vh 8px}
+.menu-nav a span{font:700 12px 'IBM Plex Mono';color:var(--orange)}
+.menu-nav a:hover{background:var(--orange);color:var(--ink)}
+.menu-meta{display:flex;flex-wrap:wrap;gap:28px;margin-top:5vh;font-size:11px;letter-spacing:.1em;line-height:1.9}
+.menu-meta div{border-left:2px solid var(--orange);padding-left:14px}
+.menu-meta b{color:var(--orange)}
+
+/* ============ HERO ============ */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;padding-top:54px;background:var(--paper);overflow:hidden}
+.xhair{position:absolute;inset:0;z-index:5;pointer-events:none}
+.xh-h{position:absolute;left:0;right:0;top:44%;height:1px;background:var(--blue);opacity:.55}
+.xh-v{position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--blue);opacity:.55}
+.xh-ret{position:absolute;transform:translate(-50%,-50%);color:var(--ink);animation:rot 16s steps(12) infinite}
+.xh-read{position:absolute;transform:translate(15px,15px);background:var(--ink);color:var(--paper);padding:7px 10px;font-size:10px;line-height:1.7;letter-spacing:.1em;min-width:132px}
+.xh-read b{color:var(--orange)}
+.xh-read span{display:block;font-variant-numeric:tabular-nums}
+.hero-plan{position:absolute;top:7%;right:-3%;width:min(56vw,860px);z-index:1;color:var(--ink);opacity:.6;pointer-events:none;will-change:transform}
+.hero-plan .tag,.hero-plan2 .tag{display:block;text-align:right;font-size:9px;letter-spacing:.22em;margin-top:6px;opacity:.75}
+.plansvg .s{stroke:currentColor;fill:none;stroke-width:1.3}
+.plansvg .b{stroke-width:3}
+.plansvg .d{stroke-dasharray:8 6;stroke-width:1.2}
+.plansvg .cut{stroke-width:5;stroke-dasharray:18 10}
+.plansvg .park{stroke:currentColor;stroke-width:9;stroke-dasharray:2 16}
+.plansvg .t{font:500 11px 'IBM Plex Mono';fill:currentColor;letter-spacing:.05em}
+.plansvg .fill{fill:currentColor;stroke:none}
+.plansvg .hpf{fill:url(#hatch);stroke:currentColor;stroke-width:1.2}
+.hero-plan .plansvg{animation:drift 16s ease-in-out infinite alternate}
+.hero-plan2{position:absolute;left:4vw;bottom:158px;width:min(300px,26vw);z-index:4;background:var(--paper);border:2px solid var(--ink);box-shadow:9px 9px 0 var(--ink);pointer-events:none}
+.hero-plan2 .tag{margin:0;padding:5px 10px 7px}
+.hp2-h{display:flex;justify-content:space-between;gap:10px;background:var(--ink);color:var(--paper);padding:6px 10px;font-size:9px;font-weight:700;letter-spacing:.18em}
+.hero-plan2 svg{animation:drift 13s ease-in-out infinite alternate-reverse}
+.hero-inner{position:relative;z-index:3;flex:1;display:flex;flex-direction:column;padding:26px 4vw 4vh;will-change:transform}
+.hero-kick{align-self:flex-start;max-width:600px;border:2px solid var(--ink);background:var(--paper);padding:9px 13px;font-size:11px;font-weight:500;letter-spacing:.1em;line-height:1.7}
+.hero-kick b{color:var(--orange)}
+.hero-title{margin-top:auto;padding-top:5vh}
+.hero-title h1{font-size:clamp(66px,17.5vw,270px);text-transform:uppercase;line-height:.82}
+.t2row{display:flex;align-items:flex-end;gap:2.2vw}
+.t2{color:transparent;-webkit-text-stroke:3px var(--ink);cursor:default}
+.t2:hover{color:var(--orange);-webkit-text-stroke:3px var(--orange)}
+@supports not (-webkit-text-stroke:2px black){.t2{color:var(--ink)}}
+.caret{flex:none;width:.5em;height:.72em;background:var(--orange);margin-bottom:.03em;animation:blink 1.1s steps(1) infinite}
+.hero-side{position:absolute;right:14px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:10px;font-weight:700;letter-spacing:.34em;color:var(--ink);z-index:3}
+.cue{position:absolute;right:16px;bottom:22%;z-index:3;display:flex;align-items:center;gap:10px;writing-mode:vertical-rl;font-size:10px;font-weight:700;letter-spacing:.3em}
+.cue i{font-style:normal;writing-mode:horizontal-tb;animation:nudge .9s steps(2) infinite}
+.hero-meta{position:relative;z-index:6;border-top:4px solid var(--ink);background:var(--paper);display:grid;grid-template-columns:1fr 1.4fr 1fr 1fr}
+.hm{padding:16px 18px 14px;border-left:var(--rule)}
+.hm:first-child{border-left:none}
+.hm .k{font-size:9px;font-weight:700;letter-spacing:.22em;opacity:.7;margin-bottom:9px}
+.hm .v{font-family:Anton;font-size:clamp(19px,2.3vw,33px);line-height:1;text-transform:uppercase}
+.hm .k2{font-size:9px;font-weight:500;letter-spacing:.16em;opacity:.7;margin-top:9px}
+.hm.fill{background:var(--orange)}
+.hm.fill .k,.hm.fill .k2{opacity:.85}
+.counter{display:flex;gap:2px}
+.counter .dg{display:inline-block;min-width:.56em;text-align:center}
+.counter .dg:nth-child(3){margin-right:.32em}
+.counter .dg.tk{animation:tickd .18s steps(2)}
+@media(max-width:900px){.hero-plan{width:78vw;right:-24vw;opacity:.4}.hero-plan2{display:none}.hero-side{display:none}
+  .hero-meta{grid-template-columns:1fr 1fr}.hm:nth-child(odd){border-left:none}.hm:nth-child(n+3){border-top:2px solid var(--ink)}}
+@media(max-width:560px){.hero-meta{grid-template-columns:1fr}.hm{border-left:none}.hm:nth-child(n+2){border-top:2px solid var(--ink)}}
+
+/* ============ TICKER ============ */
+.ticker{overflow:hidden;background:var(--ink);color:var(--paper);position:relative;z-index:6}
+.t-track{display:flex;width:max-content;animation:mar 30s linear infinite}
+.ticker:hover .t-track{animation-play-state:paused}
+.t-g{display:flex;align-items:center;white-space:nowrap}
+.t-g span{padding:11px 0;font-size:12px;font-weight:500;letter-spacing:.16em}
+.t-g .sep{color:var(--orange);padding:0 20px;font-weight:700}
+.ticker.alt{background:var(--orange);color:var(--ink);border-top:3px solid var(--ink)}
+.ticker.alt .sep{color:var(--ink)}
+.ticker.alt .t-track{animation-direction:reverse;animation-duration:26s}
+@keyframes mar{to{transform:translateX(-50%)}}
+
+/* ============ INDEX / RECORDS ============ */
+.sec-index{background:var(--paper)}
+.idx-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 5vw;padding:6vh 4vw 3vh}
+.idx-head h2{font-size:clamp(44px,7.5vw,116px);text-transform:uppercase;line-height:.85}
+.idx-head h2 em{font-style:normal;color:transparent;-webkit-text-stroke:2.5px var(--ink)}
+@supports not (-webkit-text-stroke:2px black){.idx-head h2 em{color:var(--ink)}}
+.idx-head p{margin-left:auto;max-width:34ch;font-size:12px;font-weight:500;letter-spacing:.08em;border-left:4px solid var(--orange);padding-left:14px}
+.rec{display:grid;grid-template-areas:"no main meta fig";grid-template-columns:140px minmax(0,1.35fr) minmax(240px,.85fr) minmax(320px,460px);border-top:var(--rule);background:var(--paper);color:var(--ink)}
+.rec:last-of-type{border-bottom:var(--rule)}
+.rec-no{grid-area:no;padding:18px 16px;border-right:var(--rule);display:flex;flex-direction:column}
+.rec-no .rid{font-size:10px;font-weight:700;letter-spacing:.2em;margin-bottom:12px}
+.rec-no .rn{font-family:Anton;font-size:clamp(52px,6.4vw,100px);line-height:.82}
+.rec-no .sq{width:13px;height:13px;background:var(--orange);margin-top:auto}
+.rec-main{grid-area:main;padding:24px 26px;min-width:0}
+.rname{font-family:Anton;font-size:clamp(32px,4.4vw,62px);line-height:.9;text-transform:uppercase}
+.rclass{font-size:11px;font-weight:700;letter-spacing:.16em;margin:13px 0 12px;border-left:4px solid var(--orange);padding-left:10px;text-transform:uppercase}
+.rnote{max-width:54ch;font-size:13px}
+.rtags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.rtags span{border:1.5px solid currentColor;padding:3px 8px;font-size:9.5px;font-weight:700;letter-spacing:.14em}
+.rec-meta{grid-area:meta;padding:22px;border-left:var(--rule)}
+.mrow{display:flex;justify-content:space-between;gap:12px;padding:4.5px 0;border-bottom:1px dotted currentColor;font-size:11.5px}
+.mrow span:first-child{opacity:.65;letter-spacing:.08em}
+.mrow b{font-weight:700;text-align:right}
+.rec-fig{grid-area:fig;border-left:var(--rule);background:var(--paper2);display:flex;flex-direction:column;position:relative}
+.rec-fig svg{width:100%;height:auto;flex:1;color:var(--ink)}
+.figcap{border-top:1px solid var(--ink);background:var(--paper);padding:6px 12px;font-size:9.5px;font-weight:700;letter-spacing:.16em;display:flex;justify-content:space-between;gap:10px}
+/* hard-cut hovers — no transition, snap */
+.rec.h-orange:hover{background:var(--orange)}
+.rec.h-blue:hover{background:var(--blue);color:var(--paper)}
+.rec.h-ink:hover{background:var(--ink);color:var(--paper)}
+.rec.h-ink:hover .rec-fig svg{color:var(--paper)}
+.rec:hover .rec-fig,.rec:hover .figcap{background:transparent}
+.rec:hover .hp{fill:url(#hatchW)}
+.rec.h-ink:hover :is(.rec-no,.rec-meta,.rec-fig),.rec.h-ink:hover .rec-no{border-color:var(--paper)}
+.rec.h-ink:hover .figcap{border-top-color:var(--paper)}
+.idx-foot{padding:26px 4vw 8vh;display:flex;flex-wrap:wrap;gap:14px 40px;justify-content:space-between;font-size:11px;font-weight:700;letter-spacing:.16em}
+@media(max-width:1200px){.rec{grid-template-columns:104px minmax(0,1.3fr) minmax(220px,.85fr) minmax(280px,380px)}}
+@media(max-width:980px){
+  .rec{grid-template-areas:"no fig" "main fig" "meta fig";grid-template-columns:minmax(0,1fr) minmax(220px,340px)}
+  .rec-no{border-right:none;border-bottom:var(--rule);flex-direction:row;align-items:baseline;gap:16px}
+  .rec-no .rn{margin-left:auto}
+  .rec-no .sq{margin-top:0;align-self:center}
+  .rec-meta{border-left:none}
+}
+@media(max-width:620px){
+  .rec{grid-template-areas:"no" "main" "fig" "meta";grid-template-columns:1fr}
+  .rec-no .sq{margin-top:2px}
+  .rec-fig{border-left:none;border-top:var(--rule)}
+  .rec-meta{border-top:var(--rule)}
+}
+
+/* ============ FEATURE ============ */
+.feature{position:relative;background:var(--ink);color:var(--paper)}
+.feature::before{content:"";position:absolute;inset:0;background-image:var(--grain);opacity:.12;filter:invert(1);mix-blend-mode:screen;pointer-events:none}
+.f-layout{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr) 350px}
+.frail{border-right:2px solid rgba(232,228,218,.35);display:flex;justify-content:center;align-items:flex-start;padding:26px 0}
+.frail span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;font-weight:700;letter-spacing:.36em;color:var(--orange);white-space:nowrap}
+.fmain{padding:7vh 4vw 8vh;min-width:0}
+.f-kick{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.f-kick .chip{border-color:var(--orange);color:var(--orange)}
+.f-kick span{font-size:10px;letter-spacing:.2em;opacity:.7}
+.f-title{font-size:clamp(52px,9vw,148px);text-transform:uppercase;line-height:.85;margin:26px 0 22px}
+.f-title em{font-style:normal;color:transparent;-webkit-text-stroke:2.5px var(--paper)}
+@supports not (-webkit-text-stroke:2px black){.f-title em{color:var(--orange)}}
+.f-stand{max-width:64ch;font-size:clamp(15px,1.6vw,19px);border-left:4px solid var(--orange);padding-left:18px}
+.f-body{column-count:2;column-gap:4vw;column-rule:1px solid rgba(232,228,218,.25);margin-top:6vh;font-size:14.5px}
+.f-body p{margin-bottom:1.3em;break-inside:avoid}
+.f-body p::first-letter{font-weight:700}
+.f-body .drop::first-letter{font-family:Anton;font-size:58px;line-height:.8;float:left;padding:5px 12px 0 0;color:var(--orange)}
+.f-quote{margin:7vh 0 0;border-top:2px solid var(--paper);border-bottom:2px solid var(--paper);padding:4vh 0;text-align:center}
+.f-quote blockquote{font-family:Anton;font-size:clamp(30px,5.2vw,80px);line-height:.95;text-transform:uppercase}
+.f-quote blockquote em{font-style:normal;color:var(--orange)}
+.f-quote cite{display:block;margin-top:18px;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.24em}
+.f-diag{margin-top:7vh;border-top:2px solid rgba(232,228,218,.35);padding-top:3vh}
+.diag-wrap{border:2px solid var(--paper);background:#151515}
+.diag-wrap svg{width:100%;height:auto}
+.ds{stroke:#E8E4DA;fill:none;stroke-width:1.4}
+.dsb{stroke:#E8E4DA;fill:none;stroke-width:2.4}
+.dsxx{stroke:rgba(232,228,218,.35);fill:none;stroke-width:1;stroke-dasharray:5 5}
+.dsa{stroke:#E8E4DA;fill:none;stroke-width:2}
+.dt{font:500 10.5px 'IBM Plex Mono';fill:#E8E4DA;letter-spacing:.06em}
+.dtb{fill:var(--blueL)}
+.dto{fill:var(--orange)}
+.dso{stroke:#E8E4DA;fill:none;stroke-width:2}
+.dfill{fill:#E8E4DA;stroke:none}
+.flow-in{stroke:var(--blueL);stroke-width:2.6;fill:none;stroke-dasharray:10 8;animation:flow 1s linear infinite}
+.flow-out{stroke:var(--orange);stroke-width:2.6;fill:none;stroke-dasharray:10 8;animation:flow .85s linear infinite}
+.scanl{stroke:var(--orange);stroke-width:2;opacity:.8;animation:scan 7s steps(24) infinite;transform-box:fill-box}
+.diag-cap{display:flex;flex-wrap:wrap;gap:8px 30px;justify-content:space-between;border-top:2px solid var(--paper);padding:9px 13px;font-size:10px;font-weight:700;letter-spacing:.16em}
+.diag-cap b{color:var(--orange)}
+.faside{border-left:2px solid rgba(232,228,218,.35);padding:7vh 2.2vw;display:flex;flex-direction:column;gap:30px}
+.at{display:flex;justify-content:space-between;font-size:10px;font-weight:700;letter-spacing:.22em;border-bottom:2px solid var(--paper);padding-bottom:8px;margin-bottom:12px}
+.at i{font-style:normal;color:var(--orange)}
+.srow{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px dotted rgba(232,228,218,.4);font-size:12px}
+.srow span:first-child{opacity:.7}
+.srow b{font-weight:700;text-align:right}
+.stamp{align-self:flex-start;border:3px solid var(--orange);color:var(--orange);padding:14px 16px;transform:rotate(-5deg);font-size:11px;font-weight:700;letter-spacing:.2em;line-height:1.9;text-transform:uppercase}
+@media(max-width:1150px){.f-layout{grid-template-columns:48px minmax(0,1fr) 300px}}
+@media(max-width:960px){
+  .f-layout{grid-template-columns:1fr}
+  .frail{border-right:none;border-bottom:2px solid rgba(232,228,218,.35);padding:12px 4vw;justify-content:flex-start}
+  .frail span{writing-mode:horizontal-tb;transform:none;letter-spacing:.24em}
+  .faside{border-left:none;border-top:2px solid rgba(232,228,218,.35)}
+  .f-body{column-count:1}
+}
+
+/* ============ DATA TABLE ============ */
+.sec-data{background:var(--paper)}
+.tbl-wrap{padding:0 4vw 9vh}
+.tbl-scroll{border:3px solid var(--ink);overflow-x:auto;background:var(--paper)}
+table{width:100%;min-width:980px;border-collapse:collapse;font-size:12px}
+th,td{border:1px solid rgba(16,16,16,.45);padding:10px 12px;text-align:left;vertical-align:top}
+thead th{background:var(--ink);color:var(--paper);border-color:var(--ink);font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+tbody tr:hover{background:var(--orange);color:var(--ink)}
+tbody tr:hover td{border-color:var(--ink)}
+td.rno{font-family:Anton;font-size:19px;line-height:1}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.st{display:inline-flex;align-items:center;gap:7px;font-weight:700;white-space:nowrap}
+.st::before{content:"";width:8px;height:8px;background:currentColor;flex:none}
+.st.warn{color:var(--orange)}
+tbody tr:hover .st.warn{color:var(--ink)}
+.tbl-note{display:flex;flex-wrap:wrap;gap:10px 34px;justify-content:space-between;padding:14px 2px 0;font-size:10.5px;font-weight:500;letter-spacing:.12em}
+@media(max-width:900px){.tbl-hint{color:var(--orange);font-weight:700}}
+@media(min-width:901px){.tbl-hint{display:none}}
+
+/* ============ MANIFESTO ============ */
+.mani{background:var(--blue);color:var(--paper)}
+.mgrid{display:grid;grid-template-columns:repeat(12,1fr);column-gap:2vw;padding:9vh 4vw 12vh;row-gap:7.5vh}
+.fr{min-width:0}
+.fno{display:block;font-size:10px;font-weight:700;letter-spacing:.26em;opacity:.8;margin-bottom:12px}
+.f1{grid-column:1/-1}
+.f1 .big{font-size:clamp(48px,11.4vw,182px);text-transform:uppercase;line-height:.85}
+.f1 .big em{font-style:normal;color:transparent;-webkit-text-stroke:2.5px var(--paper)}
+@supports not (-webkit-text-stroke:2px black){.f1 .big em{color:var(--ink)}}
+.rfrag{height:12px;background:var(--ink)}
+.rfrag.a{grid-column:4/11}
+.rfrag.b{grid-column:7/13;height:4px}
+.f2{grid-column:2/8;font-size:clamp(15px,1.5vw,19px)}
+.f3{grid-column:9/13;background:var(--paper);color:var(--blue);padding:24px 22px;font-family:Anton;font-size:clamp(26px,2.8vw,42px);line-height:.94;text-transform:uppercase}
+.f4{grid-column:6/13;text-align:right;font-family:Anton;font-size:clamp(24px,3.4vw,52px);line-height:.95;text-transform:uppercase}
+.f4 em{font-style:normal;background:var(--paper);color:var(--blue);padding:0 .12em}
+.f5{grid-column:1/5;background:var(--orange);color:var(--ink);padding:26px 22px;font-family:Anton;font-size:clamp(26px,3vw,46px);line-height:.95;text-transform:uppercase}
+.f6{grid-column:6/12;font-size:clamp(14px,1.4vw,18px)}
+.f6 em{font-style:normal;background:var(--paper);color:var(--ink);padding:0 .14em;font-weight:700}
+.f7{grid-column:1/7;font-family:Anton;font-size:clamp(30px,4.6vw,68px);line-height:.92;text-transform:uppercase;color:transparent;-webkit-text-stroke:2px var(--paper)}
+.f7 b{color:var(--paper);-webkit-text-stroke:0;font-weight:400}
+@supports not (-webkit-text-stroke:2px black){.f7{color:var(--paper)}.f7 b{color:var(--orange)}}
+.f7 .reg{vertical-align:middle;margin-left:14px}
+.spin{animation:rot 9s steps(12) infinite;transform-box:fill-box;transform-origin:center}
+.f8{grid-column:8/12;border:1.5px solid var(--paper);padding:18px;font-size:11.5px;line-height:2;letter-spacing:.06em}
+.f8 .cur{display:inline-block;width:.55em;height:.95em;background:var(--paper);vertical-align:-2px;animation:blink .9s steps(1) infinite}
+@media(max-width:760px){.f2,.f3,.f4,.f5,.f6,.f7,.f8{grid-column:1/-1}.rfrag.a{grid-column:2/12}.rfrag.b{grid-column:1/9}}
+
+/* ============ ARCHIVE STRIP ============ */
+.sec-archive{background:var(--paper2)}
+.strip-head{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;padding:5vh 4vw 3vh}
+.strip-head h2{font-size:clamp(34px,5.4vw,72px);text-transform:uppercase;line-height:.88}
+.strip-head .hint{font-size:10.5px;font-weight:700;letter-spacing:.18em;opacity:.75}
+.strip-btns{margin-left:auto;display:flex;gap:10px}
+.strip{display:flex;overflow-x:auto;overscroll-behavior-x:contain;border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);cursor:grab;user-select:none;-webkit-user-select:none}
+.strip.drag{cursor:grabbing}
+.plate{flex:0 0 auto;border-right:var(--rule);background:var(--paper);color:var(--ink);padding:14px 16px 12px;display:flex;flex-direction:column;gap:10px}
+.plate:hover{background:var(--ink);color:var(--paper)}
+.plate:hover .hp{fill:url(#hatchW)}
+.ph{display:flex;justify-content:space-between;gap:14px;font-size:9.5px;font-weight:700;letter-spacing:.18em}
+.ph .pno{font-family:Anton;font-size:21px;letter-spacing:.02em}
+.pl-svg{width:100%;height:172px;color:currentColor}
+.pl-svg .s{stroke:currentColor;fill:none;stroke-width:1.4}
+.pl-svg .b{stroke-width:2.4}
+.pl-svg .d{stroke-dasharray:6 5;stroke-width:1.2}
+.pl-svg .t{font:500 10px 'IBM Plex Mono';fill:currentColor;letter-spacing:.06em}
+.pl-svg .f{fill:currentColor;stroke:none}
+.pf-cap{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.pf-sub{font-size:9.5px;opacity:.75;letter-spacing:.1em;margin-top:3px}
+.w1{width:340px}.w2{width:420px}.w3{width:280px}.w4{width:380px}
+.plate.end{background:var(--ink);color:var(--paper);width:230px;justify-content:center;text-align:center;font-size:11px;font-weight:700;letter-spacing:.16em;line-height:2.1}
+.plate.end b{color:var(--orange)}
+@media(max-width:600px){.w1,.w2,.w3,.w4{width:280px}}
+
+/* ============ FOOTER ============ */
+footer{background:var(--ink);color:var(--paper)}
+.tb{display:grid;grid-template-columns:repeat(12,1fr);border:2px solid var(--paper);margin:0 4vw}
+.tb>div{padding:14px 16px;border-right:1px solid rgba(232,228,218,.45);border-bottom:1px solid rgba(232,228,218,.45)}
+.tb .k{font-size:9px;font-weight:700;letter-spacing:.24em;opacity:.6;margin-bottom:8px;text-transform:uppercase}
+.tb .v{font-size:12.5px;font-weight:500;letter-spacing:.04em}
+.c-brand{grid-column:span 4;grid-row:span 2;display:flex;flex-direction:column;gap:18px}
+.c-brand .bx{width:44px;height:44px;background:var(--paper);color:var(--ink);display:grid;place-items:center;font-family:Anton;font-size:24px}
+.c-brand .big{font-family:Anton;font-size:clamp(30px,3.2vw,46px);line-height:.9;text-transform:uppercase}
+.c-brand .big i{font-style:normal;color:var(--orange)}
+.c-brand p{font-size:10.5px;line-height:1.9;opacity:.8;letter-spacing:.06em;margin-top:auto}
+.c-a{grid-column:span 3}.c-b{grid-column:span 3}.c-c{grid-column:span 2}
+.c-d{grid-column:span 3}.c-e{grid-column:span 3}.c-f{grid-column:span 2}
+.c-rev{grid-column:span 7;padding:0 !important}
+.rev-t{display:grid;grid-template-columns:52px 96px 1fr;font-size:11px}
+.rev-t>span{padding:8px 12px;border-bottom:1px solid rgba(232,228,218,.3)}
+.rev-t .rt{border-bottom:2px solid var(--paper);font-size:9px;font-weight:700;letter-spacing:.2em;opacity:.7;padding:10px 12px 6px}
+.rev-t .rr b{color:var(--orange)}
+.c-note{grid-column:span 5;font-size:10.5px;line-height:1.9;letter-spacing:.05em;opacity:.9}
+.giant-wrap{overflow:hidden;margin-top:7vh;height:.7em;font-size:clamp(58px,12.4vw,236px)}
+.giant{font-family:Anton;line-height:1;white-space:nowrap;text-align:center;text-transform:uppercase;color:var(--paper);letter-spacing:.005em}
+.f-bot{display:flex;flex-wrap:wrap;gap:12px 34px;align-items:center;justify-content:space-between;border-top:2px solid var(--paper);margin-top:6vh;padding:16px 4vw 20px;font-size:10.5px;font-weight:500;letter-spacing:.12em}
+.f-bot a{color:inherit;text-decoration:none;border-bottom:2px solid var(--orange);padding-bottom:1px}
+.f-bot a:hover{background:var(--orange);color:var(--ink)}
+@media(max-width:820px){
+  .tb{grid-template-columns:1fr 1fr}
+  .c-brand{grid-column:span 2;grid-row:auto}
+  .c-a,.c-b,.c-d,.c-e,.c-rev,.c-note{grid-column:span 2}
+  .c-c,.c-f{grid-column:span 1}
+}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .t-track,.hero-plan .plansvg,.hero-plan2 svg,.xh-ret,.spin,.cue i,.flow-in,.flow-out,.scanl,.blinker,.f8 .cur,.caret,.cue i{animation:none !important}
+  html.js .rv{clip-path:none}
+  .ticker{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#index">SKIP TO THE INDEX</a>
+
+<!-- shared drawing patterns -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="hatch"  patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#101010" stroke-width="1.6"/></pattern>
+    <pattern id="hatchW" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#E8E4DA" stroke-width="1.6"/></pattern>
+    <pattern id="louver" patternUnits="userSpaceOnUse" width="8" height="8"><line x1="0" y1="4" x2="8" y2="4" stroke="#101010" stroke-width="2"/></pattern>
+    <pattern id="rib"    patternUnits="userSpaceOnUse" width="8" height="8"><line x1="4" y1="0" x2="4" y2="8" stroke="#101010" stroke-width="1.8"/></pattern>
+    <pattern id="ribW"   patternUnits="userSpaceOnUse" width="14" height="14"><line x1="7" y1="0" x2="7" y2="14" stroke="#E8E4DA" stroke-opacity=".5" stroke-width="1"/></pattern>
+    <pattern id="sea"    patternUnits="userSpaceOnUse" width="12" height="12"><line x1="0" y1="6" x2="12" y2="6" stroke="#101010" stroke-width="1"/></pattern>
+    <pattern id="seaW"   patternUnits="userSpaceOnUse" width="12" height="12"><line x1="0" y1="6" x2="12" y2="6" stroke="#E8E4DA" stroke-opacity=".45" stroke-width="1"/></pattern>
+  </defs>
+  <symbol id="regmark" viewBox="0 0 26 26"><circle cx="13" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13 0v26M0 13h26" stroke="currentColor" stroke-width="1.6" fill="none"/></symbol>
+</svg>
+
+<div class="colgrid" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="lrule" aria-hidden="true"><span>CI-047 — DO NOT SCALE FROM SCREEN</span></div>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <a class="brand" href="#top"><span class="bx">CI</span><b>CONCRETE INDEX</b><small>EST. 2019</small></a>
+  <nav class="topnav" aria-label="Sections">
+    <a href="#index"><i>01</i>INDEX</a>
+    <a href="#feature"><i>02</i>FEATURE</a>
+    <a href="#data"><i>03</i>DATA</a>
+    <a href="#manifesto"><i>04</i>MANIFESTO</a>
+    <a href="#archive"><i>05</i>PLATES</a>
+  </nav>
+  <div class="top-right">
+    <div class="iss">ISSUE <b>Nº 047</b></div>
+    <div id="clock" aria-label="UTC time">--:--:--</div>
+    <button id="menuBtn" aria-expanded="false" aria-controls="menu">MENU +</button>
+  </div>
+</header>
+
+<!-- ============ MENU OVERLAY ============ -->
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Section index">
+  <nav class="menu-nav">
+    <a href="#top"><span>00</span>TOP</a>
+    <a href="#index"><span>01</span>INDEX — SIX RECORDS</a>
+    <a href="#feature"><span>02</span>FEATURE — THE SEA MACHINE</a>
+    <a href="#data"><span>03</span>DATA — SPECIFICATIONS</a>
+    <a href="#manifesto"><span>04</span>MANIFESTO — DRAFT 7</a>
+    <a href="#archive"><span>05</span>PLATE ARCHIVE</a>
+  </nav>
+  <div class="menu-meta">
+    <div><b>ARCHIVE OFFICE</b><br>ROOM 4B, WILHELMINAKADE 11<br>ROTTERDAM HARBOUR — NL<br>OPEN THURSDAYS, 0900–1130</div>
+    <div><b>STATUS</b><br>ISSUE Nº 047 — SPRING 2026<br>47 ISSUES SINCE 2019<br>FUNDS: NONE. SPONSORS: NONE.</div>
+    <div><b>FORM CI-M-047</b><br>MENU / NAVIGATION OVERLAY<br>SCALE 1:1 — REV C</div>
+  </div>
+</div>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <!-- animated survey crosshair -->
+  <div class="xhair" aria-hidden="true">
+    <i class="xh-h"></i><i class="xh-v"></i>
+    <div class="xh-ret"><svg width="26" height="26"><use href="#regmark"/></svg></div>
+    <div class="xh-read"><b>REG-01 / TRACKING</b><span id="xhX">E 0000.0</span><span id="xhY">N 0000.0</span></div>
+  </div>
+
+  <!-- parallax site plan -->
+  <div class="hero-plan" aria-hidden="true">
+    <svg class="plansvg" viewBox="0 0 780 600" role="img" aria-label="Generated site plan drawing">
+      <g class="s"><circle cx="24" cy="24" r="7"/><path d="M24 9v30M9 24h30"/><circle cx="756" cy="24" r="7"/><path d="M756 9v30M741 24h30"/><circle cx="24" cy="576" r="7"/><path d="M24 561v30M9 576h30"/><circle cx="756" cy="576" r="7"/><path d="M756 561v30M741 576h30"/></g>
+      <g class="s lt" stroke-width="1"><path d="M60 36v10M180 36v10M300 36v10M420 36v10M540 36v10M660 36v10M34 90h10M34 210h10M34 330h10M34 450h10M34 570h10"/></g>
+      <g class="t"><text x="56" y="28">A</text><text x="176" y="28">B</text><text x="296" y="28">C</text><text x="416" y="28">D</text><text x="536" y="28">E</text><text x="636" y="28">F</text><text x="16" y="94">1</text><text x="16" y="214">2</text><text x="16" y="334">3</text><text x="16" y="454">4</text></g>
+      <rect x="40" y="50" width="700" height="510" class="s d"/>
+      <path class="s b" fill-rule="evenodd" d="M150 160 H470 V300 H350 V430 H150 Z M210 220 h100 v60 h-100 Z"/>
+      <rect x="470" y="180" width="130" height="70" class="s b"/>
+      <path class="s" d="M470 215h130M505 180v70M540 180v70"/>
+      <rect x="350" y="310" width="120" height="120" class="s hpf"/>
+      <text class="t" x="362" y="375">SERVICE YARD</text>
+      <rect x="545" y="330" width="165" height="140" class="s d"/>
+      <text class="t" x="556" y="404">FUTURE PHASE —</text>
+      <text class="t" x="556" y="348">NOT IN THIS ISSUE</text>
+      <path class="s b" d="M40 520 C260 470 470 560 740 505"/>
+      <path class="s b" d="M40 548 C260 498 470 588 740 533"/>
+      <path class="s d" d="M40 534 C260 484 470 574 740 519"/>
+      <line x1="90" y1="470" x2="250" y2="438" class="park"/>
+      <g class="s"><circle cx="640" cy="110" r="10"/><circle cx="682" cy="132" r="10"/><circle cx="608" cy="88" r="10"/></g>
+      <g class="fill"><circle cx="640" cy="110" r="2"/><circle cx="682" cy="132" r="2"/><circle cx="608" cy="88" r="2"/></g>
+      <circle cx="702" cy="80" r="16" class="s"/><path class="fill" d="M702 66l7 20h-14Z"/><text class="t" x="697" y="112">N</text>
+      <path class="s lt" d="M150 116V160M470 116V160"/><path class="s" d="M150 116H470M150 112v8M470 112v8"/><text class="t" x="296" y="108">84.0</text>
+      <path class="s lt" d="M104 160H150M104 430H350"/><path class="s" d="M104 160V430M100 160h8M100 430h8"/><text class="t" x="96" y="300" transform="rotate(-90 96 300)">46.5</text>
+      <line x1="80" y1="360" x2="720" y2="360" class="cut"/>
+      <rect x="80" y="348" width="24" height="24" class="fill"/><text x="86" y="366" class="t" fill="#E8E4DA">A</text>
+      <rect x="696" y="348" width="24" height="24" class="fill"/><text x="702" y="366" class="t" fill="#E8E4DA">A</text>
+      <text class="t" x="180" y="152">+12.4</text><text class="t" x="560" y="172">+11.8</text>
+    </svg>
+    <span class="tag">DWG CI-047-001 — SITE PLAN 1:500 — PARALLAX 0.6×</span>
+  </div>
+
+  <div class="hero-plan2" aria-hidden="true">
+    <div class="hp2-h"><span>DETAIL 04 — STAIR Nº 2</span><span>1:20 / REV C</span></div>
+    <svg viewBox="0 0 340 210" role="img" aria-label="Generated stair detail drawing">
+      <g class="m1"><path d="M30 60h40v26h40v26h40v26h40v26h40v26h40"/><path d="M30 46h40v26h40v26h40v26h40v26h40v26" stroke-width="1"/><path d="M46 46v14M90 72v14M130 98v14M170 124v14M210 150v14M250 176v14"/></g>
+      <line x1="300" y1="46" x2="300" y2="202" class="m1"/><path d="M294 46h12M294 202h12" class="m1"/><text x="226" y="34" class="m1" style="font:700 11px 'IBM Plex Mono'">R 17 × 8</text>
+      <circle cx="248" cy="102" r="10" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M248 88v28M234 102h28" stroke="currentColor" stroke-width="1.4" fill="none"/>
+      <rect x="107" y="84" width="7" height="7" fill="var(--orange)" class="blinker"/>
+      <text x="14" y="206" style="font:500 9px 'IBM Plex Mono'" fill="currentColor">NOSING 300 — RISER 170 — HANDRAIL BOTH SIDES</text>
+    </svg>
+    <span class="tag">CHECKED: —— / DATE: THIS QUARTER</span>
+  </div>
+
+  <span class="hero-side">NO SPONSORS — NO RENDERS — ONLY RECORDS</span>
+  <span class="cue">SCROLL FOR RECORDS <i>↓</i></span>
+
+  <div class="hero-inner">
+    <p class="hero-kick"><b>CONCRETE INDEX</b> is an independent archive of remarkable civic architecture and public infrastructure. Six records per issue. Everything measured from the pavement, everything published.</p>
+    <div class="hero-title">
+      <h1 class="disp">
+        <span class="t1" style="display:block">CONCRETE</span>
+        <span class="t2row"><span class="t2">INDEX</span><span class="caret" aria-hidden="true"></span></span>
+      </h1>
+    </div>
+  </div>
+
+  <div class="hero-meta">
+    <div class="hm">
+      <div class="k">CURRENT ISSUE</div>
+      <div class="v">Nº 047</div>
+      <div class="k2">SPRING 2026 — QUARTERLY</div>
+    </div>
+    <div class="hm fill">
+      <div class="k">PLATES INDEXED — RUNNING COUNTER</div>
+      <div class="v counter" id="counter" aria-label="Plates indexed, live counter"></div>
+      <div class="k2">TICKS WHEN THE ARCHIVE GROWS. IT GROWS OFTEN.</div>
+    </div>
+    <div class="hm">
+      <div class="k">SURVEY ORIGIN</div>
+      <div class="v">51.90°N — 4.48°E</div>
+      <div class="k2">ROTTERDAM HARBOUR — ROOM 4B</div>
+    </div>
+    <div class="hm">
+      <div class="k">NEXT ISSUE</div>
+      <div class="v">Nº 048 — TUNNELS</div>
+      <div class="k2">JUNE — SUBMISSIONS OPEN</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TICKER ============ -->
+<div class="ticker" aria-hidden="true">
+  <div class="t-track">
+    <div class="t-g">
+      <span>ISSUE Nº 047 — OUT NOW</span><span class="sep">▸</span>
+      <span>REC-001 TERMINAL HALDE — DUISBURG — 1971</span><span class="sep">▸</span>
+      <span>REC-002 AQUEDUCT NINE — ZARAGOZA — 1966</span><span class="sep">▸</span>
+      <span>REC-003 THE BREATHING HALL — TALLINN — 1984</span><span class="sep">▸</span>
+      <span>REC-004 STAPELBERG PUMPING STATION — HAMBURG — 1959</span><span class="sep">▸</span>
+      <span>REC-005 SUBSTATION K-7 — KYIV — 1978</span><span class="sep">▸</span>
+      <span>REC-006 POINT NERO DESALINATION WORKS — 1993</span><span class="sep">▸</span>
+      <span>NO RANKING — NO RATING — NO MERCY</span><span class="sep">▸</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SEC.01 INDEX ============ -->
+<section class="sec-index" id="index">
+  <div class="slab"><span><b>SEC.01</b>INDEX — SIX RECORDS</span><span class="lead"></span><span>ORDER IS ARCHIVAL, NOT CURATORIAL</span><svg class="reg" width="15" height="15" style="color:var(--orange)"><use href="#regmark"/></svg></div>
+  <div class="idx-head rv">
+    <h2 class="disp">SIX<br><em>RECORDS</em></h2>
+    <p>Numbered, measured, published. No stars, no scores — a structure earns a file, not a verdict. Hover a record to run its measurement overlay.</p>
+  </div>
+
+  <!-- REC 001 -->
+  <article class="rec h-orange rv">
+    <div class="rec-no"><span class="rid">REC-001 / Nº 001</span><span class="rn disp">001</span><span class="sq"></span></div>
+    <div class="rec-main">
+      <h3 class="rname">Terminal Halde</h3>
+      <p class="rclass">Municipal Incineration &amp; Sorting Works</p>
+      <p class="rnote">A sawtooth shed that burned a city's waste for fifty years and never once apologised for it. The conveyor still runs at four tonnes an hour; the brick facing has never been cleaned and never should be.</p>
+      <div class="rtags"><span>FUEL — MUNICIPAL RDF</span><span>LISTED 2019</span><span>5 TEETH / 1 STACK</span></div>
+    </div>
+    <div class="rec-meta">
+      <div class="mrow"><span>LOCATION</span><b>DUISBURG, DE</b></div>
+      <div class="mrow"><span>COMPLETED</span><b>1971</b></div>
+      <div class="mrow"><span>ARCHITECT</span><b>KESSEL &amp; BRANDT</b></div>
+      <div class="mrow"><span>GROSS AREA</span><b>14 800 M²</b></div>
+      <div class="mrow"><span>HEIGHT</span><b>46 M</b></div>
+      <div class="mrow"><span>STATUS</span><b>OPERATIONAL · LISTED</b></div>
+    </div>
+    <div class="rec-fig">
+      <svg viewBox="0 0 420 250" role="img" aria-label="Generated east elevation of Terminal Halde">
+        <line x1="6" y1="214" x2="414" y2="214" class="ms"/>
+        <rect x="6" y="215" width="408" height="9" class="hp"/>
+        <polygon points="20,150 20,124 64,150" class="mf"/><polygon points="64,150 64,124 108,150" class="mf"/><polygon points="108,150 108,124 152,150" class="mf"/><polygon points="152,150 152,124 196,150" class="mf"/><polygon points="196,150 196,124 240,150" class="mf"/>
+        <rect x="20" y="150" width="220" height="64" class="mf"/>
+        <rect x="30" y="166" width="200" height="7" class="lp"/>
+        <rect x="240" y="180" width="56" height="34" class="mf"/>
+        <polygon points="240,152 366,108 366,120 240,164" class="mf"/>
+        <line x1="302" y1="136" x2="302" y2="214" class="ms"/>
+        <rect x="318" y="44" width="32" height="170" class="mf"/><rect x="312" y="36" width="44" height="10" class="mf"/>
+        <rect x="318" y="72" width="32" height="3" class="lp"/><rect x="318" y="104" width="32" height="3" class="lp"/>
+        <rect x="52" y="188" width="26" height="26" class="ao"/>
+        <line x1="398" y1="196" x2="398" y2="214" class="ms"/><circle cx="398" cy="191" r="3" class="mf"/>
+        <g class="ovl"><line class="dl dim" pathLength="220" x1="372" y1="36" x2="372" y2="214"/><path class="dl" d="M364 36h16M364 214h16"/><g class="regc"><circle cx="120" cy="72" r="9" class="dl"/><path class="dl" d="M104 72h32M120 56v32"/></g><text class="dt" x="288" y="30">H = 46.0 M</text><text class="dt" x="20" y="236">FIG.001 — EAST ELEVATION / NOT TO SCALE</text></g>
+      </svg>
+      <div class="figcap"><span>FIG. 001-A</span><span>SCALE — NONE</span></div>
+    </div>
+  </article>
+
+  <!-- REC 002 -->
+  <article class="rec h-blue rv">
+    <div class="rec-no"><span class="rid">REC-002 / Nº 002</span><span class="rn disp">002</span><span class="sq"></span></div>
+    <div class="rec-main">
+      <h3 class="rname">Aqueduct Nine</h3>
+      <p class="rclass">Elevated Water Conduit — Segment 9 of 11</p>
+      <p class="rnote">1.2 kilometres of prestressed arches carrying drinking water across a riverbed that dried in 1954 and never came back. The conduit is full; the riverbed is a car park. The conduit is the honest one.</p>
+      <div class="rtags"><span>PRESTRESSED</span><span>7 PIERS / SPAN 22 M</span><span>EXP. JOINTS ×3</span></div>
+    </div>
+    <div class="rec-meta">
+      <div class="mrow"><span>LOCATION</span><b>ZARAGOZA, ES</b></div>
+      <div class="mrow"><span>COMPLETED</span><b>1966</b></div>
+      <div class="mrow"><span>ENGINEER</span><b>ESTUDIO DUERO</b></div>
+      <div class="mrow"><span>LENGTH</span><b>1 240 M</b></div>
+      <div class="mrow"><span>HEIGHT</span><b>22 M</b></div>
+      <div class="mrow"><span>STATUS</span><b>OPERATIONAL</b></div>
+    </div>
+    <div class="rec-fig">
+      <svg viewBox="0 0 420 250" role="img" aria-label="Generated elevation of Aqueduct Nine">
+        <line x1="6" y1="214" x2="414" y2="214" class="ms"/>
+        <rect x="6" y="215" width="408" height="9" class="hp"/>
+        <rect x="16" y="96" width="388" height="26" class="mf"/>
+        <line x1="16" y1="88" x2="404" y2="88" class="m1"/>
+        <line x1="20" y1="90" x2="400" y2="90" stroke="currentColor" stroke-width="10" stroke-dasharray="2 22" fill="none"/>
+        <path class="mf" fill-rule="evenodd" d="M16 122 H404 V214 H16 Z M70 214 A22 22 0 0 1 114 214 Z M126 214 A22 22 0 0 1 170 214 Z M182 214 A22 22 0 0 1 214 214 Z M226 214 A22 22 0 0 1 270 214 Z M282 214 A22 22 0 0 1 316 214 Z M338 214 A22 22 0 0 1 382 214 Z"/>
+        <rect x="97" y="96" width="4" height="26" class="ab"/><rect x="209" y="96" width="4" height="26" class="ab"/><rect x="321" y="96" width="4" height="26" class="ab"/>
+        <line x1="60" y1="96" x2="60" y2="82" class="ms"/><circle cx="60" cy="79" r="2.6" class="mf"/>
+        <g class="ovl"><line class="dl dim" pathLength="220" x1="16" y1="240" x2="404" y2="240"/><path class="dl" d="M16 232v16M404 232v16"/><g class="regc"><circle cx="352" cy="58" r="9" class="dl"/><path class="dl" d="M336 58h32M352 42v32"/></g><text class="dt" x="80" y="264">L = 1 240 M — SEGMENT 9 OF 11</text><text class="dt" x="20" y="30">FIG.002 — SOUTH ELEVATION</text></g>
+      </svg>
+      <div class="figcap"><span>FIG. 002 — ELEVATION</span><span>ARCHES — 6 VISIBLE</span></div>
+    </div>
+  </article>
+
+  <!-- REC 003 -->
+  <article class="rec h-ink rv">
+    <div class="rec-no"><span class="rid">REC-003 / Nº 003</span><span class="rn disp">003</span><span class="sq"></span></div>
+    <div class="rec-main">
+      <h3 class="rname">The Breathing Hall</h3>
+      <p class="rclass">District Ventilation Station Nº 3</p>
+      <p class="rnote">Sixty thousand cubic metres of air an hour, moved by a building that looks like it inhaled in 1984 and never exhaled. The intake disc faces the morning commuter line on purpose.</p>
+      <div class="rtags"><span>60 000 M³/H</span><span>PRECAST PANELS</span><span>FAN Ø 6.8 M</span></div>
+    </div>
+    <div class="rec-meta">
+      <div class="mrow"><span>LOCATION</span><b>TALLINN, EE</b></div>
+      <div class="mrow"><span>COMPLETED</span><b>1984</b></div>
+      <div class="mrow"><span>ARCHITECT</span><b>L. OJA</b></div>
+      <div class="mrow"><span>GROSS AREA</span><b>2 300 M²</b></div>
+      <div class="mrow"><span>HEIGHT</span><b>18 M</b></div>
+      <div class="mrow"><span>STATUS</span><b>OPERATIONAL</b></div>
+    </div>
+    <div class="rec-fig">
+      <svg viewBox="0 0 420 250" role="img" aria-label="Generated elevation of the Breathing Hall">
+        <line x1="6" y1="214" x2="414" y2="214" class="ms"/>
+        <rect x="6" y="215" width="408" height="9" class="hp"/>
+        <rect x="96" y="98" width="64" height="12" class="mf"/>
+        <rect x="70" y="110" width="240" height="104" class="mf"/>
+        <rect x="216" y="122" width="82" height="80" class="hl"/>
+        <circle cx="140" cy="162" r="34" fill="none" stroke="currentColor" stroke-width="7"/>
+        <circle cx="140" cy="162" r="12" class="ao"/>
+        <rect x="180" y="186" width="20" height="28" class="lp"/>
+        <rect x="310" y="126" width="24" height="12" class="mf"/>
+        <rect x="334" y="66" width="22" height="148" class="mf"/><rect x="330" y="58" width="30" height="8" class="mf"/>
+        <line x1="392" y1="196" x2="392" y2="214" class="ms"/><circle cx="392" cy="191" r="3" class="mf"/>
+        <g class="ovl"><line class="dl dim" pathLength="220" x1="140" y1="162" x2="240" y2="96"/><circle cx="240" cy="96" r="3.5" class="dl"/><g class="regc"><circle cx="298" cy="42" r="9" class="dl"/><path class="dl" d="M282 42h32M298 26v32"/></g><text class="dt" x="246" y="90">Ø 6.8 M</text><text class="dt" x="20" y="236">FIG.003 — INTAKE FACE / NOT TO SCALE</text></g>
+      </svg>
+      <div class="figcap"><span>FIG. 003 — NORTH FACE</span><span>FAN — OPERATIONAL</span></div>
+    </div>
+  </article>
+
+  <!-- REC 004 -->
+  <article class="rec h-orange rv">
+    <div class="rec-no"><span class="rid">REC-004 / Nº 004</span><span class="rn disp">004</span><span class="sq"></span></div>
+    <div class="rec-main">
+      <h3 class="rname">Stapelberg Pumping Station</h3>
+      <p class="rclass">Storm-Water Pumping Station</p>
+      <p class="rnote">Board-marked concrete with the grain of the carpenter's temper still visible in every pour lift. It moved the flood of 1962 out of four districts in one night and has been quietly smug since.</p>
+      <div class="rtags"><span>BOARD-MARKED</span><span>3 PUMPS</span><span>RESTORED 2019</span></div>
+    </div>
+    <div class="rec-meta">
+      <div class="mrow"><span>LOCATION</span><b>HAMBURG, DE</b></div>
+      <div class="mrow"><span>COMPLETED</span><b>1959</b></div>
+      <div class="mrow"><span>ENGINEER</span><b>OBERBAUAMT SÜD</b></div>
+      <div class="mrow"><span>GROSS AREA</span><b>940 M²</b></div>
+      <div class="mrow"><span>HEIGHT</span><b>12 M</b></div>
+      <div class="mrow"><span>STATUS</span><b>RESTORED 2019</b></div>
+    </div>
+    <div class="rec-fig">
+      <svg viewBox="0 0 420 250" role="img" aria-label="Generated elevation of Stapelberg Pumping Station">
+        <defs><clipPath id="cp4"><path d="M36 214 L84 118 H268 L300 214 Z"/></clipPath></defs>
+        <line x1="6" y1="214" x2="414" y2="214" class="ms"/>
+        <rect x="6" y="215" width="408" height="9" class="hp"/>
+        <path d="M36 214 L84 118 H268 L300 214 Z" class="mf"/>
+        <g clip-path="url(#cp4)" class="lp"><path d="M30 136H306M30 154H306M30 172H306M30 190H306M30 208H306"/></g>
+        <rect x="312" y="128" width="64" height="86" class="mf"/><ellipse cx="344" cy="128" rx="32" ry="8" class="mf"/>
+        <rect x="312" y="152" width="64" height="3" class="lp"/><rect x="312" y="176" width="64" height="3" class="lp"/>
+        <rect x="268" y="138" width="44" height="8" class="mf"/><line x1="290" y1="146" x2="290" y2="214" class="ms"/>
+        <rect x="104" y="96" width="10" height="22" class="mf"/>
+        <rect x="128" y="186" width="24" height="28" class="ab"/>
+        <line x1="52" y1="196" x2="52" y2="214" class="ms"/><circle cx="52" cy="191" r="3" class="mf"/>
+        <g class="ovl"><line class="dl dim" pathLength="220" x1="384" y1="120" x2="384" y2="214"/><path class="dl" d="M376 120h16M376 214h16"/><g class="regc"><circle cx="60" cy="60" r="9" class="dl"/><path class="dl" d="M44 60h32M60 44v32"/></g><text class="dt" x="392" y="172">12.0</text><text class="dt" x="20" y="236">FIG.004 — WEST ELEVATION</text></g>
+      </svg>
+      <div class="figcap"><span>FIG. 004 — ELEVATION</span><span>LIFT LINES — 5 VISIBLE</span></div>
+    </div>
+  </article>
+
+  <!-- REC 005 -->
+  <article class="rec h-blue rv">
+    <div class="rec-no"><span class="rid">REC-005 / Nº 005</span><span class="rn disp">005</span><span class="sq"></span></div>
+    <div class="rec-main">
+      <h3 class="rname">Substation K-7</h3>
+      <p class="rclass">Electrical Switching Hall — 110 kV</p>
+      <p class="rnote">A cathedral of portal frames scheduled for partial demolition. We filed the drawings before the district could lose them, which is either preservation or an obituary. We will know by Issue 050.</p>
+      <div class="rtags"><span>110 KV</span><span>STEEL FRAME</span><span>DEMOLITION ORDER</span></div>
+    </div>
+    <div class="rec-meta">
+      <div class="mrow"><span>LOCATION</span><b>KYIV, UA</b></div>
+      <div class="mrow"><span>COMPLETED</span><b>1978</b></div>
+      <div class="mrow"><span>ARCHITECT</span><b>HRAFIKA GROUP</b></div>
+      <div class="mrow"><span>GROSS AREA</span><b>5 600 M²</b></div>
+      <div class="mrow"><span>HEIGHT</span><b>28 M</b></div>
+      <div class="mrow"><span>STATUS</span><b>DEMOLITION — PART</b></div>
+    </div>
+    <div class="rec-fig">
+      <svg viewBox="0 0 420 250" role="img" aria-label="Generated elevation of Substation K-7">
+        <line x1="6" y1="214" x2="414" y2="214" class="ms"/>
+        <rect x="6" y="215" width="408" height="9" class="hp"/>
+        <rect x="70" y="126" width="270" height="88" class="mf"/>
+        <path class="lp" d="M90 126V214M114 126V214M138 126V214M162 126V214M186 126V214M210 126V214M234 126V214M258 126V214M258 126V214M282 126V214M306 126V214M330 126V214"/>
+        <rect x="36" y="96" width="10" height="118" class="mf"/><rect x="146" y="96" width="10" height="118" class="mf"/><rect x="36" y="96" width="120" height="10" class="mf"/>
+        <rect x="176" y="96" width="10" height="118" class="mf"/><rect x="286" y="96" width="10" height="118" class="mf"/><rect x="176" y="96" width="120" height="10" class="mf"/>
+        <rect x="316" y="96" width="10" height="118" class="mf"/><rect x="376" y="96" width="10" height="118" class="mf"/><rect x="316" y="96" width="70" height="10" class="mf"/>
+        <rect x="60" y="84" width="16" height="12" class="ao"/><rect x="200" y="84" width="16" height="12" class="ao"/><rect x="340" y="84" width="16" height="12" class="ao"/>
+        <line x1="96" y1="106" x2="96" y2="116" class="ms"/><rect x="86" y="116" width="20" height="14" class="ab"/>
+        <path class="ms" d="M392 214V34M404 214V34M392 196L404 178L392 160L404 142L392 124L404 106L392 88L404 70L392 52L404 34"/>
+        <line x1="380" y1="46" x2="416" y2="46" class="ms"/>
+        <g class="ovl"><line class="dl dim" pathLength="220" x1="414" y1="96" x2="414" y2="214"/><path class="dl" d="M406 96h16M406 214h16"/><g class="regc"><circle cx="252" cy="52" r="9" class="dl"/><path class="dl" d="M236 52h32M252 36v32"/></g><text class="dt" x="278" y="44">H = 28.0 M</text><text class="dt" x="20" y="236">FIG.005 — FRAME ELEVATION</text></g>
+      </svg>
+      <div class="figcap"><span>FIG. 005 — ELEVATION</span><span>PORTALS ×3 + MAST</span></div>
+    </div>
+  </article>
+
+  <!-- REC 006 -->
+  <article class="rec h-ink rv">
+    <div class="rec-no"><span class="rid">REC-006 / Nº 006</span><span class="rn disp">006</span><span class="sq"></span></div>
+    <div class="rec-main">
+      <h3 class="rname">Point Nero Desalination Works</h3>
+      <p class="rclass">Coastal Water Treatment Plant</p>
+      <p class="rnote">The largest object in this archive: three terraces of board-marked concrete stepping into the Tyrrhenian Sea. It makes a river where there is none. Feature dossier below — read it before the expansion buries the balustrade.</p>
+      <div class="rtags"><span>96 000 M³/DAY</span><span>INTAKE −14.0 M</span><span>SEE DOSSIER ↓</span></div>
+    </div>
+    <div class="rec-meta">
+      <div class="mrow"><span>LOCATION</span><b>CAPO NERO, IT</b></div>
+      <div class="mrow"><span>COMPLETED</span><b>1993</b></div>
+      <div class="mrow"><span>ARCHITECT</span><b>MARA VELA</b></div>
+      <div class="mrow"><span>GROSS AREA</span><b>31 200 M²</b></div>
+      <div class="mrow"><span>HEIGHT</span><b>24 M</b></div>
+      <div class="mrow"><span>STATUS</span><b>EXPANSION +40%</b></div>
+    </div>
+    <div class="rec-fig">
+      <svg viewBox="0 0 420 250" role="img" aria-label="Generated section of Point Nero works">
+        <line x1="6" y1="214" x2="414" y2="214" class="ms"/>
+        <rect x="6" y="215" width="408" height="9" class="hp"/>
+        <rect x="334" y="150" width="80" height="64" class="hsw"/>
+        <line x1="334" y1="150" x2="414" y2="150" class="ms"/>
+        <rect x="20" y="96" width="140" height="118" class="mf"/>
+        <rect x="160" y="140" width="110" height="74" class="mf"/>
+        <rect x="270" y="178" width="64" height="36" class="mf"/>
+        <rect x="48" y="40" width="18" height="56" class="mf"/><rect x="44" y="32" width="26" height="8" class="mf"/>
+        <rect x="120" y="84" width="30" height="12" class="mf"/>
+        <line x1="210" y1="140" x2="210" y2="102" class="ms"/><line x1="210" y1="102" x2="262" y2="102" class="ms"/><line x1="246" y1="102" x2="246" y2="116" class="ms"/><rect x="240" y="116" width="12" height="10" class="ab"/>
+        <circle cx="394" cy="182" r="10" fill="none" stroke="currentColor" stroke-width="4.5"/><circle cx="394" cy="180" r="2" class="mf"/>
+        <path d="M386 186 C364 198 330 206 306 210" fill="none" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5 4"/>
+        <path d="M334 200 C356 206 378 208 402 208" fill="none" stroke="var(--orange)" stroke-width="2" stroke-dasharray="5 4"/>
+        <line x1="176" y1="140" x2="176" y2="124" class="ms"/><circle cx="176" cy="121" r="2.6" class="mf"/>
+        <g class="ovl"><line class="dl dim" pathLength="220" x1="20" y1="232" x2="334" y2="232"/><path class="dl" d="M20 224v16M334 224v16"/><line class="dl" x1="388" y1="176" x2="346" y2="132"/><g class="regc"><circle cx="112" cy="56" r="9" class="dl"/><path class="dl" d="M96 56h32M112 40v32"/></g><text class="dt" x="220" y="224">SITE 312 M</text><text class="dt" x="236" y="126">INTAKE −14.0 M</text><text class="dt" x="20" y="30">FIG.006 — LONG SECTION</text></g>
+      </svg>
+      <div class="figcap"><span>FIG. 006 — SECTION</span><span>SEA AT RIGHT</span></div>
+    </div>
+  </article>
+
+  <div class="idx-foot rv"><span>END OF RECORDS — Nº 007 APPEARS IN ISSUE 048</span><span>ALL ELEVATIONS GENERATED IN-PAGE — NOT PHOTOGRAPHS</span><span>CI/IDX-047</span></div>
+</section>
+
+<!-- ============ SEC.02 FEATURE ============ -->
+<section class="feature" id="feature">
+  <div class="slab"><span><b>SEC.02</b>FEATURE DOSSIER — RECORD Nº 006</span><span class="lead"></span><span>FILED UNDER: WATER / CONCRETE / ARGUMENT</span><svg class="reg" width="15" height="15" style="color:var(--orange)"><use href="#regmark"/></svg></div>
+  <div class="f-layout">
+    <div class="frail" aria-hidden="true"><span>FEATURE DOSSIER — RECORD Nº 006 — POINT NERO DESALINATION WORKS — CI-047-F</span></div>
+    <div class="fmain">
+      <div class="f-kick rv"><span class="chip">FEATURE — Nº 006</span><span>SURVEYED 11–14 SEPT 2024 — WORDS: ARCHIVE STAFF</span></div>
+      <h2 class="f-title disp rv">The Sea <em>Machine</em></h2>
+      <p class="f-stand rv">Thirty-one thousand square metres of board-marked concrete sunk into a basalt headland so that a coast can drink. The Point Nero works is the largest object in this archive — and the only one that manufactures a river where there is none.</p>
+      <div class="f-body">
+        <p class="drop">You reach it the way its architect intended: by the coast road, at the speed the coast road allows. From the bend above the olive terraces the plant does not so much appear as accumulate — three stepped halls of basalt-aggregate concrete, descending toward the water like something set down, reconsidered, and set down again closer. The intake sits fourteen metres below the surface, two hundred and fourteen metres offshore, behind a capping structure the fishermen use as a landmark and, unofficially, as a mooring. The building begins long before the building begins.</p>
+        <p>Inside, the membrane halls are the argument. Two sheds, forty metres each, more than six thousand pressure vessels racked in ranks so even they read as an instrument. Mara Vela was thirty-four when she won the commission, and she spent her first year refusing the client's plan to bury the halls in an earth berm. A pump is a pump, she told the review board in 1991, until you give it a nave. Then she gave it one: a six-metre clerestory running the full length of both halls, so the machinery is lit like something worth looking at. It is worth looking at. We checked, twice, on principle.</p>
+      </div>
+      <div class="f-quote rv">
+        <blockquote>"A pump is a pump<br>until you give it <em>a nave."</em></blockquote>
+        <cite>— MARA VELA, REVIEW BOARD TRANSCRIPT, 1991</cite>
+      </div>
+      <div class="f-body">
+        <p class="drop">The plant is not uncontroversial, and the archive does not pretend otherwise. The brine outfall — a four-hundred-millimetre diffuser line running to the forty-metre contour — was litigated for four years and is monitored to this day. What ended the argument, as much as anything ends such arguments, was a civic gesture: Vela's office installed a public letterboard at the site gate on which the daily discharge figures are chalked by hand, every morning, at six. As far as we can establish, it remains the only desalination plant in Europe with a letterboard.</p>
+        <p>The third gesture is the one we came for. In 1989 the commune forced an eleven-metre right-of-way through the middle of the site — the old coastal footpath, never extinguished. Vela did not fight it. She paved it in board-marked concrete, roofed nothing, signed nothing, and let it run level with the works behind a plain concrete balustrade. You walk the plant's whole length, close enough to touch the intake pump house. On the second day of our survey a fisherman mended nets in the shade of Hall B's buttress, inside the fence, unhurried, unchallenged, and entirely entitled to be there. That, more than any elevation, is what the building argues.</p>
+      </div>
+
+      <!-- animated site diagram -->
+      <div class="f-diag rv">
+        <div class="diag-wrap">
+          <svg viewBox="0 0 900 470" role="img" aria-label="Animated generated site plan of the Point Nero works: intake tunnel flowing in, brine outfall flowing out">
+            <defs><clipPath id="clh"><rect x="280" y="110" width="220" height="84"/><rect x="280" y="214" width="220" height="84"/></clipPath></defs>
+            <rect x="0" y="0" width="900" height="470" fill="#151515"/>
+            <path d="M690 20 C650 150 650 320 610 450 L890 450 L890 20 Z" class="hsw"/>
+            <path d="M690 20 C650 150 650 320 610 450" class="dsb"/>
+            <line x1="600" y1="250" x2="890" y2="250" class="dsxx"/><text class="dt" x="700" y="242">MSL 0.0</text>
+            <rect x="280" y="110" width="220" height="84" class="hrw"/><rect x="280" y="110" width="220" height="84" class="dsb"/>
+            <rect x="280" y="214" width="220" height="84" class="hrw"/><rect x="280" y="214" width="220" height="84" class="dsb"/>
+            <text class="dt" x="282" y="102">MEMBRANE HALL A — 3 040 VESSELS</text>
+            <text class="dt" x="282" y="206">MEMBRANE HALL B — 3 040 VESSELS</text>
+            <rect x="280" y="330" width="130" height="58" class="ds"/><text class="dt" x="282" y="322">UV + REMINERALISATION</text>
+            <rect x="520" y="266" width="72" height="74" class="dsb"/><text class="dt" x="522" y="258">PUMP HOUSE</text>
+            <g class="dso"><circle cx="120" cy="150" r="24"/><circle cx="120" cy="208" r="24"/><circle cx="120" cy="266" r="24"/></g><text class="dt" x="96" y="118">TANK FARM ×3</text>
+            <rect x="60" y="340" width="150" height="56" class="ds"/><text class="dt" x="62" y="332">ADMIN — LONG SLAB</text>
+            <circle cx="775" cy="300" r="16" class="dsb"/><circle cx="775" cy="300" r="3" class="dfill"/>
+            <text class="dt" x="688" y="272">INTAKE CAPPING — −14.0 M</text>
+            <path class="flow-in" d="M757 306 C700 324 640 320 596 304"/>
+            <path class="dsa" d="M596 304l15-6M596 304l14 7" stroke="var(--blueL)" stroke-width="2.4" fill="none"/>
+            <text class="dt dtb" x="636" y="342">RAW SEAWATER — 96 000 M³/D</text>
+            <path class="flow-out" d="M412 362 C520 448 660 446 796 398"/>
+            <path d="M798 398l-17-5M798 398l-9-15" stroke="var(--orange)" stroke-width="2.4" fill="none"/>
+            <rect x="794" y="394" width="9" height="9" fill="var(--orange)" class="blinker"/>
+            <text class="dt dto" x="470" y="452">BRINE OUTFALL — DIFFUSER LINE Ø 400 — 40 M CONTOUR</text>
+            <line x1="290" y1="102" x2="290" y2="304" class="scanl" clip-path="url(#clh)"/>
+            <path class="dsxx" d="M60 44 H800 M60 36v16 M800 36v16"/><text class="dt" x="290" y="32">SITE 312 M — DRAWN TO SEA WALL, NOT TO GRID NORTH</text>
+            <path class="dsxx" d="M856 250h16M856 302h16"/><line x1="860" y1="250" x2="860" y2="302" class="ds"/><text class="dt" x="852" y="282" text-anchor="end">−14.0 M</text>
+            <g><line x1="375" y1="150" x2="375" y2="250" class="dsxx"/><line x1="325" y1="200" x2="425" y2="200" class="dsxx"/><circle cx="375" cy="200" r="17" class="ds"/></g>
+            <text class="dt dtb" x="160" y="140">E 478.2 — N 220.6 / SETTING-OUT</text>
+            <circle cx="838" cy="66" r="18" class="ds"/><path class="dfill" d="M838 50l8 24h-16Z"/><text class="dt" x="833" y="102">N</text>
+            <g class="dsxx"><circle cx="24" cy="24" r="8"/><path d="M24 8v32M8 24h32"/><circle cx="876" cy="24" r="8"/><path d="M876 8v32M860 24h32"/><circle cx="24" cy="446" r="8"/><path d="M24 430v32M8 446h32"/><circle cx="876" cy="446" r="8"/><path d="M876 430v32M860 446h32"/></g>
+          </svg>
+        </div>
+        <div class="diag-cap"><span><b>FIG. 006-D</b> SITE PLAN — INTAKE &amp; OUTFALL, ANIMATED FLOW DIRECTIONS</span><span>SCALE 1:2000 — SURVEY SEPT 2024 — REG E 478.2 / N 220.6</span></div>
+      </div>
+    </div>
+
+    <aside class="faside">
+      <section class="rv">
+        <div class="at"><span>SPEC SHEET — Nº 006</span><i>LIVE</i></div>
+        <div class="srow"><span>COMMISSIONED</span><b>1987</b></div>
+        <div class="srow"><span>ONLINE</span><b>1993</b></div>
+        <div class="srow"><span>CAPACITY</span><b>96 000 M³/DAY</b></div>
+        <div class="srow"><span>RECOVERY RATE</span><b>42 %</b></div>
+        <div class="srow"><span>INTAKE DEPTH</span><b>−14.0 M SL</b></div>
+        <div class="srow"><span>TUNNEL LENGTH</span><b>214 M</b></div>
+        <div class="srow"><span>PRESSURE VESSELS</span><b>6 080</b></div>
+        <div class="srow"><span>CONCRETE PLACED</span><b>48 400 M³</b></div>
+        <div class="srow"><span>COST</span><b>€212 M (1993)</b></div>
+        <div class="srow"><span>STATUS</span><b>EXPANSION +40%</b></div>
+      </section>
+      <section class="rv">
+        <div class="at"><span>CROSS-REFERENCES</span><i>IDX</i></div>
+        <div class="srow"><span>REC-004 PUMPING</span><b>STAPELBERG</b></div>
+        <div class="srow"><span>REC-002 CONDUIT</span><b>AQUEDUCT 9</b></div>
+        <div class="srow"><span>REC-001 THERMAL</span><b>TERMINAL HALDE</b></div>
+      </section>
+      <svg viewBox="0 0 320 200" class="rv" role="img" aria-label="Generated intake tunnel section with animated flow" style="width:100%;border:2px solid var(--paper);background:#151515">
+        <line x1="30" y1="70" x2="290" y2="70" class="dsxx"/><text class="dt" x="34" y="62">MSL 0.0</text>
+        <rect x="20" y="150" width="280" height="30" class="hsw"/><line x1="20" y1="150" x2="300" y2="150" class="dsb"/>
+        <rect x="36" y="118" width="182" height="28" class="ds"/><text class="dt" x="40" y="112">INTAKE TUNNEL — L 214 M</text>
+        <line x1="38" y1="132" x2="216" y2="132" class="flow-in"/>
+        <rect x="214" y="118" width="16" height="52" class="ds"/><circle cx="222" cy="86" r="12" class="dsb"/><circle cx="222" cy="86" r="2.6" class="dfill"/>
+        <line x1="280" y1="70" x2="280" y2="152" class="ds"/><path class="ds" d="M272 70h16M272 152h16"/><text class="dt" x="246" y="100" text-anchor="end">−14.0 M SL</text>
+      </svg>
+      <div class="stamp rv">SITE SURVEY — VERIFIED<br>CI FIELD UNIT 02<br>11–14 SEPT 2024<br>NO ACCESS DENIED</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ SEC.03 DATA ============ -->
+<section class="sec-data" id="data">
+  <div class="slab"><span><b>SEC.03</b>DATA — SPECIFICATIONS</span><span class="lead"></span><span>SIX RECORDS — ONE TABLE — NO OPINIONS</span><svg class="reg" width="15" height="15" style="color:var(--orange)"><use href="#regmark"/></svg></div>
+  <div class="tbl-wrap">
+    <div class="tbl-scroll tbl-wrap" style="padding:6vh 0 9vh">
+      <div class="tbl-scroll" style="border:3px solid var(--ink)">
+        <table>
+          <caption class="tbl-hint" style="padding:10px 12px;text-align:left">TABLE SCROLLS SIDEWAYS →</div>
+          <thead>
+            <tr><th>Nº</th><th>DESIGNATION</th><th>CLASS</th><th>YEAR</th><th>LOCATION</th><th>HEIGHT</th><th>GROSS AREA</th><th>PRIMARY MATERIAL</th><th>STATUS</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="rno">001</td><td>TERMINAL HALDE</td><td>INCINERATION &amp; SORTING</td><td class="num">1971</td><td>DUISBURG, DE</td><td class="num">46 M</td><td class="num">14 800 M²</td><td>BRICK-FACED RC FRAME</td><td><span class="st">OPERATIONAL</span></td></tr>
+            <tr><td class="rno">002</td><td>AQUEDUCT NINE</td><td>ELEVATED CONDUIT</td><td class="num">1966</td><td>ZARAGOZA, ES</td><td class="num">22 M</td><td class="num">1 240 M L</td><td>PRESTRESSED CONCRETE</td><td><span class="st">OPERATIONAL</span></td></tr>
+            <tr><td class="rno">003</td><td>THE BREATHING HALL</td><td>VENTILATION STATION</td><td class="num">1984</td><td>TALLINN, EE</td><td class="num">18 M</td><td class="num">2 300 M²</td><td>PRECAST PANELS</td><td><span class="st">OPERATIONAL</span></td></tr>
+            <tr><td class="rno">004</td><td>STAPELBERG P.S.</td><td>STORM-WATER PUMPING</td><td class="num">1959</td><td>HAMBURG, DE</td><td class="num">12 M</td><td class="num">940 M²</td><td>BOARD-MARKED CONCRETE</td><td><span class="st">RESTORED 2019</span></td></tr>
+            <tr><td class="rno">005</td><td>SUBSTATION K-7</td><td>SWITCHING HALL 110 KV</td><td class="num">1978</td><td>KYIV, UA</td><td class="num">28 M</td><td class="num">5 600 M²</td><td>STEEL + PROFILED CLADDING</td><td><span class="st warn">DEMOLITION — PART</span></td></tr>
+            <tr><td class="rno">006</td><td>POINT NERO WORKS</td><td>COASTAL DESALINATION</td><td class="num">1993</td><td>CAPO NERO, IT</td><td class="num">24 M</td><td class="num">31 200 M²</td><td>RC + BASALT AGGREGATE</td><td><span class="st">EXPANSION +40%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl-note"><span>TABLE 04-A — COMPILED FROM SURVEY, WINTER 2024/25. FIGURES ROUNDED TO NEAREST METRE / HUNDRED M².</span><span>VERIFY BEFORE CITATION. WE DID.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEC.04 MANIFESTO ============ -->
+<section class="mani" id="manifesto">
+  <div class="slab"><span><b>SEC.04</b>MANIFESTO — DRAFT 7 — UNRATIFIED</span><span class="lead"></span><span>VOTES: 4 FOR — 3 AGAINST — 1 ABSTAINING</span><svg class="reg" width="15" height="15" style="color:var(--orange)"/></div>
+  <div class="mgrid">
+    <div class="fr f1 rv"><span class="fno">FR.01 — THESIS</span><div class="big disp">CONCRETE IS A <em>DOCUMENT.</em></div></div>
+    <div class="rfrag a rv" aria-hidden="true"></div>
+    <div class="fr f2 rv"><span class="fno">FR.02 — ON MONEY</span>Every public structure is a receipt. It proves a sum was spent on someone other than the buyer. Most architecture is purchased; civic architecture is owed.</div>
+    <div class="fr f3 rv"><span class="fno" style="color:var(--blue)">FR.03 — METHOD</span>WE PHOTOGRAPH THE BACK.</div>
+    <div class="fr f4 rv"><span class="fno">FR.04 — ON ELEVATIONS</span>THE SERVICE ENTRANCE IS THE <em>TRUE ELEVATION.</em></div>
+    <div class="fr f5 rv"><span class="fno">FR.05 — ON IMAGES</span>NO RENDERS. ONLY RECORDS.<span class="blinker" style="display:inline-block;width:.5em;height:.8em;background:var(--ink);vertical-align:-2px;margin-left:8px"></span></div>
+    <div class="rfrag b rv" aria-hidden="true"></div>
+    <div class="fr f6 rv"><span class="fno">FR.06 — ON USE</span>Infrastructure is the only architecture <em>everyone uses and no one visits.</em> We are trying to fix the second half without breaking the first.</div>
+    <div class="fr f7 rv"><span class="fno">FR.07 — ON JUDGEMENT</span>NUMBER. MEASURE. PUBLISH. <b>WE DO NOT RATE.</b><svg class="reg" width="34" height="34" style="color:var(--paper)"><use href="#regmark"/></svg></div>
+    <div class="fr f8 rv"><span class="fno">FR.08 — ON PROCESS</span>DRAFT 7 — RATIFICATION PENDING <span class="cur"></span><br>NEXT READING: ISSUE Nº 048<br>WRITTEN ON SITE, TYPED THE SAME NIGHT</div>
+  </div>
+</section>
+
+<!-- ============ SEC.05 ARCHIVE STRIP ============ -->
+<section class="sec-archive" id="archive">
+  <div class="slab"><span><b>SEC.05</b>PLATE ARCHIVE — SELECTED PLATES 01–10 OF 24</span><span class="lead"></span><span>DRAG OR SCROLL SIDEWAYS</span><svg class="reg" width="15" height="15" style="color:var(--orange)"/></div>
+  <div class="strip-head rv">
+    <h2 class="disp">PLATE<br>ARCHIVE</h2>
+    <p class="strip-hint" style="max-width:30ch;font-size:12px;letter-spacing:.08em">Fragments pulled from the flat files: elevations, sections, stamps, one blank form. The wheel scrolls sideways here. Try it.</p>
+    <div class="strip-btns">
+      <button class="btn" id="sPrev" aria-label="Scroll plates left">← PREV</button>
+      <button class="btn" id="sNext" aria-label="Scroll plates right">NEXT →</button>
+    </div>
+  </div>
+  <div class="strip" id="strip" tabindex="0" aria-label="Horizontal archive of drawing plates — scrollable">
+
+    <div class="plate w2">
+      <div class="ph"><span class="pno">PL-01</span><span>ELEVATION NORTH</span></div>
+      <svg class="pl-svg" viewBox="0 0 360 220" role="img" aria-label="Generated north elevation drawing">
+        <line x1="12" y1="176" x2="348" y2="176" class="s"/><rect x="12" y="177" width="336" height="7" class="hp"/>
+        <path class="b" d="M48 176 L88 92 H216 L242 176 Z"/><rect x="252" y="104" width="52" height="72" class="s"/><ellipse cx="278" cy="104" rx="26" ry="6" class="s"/>
+        <path class="m1" d="M96 118h112M96 134h112M96 150h112"/>
+        <line x1="48" y1="196" x2="242" y2="196" class="s d"/><path class="s" d="M48 190v12M242 190v12"/><text class="t" x="120" y="212">L = 96.0 M — SCALE 1:200</text>
+        <g class="ovl"><line class="dl dim" pathLength="220" x1="320" y1="92" x2="320" y2="176"/><g class="regc"><circle cx="60" cy="50" r="8" class="dl"/><path class="dl" d="M36 50h28M50 36v28"/></g><text class="dt" x="300" y="140">H 12.0</text></g>
+      </svg>
+      <div><div class="pf-sub">Nº 004 STAPELBERG — SURVEY 11 SEP 2024</div><div class="pf-sub">DRAWN: CI-047 / SHEET 01</div></div>
+    </div>
+
+    <div class="plate w2">
+      <div class="ph"><span class="pno">PL-02</span><span>SITE PLAN 1:2000</span></div>
+      <svg class="pl-svg" viewBox="0 0 360 220" role="img" aria-label="Generated site plan drawing">
+        <rect x="18" y="18" width="324" height="184" class="s d"/>
+        <path class="s" d="M250 18 L206 202"/><path d="M250 18 L336 18 L336 202 L206 202 Z" class="hp" opacity=".5"/>
+        <rect x="50" y="56" width="72" height="42" class="s b"/><rect x="50" y="116" width="72" height="60" class="s"/><rect x="146" y="66" width="64" height="76" class="s b"/>
+        <circle cx="304" cy="150" r="9" class="s b"/><path class="s d" d="M296 156 C270 168 246 172 224 170"/>
+        <text class="t" x="152" y="110">HALLS A–B</text><text class="t" x="284" y="46">SEA</text>
+        <circle cx="62" cy="184" r="9" class="s"/><path class="s" d="M62 176v16M54 184h16"/><text class="t" x="78" y="188">N</text>
+        <text class="t" x="24" y="40">Nº 006 — CAPO NERO — SITE</text>
+      </svg>
+      <div><div class="pf-sub">POINT NERO — INTAKE TUNNEL DASHED</div><div class="pf-sub">DWG CI-047 / SHEET 02</div></div>
+    </div>
+
+    <div class="plate w1">
+      <div class="ph"><span class="pno">PL-03</span><span>SECTION B-B</span></div>
+      <svg class="pl-svg" viewBox="0 0 340 220" role="img" aria-label="Generated section drawing">
+        <line x1="12" y1="176" x2="328" y2="176" class="s"/><rect x="12" y="177" width="316" height="7" class="hp"/>
+        <path class="b" fill="url(#hatch)" fill-rule="evenodd" d="M40 176 V104 H62 L86 126 V104 H110 L134 126 V104 H158 L182 126 V104 H206 L230 126 V104 H254 L278 126 V176 Z"/>
+        <rect x="288" y="60" width="16" height="116" class="s" fill="url(#hatch)"/>
+        <line x1="316" y1="60" x2="316" y2="176" class="s"/><path class="s" d="M310 60h12M310 176h12"/><text class="t" x="300" y="120" transform="rotate(-90 300 120)" style="font-size:9px">H 46.0</text>
+        <text class="t" x="42" y="200">Nº 001 — 4 TEETH CUT — 1:100</text>
+      </svg>
+      <div><div class="pf-sub">TERMINAL HALDE — CUT MATERIAL HATCHED</div></div>
+    </div>
+
+    <div class="plate w3">
+      <div class="ph"><span class="pno">PL-04</span><span>FILE STAMP</span></div>
+      <svg class="pl-svg" viewBox="0 0 280 220" role="img" aria-label="Generated archive stamp">
+        <g transform="rotate(-7 140 110)" style="color:var(--blue)">
+          <rect x="46" y="52" width="188" height="116" fill="none" stroke="currentColor" stroke-width="4"/>
+          <rect x="56" y="62" width="168" height="96" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="140" y="98" text-anchor="middle" style="font:700 24px 'IBM Plex Mono';fill:currentColor">RECEIVED</text>
+          <text x="140" y="124" text-anchor="middle" style="font:500 11px 'IBM Plex Mono';fill:currentColor">CI ARCHIVE — UNIT 02</text>
+          <text x="140" y="146" text-anchor="middle" style="font:700 13px 'IBM Plex Mono';fill:currentColor">12 MAR 1971 — REC 001</text>
+        </g>
+        <text class="t" x="14" y="206">STAMP REPRODUCED AT 1:1 — INK: BLUE</text>
+      </svg>
+      <div><div class="pf-sub">ORIGINAL HELD IN FLAT FILE 04-B</div></div>
+    </div>
+
+    <div class="plate w1">
+      <div class="ph"><span class="pno">PL-05</span><span>DETAIL 07</span></div>
+      <svg class="pl-svg" viewBox="0 0 340 220" role="img" aria-label="Generated expansion joint detail">
+        <rect x="30" y="60" width="110" height="100" fill="url(#hatch)" class="s"/><rect x="200" y="30" width="110" height="100" fill="url(#hatch)" class="s"/>
+        <line x1="160" y1="40" x2="160" y2="176" class="b" stroke="var(--orange)"/>
+        <line x1="140" y1="24" x2="180" y2="24" class="s"/><path class="s" d="M140 18v12M180 18v12"/><text class="t" x="150" y="16">20 MM</text>
+        <circle cx="66" cy="60" r="3.5" class="f"/><circle cx="66" cy="150" class="f" r="3.5"/><circle cx="236" cy="60" class="f" r="3.5"/>
+        <text class="t" x="30" y="196">PRECAST PANEL TYPE C — JOINT SEALANT OMITTED FOR CLARITY</text>
+      </svg>
+      <div><div class="pf-sub">EXPANSION JOINT — SCALE 1:5</div></div>
+    </div>
+
+    <div class="plate w2">
+      <div class="ph"><span class="pno">PL-06</span><span>CONTACT SHEET</span></div>
+      <svg class="pl-svg" viewBox="0 0 360 220" role="img" aria-label="Generated contact sheet grid">
+        <g class="s">
+          <rect x="26" y="26" width="70" height="46"/><rect x="106" y="26" width="70" height="46"/><rect x="186" y="26" width="70" height="46"/><rect x="266" y="26" width="70" height="46"/>
+          <rect x="26" y="84" width="70" height="46"/><rect x="106" y="84" width="70" height="46" fill="currentColor" opacity=".14"/><rect x="186" y="84" width="70" height="46"/><rect x="266" y="84" width="70" height="46"/>
+          <rect x="26" y="142" width="70" height="46"/><rect x="106" y="142" width="70" height="46"/><rect x="186" y="142" width="70" height="46"/><rect x="266" y="142" width="70" height="46"/>
+        </g>
+        <path class="d" d="M106 26l70 46M186 26l70 46M26 142l70 46M266 26l70 46"/>
+        <g class="t"><text x="30" y="22">01</text><text x="110" y="22">02</text><text x="190" y="22">03</text><text x="270" y="22">04</text><text x="30" y="80">05</text><text x="110" y="80">06</text><text x="190" y="80">07</text><text x="270" y="80">08</text></g>
+        <text class="t" x="26" y="208">SITE WALK — Nº 006 — FRAMES 01–12 / 36 EXP.</text>
+      </svg>
+      <div><div class="pf-sub">SELECTED FRAMES — SURVEY SEPT 2024</div></div>
+    </div>
+
+    <div class="plate w3">
+      <div class="ph"><span class="pno">PL-06</span><span>PIER PLAN</span></div>
+      <svg class="pl-svg" viewBox="0 0 280 220" role="img" aria-label="Generated pier plan drawing">
+        <rect x="100" y="70" width="80" height="80" class="b"/>
+        <circle cx="140" cy="110" r="36" class="s"/>
+        <path class="d" d="M40 110H240M140 30V190"/>
+        <line class="dl" x1="140" y1="110" x2="163" y2="87"/><text class="t" x="168" y="82">Ø 6.4 M</text>
+        <g class="ovl"><g class="regc"><circle cx="140" cy="110" r="10" class="dl" fill="none"/><path class="dl" d="M124 110h32M140 94v32"/></g></g>
+        <text class="t" x="30" y="206">Nº 002 — PIER 4 OF 61 — SETTING OUT</text>
+      </svg>
+      <div><div class="pf-sub">AQUEDUCT NINE — 1:50</div></div>
+    </div>
+
+    <div class="plate w2">
+      <div class="ph"><span class="pno">PL-07</span><span>VENT SCHEMATIC</span></div>
+      <svg class="pl-svg" viewBox="0 0 380 220" role="img" aria-label="Generated ventilation schematic">
+        <rect x="20" y="88" width="52" height="44" class="s b"/><text class="t" x="24" y="80">INTAKE</text>
+        <circle cx="128" cy="110" r="22" class="s b"/><path class="s" d="M128 92c10 8 10 22 0 30M106 110h44"/>
+        <rect x="206" y="88" width="60" height="44" class="s"/><text class="t" x="208" y="80">FILTERbank</text>
+        <rect x="316" y="76" width="52" height="68" class="s b"/><text class="t" x="318" y="68">HALL</text>
+        <path class="s" d="M72 110h28M150 110h56M266 110h50"/>
+        <path d="M100 110l-10-6v12ZM206 110l-10-6v12ZM316 110l-10-6v12Z" class="f"/>
+        <path class="s" d="M128 88V40h14"/><rect x="118" y="24" width="20" height="18" class="s" fill="url(#hatch)"/>
+        <text class="t" x="20" y="204">Nº 003 — 60 000 M³/H — ONE LINE, NO SPARES</text>
+      </svg>
+      <div><div class="pf-sub">THE BREATHING HALL — DIAGRAM</div></div>
+    </div>
+
+    <div class="plate w2">
+      <div class="ph"><span class="pno">PL-08</span><span>HYDROGRAPH</span></div>
+      <svg class="pl-svg" viewBox="0 0 380 220" role="img" aria-label="Generated hydrograph drawing">
+        <path class="s b" d="M44 20V180H360"/>
+        <path class="d" d="M44 60H360M44 100H360M44 140H360"/>
+        <g class="t"><text x="20" y="64">100</text><text x="28" y="104">50</text><text x="34" y="184">0</text><text x="44" y="200">1993</text><text x="180" y="200">1994</text><text x="320" y="200">1995</text></g>
+        <polyline class="b" points="44,150 84,132 124,142 164,108 204,118 244,84 284,96 324,66 360,78" fill="none"/>
+        <g class="f"><rect x="41" y="147" width="6" height="6"/><rect x="121" y="139" width="6" height="6"/><rect x="201" y="115" width="6" height="6"/><rect x="281" y="81" width="6" height="6"/><rect x="357" y="75" width="6" height="6"/></g>
+        <text class="t" x="48" y="40">DAILY FLOW — M³/S — OUTFALL LINE, SAMPLED MONTHLY</text>
+      </svg>
+      <div><div class="pf-sub">POINT NERO — BRINE RECORD 1993–95</div></div>
+    </div>
+
+    <div class="plate w1">
+      <div class="ph"><span class="pno">PL-09</span><span>REG. SHEET</span></div>
+      <svg class="pl-svg" viewBox="0 0 280 220" role="img" aria-label="Generated blank registration sheet">
+        <rect x="16" y="16" width="248" height="168" class="s"/>
+        <g class="s"><circle cx="80" cy="70" r="8"/><path d="M80 54v32M64 70h32"/><circle cx="200" cy="70" r="8"/><path d="M200 54v32M184 70h32"/><circle cx="140" cy="128" r="8"/><path d="M140 112v32M124 128h32"/></g>
+        <text class="t" x="30" y="204">REGISTRATION SHEET — BLANK — DO NOT SCALE</text>
+        <text class="t" x="196" y="206">SHT 10/10</text>
+      </svg>
+      <div><div class="pf-sub">FORM CI-R-2 — ISSUED EMPTY</div></div>
+    </div>
+
+    <div class="plate end"><span><b>END OF SELECTED STRIP</b><br>PLATES 11–24 HELD IN<br>FLAT FILES 04-B AND 06-A<br>—<br>PRINT CATALOGUE ON REQUEST<br>WHICH WE WILL DENY</span></div>
+  </div>
+</section>
+
+<!-- ============ TICKER 2 ============ -->
+<div class="ticker alt" aria-hidden="true">
+  <div class="t-track">
+    <div class="t-g">
+      <span>ALL DRAWINGS GENERATED IN-BROWSER</span><span class="sep">■</span>
+      <span>DO NOT SCALE FROM SCREEN</span><span class="sep">■</span>
+      <span>TEXT CC BY-NC 4.0 — DRAWINGS CC0</span><span class="sep">■</span>
+      <span>PRINTED NEVER — RENDERED NIGHTLY</span><span class="sep">■</span>
+      <span>AN ARCHIVE, NOT A RANKING</span><span class="sep">■</span>
+      <span>ISSUE Nº 048 — TUNNELS — JUNE</span><span class="sep">■</span>
+    </div>
+  </div>
+</div>
+</main>
+
+<!-- ============ FOOTER — CONSTRUCTION DOCUMENTATION ============ -->
+<footer id="footer">
+  <div class="slab" style="background:var(--paper);color:var(--ink)"><span style="color:var(--ink)"><b>SEC.06</b>COLOPHON — SHEET 047 OF 047</span><span class="lead" style="border-color:rgba(16,16,16,.4)"></span><span>CONSTRUCTION DOCUMENTATION FORMAT</span><svg class="reg" width="15" height="15" style="color:var(--orange)"/></div>
+  <div style="height:6vh"></div>
+  <div class="tb">
+    <div class="c-brand">
+      <div class="bx">CI</div>
+      <div class="big">CONCRETE<br><i>INDEX</i></div>
+      <p>INDEPENDENT ARCHIVE OF CIVIC ARCHITECTURE<br>&amp; PUBLIC INFRASTRUCTURE — SIX RECORDS PER ISSUE<br>P.O. BOX 4700 — 3000 CA ROTTERDAM — NL<br>NO SPONSORS. NO PAYWALL. NO MERCY.</p>
+    </div>
+    <div class="c-a"><div class="k">Project</div><div class="v">CONCRETE INDEX — ISSUE Nº 047</div></div>
+    <div class="c-b"><div class="k">Sheet</div><div class="v">047 OF 047 — SINGLE-SIDED</div></div>
+    <div class="c-c"><div class="k">Rev</div><div class="v">C — CURRENT</div></div>
+    <div class="c-d"><div class="k">Drawn</div><div class="v">CI STUDIO — ROOM 4B</div></div>
+    <div class="c-e"><div class="k">Scale</div><div class="v">1:1 @ 96 DPI — SCREEN ONLY</div></div>
+    <div class="c-f"><div class="k">Date (UTC)</div><div class="v" id="fdate">—</div></div>
+    <div class="c-rev">
+      <div class="rev-t" style="display:grid;grid-template-columns:52px 96px 1fr"><span>REV</span><span>DATE</span><span>DESCRIPTION</span></div>
+      <div class="rev-t" style="border-bottom:1px solid rgba(232,228,218,.3)"><span><b>C</b></span><span>2026 Q1</span><span>TICKER SPEED REDUCED — READABILITY PASS — Nº 006 DOSSIER EXPANDED</span></div>
+      <div class="rev-t" style="border-bottom:1px solid rgba(232,228,218,.3)"><span>B</span><span>2025 Q3</span><span>REC Nº 005 STATUS AMENDED FOLLOWING COURT RULING</span></div>
+      <div class="rev-t"><span>A</span><span>2019 Q2</span><span>FIRST RELEASE — SIX RECORDS — PRINT RUN: ZERO</span></div>
+    </div>
+    <div class="c-note"><div class="k">Notes</div><div class="v" style="font-size:10.5px;line-height:1.9">DO NOT SCALE FROM SCREEN. VERIFY ALL DIMENSIONS ON SITE. THIS DOCUMENT BECOMES UNCONTROLLED WHEN PRINTED — IT IS NEVER PRINTED. ALL DRAWINGS GENERATED IN-PAGE VIA SVG, CSS AND CANVAS — NO PHOTOGRAPHS, NO RENDERS, NOTHING HOTLINKED. SET IN ANTON &amp; IBM PLEX MONO.</div></div>
+  </div>
+  <div class="giant-wrap" aria-hidden="true"><div class="giant">CONCRETE INDEX</div></div>
+  <div class="f-bot">
+    <span>© 2019–2026 CONCRETE INDEX — TEXT CC BY-NC 4.0 — DRAWINGS CC0</span>
+    <span>AN ARCHIVE OF STRUCTURES THAT OUTLIVE THEIR ARGUMENTS</span>
+    <a href="#top">RETURN TO GRADE ↑</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+  document.documentElement.classList.add('js');
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- duplicate ticker groups for a seamless loop ---------- */
+  document.querySelectorAll('.ticker .t-track').forEach(t => t.appendChild(t.firstElementChild.cloneNode(true)));
+
+  /* ---------- UTC clock + footer date ---------- */
+  const clk = document.getElementById('clock'), fdate = document.getElementById('fdate');
+  const pad = n => String(n).padStart(2, '0');
+  const tickClock = () => {
+    const d = new Date();
+    clk.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+    if (fdate) fdate.textContent = `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+  };
+  tickClock(); setInterval(tickClock, 1000);
+
+  /* ---------- ticking plate counter ---------- */
+  const cnt = document.getElementById('counter');
+  let value = 47213;
+  const dgs = [];
+  for (let i = 0; i < 6; i++) { const s = document.createElement('span'); s.className = 'dg'; s.textContent = '0'; cnt.appendChild(s); dgs.push(s); }
+  const paint = changed => {
+    const s = String(value).padStart(6, '0');
+    for (let i = 0; i < 6; i++) {
+      if (!changed || changed.includes(i)) {
+        dgs[i].textContent = s[i];
+        if (changed && !RM) { dgs[i].classList.remove('tk'); void dgs[i].offsetWidth; dgs[i].classList.add('tk'); }
+      }
+    }
+  };
+  paint();
+  (function schedule() {
+    setTimeout(() => {
+      const before = String(value).padStart(6, '0');
+      value += 1 + (Math.random() < 0.18 ? 1 : 0);
+      const after = String(value).padStart(6, '0'), changed = [];
+      for (let i = 0; i < 6; i++) if (before[i] !== after[i]) changed.push(i);
+      paint(changed); schedule();
+    }, 1200 + Math.random() * 2600);
+  })();
+
+  /* ---------- hero parallax + drifting survey crosshair ---------- */
+  const hero = document.querySelector('.hero');
+  const plan = document.querySelector('.hero-plan'), plan2 = document.querySelector('.hero-plan2');
+  const inner = document.querySelector('.hero-inner');
+  const xhH = document.querySelector('.xh-h'), xhV = document.querySelector('.xh-v');
+  const xhR = document.querySelector('.xh-ret'), xhRD = document.querySelector('.xh-read');
+  const xhX = document.getElementById('xhX'), xhY = document.getElementById('xhY');
+  let tx = 0, ty = 0, cx = 0, cy = 0, vis = true;
+  if (hero && matchMedia('(pointer:fine)').matches && !RM) {
+    hero.addEventListener('pointermove', e => {
+      const r = hero.getBoundingClientRect();
+      tx = (e.clientX - r.left) / r.width - .5;
+      ty = (e.clientY - r.top) / r.height - .5;
+    });
+    hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+    new IntersectionObserver(e => { vis = e[0].isIntersecting; }).observe(hero);
+  } else {
+    xhH.style.top = '44%'; xhV.style.left = '62%';
+    xhR.style.left = '62%'; xhR.style.top = '44%';
+    xhRD.style.left = '62%'; xhRD.style.top = '44%';
+    xhX.textContent = 'E 1069.0'; xhY.textContent = 'N 0602.8';
+  }
+  const raf = t => {
+    requestAnimationFrame(raf);
+    if (!vis || RM) return;
+    cx += (tx - cx) * .06; cy += (ty - cy) * .06;
+    plan.style.transform  = `translate3d(${cx * 34}px, ${cy * 22}px,0)`;
+    plan2.style.transform = `translate3d(${-cx * 22}px, ${-cy * 15}px,0)`;
+    inner.style.transform = `translate3d(${cx * -10}px, ${cy * -7}px,0)`;
+    const x = 50 + 36 * Math.sin(t / 3700), y = 44 + 27 * Math.sin(t / 2600 + 1.2);
+    xhH.style.top = y + '%'; xhV.style.left = x + '%';
+    xhR.style.left = x + '%'; xhR.style.top = y + '%';
+    xhRD.style.left = x + '%'; xhRD.style.top = y + '%';
+    xhX.textContent = 'E ' + (x * 16.51).toFixed(1).padStart(6, '0');
+    xhY.textContent = 'N ' + (y * 13.72).toFixed(1).padStart(6, '0');
+  };
+  requestAnimationFrame(raf);
+
+  /* ---------- stepped wipe reveals ---------- */
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  /* ---------- plate strip: drag + sideways wheel + buttons ---------- */
+  const strip = document.getElementById('strip');
+  if (strip) {
+    let down = false, sx = 0, sl = 0;
+    strip.addEventListener('pointerdown', e => {
+      down = true; sx = e.clientX; sl = strip.scrollLeft;
+      strip.classList.add('drag'); strip.setPointerCapture(e.pointerId);
+    });
+    strip.addEventListener('pointermove', e => { if (down) strip.scrollLeft = sl - (e.clientX - sx); });
+    const up = () => { down = false; strip.classList.remove('drag'); };
+    strip.addEventListener('pointerup', up); strip.addEventListener('pointercancel', up);
+    strip.addEventListener('wheel', e => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        const b = strip.scrollLeft;
+        strip.scrollLeft += e.deltaY;
+        if (strip.scrollLeft !== b) e.preventDefault();
+      }
+    }, { passive: false });
+    document.getElementById('sPrev').addEventListener('click', () => strip.scrollBy({ left: -420, behavior: 'smooth' }));
+    document.getElementById('sNext').addEventListener('click', () => strip.scrollBy({ left: 420, behavior: 'smooth' }));
+  }
+
+  /* ---------- menu overlay ---------- */
+  const btn = document.getElementById('menuBtn'), menu = document.getElementById('menu');
+  const setMenu = o => {
+    document.documentElement.classList.toggle('menu-open', o);
+    btn.setAttribute('aria-expanded', o);
+    btn.textContent = o ? 'CLOSE ×' : 'MENU +';
+  };
+  btn.addEventListener('click', () => setMenu(!document.documentElement.classList.contains('menu-open')));
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+})();
+</script>
+</body>
+</html>

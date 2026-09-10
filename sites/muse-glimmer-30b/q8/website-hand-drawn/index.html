@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Moss Notebook — A Year in the Woods</title>
+<style>
+:root{
+  --paper:#f6eadc;
+  --paper-dark:#efe0c9;
+  --ink:#2a2722;
+  --pencil:#7a7366;
+  --wash1:#e9d9b8;
+  --wash2:#d9c9a8;
+  --tape:#f2e9c9;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#e9dfc7;color:var(--ink)}
+body{font-family:Georgia,"Times New Roman",serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+.paper{
+  background:var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg,rgba(0,0,0,.03) 0 1px,transparent 1px 28px),
+    radial-gradient(800px 400px at 20% -10%, rgba(232,216,184,.8), transparent),
+    radial-gradient(600px 300px at 90% 110%, rgba(217,201,168,.6), transparent);
+  min-height:100vh;
+  position:relative;
+  max-width:980px;
+  margin:0 auto;
+  padding:48px 36px 120px;
+  box-shadow:0 0 0 1px #d8c8a8, 0 20px 60px rgba(0,0,0,.15);
+}
+h1,h2,h3{font-weight:600;letter-spacing:.2px}
+h1{font-size:clamp(2.4rem,5vw,3.6rem);line-height:1.1;margin:.2em 0 .1em}
+.subtitle{font-family:"Segoe Script","Bradley Hand","Brush Script MT",cursive;font-size:1.15rem;color:#4a443a;margin-bottom:2rem}
+.hand{font-family:"Segoe Script","Bradley Hand","Brush Script MT",cursive}
+.ink{color:var(--ink)}
+.pencil{color:var(--pencil)}
+.divider{
+  height:2px;background:linear-gradient(90deg,transparent, #c9b99a 10%, #c9b99a 90%, transparent);
+  margin:2.5rem 0;position:relative
+}
+.divider::after{
+  content:"";position:absolute;left:50%;top:-6px;width:10px;height:10px;border:2px solid var(--ink);border-radius:50%;transform:translateX(-50%) rotate(12deg)
+}
+.note{
+  background:#fffef7;border:1px solid #e2d3b6;transform:rotate(-1.5deg);padding:14px 16px;margin:1rem 0;box-shadow:0 2px 0 #e8dcc0;
+  position:relative
+}
+.note::before{
+  content:"";position:absolute;top:-10px;left:18px;width:60px;height:22px;background:var(--tape);transform:rotate(-3deg);box-shadow:0 1px 0 rgba(0,0,0,.08)
+}
+.note:hover{transform:rotate(-1.5deg) translateY(-3px);transition:.2s}
+.seasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:2rem 0}
+.card{
+  border:1.5px solid var(--ink);border-radius:2px;padding:14px 14px 12px;position:relative;background:linear-gradient(180deg, rgba(255,255,255,.4), transparent 40%);
+}
+.card h3{margin:.2em 0 .4em;font-size:1.2rem}
+.badge{position:absolute;top:-10px;right:12px;background:var(--paper);border:1.5px solid var(--ink);padding:2px 8px;font-size:.75rem;transform:rotate(6deg)}
+.map{border:2px solid var(--ink);padding:16px;background:var(--paper-dark);position:relative}
+.specimens{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:2rem 0}
+.spec{border:1.5px solid var(--ink);padding:12px 12px 10px;position:relative;background:#fffdf5}
+.spec .label{position:absolute;top:-10px;left:12px;background:var(--paper);border:1px solid var(--ink);padding:0 6px;font-size:.75rem;transform:rotate(-4deg)}
+.ledger{border-collapse:separate;border-spacing:0 6px;font-size:.95rem}
+.ledger th,.ledger td{padding:6px 8px;text-align:left;border-bottom:1px dotted #c9b99a}
+.ledger th{font-weight:600}
+.doodle{position:absolute;opacity:.9;pointer-events:none}
+.bird{position:fixed;top:80px;right:-120px;width:80px;height:40px;animation:fly 22s linear infinite}
+@keyframes fly{0%{transform:translateX(0) translateY(0) rotate(-5deg)}100%{transform:translateX(-140vw) translateY(-30px) rotate(-5deg)}}
+.sway{animation:sway 6s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.draw{stroke-dasharray:600;stroke-dashoffset:600;animation:draw 3s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.wash{
+  position:absolute;inset:-20%;background:radial-gradient(300px 200px at 30% 40%, rgba(233,217,184,.7), transparent 60%),radial-gradient(250px 180px at 70% 60%, rgba(217,201,168,.5), transparent 60%);
+  animation:bloom 40s ease-in-out infinite alternate;mix-blend-mode:multiply;pointer-events:none
+}
+@keyframes bloom{from{background-position:0 0,0 0}to{background-position:20px -10px,-15px 15px}}
+footer{margin-top:4rem;border-top:2px dashed #c9b99a;padding-top:1rem;font-size:.9rem;color:var(--pencil)}
+@media (prefers-reduced-motion:reduce){
+  .bird,.sway,.draw,.wash{animation:none!important}
+}
+@media (max-width:640px){
+  .paper{padding:28px 18px}
+}
+</style>
+</head>
+<body>
+<div class="paper">
+  <div class="wash"></div>
+  <svg class="doodle bird" viewBox="0 0 120 60">
+    <path d="M10 30 Q30 10 60 30 T110 28" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="95" cy="26" r="3" fill="var(--ink)"/>
+  </svg>
+
+  <header>
+    <h1>THE MOSS NOTEBOOK</h1>
+    <div class="subtitle hand">a naturalist’s year in the woods • field notes, sketches & small wonders</div>
+    <div class="note">
+      <p class="hand">Started on a damp Tuesday in March. I’m keeping this on the kitchen table. Coffee rings welcome.</p>
+    </div>
+  </header>
+
+  <section>
+    <h2>Seasonal Field Entries</h2>
+    <div class="divider"></div>
+    <div class="seasons">
+      <article class="card">
+        <span class="badge hand">Spring</span>
+        <h3>Thaw & Buds</h3>
+        <p>Skunk cabbage steams in the hollow. First trillium. Ants repairing trails. Ink still bleeds on wet paper.</p>
+        <svg width="80" height="60" viewBox="0 0 80 60"><path class="draw" d="M40 50 Q20 35 10 20 Q25 25 40 10 Q55 25 70 20 Q60 35 40 50" fill="none" stroke="var(--ink)" stroke-width="1.5"/></svg>
+      </article>
+      <article class="card">
+        <span class="badge hand">Summer</span>
+        <h3>Heat & Hum</h3>
+        <p>Midges at dusk. Fern fronds uncurl. Water tastes of tannin. I pressed a maple leaf before it crisped.</p>
+        <div class="sway">🌿</div>
+      </article>
+      <article class="card">
+        <span class="badge hand">Autumn</span>
+        <h3>Spores & Light</h3>
+        <p>Mushrooms overnight. Beech leaves turn copper. The creek runs clear after the first cold rain.</p>
+      </article>
+      <article class="card">
+        <span class="badge hand">Winter</span>
+        <h3>Snow & Tracks</h3>
+        <p>Tracks like punctuation. Bare branches draw lines. The notebook stays warm in my coat pocket.</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>Habitats</h2>
+    <div class="map">
+      <div class="hand" style="position:absolute;top:10px;left:14px">habitat map • sketched on site</div>
+      <svg viewBox="0 0 600 240" width="100%" height="240">
+        <rect width="600" height="240" fill="none"/>
+        <path d="M0 180 Q150 160 300 170 T600 175" fill="none" stroke="var(--ink)" stroke-width="2"/>
+        <path d="M0 180 Q200 210 400 200 T600 195" fill="none" stroke="#8a7f6e" stroke-width="1" stroke-dasharray="4 6"/>
+        <circle cx="120" cy="120" r="28" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+        <text x="122" y="125" font-size="12" fill="var(--ink)">old oak</text>
+        <path d="M300 100 C320 70 360 60 400 80" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+        <text x="340" y="65" font-size="11" class="hand">stream</text>
+        <g transform="translate(480 140)">
+          <ellipse cx="0" cy="0" rx="18" ry="8" fill="none" stroke="var(--ink)" stroke-width="1"/>
+          <text x="-10" y="15" font-size="10" class="hand">moss hummock</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>Specimen Notes</h2>
+    <div class="divider"></div>
+    <div class="specimens">
+      <div class="spec"><span class="label hand">1</span><strong>Oyster mushroom</strong><p class="pencil">On fallen beech, Sept. Grows in tiers. Smells faintly of brine.</p><svg width="100%" height="70"><ellipse cx="60" cy="40" rx="40" ry="12" fill="none" stroke="var(--ink)"/><path d="M20 40 Q60 20 100 40" fill="none" stroke="var(--ink)"/></svg></div>
+      <div class="spec"><span class="label hand">2</span><strong>American robin feather</strong><p class="pencil">Found after storm. Barbs intact. Rufous throat.</p><svg width="100%" height="70"><path d="M10 35 Q40 10 90 35 Q40 60 10 35" fill="none" stroke="var(--ink)" stroke-width="1.2"/></svg></div>
+      <div class="spec"><span class="label hand">3</span><strong>Water ripple</strong><p class="pencil">Sketch of concentric rings. Stone dropped at 14:22.</p><svg width="100%" height="70"><circle cx="50" cy="35" r="8" fill="none" stroke="var(--ink)"/><circle cx="50" cy="35" r="18" fill="none" stroke="var(--ink)"/></svg></div>
+      <div class="spec"><span class="label hand">4</span><strong>Leaf miner trail</strong><p class="pencil">Winding white line on sycamore. Caterpillar gone.</p><svg width="100%" height="70"><path d="M10 40 C30 20 50 50 70 35 S90 45 100 35" fill="none" stroke="var(--ink)"/></svg></div>
+      <div class="spec"><span class="label hand">5</span><strong>Ant column</strong><p class="pencil">Moving up a log. Steady, purposeful.</p><svg width="100%" height="70"><path d="M10 45 L90 45" stroke="var(--ink)"/><g fill="var(--ink)"><circle cx="20" cy="42" r="2"/><circle cx="45" cy="48" r="2"/><circle cx="70" cy="44" r="2"/></g></svg></div>
+      <div class="spec"><span class="label hand">6</span><strong>Stonefly nymph</strong><p class="pencil">Under rock in cold riffle. Two tails.</p><svg width="100%" height="70"><rect x="30" y="30" width="40" height="8" fill="none" stroke="var(--ink)"/><line x1="70" y1="34" x2="95" y2="30" stroke="var(--ink)"/><line x1="70" y1="34" x2="95" y2="38" stroke="var(--ink)"/></svg></div>
+      <div class="spec"><span class="label hand">7</span><strong>Pine cone scale</strong><p class="pencil">Opened after frost. Seed wings like tiny sails.</p><svg width="100%" height="70"><path d="M50 15 C60 25 70 35 50 55 C30 35 40 25 50 15" fill="none" stroke="var(--ink)"/></svg></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Featured Observation</h2>
+    <div class="note" style="transform:rotate(0.8deg)">
+      <h3 class="hand">The night the fungi lit the log</h3>
+      <p>October 12, after rain. I returned to the fallen maple I’d been watching for weeks. In the dark, the log was a map of foxfire — <em>Armillaria</em> maybe, or a shy glow. I didn’t photograph it. I sat, wrote, and let the light come and go with my breath. The air smelled of earth and cold iron. A vole rustled. I left the log alone.</p>
+      <p class="pencil">Note to self: return with red light only.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Weather Ledger</h2>
+    <table class="ledger">
+      <thead><tr><th>Date</th><th>Temp</th><th>Sky</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Mar 3</td><td>4°C</td><td>mizzle</td><td>first skunk cabbage</td></tr>
+        <tr><td>Jun 19</td><td>27°C</td><td>hazy</td><td>dragonflies</td></tr>
+        <tr><td>Sep 8</td><td>16°C</td><td>clear</td><td>mushroom flush</td></tr>
+        <tr><td>Dec 21</td><td>-3°C</td><td>snow</td><td>tracks: deer, hare</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Soundscape</h2>
+    <ul class="hand">
+      <li>Morning: woodpecker knocking, distant chainsaw, water chuckling over stone.</li>
+      <li>Noon: bees on clover, leaves shivering.</li>
+      <li>Evening: crickets rising, owl asking once.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Supplies</h2>
+    <div class="note" style="transform:rotate(-1deg)">
+      <ul>
+        <li>Pencil HB, 2B for shading</li>
+        <li>Ink pen 0.3 / 0.5</li>
+        <li>Small watercolor set, cold-pressed pad</li>
+        <li>10× magnifier, field knife</li>
+        <li>Rubber band, twine, pressed leaves</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>About the Naturalist</h2>
+    <p class="pencil">I walk the same 3km loop most weeks. I’m not an expert, just attentive. This notebook is my way of staying close to the small things that keep the forest moving. If you find a page, add your own.</p>
+  </section>
+
+  <footer class="hand">
+    The Moss Notebook — back page. If pages are loose, tape them. If ink runs, that’s okay. Keep looking down.
+    <div style="margin-top:8px;font-size:.8rem">Generated with pencil, ink, and attention.</div>
+  </footer>
+</div>
+</body>
+</html>
