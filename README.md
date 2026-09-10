@@ -51,4 +51,11 @@ harness defaults. The raw output is published to the results tree immediately; a
 flags whether it renders cleanly. A `meta.json` sits alongside each `index.html` with the serving
 details (model, precision/variant, seed, token counts, timing) and audit outcome.
 
-Live gallery: https://loktar00.github.io/qwen3-8-27b-demos/
+Live gallery: https://loktar00.github.io/llm-website-demos/
+
+Source: https://github.com/loktar00/llm-website-demos
+
+
+## Prompts
+
+The prompts themselves are not published here; they are available to subscribers only.

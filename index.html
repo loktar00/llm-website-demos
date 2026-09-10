@@ -222,9 +222,14 @@
   <div class="header-inner">
     <div>
       <div class="brand-title">LLM website demos</div>
-      <div class="brand-sub">92 sites across 10 benchmarked models</div>
+      <div class="brand-sub">94 sites across 11 benchmarked models</div>
     </div>
     <nav class="header-nav">
+      <select id="model-picker" aria-label="Choose a model" style="margin-right:12px;padding:6px 10px;border-radius:8px;border:1px solid #8884;background:inherit;color:inherit;font:inherit">
+        <option value="">All models</option><option value="astra">Astra</option><option value="claude-fable-5-1">Claude Fable 5.1</option><option value="deepseek-v41-flash">DeepSeek V4.1 Flash</option><option value="glm53-flash">GLM 5.3 Flash</option><option value="muse-glimmer-30b">Muse Glimmer 30B</option><option value="muse-spark-13">Muse Spark 1.3</option><option value="ox-alpha">Ox Alpha</option><option value="qwen3.6-27b">Qwen 3.6 27B</option><option value="qwen3.8-27b">Qwen 3.8 27B</option><option value="qwen3.8-max-preview">Qwen 3.8 Max Preview</option><option value="qwen38-flash-next">Qwen 3.8 Flash Next</option><option value="original-qwen-demos">Original Qwen 3.8 27B demos</option>
+      </select>
+      <a class="nav-link" href="https://github.com/loktar00/llm-website-demos">View on GitHub</a>
+      <a class="nav-link" href="#astra">Astra</a>
       <a class="nav-link" href="#claude-fable-5-1">Claude Fable 5.1</a>
       <a class="nav-link" href="#deepseek-v41-flash">DeepSeek V4.1 Flash</a>
       <a class="nav-link" href="#glm53-flash">GLM 5.3 Flash</a>
@@ -245,6 +250,41 @@
     <h1>LLM website demos</h1>
     <p>Every website-generation cell from Jason's day-0 model benchmarks: the same battery of website prompts, run against every model as it was benchmarked. Static HTML output, unedited except where a card says otherwise.</p>
   </div>
+    <section class="model-section" id="astra">
+      <div class="section-head">
+        <h2>Astra</h2>
+        <div class="meta-row"><span class="meta-chip">codex</span></div>
+      </div>
+      <div class="grid">
+      <a class="card" href="sites/astra/codex/website-hand-drawn/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Hand Drawn</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-hand-drawn</span>
+          <span class="variant-chip">codex</span>
+        </div>
+      </a>
+      <a class="card" href="sites/astra/codex/website-risograph/index.html">
+        <div class="card-strip">
+          <span class="card-name">Website Risograph</span>
+          <span class="badge badge-audited">Audited</span>
+        </div>
+        <div class="card-screen">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="6" cy="6.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="8" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">website-risograph</span>
+          <span class="variant-chip">codex</span>
+        </div>
+      </a>
+      </div>
+    </section>
+
     <section class="model-section" id="claude-fable-5-1">
       <div class="section-head">
         <h2>Claude Fable 5.1</h2>
@@ -1885,7 +1925,18 @@
 
 </main>
 <footer>
-  Source on <a href="https://github.com/loktar00/qwen3-8-27b-demos">GitHub</a>. Read the <a href="prompts/">prompts</a> behind the original Qwen demos.
+  Source on <a href="https://github.com/loktar00/llm-website-demos">GitHub</a>. Read the <a href="prompts/">prompts</a> behind the original Qwen demos.
 </footer>
+<script>
+(function(){
+  var sel=document.getElementById('model-picker');
+  function apply(id){document.querySelectorAll('.model-section').forEach(function(sec){sec.style.display=(!id||sec.id===id)?'':'none';});
+    if(sel.value!==(id||''))sel.value=id||'';}
+  function fromHash(){var m=(location.hash.match(/model=([\w.-]+)/)||[])[1];apply(m||'');}
+  sel.addEventListener('change',function(){var v=sel.value;history.replaceState(null,'',v?('#model='+v):location.pathname);apply(v);});
+  document.querySelectorAll('.nav-link[href^="#"]').forEach(function(a){a.addEventListener('click',function(){apply('');});});
+  window.addEventListener('hashchange',fromHash);fromHash();
+})();
+</script>
 </body>
 </html>
