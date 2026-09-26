@@ -41,6 +41,7 @@ results tree, so it has no cells in this gallery.
 sites/<model>/<variant>/<cell>/index.html   # one benchmarked cell, plus its meta.json and any assets
 <original-qwen-cell>/index.html             # the original Qwen 3.8 27B demos, unchanged
 mimo-flash-website-journey/index.html       # a one-off showcase, outside the benchmark battery, with a video preview in thumbs/
+ordinary-torn-site/index.html               # a one-off showcase (Claude Opus 5.5); needs a Chrome flag, see its README
 ```
 
 ## How these were generated

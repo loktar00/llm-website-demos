@@ -222,11 +222,11 @@
   <div class="header-inner">
     <div>
       <div class="brand-title">LLM website demos</div>
-      <div class="brand-sub">94 sites across 11 benchmarked models, plus 1 showcase</div>
+      <div class="brand-sub">94 sites across 11 benchmarked models, plus 2 showcases</div>
     </div>
     <nav class="header-nav">
       <select id="model-picker" aria-label="Choose a model" style="margin-right:12px;padding:6px 10px;border-radius:8px;border:1px solid #8884;background:inherit;color:inherit;font:inherit">
-        <option value="">All models</option><option value="astra">Astra</option><option value="claude-fable-5-1">Claude Fable 5.1</option><option value="deepseek-v41-flash">DeepSeek V4.1 Flash</option><option value="glm53-flash">GLM 5.3 Flash</option><option value="muse-glimmer-30b">Muse Glimmer 30B</option><option value="muse-spark-13">Muse Spark 1.3</option><option value="ox-alpha">Ox Alpha</option><option value="qwen3.6-27b">Qwen 3.6 27B</option><option value="qwen3.8-27b">Qwen 3.8 27B</option><option value="qwen3.8-max-preview">Qwen 3.8 Max Preview</option><option value="qwen38-flash-next">Qwen 3.8 Flash Next</option><option value="mimo-v2-6-flash">MiMo V2.6 Flash</option><option value="original-qwen-demos">Original Qwen 3.8 27B demos</option>
+        <option value="">All models</option><option value="astra">Astra</option><option value="claude-fable-5-1">Claude Fable 5.1</option><option value="deepseek-v41-flash">DeepSeek V4.1 Flash</option><option value="glm53-flash">GLM 5.3 Flash</option><option value="muse-glimmer-30b">Muse Glimmer 30B</option><option value="muse-spark-13">Muse Spark 1.3</option><option value="ox-alpha">Ox Alpha</option><option value="qwen3.6-27b">Qwen 3.6 27B</option><option value="qwen3.8-27b">Qwen 3.8 27B</option><option value="qwen3.8-max-preview">Qwen 3.8 Max Preview</option><option value="qwen38-flash-next">Qwen 3.8 Flash Next</option><option value="mimo-v2-6-flash">MiMo V2.6 Flash</option><option value="claude-opus-5-5">Claude Opus 5.5</option><option value="original-qwen-demos">Original Qwen 3.8 27B demos</option>
       </select>
       <a class="nav-link" href="https://github.com/loktar00/llm-website-demos">View on GitHub</a>
       <a class="nav-link" href="#astra">Astra</a>
@@ -241,6 +241,7 @@
       <a class="nav-link" href="#qwen3.8-max-preview">Qwen 3.8 Max Preview</a>
       <a class="nav-link" href="#qwen38-flash-next">Qwen 3.8 Flash Next</a>
       <a class="nav-link" href="#mimo-v2-6-flash">MiMo V2.6 Flash</a>
+      <a class="nav-link" href="#claude-opus-5-5">Claude Opus 5.5</a>
       <a class="nav-link" href="#original-qwen-demos">Original Qwen demos</a>
     </nav>
   </div>
@@ -1581,6 +1582,31 @@
           <span class="cell-id">mimo-flash-website-journey</span>
         </div>
       </a>
+      </div>
+    </section>
+
+    <section class="model-section" id="claude-opus-5-5">
+      <div class="section-head">
+        <h2>Claude Opus 5.5</h2>
+        <p class="section-note">Needs Chrome/Chromium with the CanvasDrawElement flag (chrome://flags, or --enable-blink-features=CanvasDrawElement). Without it you see the plain ORDINARY site.</p>
+        <div class="meta-row"><span class="meta-chip">webgl</span><span class="meta-chip">verlet cloth</span></div>
+      </div>
+      <div class="grid">
+      <div>
+      <a class="card" href="ordinary-torn-site/index.html">
+        <div class="card-strip">
+          <span class="card-name">Ordinary (torn site)</span>
+          <span class="badge badge-hand-patched">Needs flag</span>
+        </div>
+        <div class="card-screen">
+          <video src="thumbs/ordinary-torn-site.mp4" style="width:100%;height:100%;object-fit:cover" autoplay muted loop playsinline></video>
+        </div>
+        <div class="card-foot">
+          <span class="cell-id">ordinary-torn-site</span>
+        </div>
+      </a>
+      <a href="ordinary-torn-site/demo-720p.mp4" style="display:block;text-align:center;font-size:11px;color:var(--ink-faint);margin-top:6px;text-decoration:none">Full recorded walkthrough (67s, with sound) &#8599;</a>
+      </div>
       </div>
     </section>
 
