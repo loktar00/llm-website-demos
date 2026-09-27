@@ -5,10 +5,12 @@
 
 A deliberately bland SaaS landing page ("Ordinary — nothing to see here.") rendered as a
 physically simulated cloth. Scroll and it tears, verlet-physics flaps peeling and falling away
-under gravity to reveal a vibrant clockwork/gear world underneath.
+under gravity to reveal a vibrant clockwork/gear world underneath, including a tower/corridor
+loop further in. The resting tear is deterministic (same seed every fresh load), so the page
+always opens the same way; everything torn after that is random.
 
 By Claude Opus 5.5. Single self-contained `index.html`, no build step: open it directly in a
 supporting browser, or browse it live via GitHub Pages.
 
-- Full recorded walkthrough (67s, with sound): [`demo-720p.mp4`](demo-720p.mp4)
+- Full recorded walkthrough (45s seamless loop, with sound): [`demo-1080p.mp4`](demo-1080p.mp4)
 - Short preview loop: [`../thumbs/ordinary-torn-site.mp4`](../thumbs/ordinary-torn-site.mp4)

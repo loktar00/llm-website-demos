@@ -526,6 +526,10 @@
 const $ = s => document.querySelector(s);
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const cloth = $('#cloth'), view = $('#view'), srcInner = $('#srcInner'), hit = $('#hit'), worldCanvas = $('#world');
+// The resting rip is built from a fixed seed, so every fresh page (first load, "Hang it back up", the loop back from
+// the monitor) wears exactly the same rip. Everything torn after that stays random.
+const seeded = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+let R = Math.random;
 const clamp = (x, a, b) => x < a ? a : x > b ? b : x;
 const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -814,7 +818,7 @@ function blob(x, y, R, a) {
 }
 function paintCell(c) {
   const nx1 = NX - 1, i = c % nx1, j = (c / nx1) | 0, cs = Math.min(dx, dy);
-  blob((i + 0.5 + (Math.random() - 0.5) * 0.3) * dx, (j + 0.5 + (Math.random() - 0.5) * 0.3) * dy, cs * (1.8 + Math.random() * 0.35), 1);
+  blob((i + 0.5 + (R() - 0.5) * 0.3) * dx, (j + 0.5 + (R() - 0.5) * 0.3) * dy, cs * (1.8 + R() * 0.35), 1);
 }
 // a tapered slit along a polyline: w(t) is the full width at fraction t from the start
 function paintSlit(pts, w) {
@@ -824,7 +828,7 @@ function paintSlit(pts, w) {
   for (let k = 2; k < pts.length; k += 2) {
     const l = seg[k / 2 - 1], n = Math.max(1, Math.ceil(l / 1.2));
     for (let q = 0; q < n; q++) { const f = q / n, x = lerp(pts[k-2], pts[k], f), y = lerp(pts[k-1], pts[k+1], f), t = (acc + l * f) / L;
-      const ww = w(t); if (ww > 0.3) blob(x + (Math.random() - 0.5) * 0.6, y + (Math.random() - 0.5) * 0.6, ww, 1); }
+      const ww = w(t); if (ww > 0.3) blob(x + (R() - 0.5) * 0.6, y + (R() - 0.5) * 0.6, ww, 1); }
     acc += l;
   }
 }
@@ -868,7 +872,7 @@ function buildCloth() {
   for (let j = 0; j < NY; j++) for (let i = 0; i < NX - 2; i++) { ca[k] = j*NX+i; cb[k] = j*NX+i+2; cr[k] = dx*2; ct[k] = 2; addBend(H(i,j), H(i+1,j)); k++; }
   for (let j = 0; j < NY - 2; j++) for (let i = 0; i < NX; i++) { ca[k] = j*NX+i; cb[k] = (j+2)*NX+i; cr[k] = dy*2; ct[k] = 2; addBend(V(i,j), V(i,j+1)); k++; }
   // jittered break points send rips wandering instead of running along grid lines
-  ctear = new Float32Array(M); over = new Uint8Array(M); for (let n = 0; n < M; n++) ctear[n] = ct[n] === 0 ? 1.5 * (0.84 + Math.random() * 0.32) : ct[n] === 1 ? 1.65 * (0.84 + Math.random() * 0.32) : 1e9;
+  ctear = new Float32Array(M); over = new Uint8Array(M); for (let n = 0; n < M; n++) ctear[n] = ct[n] === 0 ? 1.5 * (0.84 + R() * 0.32) : ct[n] === 1 ? 1.65 * (0.84 + R() * 0.32) : 1e9;
   scratch = {q: new Int32Array(NP), seen: new Uint8Array(NP), comp: new Int32Array(NP)};
   actP = new Int32Array(NP); actC = new Int32Array(M); actCells = new Int32Array(NC); idxBuf = new Uint32Array(NC * 6);
   uploadClothGL();
@@ -976,7 +980,7 @@ let rips = [];
 function ripPath(x, y, ang, len, wob) {
   const pts = []; let a = ang, px = x, py = y; const st = Math.min(dx, dy) * 0.6, n = Math.ceil(len / st);
   let drift = 0;
-  for (let k = 0; k < n; k++) { drift += (Math.random() - 0.5) * wob; drift *= 0.9; a = ang + drift + Math.sin(k * 0.37) * wob * 0.6;
+  for (let k = 0; k < n; k++) { drift += (R() - 0.5) * wob; drift *= 0.9; a = ang + drift + Math.sin(k * 0.37) * wob * 0.6;
     px += Math.cos(a) * st; py += Math.sin(a) * st; if (px < 2 || py < 2 || px > VW - 2 || py > VH - 2) break; pts.push(px, py); }
   // cells along the path, 4-connected so the two lips really part
   const cells = []; let last = -1;
@@ -997,7 +1001,7 @@ function addRip(o) {
 }
 // A real tear is not a uniform groove: it widens where a lip gave way, and throws short side splits.
 function ripExtras(cells) {
-  const nx1 = NX - 1, out = [], ph = [Math.random() * 6, Math.random() * 6, Math.random() * 6];
+  const nx1 = NX - 1, out = [], ph = [R() * 6, R() * 6, R() * 6];
   const ij = c => [c % nx1, (c / nx1) | 0];
   for (let k = 0; k < cells.length; k++) {
     const ex = [];
@@ -1007,9 +1011,9 @@ function ripExtras(cells) {
     const n = Math.max(0, Math.floor(w * 1.4)), side = Math.sin(k * 0.05 + ph[2]) > 0 ? 1 : -1;
     for (let m = 1; m <= n; m++) { const s = m % 2 && n > 2 ? -side : side, mm = Math.ceil(m / (n > 2 ? 2 : 1));
       const ci = Math.round(i - dj * s * mm), cj = Math.round(j + di * s * mm); if (ci >= 0 && cj >= 0 && ci < nx1 && cj < NY - 1) ex.push(cj * nx1 + ci); }
-    if (k > 8 && Math.random() < 0.035) {
-      const ba = Math.atan2(dj, di) + (Math.random() < 0.5 ? 1 : -1) * (0.6 + Math.random() * 0.7);
-      const br = ripPath((i + 0.5) * dx, (j + 0.5) * dy, ba, (3 + Math.random() * 8) * dx, 0.6);
+    if (k > 8 && R() < 0.035) {
+      const ba = Math.atan2(dj, di) + (R() < 0.5 ? 1 : -1) * (0.6 + R() * 0.7);
+      const br = ripPath((i + 0.5) * dx, (j + 0.5) * dy, ba, (3 + R() * 8) * dx, 0.6);
       ex.push(...br);
     }
     out.push(ex);
@@ -1052,7 +1056,7 @@ function scoreRip(r, la, lb) {
   const A = take(r.a, la), B = take(r.b, lb), line = [];
   for (let k = B.length - 2; k >= 0; k -= 2) line.push(B[k], B[k+1]);
   line.push(r.x, r.y); for (let k = 0; k < A.length; k += 2) line.push(A[k], A[k+1]);
-  const jit = []; for (let k = 0; k < 40; k++) jit.push(Math.random());
+  const jit = []; for (let k = 0; k < 40; k++) jit.push(R());
   paintSlit(line, t => { const s = Math.pow(Math.sin(Math.PI * t), 0.75); const j = jit[(t * 39) | 0]; return 1.2 + 6.5 * s * (0.75 + 0.5 * j); });
   const cellsOf = (path, L) => path.slice(0, Math.ceil(L / Math.min(dx, dy) * 1.05));
   for (const c of cellsOf(r.a, la).concat(cellsOf(r.b, lb))) { scored[c] = 1; for (let e = 0; e < 6; e++) { const k = cellCons[c * 6 + e]; ctear[k] = Math.min(ctear[k], 1.26); } }
@@ -1061,16 +1065,20 @@ function scoreRip(r, la, lb) {
 
 // where the first rip lives: in the hero, just off the headline, over the top corner of the dashboard
 function ripHome() {
-  const vis = hitMain.querySelector('.dash'), r = vis.getBoundingClientRect();
-  const x = r.left + r.width * 0.08, y = r.top - 26;
-  return {x: clamp(x, VW * 0.25, VW * 0.85), y: clamp(y + scrollY, VH * 0.15, VH * 0.6)};
+  // layout offsets, not the on-screen box: the reveal animation's slide must not move the rip
+  const dash = hitMain.querySelector('.dash'); let x = 0, y = 0;
+  for (let e = dash; e; e = e.offsetParent) { x += e.offsetLeft; y += e.offsetTop; }
+  x += dash.offsetWidth * 0.08; y -= 26;
+  return {x: clamp(x, VW * 0.25, VW * 0.85), y: clamp(y, VH * 0.15, VH * 0.6)};
 }
 function freshCloth() {
+  R = seeded(20260926);
   buildCloth();
   const h = ripHome();
   const r1 = addRip({x: h.x, y: h.y, ang: -0.32, max: VW * 1.1, id: 1});
   scoreRip(r1, 64, 58);
   settleRip(r1, 4, 0.97, 0.5, 3);
+  R = Math.random;
   rebuildIndices(); computeDmg(); rebuildActive(); connectivity();
   world && world.setFocus && world.setFocus(h.x / VW, h.y / VH, {immediate: true});
 }
@@ -1383,8 +1391,11 @@ const sfx = (() => {
   function init() {
     ac = new (window.AudioContext || window.webkitAudioContext)();
     master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
-    noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate); const d = noise.getChannelData(0);
-    let b = 0; for (let i = 0; i < d.length; i++) { const w = Math.random() * 2 - 1; b = 0.97 * b + 0.03 * w; d[i] = w * 0.6 + b * 2.2; }
+    // 6 s of noise whose loop point is crossfaded, so the looping rustle has no seam to thump every cycle
+    const L = ac.sampleRate * 6, X = ac.sampleRate >> 2, raw = new Float32Array(L + X);
+    let b = 0; for (let i = 0; i < raw.length; i++) { const w = Math.random() * 2 - 1; b = 0.97 * b + 0.03 * w; raw[i] = w * 0.6 + b * 2.2; }
+    noise = ac.createBuffer(1, L, ac.sampleRate); const d = noise.getChannelData(0);
+    for (let i = 0; i < L; i++) d[i] = i < X ? raw[i] * Math.sqrt(i / X) + raw[L + i] * Math.sqrt(1 - i / X) : raw[i];
     const src = ac.createBufferSource(); src.buffer = noise; src.loop = true;
     rustleF = ac.createBiquadFilter(); rustleF.type = 'bandpass'; rustleF.frequency.value = 900; rustleF.Q.value = 0.6;
     rustleG = ac.createGain(); rustleG.gain.value = 0; src.connect(rustleF); rustleF.connect(rustleG); rustleG.connect(master); src.start();
@@ -1404,9 +1415,10 @@ const sfx = (() => {
   let lastRip = 0;
   return {
     get on() { return on; },
+    tap() { if (!ac) return null; const a = ac.createAnalyser(); a.fftSize = 2048; master.connect(a); return a; },  // QA: level of everything this page plays
     set(v) { if (!ac) init(); on = v; if (on) ac.resume(); master.gain.setTargetAtTime(on ? 0.8 : 0, ac.currentTime, 0.05); },
     kick() { if (ac && on && ac.state !== 'running') ac.resume(); },
-    rustle(v) { if (!on) return; rustleG.gain.setTargetAtTime(Math.min(0.2, v * 0.2), ac.currentTime, 0.06); rustleF.frequency.setTargetAtTime(500 + v * 1400, ac.currentTime, 0.08); },
+    rustle(v) { if (!on) return; rustleG.gain.setTargetAtTime(Math.min(0.16, v * 0.16), ac.currentTime, 0.25); rustleF.frequency.setTargetAtTime(500 + v * 1400, ac.currentTime, 0.08); },
     // a rip is a dense run of tiny fibre snaps; its pitch rises with tear speed
     rip(rate) { if (!on) return; const now = ac.currentTime; if (now - lastRip < 0.025) return; lastRip = now;
       const n = Math.min(9, 2 + (rate / 4) | 0), base = 1100 + Math.min(rate, 60) * 70;
@@ -1419,7 +1431,11 @@ const sfx = (() => {
     groan() { tone(90, 55, 1.8, 0.07, 'sawtooth'); burst(1.4, 200, 0.6, 0.18, 'lowpass'); },
     whoosh() { burst(4, 260, 0.5, 0.3, 'lowpass'); burst(3, 1100, 0.6, 0.1, 'bandpass', 0.6); },
     rehang() { burst(0.5, 900, 0.7, 0.12, 'bandpass'); tone(660, 660, 0.4, 0.03, 'sine', 0.2); },
-    pad() { if (!on) return; [196, 246.9, 293.7, 392].forEach((f, i) => tone(f, f * 1.001, 9, 0.035, 'sine', i * 0.35)); }
+    pad() { if (!on) return; const t0 = ac.currentTime;
+      // a pure G chord in just intonation, so no two tones beat against each other; a slow swell, a long fade
+      [196, 245, 294, 392].forEach(f => { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f;
+        g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.022, t0 + 2.5); g.gain.setTargetAtTime(0, t0 + 6, 2.2);
+        o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + 18); }); }
   };
 })();
 const sndBtn = $('#snd');
@@ -1466,7 +1482,7 @@ let lastUploads = 0, paintNudge = 0;
 // ---------------------------------------------------------------- frame
 let acc = 0, last = performance.now(), wmx = 0, wmy = 0, peekS = 0;
 const stats = window.__torn = {ft: [], sim: [], long: [], get grab() { return grab ? {n: grab.pts.length, rip: !!grab.rip, len: grab.rip && grab.rip.len, gx: grab.gx, rx: grab.rx} : null; }, get state() { return state; }, get tears() { return tearTotal; }, get open() { return openFrac(); }, get act() { return nActP; },
-  get prog() { return prog; }, get loops() { return loops; }, get snap() { return snapDone; }, get screenRect() { return world && world.getScreenRect ? world.getScreenRect() : null; }, get uploads() { return uploads; }, hic: HIC, get grid() { return [NX, NY]; }, get scrollP() { return scrollP; }};
+  get prog() { return prog; }, sfx: () => sfx, world: () => world, get loops() { return loops; }, get snap() { return snapDone; }, get screenRect() { return world && world.getScreenRect ? world.getScreenRect() : null; }, get uploads() { return uploads; }, hic: HIC, get grid() { return [NX, NY]; }, get scrollP() { return scrollP; }};
 function frame(now) {
   if (glLost || gl.isContextLost()) {
     if (!glLost) { glLost = true; lostAt = performance.now(); }  // seen before the event arrived
@@ -1506,7 +1522,7 @@ function frame(now) {
   if (moved) { moved = false; gl.bindBuffer(gl.ARRAY_BUFFER, bPos); gl.bufferSubData(gl.ARRAY_BUFFER, 0, pos); gl.bindBuffer(gl.ARRAY_BUFFER, bN); gl.bufferSubData(gl.ARRAY_BUFFER, 0, nrm); }
   const simMs = performance.now() - s0;
   if (tearsNow) sfx.rip(tearsNow / Math.max(dt, 0.008) / 60);
-  if (sfx.on && nActP) { let v = 0, c = 0; for (let n = 0; n < nActP; n += 7) { const p = actP[n]; v += Math.abs(pos[p*3+2] - prv[p*3+2]); c++; } sfx.rustle(Math.min(1, v / Math.max(1, c) * 0.5)); }
+  if (sfx.on) { let v = 0, c = 0; if (idxCount && fade > 0) for (let n = 0; n < nActP; n += 7) { const p = actP[n]; if (det[p]) continue; v += Math.abs(pos[p*3+2] - prv[p*3+2]); c++; } sfx.rustle(c ? Math.min(1, v / c * 0.5) : 0); }  // silent when nothing is moving
   // pointer: grab zone or click-through to the page
   const z = !grab && mouse.inside && zoneAt(mouse.x, mouse.y); mouse.zone = z;
   hit.classList.toggle('nohit', !!(z || grab));
@@ -1547,9 +1563,10 @@ function maybeSnapshot() {
   if (hit.querySelector('.foc')) return;
   const fresh = !snapDone || screenC.width !== cloth.width || screenC.height !== cloth.height;
   if (fresh) { screenC.width = cloth.width; screenC.height = cloth.height; }
-  render(true); screenX.clearRect(0, 0, screenC.width, screenC.height); screenX.drawImage(cloth, 0, 0); render();
+  render(); screenX.fillStyle = '#f3f0e8'; screenX.fillRect(0, 0, screenC.width, screenC.height);
+  screenX.drawImage(worldCanvas, 0, 0, screenC.width, screenC.height); screenX.drawImage(cloth, 0, 0);  // opaque, rip and all
   snapDone = true; snapAt = performance.now() + 3000;  // refreshed while the page sits untouched at the top
-  if (fresh && world && world.setScreenSource) { world.setScreenSource(screenC, {rip: true}); snapGiven = true; }  // the world re-reads it on its own after this
+  if (fresh && world && world.setScreenSource) { world.setScreenSource(screenC, {rip: false}); snapGiven = true; }  // the world re-reads it on its own after this
 }
 function render(noTear) {
   const t = performance.now() / 1000;
@@ -3214,7 +3231,7 @@ export function createWorld(canvas, opts = {}) {
             s.fresh = false;
             if (s.type === 'floor' || s.type === 'wall') emitSparks(s.ends[1], s.type === 'floor' ? 70 : 40, 1);
             if (s.type === 'hero') emitSparks(s.ends[Math.random() < 0.5 ? 0 : 1], 14, 0.12);
-            audioStrike(s, camPos);
+            if (!s.slit && (s.fresh === false || Math.random() < 0.5)) audioStrike(s, camPos);
           }
         }
         activeArcs.push(s);
@@ -5206,20 +5223,33 @@ float mortarM = 0.;`)
     const mk = () => { const g = ctx.createGain(); g.gain.value = 0; g.connect(out); return g; };
     const hum = mk(), arcs = mk(), wind = mk(), birdsG = mk(), ticks = mk();
     audio.nodes = { hum, arcs, wind, birds: birdsG, ticks };
-    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 260; lp.connect(hum);
-    for (const [f, type, g] of [[55, 'sawtooth', 0.25], [55.35, 'sawtooth', 0.25], [110.2, 'sine', 0.3], [36.7, 'sine', 0.5]]) {
-      const o = ctx.createOscillator(); o.type = type; o.frequency.value = f; const og = ctx.createGain(); og.gain.value = g; o.connect(og).connect(lp); o.start();
+    // the machine drone: exact harmonics of 55 Hz started together, so no two partials beat against each other
+    // and the waveform repeats 100 times a second: far above anything heard as flutter, and a whole number of
+    // cycles in any 10 ms window, so envelope measurements read it as the steady tone it is (detuned partials,
+    // and a 36.7 Hz tone sitting 18.3 Hz under 55, made the old drone throb)
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.5; lp.connect(hum);
+    const t0 = ctx.currentTime + 0.05;
+    for (const [f, type, g] of [[100, 'sine', 0.5], [200, 'sine', 0.18], [300, 'sine', 0.07]]) {
+      const o = ctx.createOscillator(); o.type = type; o.frequency.value = f; const og = ctx.createGain(); og.gain.value = g; o.connect(og).connect(lp); o.start(t0);
     }
-    const nb = noiseBuffer(ctx, 3);
+    const nb = noiseBuffer(ctx, 11);
     audio._nb = nb;
     const an = ctx.createBufferSource(); an.buffer = nb; an.loop = true;
     const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 3200; bp.Q.value = 0.6;
     const ag = ctx.createGain(); ag.gain.value = 0; an.connect(bp).connect(ag).connect(arcs); an.start();
     audio._arcEnv = ag;
-    const wn = ctx.createBufferSource(); wn.buffer = nb; wn.loop = true;
-    const wl = ctx.createBiquadFilter(); wl.type = 'lowpass'; wl.frequency.value = 520; wl.Q.value = 0.8;
-    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.09; const lg = ctx.createGain(); lg.gain.value = 260; lfo.connect(lg).connect(wl.frequency); lfo.start();
-    wn.connect(wl).connect(wind); wn.start();
+    // wind: two noise loops of unrelated lengths so no repeat is heard, through a soft lowpass whose cutoff and
+    // level drift with three slow, incommensurate LFOs at low depth: irregular gusts, never a regular swell
+    const wl = ctx.createBiquadFilter(); wl.type = 'lowpass'; wl.frequency.value = 480; wl.Q.value = 0.4;
+    const gust = ctx.createGain(); gust.gain.value = 0.8;
+    for (const [buf, gv] of [[nb, 0.6], [noiseBuffer(ctx, 13.7), 0.6]]) { const s = ctx.createBufferSource(); s.buffer = buf; s.loop = true; const g = ctx.createGain(); g.gain.value = gv; s.connect(g).connect(wl); s.start(0, Math.random() * 5); }
+    for (const [f, dc, dg] of [[0.031, 60, 0.07], [0.053, 45, 0.05], [0.089, 30, 0.035]]) {
+      const o = ctx.createOscillator(); o.frequency.value = f;
+      const a = ctx.createGain(); a.gain.value = dc; o.connect(a).connect(wl.frequency);
+      const b = ctx.createGain(); b.gain.value = dg; o.connect(b).connect(gust.gain);
+      o.start(ctx.currentTime + Math.random() * 20);
+    }
+    wl.connect(gust).connect(wind);
   }
   function audioStrike(s, cp) {
     if (!audio.enabled || !audio._arcEnv) return;
@@ -5233,7 +5263,7 @@ float mortarM = 0.;`)
     const ctx = audio.ctx, now = ctx.currentTime;
     const src = ctx.createBufferSource(); src.buffer = audio._nb;
     const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = lerp(2400, 4200, Math.random()); bp.Q.value = 8;
-    const g = ctx.createGain(); g.gain.setValueAtTime(0.5 * v, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.12 * v * lerp(0.6, 1, Math.random()), now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
     src.connect(bp).connect(g).connect(audio.nodes.ticks); src.start(now, Math.random() * 2, 0.08);
   }
   let nextChirp = 0;
@@ -5242,24 +5272,36 @@ float mortarM = 0.;`)
     const o = ctx.createOscillator(), g = ctx.createGain(), pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
     const f0 = lerp(2600, 4200, Math.random());
     o.type = 'sine'; o.frequency.setValueAtTime(f0, now);
+    // each call is a few notes with uneven spacing, so no call has a fixed rhythm
     const n = 2 + Math.floor(Math.random() * 4);
-    for (let i = 0; i < n; i++) { o.frequency.linearRampToValueAtTime(f0 * lerp(1.1, 1.5, Math.random()), now + i * 0.09 + 0.04); o.frequency.linearRampToValueAtTime(f0 * lerp(0.8, 1.0, Math.random()), now + i * 0.09 + 0.08); }
-    g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(0.12, now + 0.02); g.gain.setTargetAtTime(0, now + n * 0.09, 0.03);
+    let at = 0;
+    g.gain.setValueAtTime(0, now);
+    for (let i = 0; i < n; i++) {
+      const len = lerp(0.05, 0.12, Math.random()), vol = 0.09 * lerp(0.6, 1, Math.random());
+      o.frequency.linearRampToValueAtTime(f0 * lerp(1.1, 1.5, Math.random()), now + at + len * 0.45);
+      o.frequency.linearRampToValueAtTime(f0 * lerp(0.8, 1.0, Math.random()), now + at + len * 0.9);
+      g.gain.linearRampToValueAtTime(vol, now + at + len * 0.25); g.gain.linearRampToValueAtTime(vol * 0.3, now + at + len);
+      at += len + lerp(0.01, 0.06, Math.random());
+    }
+    g.gain.setTargetAtTime(0, now + at, 0.03);
     if (pan) { pan.pan.value = lerp(-0.8, 0.8, Math.random()); o.connect(g).connect(pan).connect(audio.nodes.birds); } else o.connect(g).connect(audio.nodes.birds);
-    o.start(now); o.stop(now + n * 0.09 + 0.3);
+    o.start(now); o.stop(now + at + 0.3);
   }
   let lastTickClick = 0;
   function updateAudio(p) {
     if (!audio.enabled) return;
     const now = audio.ctx.currentTime;
-    const mach = 1 - smooth(0.72, 0.75, p), land = smooth(0.78, 0.86, p);
-    audio.nodes.hum.gain.setTargetAtTime(0.3 * mach * (1 + smooth(0.45, 0.74, p)), now, 0.2);
-    audio.nodes.arcs.gain.setTargetAtTime(0.5 * mach * (1 - smooth(0.5, 0.6, p)), now, 0.2);
-    audio.nodes.ticks.gain.setTargetAtTime(0.5 * (1 - smooth(0.4, 0.5, p)), now, 0.1);
+    // the machine's drone, arcs and ticks are gone before the flash: the landscape has only wind and birds
+    const mach = 1 - smooth(0.66, 0.735, p), land = smooth(0.78, 0.86, p);
+    audio.nodes.hum.gain.setTargetAtTime(mach > 0.001 ? 0.3 * mach * (1 + 0.5 * smooth(0.45, 0.7, p)) : 0, now, mach > 0.001 ? 0.8 : 0.12);
+    audio.nodes.arcs.gain.setTargetAtTime(0.3 * mach * (1 - smooth(0.5, 0.6, p)), now, mach > 0.001 ? 0.4 : 0.12);
+    audio.nodes.ticks.gain.setTargetAtTime(0.5 * (1 - smooth(0.4, 0.5, p)), now, 0.4);
     audio.nodes.wind.gain.setTargetAtTime(0.45 * land, now, 0.6);
     audio.nodes.birds.gain.setTargetAtTime(0.5 * land, now, 0.6);
-    if (heroTick.click !== lastTickClick) { lastTickClick = heroTick.click; tickSound(1); }
-    if (land > 0.5 && t > nextChirp) { nextChirp = t + lerp(0.8, 4, Math.random()); chirp(); }
+    // the escapement is heard now and then, not as a metronome
+    if (heroTick.click !== lastTickClick) { lastTickClick = heroTick.click; if (Math.random() < 0.35) tickSound(1); }
+    // birds call at random (Poisson) moments, sometimes two close together, sometimes a long quiet
+    if (land > 0.5 && t > nextChirp) { nextChirp = t + 0.35 - Math.log(1 - Math.random()) * 2.2; chirp(); }
   }
 
   // ============================================================== react: the machine answers the page
