@@ -1,0 +1,4 @@
+# The torn-site build has mixed CRLF/LF line endings from its own build tool.
+# It must be stored byte-exact so it always matches the served/canonical build
+# (checked on every update); autocrlf normalization would silently corrupt it.
+ordinary-torn-site/index.html -text
