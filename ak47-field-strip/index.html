@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AK-47 Field Strip</title>
+<style>
+  :root { --ink: #2b2b2b; --soft: #6b6b6b; --bg0: #e4e4e4; --bg1: #b9b9b9; }
+  html, body { margin: 0; height: 100%; background: var(--bg1); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  body { overflow-x: hidden; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+  body.grabbing { cursor: grabbing; } #scroll { cursor: grab; }
+  canvas#c { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+  #scroll { position: relative; height: 900vh; }
+  .hud { position: fixed; pointer-events: none; }
+  #title { top: 28px; left: 32px; transition: opacity 1.2s ease; }
+  #title h1 { margin: 0; font-weight: 300; font-size: 30px; letter-spacing: 0.32em; }
+  #title p { margin: 6px 0 0; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--soft); }
+  #cap { left: 0; right: 0; bottom: 7vh; text-align: center; transition: opacity .45s ease; }
+  #cap .n { font-size: 11px; letter-spacing: 0.4em; color: var(--soft); }
+  #cap .h { font-size: 22px; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; margin: 6px 0 4px; }
+  #cap .d { font-size: 13px; color: var(--soft); max-width: 520px; margin: 0 auto; padding: 0 16px; line-height: 1.5; }
+  #hint { left: 0; right: 0; bottom: 2.2vh; text-align: center; font-size: 10px; letter-spacing: .35em; color: var(--soft); transition: opacity .4s; }
+  #bar { right: 26px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
+  #bar i { display: block; width: 6px; height: 6px; border-radius: 50%; background: #9a9a9a; transition: background .3s, transform .3s; }
+  #bar i.on { background: #3a3a3a; transform: scale(1.35); }
+  #load { top: 50%; left: 0; right: 0; text-align: center; font-size: 11px; letter-spacing: .35em; color: var(--soft); transition: opacity .6s; }
+  #credit { right: 26px; bottom: 18px; font-size: 10px; letter-spacing: .12em; color: #8a8a8a; }
+  #view { position: fixed; left: 26px; bottom: 18px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+  #view .btns { display: flex; gap: 6px; }
+  #view button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #a3a3a3; background: rgba(255,255,255,.35);
+    color: #4a4a4a; font: 15px/1 "Helvetica Neue", Helvetica, Arial, sans-serif; cursor: pointer; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center; }
+  #view button:hover { background: rgba(255,255,255,.7); }
+  #view button svg { width: 14px; height: 14px; }
+  #view .tip { font-size: 10px; letter-spacing: .12em; color: #8a8a8a; }
+  #callouts { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; overflow: visible; }
+  #callouts line, #callouts polyline { stroke: #4d4d4d; stroke-width: 0.8; fill: none; }
+  #callouts circle { fill: #3d3d3d; }
+  #callouts text { font: 300 11px "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .16em; fill: #333; text-transform: uppercase; }
+  #callouts text.sub { font-size: 9px; letter-spacing: .1em; fill: #777; text-transform: none; }
+  @media (max-width: 640px) {
+    #view { left: 16px; bottom: 14px; } #view .tip { display: none; }
+    #title { top: 18px; left: 16px; } #title h1 { font-size: 22px; }
+    #cap .h { font-size: 18px; } #credit, #bar { display: none; }
+    #callouts text { font-size: 9px; letter-spacing: .1em; } #callouts text.sub { display: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="scroll"></div>
+<svg id="callouts"></svg>
+<div class="hud" id="title"><h1>AK&#8209;47</h1><p>Field strip &middot; 7.62&times;39&nbsp;mm</p></div>
+<div class="hud" id="load">LOADING MODELS <span id="lp">0</span>%</div>
+<div class="hud" id="cap"><div class="n" id="cn"></div><div class="h" id="ch"></div><div class="d" id="cd"></div></div>
+<div class="hud" id="hint">SCROLL TO FIELD STRIP &darr;</div>
+<div class="hud" id="bar"></div>
+<div id="view"><div class="btns">
+  <button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">&minus;</button>
+  <button id="zreset" aria-label="Reset view">&#8634;</button>
+  <button id="snd" aria-label="Sound on" title="Sound"><svg viewBox="0 0 16 16"><path d="M2 6h3l4-3v10L5 10H2z" fill="#4a4a4a"/><path id="sndx" d="M11 5.5l4 5M15 5.5l-4 5" stroke="#4a4a4a" stroke-width="1.3"/><path id="sndw" d="M11 5a4 4 0 0 1 0 6M12.6 3.4a6.2 6.2 0 0 1 0 9.2" stroke="#4a4a4a" stroke-width="1.2" fill="none" style="display:none"/></svg></button>
+</div><div class="tip">Drag to rotate &middot; pinch or +/&minus; to zoom</div></div>
+<div class="hud" id="credit">Krea2 &middot; Qwen Image 2.1 &rarr; TRELLIS.2</div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
+import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
+
+const Q = new URLSearchParams(location.search);
+// quantdiv serves the models from a shared asset folder; a standalone copy keeps them beside the page
+const ASSET = Q.get('assets') || (location.pathname.includes('/quantdiv/') ? '../assets/ak47-field-strip/' : './');
+
+/* ---------- Layout ----------
+   Placement is authored in the pixel space of the field-stripped body image
+   (1440x736, butt at px 43, muzzle at px 1323, bore line at py 287) because the
+   body mesh maps linearly onto it. 1280 px = 0.87 m overall length. */
+const K = 0.87 / 1280, PX0 = 683, PY0 = 287;
+const wx = px => (px - PX0) * K, wy = py => (PY0 - py) * K;
+
+/* rot: euler degrees applied to the raw TRELLIS mesh so that +X = muzzle, +Y = up,
+   +Z = rifle's right side (toward camera). box: target extents in body-image px.
+   depth: target Z thickness in metres. z: Z offset. mat: material tuning. */
+const PARTS = {
+  body:     { file: 'body.glb',     rot: [0, 0, 0],      box: [43, 1323, 208, 503], depth: null,  mat: { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] } },
+  magazine: { file: 'magazine.glb', rot: [-90, 0, 180],  box: [576, 786, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
+  cover:    { file: 'dustcover.glb',rot: [180, 0, 0],    box: [398, 800, 226, 286], depth: 0.05,  mat: { metal: 0.9, rough: 0.7, tint: [0.62, 0.65, 0.72] } },
+  spring:   { file: 'spring.glb',   rot: [0, 0, 0],      box: [404, 690, 244, 274], depth: 0.02,  mat: { metal: 1.0, rough: 0.55, tint: [1, 1, 1] } },
+  gastube:  { file: 'gastube.glb',  rot: [0, 90, 0],     box: [834, 1160, 224, 280], depth: 0.04, mat: { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] } },
+  carrier:  { file: 'carrier.glb',  rot: [0, 180, 0],    box: [598, 1140, 244, 284], depth: 0.03,  mat: { metal: 1.0, rough: 0.65, tint: [0.9, 0.92, 1.0] } },
+  bolt:     { file: 'bolt.glb',     rot: [0, -90, 0],    box: [770, 862, 258, 282], depth: 0.024, mat: { metal: 1.0, rough: 0.6, tint: [1, 1, 1] } },
+};
+const LABELS = {
+  body: ['Receiver group', 'barrel, stock, lower handguard'], cover: ['Dust cover', 'receiver cover'],
+  spring: ['Recoil spring', 'spring and guide rod'], gastube: ['Gas tube', 'with upper handguard'],
+  carrier: ['Bolt carrier', 'with gas piston'], bolt: ['Bolt', 'rotating, two lugs'], magazine: ['Magazine', '30 rounds'],
+};
+if (Q.has('hero')) {            // approach A for comparison: the one-shot complete rifle in place of the parts
+  for (const k of Object.keys(PARTS)) delete PARTS[k];
+  PARTS.body = { file: 'hero.glb', rot: [0, 0, 0], box: [43, 1323, 208, 640], depth: null, mat: PARTS_BODY_MAT() };
+}
+function PARTS_BODY_MAT() { return { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] }; }
+
+/* Stage timeline over scroll progress p in [0,1]. Each stage drives one part. */
+const STAGES = [
+  { part: null,       n: '00', h: 'Firing cycle',  d: 'Gas bleeds into the tube and drives the bolt carrier back; the recoil spring returns it.' },
+  { part: 'magazine', n: '01', h: 'Magazine',      d: 'Press the catch and drop it out of the magazine well.' },
+  { part: 'cover',    n: '02', h: 'Dust cover',    d: 'Press the recoil spring guide and lift the receiver cover away.' },
+  { part: 'spring',   n: '03', h: 'Recoil spring', d: 'The spring and its guide rod slide forward and out of the receiver.' },
+  { part: 'gastube',  n: '04', h: 'Gas tube',      d: 'Turn the lever up; the gas tube lifts off with the upper handguard.' },
+  { part: 'carrier',  n: '05', h: 'Bolt carrier',  d: 'Draw the carrier fully back and lift it out with its gas piston.' },
+  { part: 'bolt',     n: '06', h: 'Bolt',          d: 'Bolt separated from carrier/piston: rotate it and slide it out of the carrier.' },
+  { part: null,       n: '07', h: 'Field stripped', d: 'Seven assemblies, each modelled from a single generated image.' },
+];
+const S0 = 0.07, S1 = 0.93;                              // disassembly spans [S0, S1]
+const stageSpan = (S1 - S0) / 6;
+const stageU = (p, i) => THREE.MathUtils.clamp((p - (S0 + (i - 1) * stageSpan)) / (stageSpan * 0.82), 0, 1);
+
+/* Motion paths: waypoints as offsets from the assembled pose, [t, [dx,dy,dz], [rx,ry,rz] deg]. */
+const PATHS = {
+  magazine: [[0, [0, 0, 0], [0, 0, 0]], [0.45, [0, -0.13, 0], [0, 0, 0]], [1, [-0.36, -0.22, 0.0], [0, 0, 0]]],
+  cover:    [[0, [0, 0, 0], [0, 0, 0]], [0.3, [-0.006, 0.03, 0], [0, 0, 4]], [0.6, [-0.03, 0.12, 0.0], [0, 0, 0]], [1, [-0.03, 0.17, 0], [0, 0, 0]]],
+  spring:   [[0, [0, 0, 0], [0, 0, 0]], [0.2, [0.01, 0, 0], [0, 0, 0]], [0.45, [0.01, 0.07, 0], [0, 0, 8]], [1, [-0.03, 0.27, 0], [0, 0, 0]]],
+  gastube:  [[0, [0, 0, 0], [0, 0, 0]], [0.3, [0, 0.02, 0], [0, 0, -5]], [0.6, [0.02, 0.1, 0], [0, 0, 0]], [1, [0.06, 0.17, 0], [0, 0, 0]]],
+  carrier:  [[0, [0, 0, 0], [0, 0, 0]], [0.35, [-0.12, 0, 0], [0, 0, 0]], [0.6, [-0.13, 0.06, 0.0], [0, 0, -6]], [1, [-0.08, -0.36, 0.0], [0, 0, 0]]],
+  bolt:     [[0, [0, 0, 0], [0, 0, 0]], [0.22, [0, 0, 0], [35, 0, 0]], [0.45, [0.02, -0.05, 0.01], [35, 0, 0]], [1, [0.42, -0.012, 0], [0, 0, 0]]],
+};
+
+/* ---------- Renderer, scene ---------- */
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+let pixelRatio = Math.min(devicePixelRatio, 2);
+renderer.setPixelRatio(pixelRatio);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.debug.checkShaderErrors = false;   // production: skip program info logs (ANGLE prints harmless X4000 notes for GTAO)
+
+const scene = new THREE.Scene();
+scene.background = (() => {                                     // studio sweep, drawn into the frame so the post chain sees it
+  const c = document.createElement('canvas'); c.width = 512; c.height = 512; const g = c.getContext('2d');
+  const r = g.createRadialGradient(256, 215, 0, 256, 256, 380);
+  r.addColorStop(0, '#d9d9d9'); r.addColorStop(0.5, '#c4c4c4'); r.addColorStop(1, '#9d9d9d');
+  g.fillStyle = r; g.fillRect(0, 0, 512, 512);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+scene.backgroundIntensity = 1.0;
+
+/* Procedural lightbox for reflections: a dim room with hard-edged softboxes and strip
+   lights, so steel picks up crisp studio highlights instead of a vague grey. */
+function lightbox() {
+  const s = new THREE.Scene();
+  const room = new THREE.Mesh(new THREE.BoxGeometry(12, 8, 12), new THREE.MeshBasicMaterial({ color: 0x404244, side: THREE.BackSide }));
+  room.position.y = 2.5; s.add(room);
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), new THREE.MeshBasicMaterial({ color: 0x6a6a6a }));
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -1.4; s.add(floor);
+  const panel = (w, h, x, y, z, ry, rx, k, col = 0xffffff) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(col).multiplyScalar(k), side: THREE.DoubleSide }));
+    m.position.set(x, y, z); m.rotation.set(rx, ry, 0); s.add(m);
+  };
+  panel(4.5, 1.6, -1.5, 5.5, 1.5, 0, Math.PI / 2, 14, 0xfff2e2);   // overhead key softbox
+  panel(0.35, 5, 5.8, 2.2, 0.5, -Math.PI / 2, 0, 18);               // right strip
+  panel(0.35, 5, -5.8, 2.2, -1.0, Math.PI / 2, 0, 9, 0xe2ecff);     // left strip, cool
+  panel(6, 0.25, 0, 3.8, -5.8, 0, 0, 12);                           // rim strip behind
+  panel(3, 2.2, 0.5, 1.2, 5.8, Math.PI, 0, 4);                      // front fill card
+  return s;
+}
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(lightbox(), 0.015).texture;
+scene.environmentIntensity = 0.75;
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.02, 30);
+
+const key = new THREE.DirectionalLight(0xfff1e0, 2.2); key.position.set(-0.8, 2.2, 1.6); scene.add(key);
+const fill = new THREE.DirectionalLight(0xdfe8ff, 0.7); fill.position.set(2, 0.4, 1.2); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xffffff, 1.4); rim.position.set(0.4, 1.2, -2.2); scene.add(rim);
+const sweep = new THREE.SpotLight(0xffffff, 0, 6, 0.35, 0.8, 1); sweep.position.set(0, 1.5, 2.2); scene.add(sweep); scene.add(sweep.target);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8a8a, 0.25));
+
+/* ---------- Contact shadow (depth from below, blurred, laid on the invisible floor) ---------- */
+let FLOOR_Y = -0.3;            // tracks just below whatever is on screen (eased), so the contact shadow stays in frame
+const SH = { w: 2.6, h: 1.4, camH: 1.0, darkness: 1.4, blur: 2.6 };
+const shadowGroup = new THREE.Group(); shadowGroup.position.y = FLOOR_Y; scene.add(shadowGroup);
+const shRT = new THREE.WebGLRenderTarget(512, 276); shRT.texture.generateMipmaps = false;
+const shRTb = new THREE.WebGLRenderTarget(512, 276); shRTb.texture.generateMipmaps = false;
+const shPlane = new THREE.Mesh(new THREE.PlaneGeometry(SH.w, SH.h).rotateX(Math.PI / 2),
+  new THREE.MeshBasicMaterial({ map: shRT.texture, opacity: 0.75, transparent: true, depthWrite: false }));
+shPlane.renderOrder = 1; shPlane.scale.y = -1; shPlane.userData.noAO = true; shadowGroup.add(shPlane);
+const shBlurPlane = new THREE.Mesh(new THREE.PlaneGeometry(SH.w, SH.h).rotateX(Math.PI / 2)); shBlurPlane.visible = false; shBlurPlane.layers.set(1); shadowGroup.add(shBlurPlane);
+const shCam = new THREE.OrthographicCamera(-SH.w / 2, SH.w / 2, SH.h / 2, -SH.h / 2, 0, SH.camH);
+shCam.rotation.x = Math.PI / 2; shCam.layers.set(1); shadowGroup.add(shCam);
+const shDepth = new THREE.MeshDepthMaterial();
+shDepth.userData.darkness = { value: SH.darkness };
+shDepth.onBeforeCompile = sh => {
+  sh.uniforms.darkness = shDepth.userData.darkness;
+  sh.fragmentShader = 'uniform float darkness;\n' + sh.fragmentShader.replace(
+    'gl_FragColor = vec4( vec3( 1.0 - fragCoordZ ), opacity );', 'gl_FragColor = vec4( vec3( 0.0 ), ( 1.0 - fragCoordZ ) * darkness );');
+};
+shDepth.depthTest = false; shDepth.depthWrite = false;
+const hBlur = new THREE.ShaderMaterial(HorizontalBlurShader); hBlur.depthTest = false;
+const vBlur = new THREE.ShaderMaterial(VerticalBlurShader); vBlur.depthTest = false;
+function blurShadow(amount) {
+  shBlurPlane.visible = true;
+  shBlurPlane.material = hBlur; hBlur.uniforms.tDiffuse.value = shRT.texture; hBlur.uniforms.h.value = amount / 256;
+  renderer.setRenderTarget(shRTb); renderer.render(shBlurPlane, shCam);
+  shBlurPlane.material = vBlur; vBlur.uniforms.tDiffuse.value = shRTb.texture; vBlur.uniforms.v.value = amount / 256;
+  renderer.setRenderTarget(shRT); renderer.render(shBlurPlane, shCam);
+  shBlurPlane.visible = false;
+}
+let shFrame = 0;
+function renderContactShadow(center) {
+  if (shFrame++ % 2) return;                                     // every other frame is plenty for a soft shadow
+  shadowGroup.position.x = center.x;
+  const bg = scene.background; scene.background = null;
+  scene.overrideMaterial = shDepth;
+  const cc = renderer.getClearAlpha(); renderer.setClearAlpha(0);
+  renderer.setRenderTarget(shRT); renderer.clear(); renderer.render(scene, shCam);
+  scene.overrideMaterial = null;
+  blurShadow(SH.blur); blurShadow(SH.blur * 0.4);
+  renderer.setRenderTarget(null); renderer.setClearAlpha(cc); scene.background = bg;
+}
+
+/* rig: idle sway + recoil live here; parts live inside it */
+const rig = new THREE.Group(); scene.add(rig);
+const recoil = new THREE.Group(); rig.add(recoil);
+
+/* ---------- Materials ----------
+   Keep TRELLIS's albedo and metal/rough maps, then re-grade them: a mask from the albedo
+   (wood is clearly redder than it is green or blue) splits each texel into blued steel
+   (tinted, more metallic, tighter roughness) or varnished wood (dielectric, clear coat). */
+function grade(mat, P) {
+  const m = new THREE.MeshPhysicalMaterial({ metalness: 1, roughness: 1, clearcoat: 1, clearcoatRoughness: 0.14 });
+  for (const k of ['map', 'metalnessMap', 'roughnessMap', 'normalMap']) if (mat[k]) m[k] = mat[k];
+  const u = { uTint: { value: new THREE.Vector3(...P.tint) }, uMetal: { value: P.metal }, uRough: { value: P.rough } };
+  m.onBeforeCompile = sh => {
+    Object.assign(sh.uniforms, u);
+    sh.fragmentShader = 'uniform vec3 uTint; uniform float uMetal; uniform float uRough;\n' + sh.fragmentShader
+      .replace('#include <color_fragment>', `#include <color_fragment>
+        float woodM = smoothstep(0.05, 0.16, diffuseColor.r - max(diffuseColor.g, diffuseColor.b));
+        diffuseColor.rgb = mix(diffuseColor.rgb * uTint, diffuseColor.rgb * vec3(1.0, 0.93, 0.88), woodM);`)
+      .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+        roughnessFactor = mix(clamp(roughnessFactor * uRough, 0.18, 0.75), 0.5, woodM);`)
+      .replace('#include <metalnessmap_fragment>', `#include <metalnessmap_fragment>
+        metalnessFactor = mix(clamp(metalnessFactor * 0.5 + uMetal * 0.5, 0.0, 1.0), 0.0, woodM);`)
+      .replace('#include <lights_physical_fragment>', `#include <lights_physical_fragment>
+        #ifdef USE_CLEARCOAT
+          material.clearcoat *= woodM * 0.8;
+        #endif`);
+  };
+  m.customProgramCacheKey = () => 'ak-grade';
+  return m;
+}
+
+/* ---------- Load + fit parts ---------- */
+const loader = new GLTFLoader();
+const progress = {};
+function load(name) {
+  const P = PARTS[name];
+  return new Promise((res, rej) => loader.load(ASSET + P.file, g => res(g), e => {
+    if (e.lengthComputable) { progress[name] = e.loaded / e.total; updLoad(); }
+  }, rej));
+}
+function updLoad() {
+  const v = Object.keys(PARTS).reduce((a, k) => a + (progress[k] || 0), 0) / Object.keys(PARTS).length;
+  document.getElementById('lp').textContent = Math.round(v * 100);
+}
+
+const nodes = {};        // name -> { pivot, base, half }
+function fit(name, gltf) {
+  const P = PARTS[name];
+  const model = gltf.scene;
+  model.traverse(o => { if (o.isMesh) { o.layers.enable(1); if (o.material) o.material = grade(o.material, P.mat); } });
+  const inner = new THREE.Group();
+  inner.add(model);
+  inner.rotation.set(...P.rot.map(THREE.MathUtils.degToRad));
+  inner.updateMatrixWorld(true);
+  const b = new THREE.Box3().setFromObject(inner), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
+  inner.position.sub(c);
+  const scaler = new THREE.Group(); scaler.add(inner);
+  const [x0, x1, y0, y1] = P.box;
+  const L = (x1 - x0) * K, H = (y1 - y0) * K;
+  const sx = L / s.x, sy = H / s.y;
+  const sz = P.depth ? P.depth / s.z : (sx + sy) / 2;
+  scaler.scale.set(sx, sy, sz);
+  const pivot = new THREE.Group(); pivot.add(scaler);
+  const base = new THREE.Vector3(wx((x0 + x1) / 2), wy((y0 + y1) / 2), P.z || 0);
+  pivot.position.copy(base);
+  recoil.add(pivot);
+  nodes[name] = { pivot, base, half: new THREE.Vector3(L / 2, H / 2, (P.depth || s.z * sz) / 2) };
+}
+
+/* The carrier sits inside the receiver; on the real rifle only its charging handle shows,
+   riding a slot on the right side. The mesh's own knob is buried at receiver width, so a
+   small handle is attached to the carrier and travels with it. */
+function addChargingHandle() {
+  const n = nodes.carrier; if (!n) return;
+  const steel = new THREE.MeshPhysicalMaterial({ color: 0x2b2c30, metalness: 0.9, roughness: 0.35 });
+  const g = new THREE.Group();
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 0.03, 12), steel);
+  stem.rotation.x = Math.PI / 2; stem.position.z = 0.015;
+  const knob = new THREE.Mesh(new THREE.CylinderGeometry(0.0075, 0.0075, 0.009, 18), steel);
+  knob.rotation.x = Math.PI / 2; knob.position.z = 0.032;
+  g.add(stem, knob); g.traverse(o => { if (o.isMesh) o.layers.enable(1); });
+  g.position.set(wx(800) - n.base.x, wy(258) - n.base.y, 0.012);
+  n.pivot.add(g);
+}
+
+/* ---------- Effects: muzzle flash, smoke, casing ---------- */
+const MUZZLE = new THREE.Vector3(wx(1328), wy(287), 0);
+const PORT = new THREE.Vector3(wx(720), wy(262), 0.03);
+
+function radialTex(stops, size = 128) {
+  const c = document.createElement('canvas'); c.width = c.height = size; const g = c.getContext('2d');
+  const r = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  stops.forEach(([o, col]) => r.addColorStop(o, col)); g.fillStyle = r; g.fillRect(0, 0, size, size);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const flashTex = (() => {
+  const S = 256, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
+  g.translate(S / 2, S / 2); g.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 9; i++) {
+    g.save(); g.rotate(i / 9 * Math.PI * 2 + Math.random() * 0.3);
+    const gr = g.createLinearGradient(0, 0, S * 0.48, 0);
+    gr.addColorStop(0, 'rgba(255,240,200,0.9)'); gr.addColorStop(0.5, 'rgba(255,170,60,0.45)'); gr.addColorStop(1, 'rgba(255,90,10,0)');
+    g.fillStyle = gr; g.beginPath(); g.moveTo(0, -S * 0.035); g.lineTo(S * 0.48, 0); g.lineTo(0, S * 0.035); g.fill(); g.restore();
+  }
+  const r = g.createRadialGradient(0, 0, 0, 0, 0, S * 0.22);
+  r.addColorStop(0, 'rgba(255,255,235,1)'); r.addColorStop(0.4, 'rgba(255,200,90,0.8)'); r.addColorStop(1, 'rgba(255,120,20,0)');
+  g.fillStyle = r; g.fillRect(-S / 2, -S / 2, S, S);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const coneTex = (() => {
+  const W = 256, H = 64, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  const gr = g.createLinearGradient(0, 0, W, 0);
+  gr.addColorStop(0, 'rgba(255,250,220,1)'); gr.addColorStop(0.35, 'rgba(255,190,80,0.75)'); gr.addColorStop(1, 'rgba(255,90,10,0)');
+  g.fillStyle = gr; g.beginPath(); g.moveTo(0, H * 0.38); g.quadraticCurveTo(W * 0.5, 0, W, H / 2); g.quadraticCurveTo(W * 0.5, H, 0, H * 0.62); g.fill();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const fx = new THREE.Group(); recoil.add(fx);
+// HDR colour (x4) so only the flash crosses the bloom threshold
+const addMat = map => new THREE.MeshBasicMaterial({ map, color: new THREE.Color(4, 4, 4), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+const flashStar = new THREE.Sprite(new THREE.SpriteMaterial({ map: flashTex, color: new THREE.Color(5, 5, 5), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true }));
+flashStar.position.copy(MUZZLE).add(new THREE.Vector3(0.02, 0, 0)); flashStar.scale.setScalar(0.11); fx.add(flashStar);
+const plumes = [];
+for (let i = 0; i < 3; i++) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.05), addMat(coneTex));
+  m.position.copy(MUZZLE).add(new THREE.Vector3(0.1, 0, 0)); m.rotation.x = i * Math.PI / 3; fx.add(m); plumes.push(m);
+}
+const brakeJets = [];
+for (const dir of [[0.2, 1, 0.4], [0.2, 0.8, -0.5], [0.3, 0.3, 1]]) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.02), addMat(coneTex));
+  const d = new THREE.Vector3(...dir).normalize();
+  m.position.copy(MUZZLE).add(new THREE.Vector3(-0.015, 0, 0)).addScaledVector(d, 0.035);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), d); fx.add(m); brakeJets.push(m);
+}
+fx.traverse(o => { o.userData.noAO = true; });
+const flashLight = new THREE.PointLight(0xffa040, 0, 1.2, 2); flashLight.position.copy(MUZZLE).add(new THREE.Vector3(0.05, 0.02, 0.05)); fx.add(flashLight);
+// one-frame flare that lights the receiver from the ejection port and chamber
+const portLight = new THREE.PointLight(0xffb060, 0, 0.6, 2); portLight.position.copy(PORT).add(new THREE.Vector3(0, 0.03, 0.06)); fx.add(portLight);
+const setFlash = (v, port) => {
+  flashStar.material.opacity = v; flashStar.visible = v > 0.01;
+  plumes.forEach(m => { m.material.opacity = v; m.visible = v > 0.01; m.scale.set(0.7 + v * 0.5, 1, 1); });
+  brakeJets.forEach(m => { m.material.opacity = v * 0.8; m.visible = v > 0.01; });
+  flashLight.intensity = v * 3.5; portLight.intensity = port * 2.2;
+};
+setFlash(0, 0);
+
+const smokeTex = radialTex([[0, 'rgba(120,118,115,0.7)'], [0.45, 'rgba(135,133,130,0.3)'], [1, 'rgba(150,150,150,0)']]);
+const smoke = [];
+for (let i = 0; i < 40; i++) {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: smokeTex, transparent: true, depthWrite: false, opacity: 0 }));
+  s.visible = false; s.userData.noAO = true; scene.add(s); smoke.push({ s, life: 0, max: 1, v: new THREE.Vector3(), g: 0 });
+}
+let smokeIx = 0;
+function puff(at, n) {
+  for (let i = 0; i < n; i++) {
+    const p = smoke[smokeIx++ % smoke.length];
+    p.s.position.copy(at).add(new THREE.Vector3(Math.random() * 0.03, (Math.random() - 0.5) * 0.02, (Math.random() - 0.5) * 0.02));
+    p.v.set(0.12 + Math.random() * 0.25, 0.03 + Math.random() * 0.08, (Math.random() - 0.5) * 0.08);
+    p.life = 0; p.max = 1.2 + Math.random() * 1.0; p.g = 0.03 + Math.random() * 0.03; p.s.visible = true;
+    p.s.material.rotation = Math.random() * 6.28;
+  }
+}
+
+/* casings: brass, procedural lathe profile, real tumble/bounce/settle on the floor */
+const brass = new THREE.MeshPhysicalMaterial({ color: 0xc8963e, metalness: 1, roughness: 0.28 });
+const CASE_R = 0.0056;
+const caseGeo = (() => {
+  const pts = [[0, 0], [0.0055, 0], [0.0056, 0.001], [0.0050, 0.0016], [0.0056, 0.0022], [0.0054, 0.0300], [0.0044, 0.0330], [0.0040, 0.0385], [0, 0.0385]]
+    .map(([r, y]) => new THREE.Vector2(r, y));
+  const g = new THREE.LatheGeometry(pts, 18); g.translate(0, -0.019, 0); g.rotateZ(Math.PI / 2); return g;   // axis along X
+})();
+const casings = [];
+for (let i = 0; i < 8; i++) {
+  const m = new THREE.Mesh(caseGeo, brass); m.visible = false; m.layers.enable(1); scene.add(m);
+  casings.push({ m, life: 0, v: new THREE.Vector3(), w: new THREE.Vector3(), rest: false, bounces: 0 });
+}
+let caseIx = 0;
+function eject(at) {
+  const c = casings[caseIx++ % casings.length];
+  c.m.position.copy(at); c.m.quaternion.copy(rig.quaternion); c.m.visible = true; c.m.scale.setScalar(1);
+  c.life = 0; c.rest = false; c.bounces = 0;
+  // AK brass goes right and a little forward; kept short so it lands on the floor in frame
+  c.v.set(0.34 + Math.random() * 0.08, 1.15 + Math.random() * 0.15, 0.13 + Math.random() * 0.06).applyQuaternion(rig.quaternion); c.w.set(6 + Math.random() * 6, 20 + Math.random() * 8, 8 + Math.random() * 4);
+}
+const qTmp = new THREE.Quaternion(), qRest = new THREE.Quaternion(), axTmp = new THREE.Vector3();
+function stepCasing(c, dt) {
+  c.life += dt;
+  if (c.life > 7) { c.m.scale.multiplyScalar(Math.exp(-dt * 6)); if (c.m.scale.x < 0.05) c.m.visible = false; }
+  if (c.rest) return;
+  c.v.y -= 9.8 * dt;
+  c.m.position.addScaledVector(c.v, dt);
+  qTmp.setFromEuler(new THREE.Euler(c.w.x * dt, c.w.y * dt, c.w.z * dt)); c.m.quaternion.multiply(qTmp);
+  const floorY = FLOOR_Y + CASE_R;
+  if (c.m.position.y < floorY) {
+    c.m.position.y = floorY;
+    const impact = -c.v.y;
+    if (impact > 0) {
+      c.v.y = impact * 0.36; c.v.x *= 0.62; c.v.z *= 0.62; c.w.multiplyScalar(0.55); c.bounces++;
+      if (impact > 0.25) audio.ping(Math.min(1, impact / 3));
+    }
+    if (impact < 0.35 && c.bounces > 1) {                         // settle: lie on its side, roll to a stop
+      c.rest = true; c.v.set(0, 0, 0);
+      axTmp.set(1, 0, 0).applyQuaternion(c.m.quaternion); axTmp.y = 0; axTmp.normalize();
+      qRest.setFromUnitVectors(new THREE.Vector3(1, 0, 0), axTmp.lengthSq() > 0 ? axTmp : new THREE.Vector3(1, 0, 0));
+      c.m.quaternion.copy(qRest);
+    }
+  }
+}
+
+/* ---------- Sound: synthesized, muted until the toggle is pressed ---------- */
+const audio = (() => {
+  let ctx = null, master = null, on = false, noiseBuf = null;
+  function init() {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain(); master.gain.value = 0.55; master.connect(ctx.destination);
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 6; master.disconnect(); master.connect(comp); comp.connect(ctx.destination);
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 1.0, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  function noise(t, dur, f0, f1, q, gain, type = 'lowpass') {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const f = ctx.createBiquadFilter(); f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    const g = ctx.createGain(); g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t + dur + 0.02);
+  }
+  function tone(t, freq, dur, gain, type = 'sine', f1) {
+    const o = ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(freq, t); if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.02);
+  }
+  return {
+    get on() { return on; },
+    toggle() { if (!ctx) init(); on = !on; if (on) ctx.resume(); return on; },
+    shot() { if (!on) return; const t = ctx.currentTime;
+      noise(t, 0.45, 6000, 180, 0.7, 1.0); noise(t, 0.08, 9000, 2500, 0.5, 0.6, 'highpass');
+      tone(t, 110, 0.22, 0.9, 'sine', 38); tone(t, 55, 0.35, 0.5, 'triangle', 30); },
+    clack(back) { if (!on) return; const t = ctx.currentTime;
+      noise(t, 0.05, back ? 2600 : 3200, back ? 1600 : 2000, 4, 0.35, 'bandpass'); tone(t, back ? 1450 : 1750, 0.06, 0.08, 'square', 900); },
+    ping(v) { if (!on) return; const t = ctx.currentTime, k = 0.25 + 0.75 * v;
+      [[3150, 0.5], [4870, 0.35], [6930, 0.25], [9240, 0.15]].forEach(([f, d], i) => tone(t, f * (1 + (Math.random() - 0.5) * 0.01), d * (0.6 + v), 0.12 * k / (i + 1)));
+      noise(t, 0.012, 8000, 5000, 1, 0.12 * k, 'highpass'); },
+  };
+})();
+const sndBtn = document.getElementById('snd');
+sndBtn.addEventListener('click', () => {
+  const on = audio.toggle();
+  document.getElementById('sndx').style.display = on ? 'none' : '';
+  document.getElementById('sndw').style.display = on ? '' : 'none';
+  sndBtn.setAttribute('aria-label', on ? 'Sound off' : 'Sound on');
+});
+
+/* ---------- Firing cycle (sim time, so the shot can drop into slow motion) ---------- */
+const PERIOD = 2.8;          // real seconds between shots (slow motion stretches each one)
+const CARRIER_STROKE = 0.115;
+function fireCurve(t) {
+  if (t < 0) return 0;
+  if (t < 0.085) return THREE.MathUtils.smoothstep(t, 0, 0.085);
+  if (t < 0.13) return 1;
+  if (t < 0.36) return 1 - THREE.MathUtils.smootherstep(t, 0.13, 0.36);
+  return 0;
+}
+function kickCurve(t) { if (t < 0) return 0; if (t < 0.03) return t / 0.03; return Math.exp(-(t - 0.03) * 9) * Math.cos((t - 0.03) * 14); }
+function slowMo(r) {          // real seconds since the shot -> time scale
+  if (r < 0) return 1;
+  if (r < 0.04) return 1 - 0.78 * r / 0.04;
+  if (r < 0.75) return 0.22;
+  if (r < 1.2) return 0.22 + 0.78 * THREE.MathUtils.smoothstep(r, 0.75, 1.2);
+  return 1;
+}
+
+/* ---------- Path sampling ---------- */
+const v3 = new THREE.Vector3();
+function samplePath(path, u, outPos, outRot) {
+  let i = 0; while (i < path.length - 2 && u > path[i + 1][0]) i++;
+  const a = path[i], b = path[i + 1];
+  const t = THREE.MathUtils.smootherstep(u, a[0], b[0]);
+  outPos.set(...a[1]).lerp(v3.set(...b[1]), t);
+  outRot.set(...[0, 1, 2].map(k => THREE.MathUtils.degToRad(a[2][k] + (b[2][k] - a[2][k]) * t)));
+}
+
+/* ---------- Post-processing ---------- */
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const gtao = new GTAOPass(scene, camera, 2, 2);
+gtao.updateGtaoMaterial({ radius: 0.06, distanceExponent: 1.5, thickness: 0.02, scale: 1.25, samples: 12, distanceFallOff: 1, screenSpaceRadius: false });
+gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 12 });
+gtao.blendIntensity = 0.9;
+{ // effects sprites and the shadow card stay out of the AO g-buffer
+  // (the background texture would otherwise be drawn as a plane with the override material
+  // and write near depth across the whole frame, turning the AO black)
+  const ov = gtao.overrideVisibility.bind(gtao), rv = gtao.restoreVisibility.bind(gtao);
+  let bgStash = null;
+  gtao.overrideVisibility = function () { ov(); bgStash = scene.background; scene.background = null; scene.traverse(o => { if (o.userData.noAO) o.visible = false; }); };
+  gtao.restoreVisibility = function () { rv(); scene.background = bgStash; };
+}
+composer.addPass(gtao);
+const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.55, 0.45, 1.6);
+composer.addPass(bloom);
+const FinishShader = {
+  uniforms: {
+    tDiffuse: { value: null }, uRes: { value: new THREE.Vector2(1, 1) }, uTime: { value: 0 },
+    uHeat: { value: 0 }, uHeatPos: { value: new THREE.Vector2(0.5, 0.5) }, uHeatScale: { value: 0.1 },
+    uFocus: { value: new THREE.Vector2(0.5, 0.5) }, uFocusR: { value: 0.2 }, uBlur: { value: 0 }, uVig: { value: 0.32 }, uAspect: { value: 1 },
+  },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform vec2 uRes; uniform float uTime;
+    uniform float uHeat; uniform vec2 uHeatPos; uniform float uHeatScale;
+    uniform vec2 uFocus; uniform float uFocusR; uniform float uBlur; uniform float uVig; uniform float uAspect;
+    varying vec2 vUv;
+    float n2(vec2 p){ return sin(p.x) * sin(p.y); }
+    void main(){
+      vec2 uv = vUv;
+      // heat shimmer: rising, wobbling refraction above and ahead of the muzzle
+      if (uHeat > 0.001) {
+        vec2 d = (uv - uHeatPos) / uHeatScale; d.x *= uAspect;
+        float above = smoothstep(-0.25, 0.4, d.y) * (1.0 - smoothstep(0.6, 2.6, d.y));
+        float fall = exp(-dot(vec2(d.x * 0.7, (d.y - 0.6) * 0.45), vec2(d.x * 0.7, (d.y - 0.6) * 0.45)));
+        float w = uHeat * above * fall;
+        vec2 q = uv * vec2(90.0, 60.0) + vec2(0.0, -uTime * 7.0);
+        uv += vec2(n2(q + vec2(1.7, 0.3)), n2(q.yx * 1.3 + 4.1)) * 0.0045 * w;
+      }
+      vec4 col = texture2D(tDiffuse, uv);
+      // gentle depth of field away from the part in focus (screen-space, from the focus point)
+      if (uBlur > 0.001) {
+        vec2 fd = uv - uFocus; fd.x *= uAspect;
+        float amt = uBlur * smoothstep(uFocusR, uFocusR * 2.6, length(fd));
+        if (amt > 0.01) {
+          vec4 acc = col; float wsum = 1.0;
+          for (int i = 0; i < 12; i++) {
+            float a = float(i) * 2.39996; float r = sqrt(float(i) + 0.5) / 3.5;
+            vec2 o = vec2(cos(a), sin(a)) * r * amt * 3.2 / uRes;
+            acc += texture2D(tDiffuse, uv + o); wsum += 1.0;
+          }
+          col = acc / wsum;
+        }
+      }
+      vec2 vd = vUv - 0.5; vd.x *= uAspect * 0.8;
+      col.rgb *= 1.0 - uVig * smoothstep(0.35, 1.05, length(vd));
+      gl_FragColor = col;
+    }`,
+};
+const finish = new ShaderPass(FinishShader);
+composer.addPass(finish);
+composer.addPass(new OutputPass());
+
+/* adaptive quality: step heavy passes down if frame time climbs, never back up mid-session */
+const quality = { level: 0, ema: 1 / 60, t: 0 };
+function applyQuality() {
+  gtao.enabled = quality.level < 1 && !Q.has('noao');
+  if (quality.level >= 2) finish.uniforms.uBlur.value = 0;
+  if (quality.level >= 3) { pixelRatio = Math.min(pixelRatio, 1); resize(); }
+  if (quality.level >= 4) { pixelRatio = 0.75; resize(); }
+  window.__quality = quality.level;
+}
+if (Q.has('noao')) gtao.enabled = false;
+if (Q.has('aoout')) gtao.output = GTAOPass.OUTPUT[Q.get('aoout')];
+if (Q.has('nobloom')) bloom.enabled = false;
+if (Q.has('nofinish')) finish.enabled = false;
+function watchQuality(dt) {
+  quality.ema += (dt - quality.ema) * 0.05; quality.t += dt;
+  if (quality.t > 2.5 && quality.ema > 1 / 48 && quality.level < 4) { quality.level++; quality.t = 0; applyQuality(); }
+}
+
+/* ---------- HUD ---------- */
+const bar = document.getElementById('bar');
+STAGES.forEach(() => bar.appendChild(document.createElement('i')));
+const cap = document.getElementById('cap');
+let shownStage = -1;
+function setStage(i) {
+  if (i === shownStage) return; shownStage = i;
+  cap.style.opacity = 0;
+  setTimeout(() => {
+    const s = STAGES[shownStage]; if (!s) return;
+    document.getElementById('cn').textContent = s.n;
+    document.getElementById('ch').textContent = s.h;
+    document.getElementById('cd').textContent = s.d;
+    cap.style.opacity = 1;
+  }, 220);
+  [...bar.children].forEach((d, k) => d.classList.toggle('on', k === i));
+}
+
+/* ---------- Callouts: manual-diagram leaders in the exploded layout ---------- */
+const svg = document.getElementById('callouts');
+const SVGNS = 'http://www.w3.org/2000/svg';
+const callouts = {};
+// anchor on the part (fraction of its half extents) and which way the label goes
+const CALL = {
+  spring: { a: [0.85, 0.2], dir: [1, -0.6] }, cover: { a: [-0.85, 0.4], dir: [-1, -0.5] }, gastube: { a: [0.7, 0.4], dir: [1, -0.6] },
+  body: { a: [-0.92, 0.55], dir: [-0.5, -1.6] }, magazine: { a: [-0.6, -0.4], dir: [-1, 0.5] },
+  carrier: { a: [-0.6, -0.3], dir: [-0.4, 1] }, bolt: { a: [0.3, -0.5], dir: [0.6, 1] },
+};
+function buildCallouts() {
+  for (const k in CALL) {
+    if (!nodes[k]) continue;
+    const g = document.createElementNS(SVGNS, 'g');
+    const line = document.createElementNS(SVGNS, 'polyline');
+    const dot = document.createElementNS(SVGNS, 'circle'); dot.setAttribute('r', 2);
+    const t1 = document.createElementNS(SVGNS, 'text'); t1.textContent = LABELS[k][0];
+    const t2 = document.createElementNS(SVGNS, 'text'); t2.textContent = LABELS[k][1]; t2.setAttribute('class', 'sub');
+    g.append(line, dot, t1, t2); svg.appendChild(g); callouts[k] = { g, line, dot, t1, t2 };
+  }
+}
+const pTmp = new THREE.Vector3();
+function updateCallouts(alpha) {
+  svg.style.opacity = alpha; if (alpha <= 0.001) return;
+  const W = innerWidth, H = innerHeight, small = W < 640, len = small ? 22 : 46;
+  for (const k in callouts) {
+    const n = nodes[k], c = callouts[k], spec = CALL[k];
+    pTmp.set(spec.a[0] * n.half.x, spec.a[1] * n.half.y, n.half.z).applyMatrix4(n.pivot.matrixWorld).project(camera);
+    const x = (pTmp.x * 0.5 + 0.5) * W, y = (-pTmp.y * 0.5 + 0.5) * H;
+    const ex = x + spec.dir[0] * len * 0.55, ey = y + spec.dir[1] * len * 0.55;
+    const tx = ex + Math.sign(spec.dir[0] || 1) * len * 0.6;
+    c.line.setAttribute('points', `${x},${y} ${ex},${ey} ${tx},${ey}`);
+    c.dot.setAttribute('cx', x); c.dot.setAttribute('cy', y);
+    const anchor = spec.dir[0] < 0 ? 'end' : 'start', off = spec.dir[0] < 0 ? -4 : 4;
+    for (const t of [c.t1, c.t2]) { t.setAttribute('x', tx + off); t.setAttribute('text-anchor', anchor); }
+    c.t1.setAttribute('y', ey - 3); c.t2.setAttribute('y', ey + 10);
+  }
+}
+
+/* ---------- User view: orbit + zoom layered on the scripted camera ----------
+   Drag orbits, the page wheel still scrubs the strip; zoom is pinch, ctrl/cmd+wheel
+   (trackpad pinch arrives as that) or the buttons. The offset eases home after 6 s idle. */
+const user = { yaw: 0, pitch: 0, zoom: 1, tYaw: 0, tPitch: 0, tZoom: 1, last: -1e9, dragging: false };
+const ZMIN = 0.35, ZMAX = 2.2;
+let swayGain = 1;
+const now = () => performance.now() / 1000;
+function touchUser() { user.last = now(); skipIntro(); }
+function zoomBy(f) { user.tZoom = THREE.MathUtils.clamp(user.tZoom * f, ZMIN, ZMAX); touchUser(); }
+function updateUser(dt) {
+  const idle = now() - user.last > 6 && !user.dragging;
+  if (idle) {
+    const k = Math.exp(-dt * 1.4);
+    user.tYaw *= k; user.tPitch *= k; user.tZoom = 1 + (user.tZoom - 1) * k;
+  }
+  const a = 1 - Math.exp(-dt * 9);
+  user.yaw += (user.tYaw - user.yaw) * a; user.pitch += (user.tPitch - user.pitch) * a; user.zoom += (user.tZoom - user.zoom) * a;
+  swayGain += ((user.dragging ? 0 : 1) - swayGain) * (1 - Math.exp(-dt * 4));
+}
+const pointers = new Map();
+let pinch0 = 0, zoom0 = 1, dragStart = null;
+const onUI = e => e.target.closest && e.target.closest('#view');
+addEventListener('pointerdown', e => {
+  if (onUI(e) || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  skipIntro();
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 1) { dragStart = { x: e.clientX, y: e.clientY, decided: e.pointerType === 'mouse' }; if (dragStart.decided) beginDrag(); }
+  if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinch0 = Math.hypot(a.x - b.x, a.y - b.y); zoom0 = user.tZoom; beginDrag(); }
+});
+function beginDrag() { user.dragging = true; document.body.classList.add('grabbing'); touchUser(); }
+function endDrag() { user.dragging = false; document.body.classList.remove('grabbing'); touchUser(); }
+addEventListener('pointermove', e => {
+  const p = pointers.get(e.pointerId); if (!p) return;
+  const dx = e.clientX - p.x, dy = e.clientY - p.y;
+  p.x = e.clientX; p.y = e.clientY;
+  if (pointers.size >= 2) {
+    const [a, b] = [...pointers.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y);
+    if (pinch0 > 0) { user.tZoom = THREE.MathUtils.clamp(zoom0 * pinch0 / d, ZMIN, ZMAX); touchUser(); }
+    return;
+  }
+  if (dragStart && !dragStart.decided) {                       // touch: only a mostly-horizontal start orbits
+    const tx = e.clientX - dragStart.x, ty = e.clientY - dragStart.y;
+    if (Math.hypot(tx, ty) < 8) return;
+    dragStart.decided = true;
+    if (Math.abs(tx) > Math.abs(ty) * 1.2) beginDrag(); else { pointers.delete(e.pointerId); return; }
+  }
+  if (!user.dragging) return;
+  const s = 5.5 / Math.max(innerWidth, 900);
+  user.tYaw -= dx * s; user.tPitch = THREE.MathUtils.clamp(user.tPitch + dy * s, -0.16, 1.1);
+  touchUser();
+});
+function release(e) {
+  if (!pointers.delete(e.pointerId)) return;
+  if (pointers.size < 2) pinch0 = 0;
+  if (pointers.size === 0) { dragStart = null; if (user.dragging) endDrag(); }
+}
+addEventListener('pointerup', release); addEventListener('pointercancel', release);
+addEventListener('wheel', e => {
+  skipIntro();
+  if (!(e.ctrlKey || e.metaKey)) return;                        // plain wheel scrolls the strip
+  e.preventDefault(); zoomBy(Math.exp(e.deltaY * 0.0015));
+}, { passive: false });
+for (const ev of ['gesturestart', 'gesturechange']) addEventListener(ev, e => e.preventDefault());
+addEventListener('keydown', () => skipIntro());
+document.getElementById('zin').addEventListener('click', () => zoomBy(0.8));
+document.getElementById('zout').addEventListener('click', () => zoomBy(1.25));
+document.getElementById('zreset').addEventListener('click', () => { user.tYaw = user.tPitch = 0; user.tZoom = 1; user.last = -1e9; });
+window.__user = user;
+
+/* ---------- Intro: slow 360 reveal with a light sweep, skippable ---------- */
+const INTRO = 7.0;
+let introT = (Q.has('p') || Q.has('freeze') || Q.has('nointro')) ? INTRO : 0, introSkip = false;
+function skipIntro() { if (introT < INTRO) introSkip = true; }
+
+/* ---------- Main ---------- */
+let scrollP = 0, smoothP = 0;
+function readScroll() {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  scrollP = max > 0 ? THREE.MathUtils.clamp(scrollY / max, 0, 1) : 0;
+  if (scrollY > 4) skipIntro();
+}
+addEventListener('scroll', readScroll, { passive: true });
+
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setPixelRatio(pixelRatio); renderer.setSize(w, h, false);
+  composer.setPixelRatio(pixelRatio); composer.setSize(w, h);
+  bloom.resolution.set(w / 2, h / 2);
+  finish.uniforms.uRes.value.set(w * pixelRatio, h * pixelRatio); finish.uniforms.uAspect.value = w / h;
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+const tmpP = new THREE.Vector3(), tmpR = new THREE.Euler(), box = new THREE.Box3(), corner = new THREE.Vector3();
+const camTarget = new THREE.Vector3(), camLook = new THREE.Vector3(0, -0.02, 0), scr = new THREE.Vector3();
+let camDist = 1.6, lastShotReal = -10, shotReal = -10, shotSim = -10, simT = 0, ready = false, clacked = 2, sweepAmt = 0;
+const clock = new THREE.Clock();
+const fixedP = Q.has('p') ? parseFloat(Q.get('p')) : null;     // ?p=0.5 pins scroll (inspection)
+let titleShown = true;
+
+// ?capture: frames are stepped by script at a fixed 60 Hz (used to cut the preview loop)
+const CAPTURE = Q.has('capture');
+let capT = 0, capP = null;
+function frame() {
+  const dt = CAPTURE ? 1 / 60 : Math.min(clock.getDelta(), 0.05);
+  const t = CAPTURE ? (capT += dt) : clock.elapsedTime;
+  if (ready) watchQuality(dt);
+  // slow motion around each shot: effects and the action run on sim time
+  const timeScale = slowMo(t - shotReal);
+  const sdt = dt * timeScale; simT += sdt;
+  let flash = 0, port = 0;
+  if (ready) {
+    if (capP != null) smoothP = capP;
+    else smoothP += ((fixedP ?? scrollP) - smoothP) * (fixedP != null ? 1 : 1 - Math.exp(-dt * 7));
+    const p = smoothP;
+    const strip = THREE.MathUtils.smoothstep(p, 0.0, S0);
+
+    // intro turntable
+    let introYaw = 0;
+    if (introT < INTRO) {
+      introT = introSkip ? Math.min(INTRO, introT + dt * 3.5) : introT + dt;
+      const k = THREE.MathUtils.smootherstep(introT, 0, INTRO);
+      introYaw = (1 - k) * Math.PI * 2;
+      sweepAmt = Math.sin(Math.min(1, introT / INTRO) * Math.PI);
+      const a = -1.2 + 2.4 * (introT / INTRO);
+      sweep.position.set(Math.sin(a) * 2.2, 1.3, Math.cos(a) * 2.2);
+    } else sweepAmt = Math.max(0, sweepAmt - dt);
+    sweep.intensity = 9 * sweepAmt;
+    const introDone = introT >= INTRO;
+
+    let si = 0; if (p >= S0 - 0.01) si = Math.min(6, 1 + Math.floor((p - S0) / stageSpan)); if (p > S1 - 0.005) si = 7;
+    setStage(introDone ? si : -1);
+    if (!introDone) cap.style.opacity = 0;
+
+    const sway = (1 - 0.75 * strip) * swayGain;
+    rig.rotation.y = Math.sin(t * 0.32) * 0.2 * sway * (introDone ? 1 : 0) + introYaw;
+    rig.rotation.x = 0.03 + Math.sin(t * 0.21) * 0.025 * sway;
+    rig.position.y = Math.sin(t * 0.8) * 0.006;
+    if (window.__still) { rig.rotation.set(0, 0, 0); rig.position.y = 0; }
+
+    // firing, only at the top of the page once the intro is done
+    const firing = p < S0 * 0.45 && introDone && !Q.has('nofire');
+    if (Q.has('freeze') && firing) { lastShotReal = t; shotReal = t - 1; shotSim = simT - parseFloat(Q.get('freeze')); }
+    else if (firing && t - lastShotReal > PERIOD && !document.hidden) {
+      lastShotReal = t; shotReal = t; shotSim = simT; clacked = 0;
+      puff(MUZZLE.clone().applyMatrix4(recoil.matrixWorld), 8);
+      audio.shot();
+    }
+    const ts = simT - shotSim;
+    if (ts > 0.012 && ts < 0.5 && clacked === 0) { clacked = 1; eject(PORT.clone().applyMatrix4(recoil.matrixWorld)); }
+    if (ts > 0.06 && clacked === 1) { clacked = 2; audio.clack(true); setTimeout(() => audio.clack(false), 420); }
+    flash = ts >= 0 && ts < 0.05 ? (1 - ts / 0.05) * (0.85 + Math.random() * 0.15) : 0;
+    port = ts >= 0 && ts < 0.02 ? 1 : 0;
+    const kick = kickCurve(ts);
+    recoil.position.x = -0.012 * kick;
+    recoil.rotation.z = 0.025 * Math.max(0, kick);
+
+    for (const name in PATHS) {
+      const n = nodes[name]; if (!n) continue;
+      const u = stageU(p, STAGES.findIndex(s => s.part === name));
+      samplePath(PATHS[name], u, tmpP, tmpR);
+      n.pivot.position.copy(n.base).add(tmpP);
+      n.pivot.rotation.copy(tmpR);
+    }
+    const cN = nodes.carrier, bN = nodes.bolt;
+    const cycle = fireCurve(ts) * CARRIER_STROKE;
+    if (cN) cN.pivot.position.x -= cycle;
+    if (cN && bN) bN.pivot.position.add(v3.copy(cN.pivot.position).sub(cN.base));
+
+    // camera framing
+    box.makeEmpty();
+    recoil.updateMatrixWorld(true);
+    for (const name in nodes) {
+      const n = nodes[name];
+      for (let k = 0; k < 8; k++) {
+        corner.set(k & 1 ? n.half.x : -n.half.x, k & 2 ? n.half.y : -n.half.y, k & 4 ? n.half.z : -n.half.z);
+        corner.applyEuler(n.pivot.rotation).add(n.pivot.position).applyMatrix4(recoil.matrixWorld);
+        box.expandByPoint(corner);
+      }
+    }
+    const size = box.getSize(v3), ctr = box.getCenter(new THREE.Vector3());
+    const vfov = THREE.MathUtils.degToRad(camera.fov);
+    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
+    const margin = innerWidth < 700 ? 1.18 : 1.36;
+    const need = Math.max((size.y * margin) / 2 / Math.tan(vfov / 2), (size.x * margin) / 2 / Math.tan(hfov / 2)) + size.z;
+    camDist += (need - camDist) * (1 - Math.exp(-dt * 3));
+    ctr.y -= size.y * 0.035; camLook.lerp(ctr, 1 - Math.exp(-dt * 3));
+    updateUser(dt);
+    const elev = THREE.MathUtils.clamp(THREE.MathUtils.lerp(0.1, 0.2, strip) + user.pitch, -0.06, 1.3);
+    const azim = THREE.MathUtils.lerp(0.32, 0.12, strip) + user.yaw;
+    camTarget.set(Math.sin(azim) * Math.cos(elev), Math.sin(elev), Math.cos(azim) * Math.cos(elev)).multiplyScalar(camDist * user.zoom).add(camLook);
+    camera.position.copy(camTarget); if (window.__cam) camera.position.set(...window.__cam); if (window.__still) camLook.set(0, -0.05, 0);
+    camera.lookAt(camLook);
+    // shot shake, decays in sim time
+    if (ts >= 0 && ts < 0.4) {
+      const a = 0.0025 * Math.exp(-ts * 14);
+      camera.position.add(v3.set(Math.sin(t * 91) * a, Math.sin(t * 77 + 1) * a, 0).applyQuaternion(camera.quaternion));
+    }
+
+    // post: heat shimmer at the muzzle, focus on the part being removed, callouts at the end
+    scr.copy(MUZZLE).applyMatrix4(recoil.matrixWorld).project(camera);
+    finish.uniforms.uHeatPos.value.set(scr.x * 0.5 + 0.5, scr.y * 0.5 + 0.5);
+    finish.uniforms.uHeatScale.value = 0.06 / user.zoom;
+    const heat = ts > 0.02 ? Math.exp(-(ts - 0.02) * 1.6) : 0;
+    finish.uniforms.uHeat.value = firing && !Q.has('noheat') ? heat : 0;
+    finish.uniforms.uTime.value = simT;
+    let blur = 0;
+    if (si >= 1 && si <= 6 && quality.level < 2) {
+      const part = STAGES[si].part, n = nodes[part];
+      const u = stageU(p, si);
+      if (n) {
+        scr.set(0, 0, 0).applyMatrix4(n.pivot.matrixWorld).project(camera);
+        finish.uniforms.uFocus.value.set(scr.x * 0.5 + 0.5, scr.y * 0.5 + 0.5);
+        finish.uniforms.uFocusR.value = 0.16;
+        blur = Math.sin(Math.min(1, u) * Math.PI) * 0.9 * (user.dragging ? 0 : 1);
+      }
+    }
+    finish.uniforms.uBlur.value += (blur - finish.uniforms.uBlur.value) * (1 - Math.exp(-dt * 6));
+    updateCallouts(THREE.MathUtils.smoothstep(p, S1 - 0.03, S1 + 0.03));
+
+    document.getElementById('hint').style.opacity = p < 0.02 && introDone ? 1 : 0;
+    FLOOR_Y += (box.min.y - 0.07 - FLOOR_Y) * (1 - Math.exp(-dt * 2));
+    shadowGroup.position.y = FLOOR_Y;
+    renderContactShadow(ctr);
+  }
+  setFlash(flash, port);
+
+  for (const q of smoke) if (q.s.visible) {
+    q.life += sdt; const k = q.life / q.max;
+    if (k >= 1) { q.s.visible = false; continue; }
+    q.v.multiplyScalar(Math.exp(-sdt * 1.6)); q.v.y += q.g * sdt;
+    q.s.position.addScaledVector(q.v, sdt);
+    q.s.scale.setScalar(0.03 + k * 0.16);
+    q.s.material.opacity = Math.sin(Math.min(1, k * 4) * Math.PI / 2) * (1 - k) * 0.7;
+  }
+  for (const c of casings) if (c.m.visible) { const n = 3; for (let i = 0; i < n; i++) stepCasing(c, sdt / n); }
+
+  composer.render(dt);
+  window.__frames = (window.__frames || 0) + 1;
+}
+if (CAPTURE) window.__advance = (n, p) => { for (let i = 0; i < n; i++) { if (p) capP = p(capT); frame(); } };
+else renderer.setAnimationLoop(frame);
+
+Promise.all(Object.keys(PARTS).map(n => load(n).then(g => [n, g]))).then(list => {
+  list.forEach(([n, g]) => fit(n, g));
+  addChargingHandle();
+  buildCallouts();
+  if (Q.has('hide')) Q.get('hide').split(',').forEach(n => nodes[n] && (nodes[n].pivot.visible = false));
+  if (Q.has('cam')) window.__cam = Q.get('cam').split(',').map(Number);
+  ready = true; readScroll(); clock.getDelta();
+  document.getElementById('load').style.opacity = 0;
+  window.__ready = true;
+}).catch(e => { document.getElementById('load').textContent = 'COULD NOT LOAD MODELS'; console.error(e); });
+</script>
+</body>
+</html>

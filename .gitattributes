@@ -2,3 +2,8 @@
 # It must be stored byte-exact so it always matches the served/canonical build
 # (checked on every update); autocrlf normalization would silently corrupt it.
 ordinary-torn-site/index.html -text
+
+# 3D models are binary; never touch their bytes.
+*.glb binary
+# Stored byte-exact so GitHub Pages serves exactly the canonical build.
+ak47-field-strip/index.html -text
