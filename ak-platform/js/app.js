@@ -40,6 +40,7 @@ function buildNav() {
   const seg = document.createElement('span'); seg.className = 'seg'; nav.appendChild(seg);
   for (const id of ORDER) {
     const a = document.createElement('a'); a.textContent = RIFLES[id].name; a.href = './?rifle=' + id;
+    if (ORDER.length === 1 && MODE === 'rifle') a.style.pointerEvents = 'none';
     if (MODE === 'rifle' && id === rifleId) a.className = 'on';
     if (MODE === 'rifle') a.addEventListener('click', e => { e.preventDefault(); if (id !== rifleId) selectRifle(id); });
     seg.appendChild(a);
@@ -257,6 +258,7 @@ function selectRifle(id, first) {
     const fireTxt = def.fire.mode === 'auto' ? 'Full-auto, about 600 rounds a minute, fired in short bursts.' : 'Semi-automatic only: one round per trigger pull.';
     const list = [
       { p: 0, h: 'Firing', d: fireTxt },
+      { p: R.H0, h: 'History', d: 'From the 1947 design to the most produced rifle in history.' },
       { p: R.B0, h: 'The cartridge · ' + c.name, d: 'A spent case turns upright and joins the lineup, largest to smallest.' },
       { p: R.C0, h: c.name, d: 'Case, primer, powder and bullet, then a half section through the round.' },
       { p: R.C0 + (R.D0 - R.C0) * 0.55, h: 'Bullet types', d: 'Four constructions in ' + c.name + ', each cut in half.' },
@@ -270,6 +272,7 @@ function selectRifle(id, first) {
       .catch(e => { $('load').textContent = 'COULD NOT LOAD MODELS'; console.error(e); });
   }
 }
+function chamberedTxt(cal) { const ids = ORDER.filter(id => RIFLES[id].cartridge === cal); return ids.length ? 'The ' + ids.map(id => RIFLES[id].name).join(' and ') + ' in this showcase fires the ' + CARTRIDGES[cal].name + '.' : 'No rifle in this showcase fires the ' + CARTRIDGES[cal].name + ' yet.'; }
 function setupCartridge() {
   {
     const c = CARTRIDGES[cartId];
@@ -283,13 +286,13 @@ function setupCartridge() {
       { p: 0, h: 'The lineup', d: 'Eight cartridges to scale, largest to smallest.' },
       { p: CP.B0, h: c.name, d: 'Case, primer, powder and bullet, then a half section through the round.' },
       ...(core ? [{ p: CP.B0 + (CP.C0 - CP.B0) * 0.55, h: 'Bullet types', d: 'Four constructions in ' + c.name + ', each cut in half.' }] : []),
-      { p: CP.C0, h: 'Chambered in', d: 'Rifles in this collection that fire the ' + c.name + '.' },
+      { p: CP.C0, h: 'Chambered in', d: chamberedTxt(cartId) },
     ]);
     buildLineup(); ready = true; window.__ready = true; updLoad(1);
     const chambered = ORDER.filter(id => RIFLES[id].cartridge === cartId);
     const cards = $('cards');
     for (const id of chambered) { const a = document.createElement('a'); a.href = rifleLink(id); a.textContent = RIFLES[id].name + (RIFLES[id].ready ? ' →' : ' (soon)'); if (!RIFLES[id].ready) a.style.opacity = 0.55; cards.appendChild(a); }
-    if (!chambered.length) { const s = document.createElement('a'); s.textContent = 'None in this collection'; s.style.pointerEvents = 'none'; cards.appendChild(s); }
+    if (!chambered.length) { const s = document.createElement('a'); s.textContent = 'No rifle in this showcase yet'; s.style.pointerEvents = 'none'; cards.appendChild(s); }
     cartState.chambered = chambered.filter(id => RIFLES[id].ready);
     if (cartState.chambered.length) setTimeout(() => cartState.chambered.forEach(id => getRifle(id).load()), 2500);   // lazy prefetch
   }
@@ -329,7 +332,8 @@ function applyTab() {
 }
 
 // rifle path segments: A fire | B case -> lineup | C breakdown + bullet types | D field strip
-const R = { B0: 0.08, C0: 0.27, D0: 0.56, S0: 0.62 };
+// A fire | H history | B case -> lineup | C breakdown + bullet types | D field strip
+const R = { H0: 0.07, B0: 0.22, C0: 0.38, D0: 0.62, S0: 0.67 };
 // cartridge path: A lineup | B breakdown + types | C rifles chambered
 const CP = { B0: 0.26, C0: 0.74 };
 const cartState = { chambered: [] };
@@ -387,13 +391,15 @@ function tick() {
     // no turntable: the rifle appears in its hero framing, holds ~2 s, then the firing loop starts
     const introYaw = 0;
     if (introT < INTRO) introT += dt;
+    { const k = THREE.MathUtils.clamp(introT / (INTRO + 1.2), 0, 1), a = -1.3 + 2.6 * k;       // slow light sweep on load
+      sweep.position.set(Math.sin(a) * 2.2, 1.2, Math.cos(a) * 2.2); sweep.intensity = 14 * Math.sin(Math.PI * k) * (Q.has('nointro') ? 0 : 1); }
     const introDone = true, fireReady = introT >= INTRO;
     const si = stageAt(p);
     setStage(introDone ? si : -1); if (!introDone) cap.style.opacity = 0;
 
     // A: fire. B: case to lineup. C: breakdown + types. D: field strip
     const uB = seg(p, R.B0, R.C0), uC = seg(p, R.C0, R.D0), uD = seg(p, R.D0, 1), strip = seg(p, R.S0, 0.975);
-    const firing = p < R.B0 * 0.8 && fireReady && !Q.has('nofire');
+    const firing = p < R.H0 * 0.85 && fireReady && !Q.has('nofire');
     const sway = (1 - 0.75 * Math.min(1, strip * 4)) * (user.dragging ? 0 : 1);
     rifle.rig.rotation.y = Math.sin(t * 0.32) * 0.2 * sway * (introDone ? 1 : 0) * (1 - sm(p, R.B0 * 0.6, R.B0)) + introYaw;
     rifle.rig.rotation.x = 0.03 + Math.sin(t * 0.21) * 0.025 * sway;
@@ -477,6 +483,11 @@ function tick() {
         blur = Math.sin(Math.min(1, rifle.stripU[k]) * Math.PI) * 0.9 * (user.dragging ? 0 : 1); }
     }
     $('hint').style.opacity = p < 0.02 && introDone ? 1 : 0;
+    // showroom overlays: the spec sheet at the top, the history chapter after firing; slide the rifle aside for them
+    const wide = innerWidth > 760, specA = (1 - sm(p, 0.02, 0.06)) * (ready ? 1 : 0), histA = sm(p, R.H0, R.H0 + 0.025) * (1 - sm(p, R.B0 - 0.03, R.B0 - 0.005));
+    $('specs').style.opacity = specA; $('history').style.opacity = histA;
+    if (wide && wCart < 0.5) { const L = def.length, dx = 0.26 * L * specA - 0.3 * L * histA; box.translate(v3.set(dx, 0, 0)); box.expandByVector(v3.set(0.12 * L * Math.max(specA, histA), 0, 0)); }
+    else if (!wide && wCart < 0.5) box.translate(v3.set(0, -0.3 * def.length * Math.max(specA, histA), 0));   // phone: lift the rifle above the panel
     box.getCenter(ctr);
     shadowS = THREE.MathUtils.lerp(1, 0.2, wCart);
   }

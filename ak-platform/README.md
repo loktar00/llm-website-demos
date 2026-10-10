@@ -1,17 +1,20 @@
 # AK platform: rifles and cartridges
 
-A museum-style 3D showcase of two AK-pattern rifles (AK-47 and PSL) and the cartridges they fire, expanding the
-[AK-47 field strip](../ak47-field-strip/) page. Two linked paths:
+A showroom-style 3D presentation of the AK-47 and its cartridge, expanding the
+[AK-47 field strip](../ak47-field-strip/) page. The rifle sits in a dark studio on a polished floor,
+with a slow light sweep on load and a spec sheet beside it. Scrolling tells the story:
 
-- **Rifles** (the page opens on the AK-47; switch to the PSL in the top bar): the rifle fires (full-auto bursts,
-  or single shots for the semi-automatic PSL), one spent case turns upright and slides into a to-scale
-  cartridge lineup, the rifle's own round steps forward, turns horizontal and comes apart (case, primer,
-  powder, bullet) into a half section, then four bullet constructions are compared, and finally the
-  rifle is field stripped in its real order with callouts. Every stage scrubs both ways.
-- **Cartridges** (`?cartridge=762x39`, `?cartridge=762x54r`): the lineup, the breakdown and bullet types,
-  then the rifles in this collection chambered for that round, each linking into its rifle path.
+- **Firing**: the rifle opens on its hero framing and starts firing short full-auto bursts after two seconds.
+- **History**: a short chapter and timeline, from the 1945-47 design and 1949 adoption through the milled
+  Type 2/3 receivers, the AKM (1959) and the AK-74 (1974), to roughly 100 million Kalashnikov-pattern rifles.
+- **Cartridge**: one spent case turns upright and slides into a to-scale cartridge lineup, the 7.62&times;39 round
+  steps forward, turns horizontal and comes apart (case, primer, powder, bullet) into a half section, then four
+  bullet constructions are compared.
+- **Field strip**: the rifle is field stripped in its real order with callouts. Every stage scrubs both ways.
 
-The top bar switches rifles in place and shows the selected rifle's cartridge; Cartridges opens the lineup. Drag to rotate, pinch or +/- to zoom; sound is off until you turn it on.
+The 7.62&times;39 chip and **Cartridges** (`?cartridge=762x39`, `?cartridge=762x54r`) open the lineup, the
+breakdown and bullet types, then the rifle chambered for that round. Drag to rotate, pinch or +/- to zoom;
+sound is off until you turn it on. Other AK-pattern rifles (AKM, RPK, PSL) were started and are paused.
 
 Educational, reference-book level: exterior assemblies, the standard user field strip, and cartridge
 cutaways. By Claude Opus 5.5.
@@ -19,8 +22,8 @@ cutaways. By Claude Opus 5.5.
 ## How it is built
 
 `index.html` plus ES modules in `js/` (three.js 0.170 from jsDelivr), no build step. Models are
-meshopt-compressed GLBs with WebP textures, loaded only for the rifle on screen (the landing carousel
-prefetches the next slide).
+meshopt-compressed GLBs with WebP textures, loaded only for what is on screen. The floor is a three.js `Reflector`
+faded out in its own shader; it switches off on slow devices.
 
 ### Rifles: TRELLIS.2 vs code-built
 
@@ -72,8 +75,7 @@ Bullet types for the two AK cartridges: full metal jacket, hollow point, soft po
 - `sfx/sfx-shot.mp3`: "AK-47 (Kalasjnikov), een schot" by Beeld en Geluid (Netherlands Institute
   for Sound and Vision), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:AK-47_(Kalasjnikov),_een_schot_-_SoundCloud_-_Beeld_en_Geluid.ogg),
   licensed [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/). Trimmed, made mono and
-  normalised; this edited clip is shared under the same licence. The PSL's 7.62×54R plays the same
-  recording slower and darker.
+  normalised; this edited clip is shared under the same licence.
 - `sfx/sfx-bolt.mp3`: "Equipment Clicks III" by LFA, [OpenGameArt](https://opengameart.org/content/equipment-clicks-iii), CC0. Trimmed.
 - `sfx/sfx-brass0-2.mp3`: short dry tinks synthesized for this site (a click plus a few fast-decaying
   6-11 kHz partials), released CC0.

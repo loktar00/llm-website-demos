@@ -9,6 +9,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
+import { Reflector } from 'three/addons/objects/Reflector.js';
 
 export const Q = new URLSearchParams(location.search);
 const canvas = document.getElementById('c');
@@ -22,8 +23,9 @@ renderer.debug.checkShaderErrors = false;   // production: skip program info log
 export const scene = new THREE.Scene();
 scene.background = (() => {
   const c = document.createElement('canvas'); c.width = 512; c.height = 512; const g = c.getContext('2d');
-  const r = g.createRadialGradient(256, 215, 0, 256, 256, 380);
-  r.addColorStop(0, '#d9d9d9'); r.addColorStop(0.5, '#c4c4c4'); r.addColorStop(1, '#9d9d9d');
+  // showroom: a dark studio that lifts toward the floor under the subject
+  const r = g.createRadialGradient(256, 300, 0, 256, 280, 400);
+  r.addColorStop(0, '#4a4c50'); r.addColorStop(0.45, '#2a2c30'); r.addColorStop(1, '#0c0d0f');
   g.fillStyle = r; g.fillRect(0, 0, 512, 512);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 })();
@@ -91,13 +93,27 @@ function renderContactShadow(center, scale) {
   shadowGroup.position.set(center.x, floor.y, center.z * 0);
   shadowGroup.scale.setScalar(scale);
   if (shFrame++ % 2) return;
-  const bg = scene.background; scene.background = null;
+  const bg = scene.background; scene.background = null; reflector.visible = false;
   scene.overrideMaterial = shDepth;
   const cc = renderer.getClearAlpha(); renderer.setClearAlpha(0);
   renderer.setRenderTarget(shRT); renderer.clear(); renderer.render(scene, shCam);
   scene.overrideMaterial = null;
   blurShadow(SH.blur); blurShadow(SH.blur * 0.4);
-  renderer.setRenderTarget(null); renderer.setClearAlpha(cc); scene.background = bg;
+  renderer.setRenderTarget(null); renderer.setClearAlpha(cc); scene.background = bg; reflector.visible = showroom.enabled;
+}
+
+/* ---------- Polished showroom floor: a dimmed real-time reflection that fades out with distance ---------- */
+export const showroom = { enabled: !Q.has('noreflect') };
+const reflector = new Reflector(new THREE.PlaneGeometry(8, 8), { textureWidth: 1024, textureHeight: 1024, color: 0x55575c, clipBias: 0.002 });
+reflector.rotation.x = -Math.PI / 2; reflector.userData.noAO = true;
+// fade the mirror out from the centre in its own shader, so it never shows an edge against the dark studio
+reflector.material.transparent = true; reflector.material.depthWrite = false;
+reflector.material.vertexShader = reflector.material.vertexShader.replace('varying vec4 vUv;', 'varying vec4 vUv;\nvarying vec2 vLocal;').replace('void main() {', 'void main() {\nvLocal = position.xy;');
+reflector.material.fragmentShader = reflector.material.fragmentShader.replace('varying vec4 vUv;', 'varying vec4 vUv;\nvarying vec2 vLocal;')
+  .replace('gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );', 'gl_FragColor = vec4( blendOverlay( base.rgb, color ), 0.55 * (1.0 - smoothstep(0.35, 2.2, length(vLocal))) );');
+if (showroom.enabled) scene.add(reflector);
+export function placeFloor(x, z, scale) {
+  reflector.position.set(x, floor.y - 0.0005, z); reflector.scale.setScalar(Math.max(0.05, scale * 0.6));
 }
 
 /* ---------- Post ---------- */
@@ -168,6 +184,7 @@ if (Q.has('noao')) gtao.enabled = false;
 export const quality = { level: 0, ema: 1 / 60, t: 0 };
 function applyQuality() {
   gtao.enabled = quality.level < 1 && !Q.has('noao');
+  if (quality.level >= 2) { reflector.visible = showroom.enabled = false; }   // the reflection is the first luxury to go
   if (quality.level >= 2) finish.uniforms.uBlur.value = 0;
   if (quality.level >= 3) { pixelRatio = Math.min(pixelRatio, 1); resize(); }
   if (quality.level >= 4) { pixelRatio = 0.75; resize(); }
@@ -279,6 +296,7 @@ export function frame(box, dt, { azim = 0.3, elev = 0.12, margin = null, lift = 
   return s;
 }
 export function render(dt, center, shadowScale) {
+  placeFloor(center.x, center.z * 0, shadowScale);
   renderContactShadow(center, shadowScale);
   composer.render(dt);
 }

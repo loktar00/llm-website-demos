@@ -133,8 +133,8 @@ export const RIFLES = {
       ribs: [0.16, 0.3, 0.44, 0.58, 0.72, 0.86], plateY: 16 },
     handle: { x: -0.017, py: 276.8, z: 0.012, stroke: 0.115 },
     // TRELLIS reconstructed the open receiver top as a central tower (to y 52) and baked a handle knob: trim under the cover
-    trim: [[[-0.249, 0.022, -0.014], [-0.010, 1, 0.014]], [[-0.022, 0.006, 0.010], [-0.001, 0.030, 1]],
-      [[-0.249, 0.0128, -1], [-0.010, 1, -0.0205]], [[-0.249, 0.0128, 0.0205], [-0.010, 1, 1]]],
+    trim: [[[-0.249, 0.016, -0.0165], [-0.010, 1, 0.0165]], [[-0.022, 0.006, 0.010], [-0.001, 0.030, 1]],
+      [[-0.249, 0.0128, -1], [-0.010, 1, -0.0165]], [[-0.249, 0.0128, 0.0165], [-0.010, 1, 1]]],
     rod: { x0: 0.205, x1: 0.410, y: -0.018, z: 0 },
     hybridParts: { carrier: { dx: -50, dy: -8, rear: -76 }, bolt: { dx: -50, dy: -5 }, spring: { dx: -58, dy: -4 },
       gastube: { x0: 78, x1: 330, dy: -8 }, gasblock: { x0: 330, x1: 362, yb: -14, yt: 25 } },
@@ -154,7 +154,7 @@ export const RIFLES = {
     credit: 'Hybrid: TRELLIS.2 receiver group, magazine and scope · moving parts in code',
   },
 };
-export const ORDER = ['ak47', 'psl'];      // Jason's two: the AKM and RPK stay out of the collection
+export const ORDER = ['ak47'];      // shipping with the AK-47 only for now (the PSL, AKM and RPK are paused)
 // the AKM strips exactly like the AK-47
 Object.assign(RIFLES.akm, { strip: RIFLES.ak47.strip, labels: RIFLES.ak47.labels, call: RIFLES.ak47.call });
 // a real AK magazine comes out by rocking forward about its front lug, then drops
