@@ -80,12 +80,41 @@ export const RIFLES = {
       credit: 'Code-modeled in three.js · textures generated on ComfyUI (Krea2)',
     },
   },
-  akm:  { id: 'akm', name: 'AKM', cal: '7.62×39 mm', cartridge: '762x39', length: 0.88, blurb: 'Stamped receiver, slant brake, 1959', ready: false },
+  akm: {
+    id: 'akm', name: 'AKM', cal: '7.62×39 mm', cartridge: '762x39', length: 0.875,
+    blurb: 'Stamped receiver, laminated wood, 1959', ready: true,
+    // hybrid: TRELLIS receiver group (stamped receiver, laminated stock and grip, barrel, sights) and magazine;
+    // dust cover, carrier, bolt, spring, gas tube with upper handguard, gas block and cleaning rod built in code
+    build: 'hybrid', img: { px0: 38, px1: 1325, bore: 282 },
+    parts: {
+      body:     { file: 'models/akm/body.glb', rot: [0, 0, 0], box: [38, 1325, 204, 509], depth: null, mat: AK_STEEL },
+      magazine: { file: 'models/ak47/magazine2.glb', rot: [-90, 60, 180], wbox: [-0.0425, 0.1199, -0.223, -0.023], depth: 0.030,
+        rock: [0.023, -0.027, 0], mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
+      cover: { code: true }, spring: { code: true }, gastube: { code: true }, carrier: { code: true }, bolt: { code: true },
+    },
+    // measured on the fitted receiver: walls z -18.4/+20.3 mm, wall tops y ~4.5, receiver rear x -197, rear sight block from x ~38
+    cover: { zc: 0.95, hwi: 20.1, t: 0.8, ys: 7.9, ci: 27.6, n: 2, xr: -193, xf: 37, yb: 5.2, rearRound: 27, rearMin: 0.6,
+      ribs: [0.16, 0.3, 0.44, 0.58, 0.72, 0.86], plateY: 9 },
+    handle: { x: 0.028, py: 264.4, z: 0.012, stroke: 0.115 },
+    // the walls end at y ~4.8; above them TRELLIS reconstructed the open receiver's insides as a central fork (to y 31) and side
+    // blobs out to z +-30 (all under the cover): trim the fork above y 22 and everything outside the wall planes above y 4.8
+    trim: [[[-0.192, 0.015, -0.0175], [0.036, 1, 0.0195]], [[-0.192, 0.0052, -1], [0.036, 1, -0.0166]], [[-0.192, 0.0052, 0.0185], [0.036, 1, 1]]],
+    rod: { x0: 0.215, x1: 0.407, y: -0.023, z: 0.001 },
+    hybridParts: { carrier: { dx: -5, dy: -4, rear: -66 }, bolt: { dx: -5, dy: -10 }, spring: { dx: 0, dy: -3 },
+      gastube: { x0: 112, x1: 314, dy: -4 }, gasblock: { x0: 314, x1: 348, yb: -19.5, yt: 29 } },
+    muzzlePx: 1325, port: [-0.01, 0.0, 0.03],
+    fire: { mode: 'auto', rpmDt: 0.1, burst: [4, 6], pause: 2.0 }, tone: { rate: 1, gain: 0.8 },
+    strip: null, paths: null, labels: null, call: null,          // same procedure as the AK-47 (filled below)
+    credit: 'Hybrid: TRELLIS.2 receiver group and magazine · moving parts in code',
+  },
   rpk:  { id: 'rpk', name: 'RPK', cal: '7.62×39 mm', cartridge: '762x39', length: 1.04, blurb: 'Light machine gun: long heavy barrel, bipod', ready: false },
   psl:  { id: 'psl', name: 'PSL', cal: '7.62×54R', cartridge: '762x54r', length: 1.15, blurb: 'Romanian marksman rifle, semi-automatic', ready: false },
 };
 export const ORDER = ['ak47', 'akm', 'rpk', 'psl'];
+// the AKM strips exactly like the AK-47
+Object.assign(RIFLES.akm, { strip: RIFLES.ak47.strip, labels: RIFLES.ak47.labels, call: RIFLES.ak47.call });
 // a real AK magazine comes out by rocking forward about its front lug, then drops
 RIFLES.ak47.hybrid.paths = Object.assign({}, RIFLES.ak47.paths, {
   magazine: [[0, [0, 0, 0], [0, 0, 0]], [0.3, [0, 0, 0], [0, 0, 14]], [0.55, [0.01, -0.1, 0], [0, 0, 10]], [1, [-0.36, -0.24, 0], [0, 0, 0]]],
 });
+RIFLES.akm.paths = RIFLES.ak47.hybrid.paths;

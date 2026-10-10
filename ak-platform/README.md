@@ -31,7 +31,13 @@ assembly goes through TRELLIS.2 image-to-3D and is fitted to real dimensions in 
 
 | Rifle (length) | TRELLIS.2 | Built in code |
 | --- | --- | --- |
-| AK-47 (870 mm) | receiver group, magazine, recoil spring, gas tube with upper handguard, bolt carrier with piston, bolt | dust cover, cleaning rod, charging handle |
+| AK-47 (870 mm), default hybrid | receiver group (stock, grip, barrel, sights), magazine (a second TRELLIS magazine isolated from the hero photo) | dust cover, bolt carrier with piston, charging handle, recoil spring, bolt, gas tube with upper handguard, gas block, trigger guard and catch, cleaning rod |
+| AKM (875 mm), hybrid | receiver group (stamped receiver, laminated stock and grip, barrel, sights), magazine (shared with the AK-47) | dust cover, bolt carrier with piston, charging handle, recoil spring, bolt, gas tube with upper handguard, gas block, cleaning rod |
+
+The AK-47 keeps `?model=trellis` (all TRELLIS assemblies) and `?model=code` (everything in code) for comparison.
+TRELLIS rebuilt the open receiver tops as extra internal shapes; on the AKM those (a central fork and side blobs
+above the wall tops) are trimmed under the cover. The AKM gas tube TRELLIS output was unusable (a flat slab), so
+the hybrid's code-built gas tube stands in.
 
 **Code-modeled AK-47 (default, `?model=code`).** The AK-47 also exists fully modeled in code
 (`js/akcode.js`), as a side-by-side test against the TRELLIS version (`?model=trellis`, or the
