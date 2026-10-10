@@ -388,7 +388,7 @@ function buildDustCover() {
   const sh = new THREE.Shape(); sh.moveTo(rear[0][0] / 1000, C.plateY / 1000);
   rear.forEach(p => sh.lineTo(p[0] / 1000, p[1] / 1000)); sh.lineTo(rear[rear.length - 1][0] / 1000, C.plateY / 1000); sh.closePath();
   const plateGeo = new THREE.ShapeGeometry(sh, 6);
-  plateGeo.applyMatrix4(new THREE.Matrix4().set(0, 0, 1, C.xr / 1000 + 0.0004, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1));   // shape (z, y) -> plane x = rear end (non-singular, so normals stay valid)
+  plateGeo.rotateY(-Math.PI / 2); plateGeo.translate(C.xr / 1000 + 0.0004, 0, 0);   // shape (z, y) -> rear end plane, normal facing rearward
   group.add(new THREE.Mesh(plateGeo, mat));
   // rolled lower edges: full length on the left, behind the cut-out on the right
   const hm = C.hwi + C.t / 2;
