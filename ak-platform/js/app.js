@@ -8,7 +8,7 @@ import { CARTRIDGES, LINEUP, CORE, BULLET_TYPES, buildCartridge, buildBullet, se
 import { createAudio } from './audio.js';
 
 const $ = id => document.getElementById(id);
-const audio = createAudio('sfx/');
+const audio = createAudio((window.__ASSET || '') + 'sfx/');
 window.__audio = audio;
 $('snd').addEventListener('click', () => {
   const on = audio.toggle();

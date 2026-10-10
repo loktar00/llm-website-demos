@@ -122,7 +122,7 @@ export class Rifle {
     if (this._loading) return this._loading;
     const P = this.def.parts, names = Object.keys(P).filter(k => !P[k].code);
     const upd = () => onProgress && onProgress(names.reduce((a, k) => a + (this.progress[k] || 0), 0) / names.length);
-    this._loading = Promise.all(names.map(n => loadGLB(P[n].file, f => { this.progress[n] = f; upd(); }).then(g => [n, g])))
+    this._loading = Promise.all(names.map(n => loadGLB((window.__ASSET || '') + P[n].file, f => { this.progress[n] = f; upd(); }).then(g => [n, g])))
       .then(list => {
         list.forEach(([n, g]) => this.fit(n, g));
         this.trimBaked(); this.addRod(); this.buildCover(); this.addHandle(); this.buildFx();

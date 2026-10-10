@@ -100,6 +100,12 @@
 <div class="hud" id="credit">Krea2 &middot; Qwen Image 2.1 &rarr; TRELLIS.2 &middot; cartridges built in code</div>
 
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<script type="module" src="js/app.js"></script>
+<script type="module">
+// quantdiv serves the code, models and sounds from a shared asset folder; a standalone copy keeps them beside the page
+const q = new URLSearchParams(location.search).get('assets');
+const A = q ?? (/\/quantdiv\//.test(location.pathname) && !/\/assets\//.test(location.pathname) ? '../assets/ak-platform/' : './');
+window.__ASSET = A;
+import(A + 'js/app.js').catch(e => { document.getElementById('load').textContent = 'COULD NOT LOAD'; console.error(e); });
+</script>
 </body>
 </html>
