@@ -290,9 +290,9 @@ const CP = { B0: 0.26, C0: 0.74 };
 const cartState = { chambered: [] };
 
 /* ---------- intro turntable (rifle path), skippable ---------- */
-const INTRO = 4.5;
+const INTRO = 2.0;                                           // hold before the first burst
 let introT = (Q.has('p') || Q.has('freeze') || Q.has('nointro') || MODE !== 'rifle') ? INTRO : 0, introSkip = false;
-user.onTouch = () => { if (introT < INTRO) introSkip = true; car.lastUser = now(); };
+user.onTouch = () => { car.lastUser = now(); };
 addEventListener('keydown', () => { if (introT < INTRO) introSkip = true; });
 
 /* ---------- main loop ---------- */
@@ -339,22 +339,16 @@ function tick() {
 
   if (MODE === 'rifle' && ready) {
     const def = rifle.def, cal = def.cartridge, hero = lineup[cal].obj;
-    // intro turntable
-    let introYaw = 0;
-    if (introT < INTRO) {
-      introT = introSkip ? Math.min(INTRO, introT + dt * 3.5) : introT + dt;
-      const k = THREE.MathUtils.smootherstep(introT, 0, INTRO);
-      introYaw = (1 - k) * Math.PI * 2;
-      const sa = Math.sin(Math.min(1, introT / INTRO) * Math.PI), a = -1.2 + 2.4 * (introT / INTRO);
-      sweep.position.set(Math.sin(a) * 2.2, 1.3, Math.cos(a) * 2.2); sweep.intensity = 9 * sa;
-    } else sweep.intensity = Math.max(0, sweep.intensity - dt * 9);
-    const introDone = introT >= INTRO;
+    // no turntable: the rifle appears in its hero framing, holds ~2 s, then the firing loop starts
+    const introYaw = 0;
+    if (introT < INTRO) introT += dt;
+    const introDone = true, fireReady = introT >= INTRO;
     const si = stageAt(p);
     setStage(introDone ? si : -1); if (!introDone) cap.style.opacity = 0;
 
     // A: fire. B: case to lineup. C: breakdown + types. D: field strip
     const uB = seg(p, R.B0, R.C0), uC = seg(p, R.C0, R.D0), uD = seg(p, R.D0, 1), strip = seg(p, R.S0, 0.975);
-    const firing = p < R.B0 * 0.8 && introDone && !Q.has('nofire');
+    const firing = p < R.B0 * 0.8 && fireReady && !Q.has('nofire');
     const sway = (1 - 0.75 * Math.min(1, strip * 4)) * (user.dragging ? 0 : 1);
     rifle.rig.rotation.y = Math.sin(t * 0.32) * 0.2 * sway * (introDone ? 1 : 0) * (1 - sm(p, R.B0 * 0.6, R.B0)) + introYaw;
     rifle.rig.rotation.x = 0.03 + Math.sin(t * 0.21) * 0.025 * sway;

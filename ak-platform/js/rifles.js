@@ -24,6 +24,8 @@ export const RIFLES = {
     handle: { x: 0.008, py: 258, z: 0.012, stroke: 0.115 },
     trim: [[-0.067, 0.024, 0.012], [-0.025, 1, 1]],          // baked duplicate handle cut out of the body
     rod: { x0: 0.200, x1: 0.427, y: -0.0179, z: -0.0026 },   // cleaning rod: from its seat under the lower handguard to the front sight base
+    // the TRELLIS receiver's magazine-well dimple is open straight through: close it from inside
+    liners: [[-0.060, 0.022, -0.031, -0.006, -0.0215, -0.0200], [-0.060, -0.012, -0.031, -0.006, 0.0155, 0.0170]],
     muzzlePx: 1328, port: [-0.03, 0.017, 0.03],
     fire: { mode: 'auto', rpmDt: 0.1, burst: [4, 6], pause: 2.0 }, tone: { rate: 1, gain: 0.8 },
     strip: [
@@ -61,11 +63,15 @@ export const RIFLES = {
         // a second TRELLIS magazine (Qwen 2.1 edit isolating it from the hero photo), stood upright and seated where the
         // code-built magazine sits: rear face against the catch at x -50 mm, feed lips 15 mm up inside the receiver
         magazine: { file: 'models/ak47/magazine2.glb', rot: [-90, 60, 180], wbox: [-0.0545, 0.1079, -0.218, -0.018], depth: 0.030,
-          rock: [0.011, -0.022, 0], mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
+          rock: [0.011, -0.022, 0], mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] },
+          // a thin raised band TRELLIS put round the top of the magazine reads as a stray wire loop: trim it
+          trim: [[[-0.036, -0.066, 0.0088], [0.024, -0.034, 0.05]], [[-0.036, -0.066, -0.05], [0.024, -0.034, -0.0118]]] },
         cover: { code: true }, spring: { code: true }, gastube: { code: true }, carrier: { code: true }, bolt: { code: true },
       },
       // baked handle copy, plus the TRELLIS trigger guard, trigger and catch (rebuilt in code where the magazine seats)
-      trim: [[[-0.067, 0.024, 0.012], [-0.025, 1, 1]], [[-0.122, -0.082, -1], [-0.064, -0.0345, 1]]],
+      trim: [[[-0.067, 0.024, 0.012], [-0.025, 1, 1]], [[-0.127, -0.082, -1], [-0.064, -0.0338, 1]]],
+      // the dimple liners, plus a floor plate under the receiver where the guard/catch trim opened its bottom edge
+      liners: [[-0.060, 0.022, -0.031, -0.006, -0.0215, -0.0200], [-0.060, -0.012, -0.031, -0.006, 0.0155, 0.0170], [-0.128, -0.062, -0.0352, -0.0329, -0.0235, 0.0187]],
       paths: null,   // filled below: the AK-47 paths with the magazine rocking out about its front lug
       credit: 'Hybrid: TRELLIS.2 receiver group · magazine and moving parts in code',
     },
@@ -89,7 +95,8 @@ export const RIFLES = {
     parts: {
       body:     { file: 'models/akm/body.glb', rot: [0, 0, 0], box: [38, 1325, 204, 509], depth: null, mat: AK_STEEL },
       magazine: { file: 'models/ak47/magazine2.glb', rot: [-90, 60, 180], wbox: [-0.0425, 0.1199, -0.223, -0.023], depth: 0.030,
-        rock: [0.023, -0.027, 0], mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
+        rock: [0.023, -0.027, 0], mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] },
+        trim: [[[-0.024, -0.071, 0.0088], [0.036, -0.039, 0.05]], [[-0.024, -0.071, -0.05], [0.036, -0.039, -0.0118]]] },
       cover: { code: true }, spring: { code: true }, gastube: { code: true }, carrier: { code: true }, bolt: { code: true },
     },
     // measured on the fitted receiver: walls z -18.4/+20.3 mm, wall tops y ~4.5, receiver rear x -197, rear sight block from x ~38

@@ -127,7 +127,7 @@ export class Rifle {
       this._loading = Promise.all([import('./akcode.js'), ...glbs.map(n => loadGLB((window.__ASSET || '') + P[n].file, f => { this.progress[n] = f; upd2(); }).then(g => [n, g]))])
         .then(([m, ...list]) => {
           list.forEach(([n, g]) => this.fit(n, g));
-          this.trimBaked();                  // TRELLIS-only trims first, so they never cut the code parts added next
+          this.trimBaked(); this.addLiners();  // TRELLIS-only trims first, so they never cut the code parts added next
           if (this.def.hybridParts) m.addHybrid(this, this.def.hybridParts); else m.addHybridAK47(this);
           this.addRod(); this.buildCover(); this.addHandle(); this.buildFx();
           this.ready = true; return this;
@@ -145,7 +145,7 @@ export class Rifle {
     this._loading = Promise.all(names.map(n => loadGLB((window.__ASSET || '') + P[n].file, f => { this.progress[n] = f; upd(); }).then(g => [n, g])))
       .then(list => {
         list.forEach(([n, g]) => this.fit(n, g));
-        this.trimBaked(); this.addRod(); this.buildCover(); this.addHandle(); this.buildFx();
+        this.trimBaked(); this.addLiners(); this.addRod(); this.buildCover(); this.addHandle(); this.buildFx();
         this.ready = true; return this;
       });
     return this._loading;
@@ -172,11 +172,14 @@ export class Rifle {
   }
 
   /* TRELLIS can bake a static copy of a moving part into the body (it is in the source image): cut it out */
-  trimBaked() {
-    const n = this.nodes.body, T = this.def.trim; if (!n || !T) return;
+  trimBaked() { this.trimNode(this.nodes.body, this.def.trim); for (const k in this.def.parts) if (this.def.parts[k].trim) this.trimNode(this.nodes[k], this.def.parts[k].trim); }
+  // remove triangles with any vertex inside one of the boxes ([lo, hi] in rifle-space metres, at the assembled pose)
+  trimNode(n, T) {
+    if (!n || !T) return;
     this.recoil.updateMatrixWorld(true);
     const inv = new THREE.Matrix4().copy(this.recoil.matrixWorld).invert(), M4 = new THREE.Matrix4(), p = new THREE.Vector3();
     const boxes = Array.isArray(T[0][0]) ? T : [T];
+    if (n.trimmed) return; n.trimmed = true;
     n.pivot.traverse(o => {
       if (!o.isMesh || !o.geometry.index) return;
       M4.multiplyMatrices(inv, o.matrixWorld);
@@ -193,6 +196,15 @@ export class Rifle {
     });
   }
 
+  // thin plates inside the receiver walls where the TRELLIS mesh left an opening (the magazine-well dimple)
+  addLiners() {
+    const L = this.def.liners; if (!L || !this.nodes.body) return;
+    const m = new THREE.MeshPhysicalMaterial({ color: 0x0d0e10, metalness: 0.6, roughness: 0.8 });
+    for (const [x0, x1, y0, y1, z0, z1] of L) {
+      const b = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0), m); b.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+      b.layers.enable(1); this.nodes.body.pivot.attach(b);
+    }
+  }
   addRod() {
     const R = this.def.rod; if (!R || !this.nodes.body) return;
     const steel = darkSteel();
@@ -277,8 +289,9 @@ export class Rifle {
     const n = this.nodes.carrier, H = this.def.handle; if (!n || !H) return;
     const steel = new THREE.MeshPhysicalMaterial({ color: 0x2b2c30, metalness: 0.9, roughness: 0.35 });
     const g = new THREE.Group();
-    const stem = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.0068, 0.028), steel); stem.position.z = 0.016;
-    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.0065, 18, 12), steel); knob.scale.set(1, 0.85, 0.8); knob.position.z = 0.032;
+    // short flat stem out through the slot, rounded knob: it stands ~15 mm proud of the receiver side
+    const stem = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.0062, 0.017), steel); stem.position.z = 0.0105;
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.0058, 18, 12), steel); knob.scale.set(1.15, 0.85, 0.75); knob.position.z = 0.021;
     g.add(stem, knob); g.traverse(o => { if (o.isMesh) o.layers.enable(1); });
     g.position.set(H.x - n.base.x, this.wy(H.py) - n.base.y, H.z);
     n.pivot.add(g);

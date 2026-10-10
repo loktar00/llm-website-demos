@@ -180,6 +180,7 @@ scene.background = (() => {                                     // studio sweep,
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 })();
 scene.backgroundIntensity = 1.0;
+window.__scene = scene;
 
 /* Procedural lightbox for reflections: a dim room with hard-edged softboxes and strip
    lights, so steel picks up crisp studio highlights instead of a vague grey. */
@@ -435,6 +436,35 @@ function buildDustCover() {
 
 /* Cleaning rod under the barrel: missing from the field-stripped body image, so built in code. It runs from
    under the lower handguard through the rod guide (x 280-300 mm) into the front-sight base (measured on the mesh). */
+/* The TRELLIS receiver's magazine-well dimple is open straight through: thin plates inside the walls close it. */
+let linered = false;
+function addLiners() {
+  if (!nodes.body || CODE || Q.has('hero') || linered) return; linered = true;
+  const m = new THREE.MeshPhysicalMaterial({ color: 0x0d0e10, metalness: 0.6, roughness: 0.8 });
+  const L = [[-0.060, 0.022, -0.031, -0.006, -0.0215, -0.0200], [-0.060, -0.012, -0.031, -0.006, 0.0155, 0.0170]];
+  if (HYBRID) L.push([-0.128, -0.062, -0.0352, -0.0329, -0.0235, 0.0187]);   // floor plate where the guard/catch trim opened the bottom edge
+  for (const [x0, x1, y0, y1, z0, z1] of L) {
+    const b = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0), m); b.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+    b.layers.enable(1); nodes.body.pivot.attach(b);
+  }
+}
+/* The hybrid magazine: a thin raised band TRELLIS put round its top reads as a stray wire loop; trim it. */
+function trimMagBand() {
+  const n = nodes.magazine; if (!n || !HYBRID) return;
+  recoil.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(recoil.matrixWorld).invert(), M4 = new THREE.Matrix4(), p = new THREE.Vector3();
+  n.pivot.traverse(o => {
+    if (!o.isMesh || !o.geometry.index) return;
+    M4.multiplyMatrices(inv, o.matrixWorld);
+    const g = o.geometry, P = g.attributes.position, src = g.index.array, keep = [];
+    for (let i = 0; i < src.length; i += 3) {
+      let hit = false;
+      for (let k = 0; k < 3 && !hit; k++) { p.fromBufferAttribute(P, src[i + k]).applyMatrix4(M4); hit = p.x > -0.036 && p.x < 0.024 && p.y > -0.066 && p.y < -0.034 && (p.z > 0.0088 || p.z < -0.0118); }
+      if (!hit) keep.push(src[i], src[i + 1], src[i + 2]);
+    }
+    g.setIndex(keep);
+  });
+}
 function addCleaningRod() {
   if (!nodes.body || Q.has('hero') || CODE) return;
   const steel = new THREE.MeshPhysicalMaterial({ color: 0x3a3c41, metalness: 0.9, roughness: 0.4 });
@@ -463,7 +493,7 @@ function trimBakedHandle() {
       for (let k = 0; k < 3 && !hit; k++) {
         p.fromBufferAttribute(P, src[i + k]).applyMatrix4(M4);
         hit = (p.x > -0.067 && p.x < -0.025 && p.y > 0.024 && p.z > 0.012) ||
-          (HYBRID && p.x > -0.122 && p.x < -0.064 && p.y > -0.082 && p.y < -0.0345);   // hybrid: TRELLIS guard, trigger and catch (rebuilt in code)
+          (HYBRID && p.x > -0.127 && p.x < -0.064 && p.y > -0.082 && p.y < -0.0338);   // hybrid: TRELLIS guard, trigger and catch (rebuilt in code)
       }
       if (!hit) keep.push(src[i], src[i + 1], src[i + 2]);
     }
@@ -479,10 +509,10 @@ function addChargingHandle() {
   const steel = new THREE.MeshPhysicalMaterial({ color: 0x2b2c30, metalness: 0.9, roughness: 0.35 });
   const g = new THREE.Group();
   // flat stamped stem with a rounded end, like the real handle (inside the swept volume the cover clears)
-  const stem = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.0068, 0.028), steel);
-  stem.position.z = 0.016;
-  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.0065, 18, 12), steel);
-  knob.scale.set(1, 0.85, 0.8); knob.position.z = 0.032;
+  const stem = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.0062, 0.017), steel);
+  stem.position.z = 0.0105;
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.0058, 18, 12), steel);
+  knob.scale.set(1.15, 0.85, 0.75); knob.position.z = 0.021;
   g.add(stem, knob); g.traverse(o => { if (o.isMesh) o.layers.enable(1); });
   g.position.set(HANDLE.x - n.base.x, HANDLE.y - n.base.y, HANDLE.z);
   n.pivot.add(g);
@@ -895,7 +925,7 @@ document.getElementById('zreset').addEventListener('click', () => { user.tYaw = 
 window.__user = user;
 
 /* ---------- Intro: slow 360 reveal with a light sweep, skippable ---------- */
-const INTRO = 7.0;
+const INTRO = 2.0;                 // no turntable: hold ~2 s in the hero framing, then start firing
 let introT = (Q.has('p') || Q.has('freeze') || Q.has('nointro')) ? INTRO : 0, introSkip = false;
 function skipIntro() { if (introT < INTRO) introSkip = true; }
 
@@ -941,18 +971,11 @@ function frame() {
     const p = smoothP;
     const strip = THREE.MathUtils.smoothstep(p, 0.0, S0);
 
-    // intro turntable
-    let introYaw = 0;
-    if (introT < INTRO) {
-      introT = introSkip ? Math.min(INTRO, introT + dt * 3.5) : introT + dt;
-      const k = THREE.MathUtils.smootherstep(introT, 0, INTRO);
-      introYaw = (1 - k) * Math.PI * 2;
-      sweepAmt = Math.sin(Math.min(1, introT / INTRO) * Math.PI);
-      const a = -1.2 + 2.4 * (introT / INTRO);
-      sweep.position.set(Math.sin(a) * 2.2, 1.3, Math.cos(a) * 2.2);
-    } else sweepAmt = Math.max(0, sweepAmt - dt);
-    sweep.intensity = 9 * sweepAmt;
-    const introDone = introT >= INTRO;
+    // no turntable or light sweep: the rifle holds in its hero framing, then the firing loop starts
+    const introYaw = 0;
+    if (introT < INTRO) introT += dt;
+    sweep.intensity = 0;
+    const introDone = true, fireReady = introT >= INTRO;
 
     let si = 0; if (p >= S0 - 0.01) si = Math.min(6, 1 + Math.floor((p - S0) / stageSpan)); if (p > S1 - 0.005) si = 7;
     setStage(introDone ? si : -1);
@@ -965,7 +988,7 @@ function frame() {
     if (window.__still) { rig.rotation.set(0, 0, 0); rig.position.y = 0; }
 
     // firing, only at the top of the page once the intro is done
-    const firing = p < S0 * 0.45 && introDone && !Q.has('nofire');
+    const firing = p < S0 * 0.45 && fireReady && !Q.has('nofire');
     if (Q.has('freeze') && firing) { shotSim = simT - parseFloat(Q.get('freeze')); nextShot = simT + 99; ejected = true; }
     else if (firing && !document.hidden) {
       if (simT - nextShot > 0.3) nextShot = simT;                  // came back from a hidden tab
@@ -1082,13 +1105,14 @@ else renderer.setAnimationLoop(frame);
 }) : HYBRID ? Promise.all([import(PLATFORM + 'js/akcode.js'), ...Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g]))]).then(([m, ...list]) => {
   window.__ASSET = PLATFORM;
   list.forEach(([n, g]) => fit(n, g));
-  trimBakedHandle();                                            // TRELLIS trims before the code parts go in
+  trimBakedHandle(); trimMagBand(); addLiners();               // TRELLIS trims before the code parts go in
   const ctx = { recoil, nodes }; m.addHybridAK47(ctx); window.__coverMat = ctx.coverMat;
   document.getElementById('credit').textContent = 'Hybrid: TRELLIS.2 receiver and magazine · moving parts in code';
   return [];
 }) : Promise.all(Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g])))).then(list => {
   list.forEach(([n, g]) => fit(n, g));
   trimBakedHandle();
+  addLiners();
   addCleaningRod();
   buildDustCover();
   addChargingHandle();
