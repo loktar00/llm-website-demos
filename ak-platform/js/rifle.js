@@ -112,6 +112,7 @@ export class Rifle {
     const I = def.img; this.K = def.length / (I.px1 - I.px0); this.PXC = (I.px0 + I.px1) / 2;
     this.root = new THREE.Group(); this.rig = new THREE.Group(); this.recoil = new THREE.Group();
     this.root.add(this.rig); this.rig.add(this.recoil); scene.add(this.root);
+    this.root.visible = false;            // hidden until selected: a prefetched rifle must never render beside the current one
     this.nodes = {}; this.progress = {}; this.ready = false;
     this.shotSim = -10; this.nextShot = 0.8; this.burstLeft = 0; this.recoilBuild = 0; this.heat = 0; this.ejected = true;
   }

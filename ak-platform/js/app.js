@@ -17,9 +17,10 @@ $('snd').addEventListener('click', () => {
 });
 
 /* ---------- routing ---------- */
-const rifleId = RIFLES[Q.get('rifle')] ? Q.get('rifle') : null;
-const cartId = CARTRIDGES[Q.get('cartridge')] ? Q.get('cartridge') : null;
-const MODE = rifleId ? 'rifle' : cartId ? 'cartridge' : 'landing';
+// one page per view: a rifle (default AK-47) or a cartridge; no landing step
+const cartId = CARTRIDGES[Q.get('cartridge')] ? Q.get('cartridge') : (Q.get('view') === 'cartridges' ? '762x39' : null);
+let rifleId = !cartId ? (RIFLES[Q.get('rifle')] && ORDER.includes(Q.get('rifle')) ? Q.get('rifle') : 'ak47') : null;
+const MODE = cartId ? 'cartridge' : 'rifle';
 let landingTab = (Q.get('view') === 'cartridges' || location.hash === '#cartridges') ? 'cartridges' : 'rifles';
 // TRELLIS or code-modeled geometry (?model=trellis|code); rifles without a code model always use TRELLIS
 const DEFAULT_MODEL = 'hybrid';
@@ -33,7 +34,21 @@ window.__scene = scene;
 /* ---------- HUD helpers ---------- */
 const nav = $('nav');
 function navLink(text, url) { const a = document.createElement('a'); a.textContent = text; a.href = url; nav.appendChild(a); return a; }
-// always-visible switcher: every rifle plus the cartridges, no URL typing needed
+// top bar: rifle selector, the selected rifle's cartridge as a chip, and Cartridges
+function buildNav() {
+  nav.innerHTML = '';
+  const seg = document.createElement('span'); seg.className = 'seg'; nav.appendChild(seg);
+  for (const id of ORDER) {
+    const a = document.createElement('a'); a.textContent = RIFLES[id].name; a.href = './?rifle=' + id;
+    if (MODE === 'rifle' && id === rifleId) a.className = 'on';
+    if (MODE === 'rifle') a.addEventListener('click', e => { e.preventDefault(); if (id !== rifleId) selectRifle(id); });
+    seg.appendChild(a);
+  }
+  const cs = document.createElement('span'); cs.className = 'seg chips'; nav.appendChild(cs);
+  const cals = MODE === 'rifle' ? [RIFLES[rifleId].cartridge] : CORE;
+  for (const cal of cals) { const a = document.createElement('a'); a.textContent = CARTRIDGES[cal].name; a.href = './?cartridge=' + cal; a.title = 'The ' + CARTRIDGES[cal].name + ' cartridge'; if (MODE === 'cartridge' && cal === cartId) a.className = 'on'; cs.appendChild(a); }
+  if (MODE === 'rifle') { const a = document.createElement('a'); a.textContent = 'Cartridges'; a.href = './?cartridge=' + RIFLES[rifleId].cartridge; cs.appendChild(a); }
+}
 function rifleSwitcher(current) {
   const seg = document.createElement('span'); seg.className = 'seg'; nav.appendChild(seg);
   for (const id of ORDER) { const a = document.createElement('a'); a.textContent = RIFLES[id].name + (RIFLES[id].wip ? ' (WIP)' : ''); a.href = '?rifle=' + id; if (id === current) a.className = 'on'; seg.appendChild(a); }
@@ -218,18 +233,31 @@ function setup() {
     $('hint').style.display = 'none';
     applyTab();
   } else if (MODE === 'rifle') {
+    scrollEl.style.height = '1600vh';
+    buildLineup();
+    selectRifle(rifleId, true);
+  } else setupCartridge();
+  addEventListener('scroll', () => { if (introT < INTRO) introSkip = true; }, { passive: true });
+}
+// switch the rifle in place: hide the old one, reset the story to the top, hold 2 s, then fire
+function selectRifle(id, first) {
+  if (rifle) rifle.setVisible(false);
+  rifleId = id; ready = false; window.__ready = false;
+  if (!first) { history.replaceState(null, '', '?rifle=' + id + (Q.get('model') ? '&model=' + MODEL : '')); scrollTo(0, 0); scrollP = smoothP = 0; snapCamera(); }
+  for (const k in lineup) { const o = lineup[k].obj; breakdown(o, 0, 0); setOpacity(o.group, 1); o.group.scale.setScalar(1); o.group.rotation.set(0, 0, 0); o.group.position.copy(lineup[k].slot); }
+  for (const k in bulletSets) bulletSets[k].items.forEach(it => { it.b.group.visible = false; });
+  introT = Q.has('nointro') || Q.has('p') || Q.has('freeze') ? INTRO : 0;
+  buildNav(); modelToggle();
+  {
     const def = defFor(rifleId);
     document.title = def.name + ' · AK Platform';
-    if (RIFLES[rifleId].code || RIFLES[rifleId].hybrid) modelToggle();
     $('t1').textContent = def.name.replace('-', '‑'); $('t2').textContent = def.cal + ' · ' + def.blurb;
-    navLink('← All rifles', './').classList.add('home'); rifleSwitcher(rifleId); navLink(CARTRIDGES[def.cartridge].name + ' →', cartLink(def.cartridge));
-    scrollEl.style.height = '1600vh';
     $('credit').textContent = (def.credit || '') + ' · cartridges built in code';
     const c = CARTRIDGES[def.cartridge], n = def.strip.length;
     const fireTxt = def.fire.mode === 'auto' ? 'Full-auto, about 600 rounds a minute, fired in short bursts.' : 'Semi-automatic only: one round per trigger pull.';
     const list = [
       { p: 0, h: 'Firing', d: fireTxt },
-      { p: R.B0, h: 'The cartridge', d: 'A spent case turns upright and joins the lineup, largest to smallest.' },
+      { p: R.B0, h: 'The cartridge · ' + c.name, d: 'A spent case turns upright and joins the lineup, largest to smallest.' },
       { p: R.C0, h: c.name, d: 'Case, primer, powder and bullet, then a half section through the round.' },
       { p: R.C0 + (R.D0 - R.C0) * 0.55, h: 'Bullet types', d: 'Four constructions in ' + c.name + ', each cut in half.' },
     ];
@@ -237,14 +265,17 @@ function setup() {
     list.push({ p: 0.985, h: 'Field stripped', d: 'Every assembly laid out. Scroll back up to put it together.' });
     setStages(list);
     rifle = getRifle(rifleId);
-    rifle.load(updLoad).then(() => { ready = true; readScroll(); updLoad(1); window.__ready = true; })
+    const want = rifleId;
+    rifle.load(updLoad).then(r => { if (rifleId !== want) return; r.setVisible(true); ready = true; readScroll(); updLoad(1); window.__ready = true; })
       .catch(e => { $('load').textContent = 'COULD NOT LOAD MODELS'; console.error(e); });
-    buildLineup();
-  } else {
+  }
+}
+function setupCartridge() {
+  {
     const c = CARTRIDGES[cartId];
     document.title = c.name + ' · AK Platform';
     $('t1').textContent = c.name; $('t2').textContent = c.full;
-    navLink('← All cartridges', './?view=cartridges').classList.add('home'); rifleSwitcher('cartridges');
+    buildNav();
     scrollEl.style.height = '1000vh';
     $('credit').textContent = 'Cartridges built in code from published case and bullet dimensions';
     const core = CORE.includes(cartId);
@@ -262,10 +293,11 @@ function setup() {
     cartState.chambered = chambered.filter(id => RIFLES[id].ready);
     if (cartState.chambered.length) setTimeout(() => cartState.chambered.forEach(id => getRifle(id).load()), 2500);   // lazy prefetch
   }
-  addEventListener('scroll', () => { if (introT < INTRO) introSkip = true; }, { passive: true });
 }
 function modelToggle() {
-  const segEl = document.createElement('span'); segEl.className = 'seg'; nav.appendChild(segEl);
+  const old = document.getElementById('modelSm'); if (old) old.remove();
+  if (!(RIFLES[rifleId].code || RIFLES[rifleId].hybrid)) return;
+  const segEl = document.createElement('span'); segEl.className = 'seg'; segEl.id = 'modelSm'; segEl.title = 'Geometry source (technical)'; document.body.appendChild(segEl);
   for (const [k, t] of [['hybrid', 'Hybrid'], ['trellis', 'TRELLIS'], ['code', 'Code']]) {
     const b = document.createElement('button'); b.textContent = t; b.classList.toggle('on', MODEL === k);
     b.addEventListener('click', () => { if (k === MODEL) return; const q = new URLSearchParams(location.search); q.set('model', k); q.delete('p'); location.search = q.toString(); });

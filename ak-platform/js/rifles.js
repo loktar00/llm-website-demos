@@ -154,7 +154,7 @@ export const RIFLES = {
     credit: 'Hybrid: TRELLIS.2 receiver group, magazine and scope · moving parts in code',
   },
 };
-export const ORDER = ['ak47', 'akm', 'psl'];      // the RPK was dropped from the collection
+export const ORDER = ['ak47', 'psl'];      // Jason's two: the AKM and RPK stay out of the collection
 // the AKM strips exactly like the AK-47
 Object.assign(RIFLES.akm, { strip: RIFLES.ak47.strip, labels: RIFLES.ak47.labels, call: RIFLES.ak47.call });
 // a real AK magazine comes out by rocking forward about its front lug, then drops

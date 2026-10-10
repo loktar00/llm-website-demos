@@ -1,9 +1,9 @@
 # AK platform: rifles and cartridges
 
-A museum-style 3D showcase of four AK-pattern rifles and the cartridges they fire, expanding the
+A museum-style 3D showcase of two AK-pattern rifles (AK-47 and PSL) and the cartridges they fire, expanding the
 [AK-47 field strip](../ak47-field-strip/) page. Two linked paths:
 
-- **Rifles** (`?rifle=ak47`, `?rifle=akm`, `?rifle=rpk`, `?rifle=psl`): the rifle fires (full-auto bursts,
+- **Rifles** (the page opens on the AK-47; switch to the PSL in the top bar): the rifle fires (full-auto bursts,
   or single shots for the semi-automatic PSL), one spent case turns upright and slides into a to-scale
   cartridge lineup, the rifle's own round steps forward, turns horizontal and comes apart (case, primer,
   powder, bullet) into a half section, then four bullet constructions are compared, and finally the
@@ -11,8 +11,7 @@ A museum-style 3D showcase of four AK-pattern rifles and the cartridges they fir
 - **Cartridges** (`?cartridge=762x39`, `?cartridge=762x54r`): the lineup, the breakdown and bullet types,
   then the rifles in this collection chambered for that round, each linking into its rifle path.
 
-The landing page (`./`) has a turntable carousel of the rifles and a Rifles | Cartridges toggle
-(`?view=cartridges`). Drag to rotate, pinch or +/- to zoom; sound is off until you turn it on.
+The top bar switches rifles in place and shows the selected rifle's cartridge; Cartridges opens the lineup. Drag to rotate, pinch or +/- to zoom; sound is off until you turn it on.
 
 Educational, reference-book level: exterior assemblies, the standard user field strip, and cartridge
 cutaways. By Claude Opus 5.5.
@@ -32,12 +31,10 @@ assembly goes through TRELLIS.2 image-to-3D and is fitted to real dimensions in 
 | Rifle (length) | TRELLIS.2 | Built in code |
 | --- | --- | --- |
 | AK-47 (870 mm), default hybrid | receiver group (stock, grip, barrel, sights), magazine (a second TRELLIS magazine isolated from the hero photo) | dust cover, bolt carrier with piston, charging handle, recoil spring, bolt, gas tube with upper handguard, gas block, trigger guard and catch, cleaning rod |
-| AKM (875 mm), hybrid | receiver group (stamped receiver, laminated stock and grip, barrel, sights), magazine (shared with the AK-47) | dust cover, bolt carrier with piston, charging handle, recoil spring, bolt, gas tube with upper handguard, gas block, cleaning rod |
 
 The AK-47 keeps `?model=trellis` (all TRELLIS assemblies) and `?model=code` (everything in code) for comparison.
-TRELLIS rebuilt the open receiver tops as extra internal shapes; on the AKM those (a central fork and side blobs
-above the wall tops) are trimmed under the cover. The AKM gas tube TRELLIS output was unusable (a flat slab), so
-the hybrid's code-built gas tube stands in. The rifle loads in its hero framing and starts firing after two seconds.
+TRELLIS rebuilt the open receiver tops as extra internal shapes (a central fork, side blobs above the wall tops);
+those are trimmed under the cover. The rifle loads in its hero framing and starts firing after two seconds.
 
 **Code-modeled AK-47 (`?model=code`).** The AK-47 also exists fully modeled in code
 (`js/akcode.js`), as a side-by-side test against the TRELLIS version (`?model=trellis`, or the
