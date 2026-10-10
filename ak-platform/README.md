@@ -35,25 +35,15 @@ assembly goes through TRELLIS.2 image-to-3D and is fitted to real dimensions in 
 | --- | --- | --- |
 | AK-47 (870 mm), default hybrid | receiver group (stock, grip, barrel, sights), magazine (a second TRELLIS magazine isolated from the hero photo) | dust cover, bolt carrier with piston, charging handle, recoil spring, bolt, gas tube with upper handguard, gas block, trigger guard and catch, cleaning rod |
 
-The AK-47 keeps `?model=trellis` (all TRELLIS assemblies) and `?model=code` (everything in code) for comparison.
 TRELLIS rebuilt the open receiver tops as extra internal shapes (a central fork, side blobs above the wall tops);
 those are trimmed under the cover. The rifle loads in its hero framing and starts firing after two seconds.
 
-**Code-modeled AK-47 (`?model=code`).** The AK-47 also exists fully modeled in code
-(`js/akcode.js`), as a side-by-side test against the TRELLIS version (`?model=trellis`, or the
-TRELLIS | Code-modeled toggle): a milled Type 3 receiver as a U-channel with the ejection port, handle
-slot and lightening cuts, trunnions and a rear sight block with real bores for the barrel, bolt and gas
-piston, gas block, front sight base with bayonet lug and sling loop, muzzle nut, gas tube with vents,
-upper and lower handguards, cleaning rod, pistol grip, trigger guard, selector, stock with buttplate and
-sling loop, a curved 30-round magazine swept along its centre line with pressed ribs, and the separate
-field-strip parts (magazine, dust cover, recoil spring that compresses with the carrier, bolt carrier with
-piston and charging handle, bolt, gas tube with upper handguard). Proportions were measured from the
-reference photo at 0.631 mm/px. UVs are in metres (wood along the grain, cylinders unwrapped around
-their axis, flat steel planar) so texel density is the same everywhere. The textures in `tex/` (walnut,
-blued steel, phosphate steel, magazine steel) were generated as photos on ComfyUI with Krea2, made
-seamless by offset-and-blend, and given normal maps (from a high-passed height estimate) and roughness
-maps (from luminance), all as WebP. In-page test: zero vertices of the receiver, spring, magazine,
-carrier, bolt or handle inside the cover shell over 31 stroke positions.
+The code-built parts come from `js/akcode.js`, which also holds a fully code-modeled AK-47 that was built as a
+side-by-side test against TRELLIS. The page always shows the hybrid; the all-TRELLIS and all-code versions are no
+longer published. Code-part UVs are in metres (wood along the grain, cylinders unwrapped around their axis, flat
+steel planar). The textures in `tex/` (walnut, blued steel, phosphate steel, magazine steel) were generated as photos
+on ComfyUI with Krea2, made seamless by offset-and-blend, and given normal maps (from a high-passed height estimate)
+and roughness maps (from luminance), all as WebP.
 
 The dust cover is code-built on every rifle: thin stamped sheet metal never came out of TRELLIS
 usable. It is a 0.8 mm ribbed U-arch shell fitted to the receiver mesh (width, lip height, length and

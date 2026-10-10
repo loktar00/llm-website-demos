@@ -23,10 +23,9 @@ let rifleId = !cartId ? (RIFLES[Q.get('rifle')] && ORDER.includes(Q.get('rifle')
 const MODE = cartId ? 'cartridge' : 'rifle';
 let landingTab = (Q.get('view') === 'cartridges' || location.hash === '#cartridges') ? 'cartridges' : 'rifles';
 // TRELLIS or code-modeled geometry (?model=trellis|code); rifles without a code model always use TRELLIS
-const DEFAULT_MODEL = 'hybrid';
-const MODEL = ['hybrid', 'code', 'trellis'].includes(Q.get('model')) ? Q.get('model') : DEFAULT_MODEL;
+const MODEL = 'hybrid';   // always the hybrid build; a ?model= param is ignored
 const defFor = id => { const d = RIFLES[id], v = d[MODEL]; return v && MODEL !== 'trellis' ? Object.assign({}, d, v) : d; };
-const href = (k, v) => '?' + k + '=' + v + (Q.get('model') ? '&model=' + MODEL : '');
+const href = (k, v) => '?' + k + '=' + v;
 const rifleLink = id => href('rifle', id), cartLink = id => href('cartridge', id);
 window.__mode = MODE;
 window.__scene = scene;
@@ -244,11 +243,11 @@ function setup() {
 function selectRifle(id, first) {
   if (rifle) rifle.setVisible(false);
   rifleId = id; ready = false; window.__ready = false;
-  if (!first) { history.replaceState(null, '', '?rifle=' + id + (Q.get('model') ? '&model=' + MODEL : '')); scrollTo(0, 0); scrollP = smoothP = 0; snapCamera(); }
+  if (!first) { history.replaceState(null, '', '?rifle=' + id); scrollTo(0, 0); scrollP = smoothP = 0; snapCamera(); }
   for (const k in lineup) { const o = lineup[k].obj; breakdown(o, 0, 0); setOpacity(o.group, 1); o.group.scale.setScalar(1); o.group.rotation.set(0, 0, 0); o.group.position.copy(lineup[k].slot); }
   for (const k in bulletSets) bulletSets[k].items.forEach(it => { it.b.group.visible = false; });
   introT = Q.has('nointro') || Q.has('p') || Q.has('freeze') ? INTRO : 0;
-  buildNav(); modelToggle();
+  buildNav();
   {
     const def = defFor(rifleId);
     document.title = def.name + ' · AK Platform';
@@ -295,16 +294,6 @@ function setupCartridge() {
     if (!chambered.length) { const s = document.createElement('a'); s.textContent = 'No rifle in this showcase yet'; s.style.pointerEvents = 'none'; cards.appendChild(s); }
     cartState.chambered = chambered.filter(id => RIFLES[id].ready);
     if (cartState.chambered.length) setTimeout(() => cartState.chambered.forEach(id => getRifle(id).load()), 2500);   // lazy prefetch
-  }
-}
-function modelToggle() {
-  const old = document.getElementById('modelSm'); if (old) old.remove();
-  if (!(RIFLES[rifleId].code || RIFLES[rifleId].hybrid)) return;
-  const segEl = document.createElement('span'); segEl.className = 'seg'; segEl.id = 'modelSm'; segEl.title = 'Geometry source (technical)'; document.body.appendChild(segEl);
-  for (const [k, t] of [['hybrid', 'Hybrid'], ['trellis', 'TRELLIS'], ['code', 'Code']]) {
-    const b = document.createElement('button'); b.textContent = t; b.classList.toggle('on', MODEL === k);
-    b.addEventListener('click', () => { if (k === MODEL) return; const q = new URLSearchParams(location.search); q.set('model', k); q.delete('p'); location.search = q.toString(); });
-    segEl.appendChild(b);
   }
 }
 function applyTab() {
