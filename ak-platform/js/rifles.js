@@ -58,10 +58,16 @@ export const RIFLES = {
       build: 'hybrid',
       parts: {
         body:     { file: 'models/ak47/body.glb',     rot: [0, 0, 0],     box: [43, 1323, 208, 503], depth: null,  mat: AK_STEEL },
-        magazine: { file: 'models/ak47/magazine.glb', rot: [-90, 0, 180], box: [564, 774, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
+        // a second TRELLIS magazine (Qwen 2.1 edit isolating it from the hero photo), stood upright and seated where the
+        // code-built magazine sits: rear face against the catch at x -50 mm, feed lips 15 mm up inside the receiver
+        magazine: { file: 'models/ak47/magazine2.glb', rot: [-90, 60, 180], wbox: [-0.0545, 0.1079, -0.218, -0.018], depth: 0.030,
+          rock: [0.011, -0.022, 0], mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
         cover: { code: true }, spring: { code: true }, gastube: { code: true }, carrier: { code: true }, bolt: { code: true },
       },
-      credit: 'Hybrid: TRELLIS.2 receiver and magazine · moving parts in code',
+      // baked handle copy, plus the TRELLIS trigger guard, trigger and catch (rebuilt in code where the magazine seats)
+      trim: [[[-0.067, 0.024, 0.012], [-0.025, 1, 1]], [[-0.122, -0.082, -1], [-0.064, -0.0345, 1]]],
+      paths: null,   // filled below: the AK-47 paths with the magazine rocking out about its front lug
+      credit: 'Hybrid: TRELLIS.2 receiver group · magazine and moving parts in code',
     },
     // the same rifle modeled entirely in code (milled Type 3 receiver), textures generated on ComfyUI
     code: {
@@ -79,3 +85,7 @@ export const RIFLES = {
   psl:  { id: 'psl', name: 'PSL', cal: '7.62×54R', cartridge: '762x54r', length: 1.15, blurb: 'Romanian marksman rifle, semi-automatic', ready: false },
 };
 export const ORDER = ['ak47', 'akm', 'rpk', 'psl'];
+// a real AK magazine comes out by rocking forward about its front lug, then drops
+RIFLES.ak47.hybrid.paths = Object.assign({}, RIFLES.ak47.paths, {
+  magazine: [[0, [0, 0, 0], [0, 0, 0]], [0.3, [0, 0, 0], [0, 0, 14]], [0.55, [0.01, -0.1, 0], [0, 0, 10]], [1, [-0.36, -0.24, 0], [0, 0, 0]]],
+});

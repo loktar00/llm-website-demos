@@ -45,6 +45,7 @@ function materials() {
     park: pbr('park', { tile: 0.05, color: 0xd0d0d0, metal: 0.8, rough: 1, normal: 0.2 }),
     bright: pbr('park', { tile: 0.05, color: 0xf2f2f2, metal: 1, rough: 0.6, normal: 0.12 }),     // in-the-white carrier and bolt
     mag: pbr('magsteel', { tile: 0.09, color: 0xd0d0d0, metal: 0.75, rough: 0.95, normal: 0.15 }),
+    magReal: clampBloom(Object.assign(new THREE.MeshPhysicalMaterial({ color: 0x1d1f23, metalness: 0.85, roughness: 0.34, clearcoat: 0.3, clearcoatRoughness: 0.3 }), {})),
     dark: clampBloom(new THREE.MeshPhysicalMaterial({ color: 0x24262a, metalness: 0.9, roughness: 0.42 })),
     hole: new THREE.MeshBasicMaterial({ color: 0x0b0b0c }),
   };
@@ -333,18 +334,94 @@ function placed(group, dx, dy, sx = 1) { const w = new THREE.Group(); w.add(grou
    rear sight block front x 110 mm, receiver rear x -212 mm). The carrier is 14 mm shorter at the rear so
    full recoil stays inside the receiver; the gas tube is stretched to reach a code gas block, which the
    TRELLIS receiver group lacks (it came off with the gas tube in the field-strip source image). */
-export function addHybridAK47(rifle) {
+/* Real-geometry AK 30-round steel magazine, built in rifle space (mm). xr: rear face of the body at the
+   top; yt: top of the feed lips (inside the receiver); the body runs straight down `straight` mm, then
+   follows a constant-radius arc (R) forward. d0/d1: front-to-back depth at top/bottom, hz: half thickness.
+   Pressed ribs on both sides, a front locking lug that hooks inside the front of the well, a rear lug for
+   the catch, feed lips and a floorplate. Returns the group and the front lug's hook point (rock pivot). */
+export function magazineReal(M, { xr, yt, d0 = 64, d1 = 58, hz = 14, R = 240, arc = 225, straight = 18, ribs = [-21, -7, 7, 21], lips = 3 } = {}) {
+  const MM = M.magReal || M.mag;
+  const g = new THREE.Group(), top = yt - lips;
+  const cx0 = xr + d0 / 2;                                       // centre line at the top
+  const C = new THREE.Vector2(cx0 + R, top - straight);          // arc centre (in front)
+  const NS = 70, NRc = 5, pos = [], uv = [], idx = [];
+  const ringPts = (half, hzz) => roundRect(-half, -hzz, half, hzz, 3.2, NRc - 1);
+  const nRing = ringPts(10, 10).length;
+  let arcLen = 0, prev = null;
+  for (let i = 0; i <= NS; i++) {
+    const f = i / NS, sTop = straight / (straight + arc);
+    let c, nrm;
+    if (f <= sTop) { const k = f / sTop; c = new THREE.Vector2(cx0, top - straight * k); nrm = new THREE.Vector2(1, 0); }
+    else { const th = (f - sTop) / (1 - sTop) * (arc / R); c = new THREE.Vector2(C.x - R * Math.cos(th), C.y - R * Math.sin(th)); nrm = new THREE.Vector2(Math.cos(th), Math.sin(th)); }
+    if (prev) arcLen += c.distanceTo(prev); prev = c;
+    const half = THREE.MathUtils.lerp(d0, d1, Math.max(0, (f - sTop) / (1 - sTop))) / 2, hzz = THREE.MathUtils.lerp(hz, hz - 0.6, f);
+    const ring = ringPts(half, hzz), ribK = THREE.MathUtils.smoothstep(f, sTop + 0.03, sTop + 0.08) * (1 - THREE.MathUtils.smoothstep(f, 0.93, 0.97));
+    for (let j = 0; j <= ring.length; j++) {
+      const [a, b] = ring[j % ring.length];
+      let zz = b;
+      if (Math.abs(b) > hzz - 0.3) { const rib = ribs.reduce((acc, r0) => acc + Math.exp(-Math.pow((a - r0 * half / 32) / 2.4, 2)), 0); zz = b + Math.sign(b) * 2.1 * rib * ribK; }
+      pos.push((c.x + nrm.x * a) * mm, (c.y + nrm.y * a) * mm, zz * mm); uv.push(arcLen * mm, (j / ring.length) * 0.12);
+    }
+  }
+  for (let i = 0; i < NS; i++) for (let j = 0; j < nRing; j++) { const a = i * (nRing + 1) + j, b = a + nRing + 1; idx.push(a, b, a + 1, b, b + 1, a + 1); }
+  const body = new THREE.BufferGeometry();
+  body.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); body.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  body.setIndex(idx); body.computeVertexNormals(); orientOutward(body);
+  g.add(mesh(body, MM));
+  // closed top under the lips
+  g.add(mesh(new THREE.BoxGeometry((d0 - 1) * mm, 1 * mm, (2 * hz - 1) * mm).translate(cx0 * mm, (top - 0.5) * mm, 0), MM));
+  // feed lips: two curled rails along the top, with the cartridge-shaped opening between them
+  for (const sgn of [1, -1]) g.add(mesh(cylX(1.6, cx0 - d0 / 2 + 10, cx0 + d0 / 2 - 14, top + 1.4, sgn * (hz - 5), 10), MM));
+  g.add(mesh(new THREE.BoxGeometry((d0 - 26) * mm, lips * mm, (2 * hz - 13) * mm).translate((cx0 - 4) * mm, (top + lips / 2) * mm, 0), M.dark));   // top round's case peeking out
+  // front locking lug (hooks inside the front of the well) and rear catch lug
+  const fx = cx0 + d0 / 2;
+  g.add(mesh(sideExtrude([[fx - 1, top - 9], [fx + 4.5, top - 7], [fx + 4.5, top - 2], [fx - 1, top - 1]], -7, 7, 0.6), MM));
+  const rx = cx0 - d0 / 2;
+  g.add(mesh(sideExtrude([[rx + 1, top - 15], [rx - 3, top - 14], [rx - 3, top - 9], [rx + 1, top - 8]], -6, 6, 0.5), MM));
+  // floorplate at the bottom, square to the curve
+  const thE = arc / R, cE = new THREE.Vector2(C.x - R * Math.cos(thE), C.y - R * Math.sin(thE));
+  const fp = mesh(new THREE.BoxGeometry((d1 + 5) * mm, 4 * mm, (2 * hz + 3) * mm), MM);
+  fp.position.set((cE.x - Math.sin(thE) * 2) * mm, (cE.y - Math.cos(thE) * 2) * mm, 0); fp.rotation.z = thE; g.add(fp);
+  return { group: g, lug: new THREE.Vector3((fx + 4) * mm, (top - 4) * mm, 0) };
+}
+
+// trigger guard, trigger and magazine catch in front of it (static, with the receiver), for the hybrid well
+function wellParts(M, { guardRear, guardFront, yb, catchX }) {
+  const g = new THREE.Group();
+  const path = new THREE.CatmullRomCurve3([[guardRear, yb], [guardRear + 3, yb - 12], [guardRear + 11, yb - 17], [guardFront - 8, yb - 17], [guardFront - 2, yb - 10], [guardFront, yb]].map(p => new THREE.Vector3(p[0] * mm, p[1] * mm, 0)));
+  g.add(mesh(new THREE.TubeGeometry(path, 40, 2.3 * mm, 8, false), M.blued));
+  const tx = guardRear + (guardFront - guardRear) * 0.45;
+  g.add(mesh(sideExtrude([[tx, yb], [tx + 6, yb], [tx + 4, yb - 11], [tx - 1, yb - 19], [tx - 5, yb - 21], [tx - 4, yb - 15], [tx - 1, yb - 9]], -2.5, 2.5, 0.8), M.blued));
+  // catch: a lever pivoting on the guard's front, its tooth against the magazine's rear lug, paddle below
+  g.add(mesh(sideExtrude([[catchX - 14, yb + 1], [catchX, yb + 1], [catchX, yb - 4], [catchX - 3, yb - 6], [catchX - 7, yb - 24], [catchX - 11, yb - 30], [catchX - 15, yb - 27], [catchX - 12, yb - 10]], -5.5, 5.5, 1), M.blued));
+  return g;
+}
+
+export const HYBRID_AK47 = { carrier: { dx: -25, dy: 1.8, rear: -62 }, bolt: { dx: -25, dy: 0 }, spring: { dx: -11, dy: 5.7 },
+  // gas tube rear butts the TRELLIS rear sight block (front face x 96)
+  gastube: { x0: 96, x1: 300, dy: 1.8 }, gasblock: { x0: 300, x1: 334, yb: -14, yt: 35, ty: 23.8 },
+  // magazine seated by construction: rear face against the catch at x -50, lips 15 mm up inside the receiver (bottom y -33)
+  well: { guardRear: -118, guardFront: -64, yb: -33, catchX: -50.5 } };
+export function addHybridAK47(rifle) { return addHybrid(rifle, HYBRID_AK47); }
+// H: per-rifle placement of the code parts in a TRELLIS rifle (mm): carrier/bolt/spring offsets, gas tube span
+// along the bore (its axis follows the carrier's piston), and a gas block from the barrel up to the tube socket.
+export function addHybrid(rifle, H) {
   const M = materials();
   rifle.coverMat = Object.assign(M.blued.clone(), { side: THREE.DoubleSide });
-  addNode(rifle, 'carrier', placed(carrierGroup(M, { rear: -62 }), -25, 1.8));
-  addNode(rifle, 'bolt', placed(boltGroup(M), -25, 0));
-  const sp = springGroup(M), sn = addNode(rifle, 'spring', placed(sp, -11, 5.7));
-  sn.coil = sp.userData.coil; sn.coilL = sp.userData.coilL;
-  addNode(rifle, 'gastube', placed(gasTubeGroup(M), 110 - 106 * 1.067, 1.8, 1.067));
-  // gas block on the TRELLIS barrel (centre y -4.6 mm, radius 8.7 mm) up to the tube socket, with the front sling loop
-  const gbg = new THREE.Group();
-  gbg.add(mesh(sideExtrude([[300, -14], [334, -14], [334, 2], [318, 34.5], [300, 35]], -9.5, 9.5, 1.5), M.blued));
-  const sl = new THREE.TorusGeometry(6.5 * mm, 1.2 * mm, 8, 20); sl.rotateY(Math.PI / 2); sl.translate(318 * mm, -19 * mm, -10 * mm); gbg.add(mesh(sl, M.dark));
+  addNode(rifle, 'carrier', placed(carrierGroup(M, { rear: H.carrier.rear }), H.carrier.dx, H.carrier.dy));
+  addNode(rifle, 'bolt', placed(boltGroup(M), H.bolt.dx, H.bolt.dy));
+  const sp = springGroup(M), sn = addNode(rifle, 'spring', placed(sp, H.spring.dx, H.spring.dy, H.spring.sx || 1));
+  sn.coil = sp.userData.coil; sn.coilL = sp.userData.coilL * (H.spring.sx || 1);
+  const sx = (H.gastube.x1 - H.gastube.x0) / (284 - 106);
+  addNode(rifle, 'gastube', placed(gasTubeGroup(M), H.gastube.x0 - 106 * sx, H.gastube.dy, sx));
+  if (H.magazine) {
+    const mg = magazineReal(M, H.magazine), mn = addNode(rifle, 'magazine', mg.group);
+    mn.rock = mg.lug;                                            // removal rocks forward about the front lug
+  }
+  const G = H.gasblock, gbg = new THREE.Group();
+  if (H.well) gbg.add(wellParts(M, H.well));
+  gbg.add(mesh(sideExtrude([[G.x0, G.yb], [G.x1, G.yb], [G.x1, G.yb + 16], [G.x0 + (G.x1 - G.x0) * 0.53, G.yt - 0.5], [G.x0, G.yt]], -9.5, 9.5, 1.5), M.blued));
+  const sl = new THREE.TorusGeometry(6.5 * mm, 1.2 * mm, 8, 20); sl.rotateY(Math.PI / 2); sl.translate((G.x0 + G.x1) / 2 * mm, (G.yb - 5) * mm, -10 * mm); gbg.add(mesh(sl, M.dark));
   const bn = rifle.nodes.body;
   if (bn) { const off = new THREE.Group(); off.position.copy(bn.base).negate(); off.add(gbg); bn.pivot.add(off); } else rifle.recoil.add(gbg);
 }

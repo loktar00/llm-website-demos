@@ -73,6 +73,7 @@
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
@@ -119,7 +120,11 @@ const LABELS = {
   spring: ['Recoil spring', 'spring and guide rod'], gastube: ['Gas tube', 'with upper handguard'],
   carrier: ['Bolt carrier', 'with gas piston'], bolt: ['Bolt', 'rotating, two lugs'], magazine: ['Magazine', '30 rounds'],
 };
-if (HYBRID) for (const k of ['spring', 'gastube', 'carrier', 'bolt']) PARTS[k] = { code: true };
+if (HYBRID) {
+  for (const k of ['spring', 'gastube', 'carrier', 'bolt']) PARTS[k] = { code: true };
+  PARTS.magazine = { url: PLATFORM + 'models/ak47/magazine2.glb', rot: [-90, 60, 180], wbox: [-0.0545, 0.1079, -0.218, -0.018], depth: 0.030,
+    rock: [0.011, -0.022, 0], mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } };
+}
 if (Q.has('hero')) {            // approach A for comparison: the one-shot complete rifle in place of the parts
   for (const k of Object.keys(PARTS)) delete PARTS[k];
   PARTS.body = { file: 'hero.glb', rot: [0, 0, 0], box: [43, 1323, 208, 640], depth: null, mat: PARTS_BODY_MAT() };
@@ -153,6 +158,8 @@ const PATHS = {
   carrier:  [[0, [0, 0, 0], [0, 0, 0]], [0.28, [-0.105, 0, 0], [0, 0, 0]], [0.42, [-0.115, 0.012, 0], [0, 0, -4]], [0.68, [-0.27, 0.03, 0], [0, 0, -6]], [0.78, [-0.3, 0.07, 0.03], [0, 0, -2]], [0.88, [-0.17, -0.09, 0.14], [0, 0, 0]], [1, [-0.08, -0.36, 0.0], [0, 0, 0]]],
   bolt:     [[0, [0, 0, 0], [0, 0, 0]], [0.22, [0, 0, 0], [35, 0, 0]], [0.45, [0.02, -0.05, 0.01], [35, 0, 0]], [1, [0.42, -0.012, 0], [0, 0, 0]]],
 };
+// hybrid: the magazine rocks forward about its front lug, then drops (as on a real AK)
+if (HYBRID) PATHS.magazine = [[0, [0, 0, 0], [0, 0, 0]], [0.3, [0, 0, 0], [0, 0, 14]], [0.55, [0.01, -0.1, 0], [0, 0, 10]], [1, [-0.36, -0.24, 0], [0, 0, 0]]];
 
 /* ---------- Renderer, scene ---------- */
 const canvas = document.getElementById('c');
@@ -280,11 +287,11 @@ function grade(mat, P) {
 }
 
 /* ---------- Load + fit parts ---------- */
-const loader = new GLTFLoader();
+const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);   // the hybrid magazine is meshopt-compressed
 const progress = {};
 function load(name) {
   const P = PARTS[name];
-  return new Promise((res, rej) => loader.load(ASSET + P.file, g => res(g), e => {
+  return new Promise((res, rej) => loader.load(P.url || ASSET + P.file, g => res(g), e => {
     if (e.lengthComputable) { progress[name] = e.loaded / e.total; updLoad(); }
   }, rej));
 }
@@ -303,10 +310,10 @@ function fit(name, gltf) {
   inner.add(model);
   inner.rotation.set(...P.rot.map(THREE.MathUtils.degToRad));
   inner.updateMatrixWorld(true);
-  const b = new THREE.Box3().setFromObject(inner), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
+  const b = new THREE.Box3().setFromObject(inner, true), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
   inner.position.sub(c);
   const scaler = new THREE.Group(); scaler.add(inner);
-  const [x0, x1, y0, y1] = P.box;
+  const [x0, x1, y0, y1] = P.wbox ? [P.wbox[0] / K + PX0, P.wbox[1] / K + PX0, PY0 - P.wbox[3] / K, PY0 - P.wbox[2] / K] : P.box;
   const L = (x1 - x0) * K, H = (y1 - y0) * K;
   const sx = L / s.x, sy = H / s.y;
   const sz = P.depth ? P.depth / s.z : (sx + sy) / 2;
@@ -316,6 +323,7 @@ function fit(name, gltf) {
   pivot.position.copy(base);
   recoil.add(pivot);
   nodes[name] = { pivot, base, half: new THREE.Vector3(L / 2, H / 2, (P.depth || s.z * sz) / 2) };
+  if (P.rock) nodes[name].rock = new THREE.Vector3(...P.rock);     // removal rocks about the front lug
 }
 
 /* The dust cover is the one part built in code (TRELLIS never produced a usable thin stamped
@@ -440,8 +448,10 @@ function addCleaningRod() {
 
 /* TRELLIS baked a second, static charging handle into the receiver mesh (it is in the source
    image). The working one rides on the carrier, so the baked copy is cut out of the body. */
+let trimmed = false;
 function trimBakedHandle() {
-  const n = nodes.body; if (!n || Q.has('hero') || CODE) return;
+  const n = nodes.body; if (!n || Q.has('hero') || CODE || trimmed) return;
+  trimmed = true;
   recoil.updateMatrixWorld(true);
   const inv = new THREE.Matrix4().copy(recoil.matrixWorld).invert(), M4 = new THREE.Matrix4(), p = new THREE.Vector3();
   n.pivot.traverse(o => {
@@ -452,7 +462,8 @@ function trimBakedHandle() {
       let hit = false;
       for (let k = 0; k < 3 && !hit; k++) {
         p.fromBufferAttribute(P, src[i + k]).applyMatrix4(M4);
-        hit = p.x > -0.067 && p.x < -0.025 && p.y > 0.024 && p.z > 0.012;
+        hit = (p.x > -0.067 && p.x < -0.025 && p.y > 0.024 && p.z > 0.012) ||
+          (HYBRID && p.x > -0.122 && p.x < -0.064 && p.y > -0.082 && p.y < -0.0345);   // hybrid: TRELLIS guard, trigger and catch (rebuilt in code)
       }
       if (!hit) keep.push(src[i], src[i + 1], src[i + 2]);
     }
@@ -983,6 +994,7 @@ function frame() {
       samplePath(PATHS[name], u, tmpP, tmpR);
       n.pivot.position.copy(n.base).add(tmpP);
       n.pivot.rotation.copy(tmpR);
+      if (n.rock) { const d = v3.copy(n.base).sub(n.rock), d0 = d.clone(); d.applyAxisAngle(new THREE.Vector3(0, 0, 1), tmpR.z); n.pivot.position.add(d.sub(d0)); }
     }
     const cN = nodes.carrier, bN = nodes.bolt;
     const cycle = fireCurve(ts) * CARRIER_STROKE;
@@ -1070,6 +1082,7 @@ else renderer.setAnimationLoop(frame);
 }) : HYBRID ? Promise.all([import(PLATFORM + 'js/akcode.js'), ...Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g]))]).then(([m, ...list]) => {
   window.__ASSET = PLATFORM;
   list.forEach(([n, g]) => fit(n, g));
+  trimBakedHandle();                                            // TRELLIS trims before the code parts go in
   const ctx = { recoil, nodes }; m.addHybridAK47(ctx); window.__coverMat = ctx.coverMat;
   document.getElementById('credit').textContent = 'Hybrid: TRELLIS.2 receiver and magazine · moving parts in code';
   return [];

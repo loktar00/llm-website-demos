@@ -97,7 +97,7 @@ function fireCurve(t) {
   return 0;
 }
 function kickCurve(t) { if (t < 0) return 0; if (t < 0.012) return t / 0.012; return Math.exp(-(t - 0.012) * 22) * Math.cos((t - 0.012) * 30); }
-const v3 = new THREE.Vector3();
+const v3 = new THREE.Vector3(), ZAXIS = new THREE.Vector3(0, 0, 1);
 function samplePath(path, u, outPos, outRot) {
   let i = 0; while (i < path.length - 2 && u > path[i + 1][0]) i++;
   const a = path[i], b = path[i + 1];
@@ -127,8 +127,9 @@ export class Rifle {
       this._loading = Promise.all([import('./akcode.js'), ...glbs.map(n => loadGLB((window.__ASSET || '') + P[n].file, f => { this.progress[n] = f; upd2(); }).then(g => [n, g]))])
         .then(([m, ...list]) => {
           list.forEach(([n, g]) => this.fit(n, g));
-          m.addHybridAK47(this);
-          this.trimBaked(); this.addRod(); this.buildCover(); this.addHandle(); this.buildFx();
+          this.trimBaked();                  // TRELLIS-only trims first, so they never cut the code parts added next
+          if (this.def.hybridParts) m.addHybrid(this, this.def.hybridParts); else m.addHybridAK47(this);
+          this.addRod(); this.buildCover(); this.addHandle(); this.buildFx();
           this.ready = true; return this;
         });
       return this._loading;
@@ -155,16 +156,19 @@ export class Rifle {
     model.traverse(o => { if (o.isMesh) { o.layers.enable(1); if (o.material) o.material = grade(o.material, P.mat); } });
     const inner = new THREE.Group(); inner.add(model);
     inner.rotation.set(...P.rot.map(THREE.MathUtils.degToRad)); inner.updateMatrixWorld(true);
-    const b = new THREE.Box3().setFromObject(inner), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
+    // precise: vertex bounds, so off-axis rotations (the upright magazine) fit their box exactly
+    const b = new THREE.Box3().setFromObject(inner, true), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
     inner.position.sub(c);
     const scaler = new THREE.Group(); scaler.add(inner);
-    const [x0, x1, y0, y1] = P.box, L = (x1 - x0) * K, H = (y1 - y0) * K;
+    // box: body-image px; wbox: metres in rifle space (for parts shared between rifles)
+    const [x0, x1, y0, y1] = P.wbox ? P.wbox.map(v => v / K) : P.box, L = (x1 - x0) * K, H = (y1 - y0) * K;
     const sx = L / s.x, sy = H / s.y, sz = P.depth ? P.depth / s.z : (sx + sy) / 2;
     scaler.scale.set(sx, sy, sz);
     const pivot = new THREE.Group(); pivot.add(scaler);
-    const base = new THREE.Vector3(this.wx((x0 + x1) / 2), this.wy((y0 + y1) / 2), P.z || 0);
+    const base = P.wbox ? new THREE.Vector3((P.wbox[0] + P.wbox[1]) / 2, (P.wbox[2] + P.wbox[3]) / 2, P.z || 0) : new THREE.Vector3(this.wx((x0 + x1) / 2), this.wy((y0 + y1) / 2), P.z || 0);
     pivot.position.copy(base); this.recoil.add(pivot);
     this.nodes[name] = { pivot, base, half: new THREE.Vector3(L / 2, H / 2, (P.depth || s.z * sz) / 2) };
+    if (P.rock) this.nodes[name].rock = new THREE.Vector3(...P.rock);      // removal rocks about this point (front lug)
   }
 
   /* TRELLIS can bake a static copy of a moving part into the body (it is in the source image): cut it out */
@@ -172,7 +176,7 @@ export class Rifle {
     const n = this.nodes.body, T = this.def.trim; if (!n || !T) return;
     this.recoil.updateMatrixWorld(true);
     const inv = new THREE.Matrix4().copy(this.recoil.matrixWorld).invert(), M4 = new THREE.Matrix4(), p = new THREE.Vector3();
-    const [lo, hi] = T;
+    const boxes = Array.isArray(T[0][0]) ? T : [T];
     n.pivot.traverse(o => {
       if (!o.isMesh || !o.geometry.index) return;
       M4.multiplyMatrices(inv, o.matrixWorld);
@@ -181,7 +185,7 @@ export class Rifle {
         let hit = false;
         for (let k = 0; k < 3 && !hit; k++) {
           p.fromBufferAttribute(P, src[i + k]).applyMatrix4(M4);
-          hit = p.x > lo[0] && p.x < hi[0] && p.y > lo[1] && p.y < hi[1] && p.z > lo[2] && p.z < hi[2];
+          hit = boxes.some(([lo, hi]) => p.x > lo[0] && p.x < hi[0] && p.y > lo[1] && p.y < hi[1] && p.z > lo[2] && p.z < hi[2]);
         }
         if (!hit) keep.push(src[i], src[i + 1], src[i + 2]);
       }
@@ -398,6 +402,10 @@ export class Rifle {
       const node = this.nodes[s.part], path = this.def.paths[s.part]; if (!node || !path) return;
       samplePath(path, this.stripU[i], tmpP, tmpR);
       node.pivot.position.copy(node.base).add(tmpP); node.pivot.rotation.copy(tmpR);
+      if (node.rock) {                     // rotate about the rock point (the magazine's front lug), not the part's centre
+        const d = v3.copy(node.base).sub(node.rock), d0 = d.clone();
+        d.applyAxisAngle(ZAXIS, tmpR.z); node.pivot.position.add(d.sub(d0));
+      }
     });
     const cN = this.nodes.carrier, bN = this.nodes.bolt;
     if (cN) cN.pivot.position.x -= fireCurve(ts) * this.def.handle.stroke;
