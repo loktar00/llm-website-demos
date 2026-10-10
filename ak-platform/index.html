@@ -66,6 +66,14 @@
   #cards a { text-decoration: none; padding: 10px 16px; border-radius: 18px; border: 1px solid #a3a3a3; background: var(--chip);
     font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #333; }
   #cards a:hover, #cards a.on { background: var(--chip-on); }
+  #nav a.home { background: #3a3a3a; color: #eee; border-color: #3a3a3a; }
+  #nav .seg a { border: 0; border-radius: 0; }
+  #nav .seg a.on { background: #3a3a3a; color: #eee; }
+  body.rifletab #cards { bottom: 3vh; } body.rifletab #carousel { bottom: 14vh; }
+  #cards a.big { display: flex; flex-direction: column; gap: 4px; padding: 12px 20px; border-radius: 14px; min-width: 130px; text-align: center; }
+  #cards a.big b { font-weight: 400; font-size: 15px; letter-spacing: .25em; }
+  #cards a.big span { font-size: 9px; letter-spacing: .16em; color: var(--soft); }
+  @media (max-width: 640px) { #cards a.big { min-width: 0; padding: 8px 10px; } #cards a.big b { font-size: 12px; } #nav { flex-wrap: wrap; right: 16px; } }
   @media (max-width: 640px) {
     #view { left: 16px; bottom: 14px; } #view .tip { display: none; }
     #title { top: 18px; left: 16px; } #title h1 { font-size: 20px; } #title p { font-size: 10px; }

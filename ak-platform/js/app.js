@@ -33,6 +33,12 @@ window.__scene = scene;
 /* ---------- HUD helpers ---------- */
 const nav = $('nav');
 function navLink(text, url) { const a = document.createElement('a'); a.textContent = text; a.href = url; nav.appendChild(a); return a; }
+// always-visible switcher: every rifle plus the cartridges, no URL typing needed
+function rifleSwitcher(current) {
+  const seg = document.createElement('span'); seg.className = 'seg'; nav.appendChild(seg);
+  for (const id of ORDER) { const a = document.createElement('a'); a.textContent = RIFLES[id].name + (RIFLES[id].wip ? ' (WIP)' : ''); a.href = '?rifle=' + id; if (id === current) a.className = 'on'; seg.appendChild(a); }
+  const c = document.createElement('a'); c.textContent = 'Cartridges'; c.href = './?view=cartridges'; if (current === 'cartridges') c.className = 'on'; seg.appendChild(c);
+}
 const bar = $('bar'), cap = $('cap');
 let STAGES = [], shownStage = -2;
 function setStages(list) { STAGES = list; bar.innerHTML = ''; list.forEach(() => bar.appendChild(document.createElement('i'))); shownStage = -2; }
@@ -183,8 +189,9 @@ let car = { i: Math.max(0, ORDER.indexOf(Q.get('slide') || 'ak47')), t0: now(), 
 function slide(d) { car.i = (car.i + d + ORDER.length) % ORDER.length; car.t0 = now(); car.lastUser = now(); updateCarousel(); }
 function updateCarousel() {
   const def = RIFLES[ORDER[car.i]];
-  $('cname').textContent = def.name; $('ccal').textContent = def.cal + ' · ' + def.blurb;
-  const go = $('cgo'); go.href = rifleLink(def.id); go.textContent = def.ready ? 'Explore' : 'In the workshop'; go.classList.toggle('off', !def.ready);
+  $('cname').textContent = def.name + (def.wip ? ' · work in progress' : ''); $('ccal').textContent = def.cal + ' · ' + def.blurb;
+  const go = $('cgo'); go.href = rifleLink(def.id); go.textContent = def.ready ? 'Explore the ' + def.name + ' →' : 'In the workshop'; go.classList.toggle('off', !def.ready);
+  [...$('cards').children].forEach(a => a.classList.toggle('on', a.dataset.id === def.id));
   [...$('cdots').children].forEach((d, k) => d.classList.toggle('on', k === car.i));
   for (const id of ORDER) if (rifles[id]) rifles[id].setVisible(false);
   if (def.ready) {
@@ -215,7 +222,7 @@ function setup() {
     document.title = def.name + ' · AK Platform';
     if (RIFLES[rifleId].code || RIFLES[rifleId].hybrid) modelToggle();
     $('t1').textContent = def.name.replace('-', '‑'); $('t2').textContent = def.cal + ' · ' + def.blurb;
-    navLink('← All rifles', './'); navLink(CARTRIDGES[def.cartridge].name + ' →', cartLink(def.cartridge));
+    navLink('← All rifles', './').classList.add('home'); rifleSwitcher(rifleId); navLink(CARTRIDGES[def.cartridge].name + ' →', cartLink(def.cartridge));
     scrollEl.style.height = '1600vh';
     $('credit').textContent = (def.credit || '') + ' · cartridges built in code';
     const c = CARTRIDGES[def.cartridge], n = def.strip.length;
@@ -237,7 +244,7 @@ function setup() {
     const c = CARTRIDGES[cartId];
     document.title = c.name + ' · AK Platform';
     $('t1').textContent = c.name; $('t2').textContent = c.full;
-    navLink('← All cartridges', './?view=cartridges');
+    navLink('← All cartridges', './?view=cartridges').classList.add('home'); rifleSwitcher('cartridges');
     scrollEl.style.height = '1000vh';
     $('credit').textContent = 'Cartridges built in code from published case and bullet dimensions';
     const core = CORE.includes(cartId);
@@ -270,9 +277,15 @@ function applyTab() {
   const rifTab = landingTab === 'rifles';
   for (const id in lineup) lineup[id].obj.group.visible = !rifTab;
   $('carousel').style.display = rifTab ? 'flex' : 'none';
-  $('cards').style.display = rifTab ? 'none' : 'flex';
+  $('cards').style.display = 'flex'; document.body.classList.toggle('rifletab', rifTab);
   $('t2').textContent = rifTab ? 'Four rifles · field strip · cartridges' : 'Cartridges to scale';
-  if (rifTab) { updateCarousel(); setStages([]); snapCamera(); }
+  if (rifTab) {
+    const cards = $('cards'); cards.innerHTML = '';
+    for (const id of ORDER) { const a = document.createElement('a'); a.dataset.id = id; a.href = rifleLink(id); a.className = 'big';
+      a.innerHTML = '<b>' + RIFLES[id].name + '</b><span>' + RIFLES[id].cal + (RIFLES[id].wip ? ' · work in progress' : '') + '</span>';
+      a.addEventListener('mouseenter', () => { slide(ORDER.indexOf(id) - car.i); }); cards.appendChild(a); }
+    updateCarousel(); setStages([]); snapCamera();
+  }
   else {
     for (const id of ORDER) if (rifles[id]) rifles[id].setVisible(false);
     $('load').style.opacity = 0;
