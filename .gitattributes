@@ -7,3 +7,4 @@ ordinary-torn-site/index.html -text
 *.glb binary
 # Stored byte-exact so GitHub Pages serves exactly the canonical build.
 ak47-field-strip/index.html -text
+*.mp3 binary

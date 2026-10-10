@@ -42,7 +42,7 @@ sites/<model>/<variant>/<cell>/index.html   # one benchmarked cell, plus its met
 <original-qwen-cell>/index.html             # the original Qwen 3.8 27B demos, unchanged
 mimo-flash-website-journey/index.html       # a one-off showcase, outside the benchmark battery, with a video preview in thumbs/
 ordinary-torn-site/index.html               # a one-off showcase (Claude Opus 5.5); needs a Chrome flag, see its README
-ak47-field-strip/index.html                 # a one-off showcase (Claude Opus 5.5): TRELLIS.2 models beside the page, see its README
+ak47-field-strip/index.html                 # a one-off showcase (Claude Opus 5.5): TRELLIS.2 models and CC-licensed sounds beside the page, see its README
 ```
 
 ## How these were generated

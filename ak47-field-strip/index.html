@@ -93,7 +93,7 @@ const wx = px => (px - PX0) * K, wy = py => (PY0 - py) * K;
 const PARTS = {
   body:     { file: 'body.glb',     rot: [0, 0, 0],      box: [43, 1323, 208, 503], depth: null,  mat: { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] } },
   magazine: { file: 'magazine.glb', rot: [-90, 0, 180],  box: [576, 786, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
-  cover:    { file: 'dustcover.glb',rot: [180, 0, 0],    box: [398, 800, 226, 286], depth: 0.05,  mat: { metal: 0.9, rough: 0.7, tint: [0.62, 0.65, 0.72] } },
+  cover:    { code: true,                               box: [398, 800, 228, 286], depth: 0.05 },   // built in code below
   spring:   { file: 'spring.glb',   rot: [0, 0, 0],      box: [404, 690, 244, 274], depth: 0.02,  mat: { metal: 1.0, rough: 0.55, tint: [1, 1, 1] } },
   gastube:  { file: 'gastube.glb',  rot: [0, 90, 0],     box: [834, 1160, 224, 280], depth: 0.04, mat: { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] } },
   carrier:  { file: 'carrier.glb',  rot: [0, 180, 0],    box: [598, 1140, 244, 284], depth: 0.03,  mat: { metal: 1.0, rough: 0.65, tint: [0.9, 0.92, 1.0] } },
@@ -116,9 +116,9 @@ const STAGES = [
   { part: 'magazine', n: '01', h: 'Magazine',      d: 'Press the catch and drop it out of the magazine well.' },
   { part: 'cover',    n: '02', h: 'Dust cover',    d: 'Press the recoil spring guide and lift the receiver cover away.' },
   { part: 'spring',   n: '03', h: 'Recoil spring', d: 'The spring and its guide rod slide forward and out of the receiver.' },
-  { part: 'gastube',  n: '04', h: 'Gas tube',      d: 'Turn the lever up; the gas tube lifts off with the upper handguard.' },
-  { part: 'carrier',  n: '05', h: 'Bolt carrier',  d: 'Draw the carrier fully back and lift it out with its gas piston.' },
-  { part: 'bolt',     n: '06', h: 'Bolt',          d: 'Bolt separated from carrier/piston: rotate it and slide it out of the carrier.' },
+  { part: 'carrier',  n: '04', h: 'Bolt carrier',  d: 'Draw the carrier fully back and lift it; the gas piston slides out of the gas tube with it.' },
+  { part: 'bolt',     n: '05', h: 'Bolt',          d: 'Bolt separated from carrier/piston: rotate it and slide it out of the carrier.' },
+  { part: 'gastube',  n: '06', h: 'Gas tube',      d: 'Last, turn the lock lever up and lift the gas tube off with the upper handguard.' },
   { part: null,       n: '07', h: 'Field stripped', d: 'Seven assemblies, each modelled from a single generated image.' },
 ];
 const S0 = 0.07, S1 = 0.93;                              // disassembly spans [S0, S1]
@@ -131,7 +131,8 @@ const PATHS = {
   cover:    [[0, [0, 0, 0], [0, 0, 0]], [0.3, [-0.006, 0.03, 0], [0, 0, 4]], [0.6, [-0.03, 0.12, 0.0], [0, 0, 0]], [1, [-0.03, 0.17, 0], [0, 0, 0]]],
   spring:   [[0, [0, 0, 0], [0, 0, 0]], [0.2, [0.01, 0, 0], [0, 0, 0]], [0.45, [0.01, 0.07, 0], [0, 0, 8]], [1, [-0.03, 0.27, 0], [0, 0, 0]]],
   gastube:  [[0, [0, 0, 0], [0, 0, 0]], [0.3, [0, 0.02, 0], [0, 0, -5]], [0.6, [0.02, 0.1, 0], [0, 0, 0]], [1, [0.06, 0.17, 0], [0, 0, 0]]],
-  carrier:  [[0, [0, 0, 0], [0, 0, 0]], [0.35, [-0.12, 0, 0], [0, 0, 0]], [0.6, [-0.13, 0.06, 0.0], [0, 0, -6]], [1, [-0.08, -0.36, 0.0], [0, 0, 0]]],
+  // back to the end of the receiver, rear lifted, then straight back until the piston clears the gas tube
+  carrier:  [[0, [0, 0, 0], [0, 0, 0]], [0.28, [-0.105, 0, 0], [0, 0, 0]], [0.42, [-0.115, 0.012, 0], [0, 0, -4]], [0.68, [-0.27, 0.03, 0], [0, 0, -6]], [0.78, [-0.3, 0.07, 0.03], [0, 0, -2]], [0.88, [-0.17, -0.09, 0.14], [0, 0, 0]], [1, [-0.08, -0.36, 0.0], [0, 0, 0]]],
   bolt:     [[0, [0, 0, 0], [0, 0, 0]], [0.22, [0, 0, 0], [35, 0, 0]], [0.45, [0.02, -0.05, 0.01], [35, 0, 0]], [1, [0.42, -0.012, 0], [0, 0, 0]]],
 };
 
@@ -270,7 +271,8 @@ function load(name) {
   }, rej));
 }
 function updLoad() {
-  const v = Object.keys(PARTS).reduce((a, k) => a + (progress[k] || 0), 0) / Object.keys(PARTS).length;
+  const ks = Object.keys(PARTS).filter(k => !PARTS[k].code);
+  const v = ks.reduce((a, k) => a + (progress[k] || 0), 0) / ks.length;
   document.getElementById('lp').textContent = Math.round(v * 100);
 }
 
@@ -296,6 +298,94 @@ function fit(name, gltf) {
   pivot.position.copy(base);
   recoil.add(pivot);
   nodes[name] = { pivot, base, half: new THREE.Vector3(L / 2, H / 2, (P.depth || s.z * sz) / 2) };
+}
+
+/* The dust cover is the one part built in code. Three rounds of image -> TRELLIS.2 (Krea2,
+   Qwen Image 2.1 edits, a three-quarter-from-below U-channel) never produced a convincing
+   stamped cover, so this is a sheet-metal U-channel generated here: straight side walls, a
+   flattened arch with stamped transverse ribs, a rear end plate with the recoil-spring guide
+   notch, and rolled lower edges, sized to the receiver. */
+function steelTexture() {
+  const W = 512, H = 128, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  g.fillStyle = '#6a6f78'; g.fillRect(0, 0, W, H);
+  for (let i = 0; i < 2600; i++) {                                // mottled bluing
+    const x = Math.random() * W, y = Math.random() * H, r = 2 + Math.random() * 10;
+    const dark = Math.random() < 0.5;
+    g.fillStyle = 'rgba(' + (dark ? '20,24,32' : '70,74,80') + ',' + (0.05 + Math.random() * 0.06) + ')';
+    g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
+  }
+  for (let i = 0; i < 260; i++) {                                 // fine longitudinal handling marks
+    const y = Math.random() * H; g.strokeStyle = 'rgba(150,155,160,' + (0.03 + Math.random() * 0.05) + ')';
+    g.lineWidth = 0.6; g.beginPath(); g.moveTo(Math.random() * W, y); g.lineTo(Math.random() * W, y + (Math.random() - 0.5) * 2); g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+}
+function buildDustCover() {
+  const P = PARTS.cover; if (!P || !P.code) return;
+  const [x0, x1, y0, y1] = P.box;
+  const L = (x1 - x0) * K, H = (y1 - y0) * K, W = P.depth, hw = W / 2, archH = H * 0.34, wallH = H - archH;
+  // cross-section (z, y) with y = 0 at the crown, sampled then resampled by arc length
+  const raw = [];
+  for (let i = 0; i <= 10; i++) raw.push([hw, -H + wallH * i / 10]);
+  for (let i = 1; i < 30; i++) { const a = i / 30 * Math.PI, c = Math.cos(a);
+    raw.push([hw * Math.sign(c) * Math.pow(Math.abs(c), 0.65), -archH + archH * Math.pow(Math.sin(a), 0.55)]); }
+  for (let i = 0; i <= 10; i++) raw.push([-hw, -archH - wallH * i / 10]);
+  const cum = [0]; for (let i = 1; i < raw.length; i++) cum.push(cum[i - 1] + Math.hypot(raw[i][0] - raw[i - 1][0], raw[i][1] - raw[i - 1][1]));
+  const N = 72, prof = [];
+  for (let j = 0; j <= N; j++) {
+    const d = cum[cum.length - 1] * j / N; let i = 1; while (i < cum.length - 1 && cum[i] < d) i++;
+    const f = (d - cum[i - 1]) / (cum[i] - cum[i - 1] || 1);
+    prof.push([raw[i - 1][0] + (raw[i][0] - raw[i - 1][0]) * f, raw[i - 1][1] + (raw[i][1] - raw[i - 1][1]) * f]);
+  }
+  const nrm = prof.map((p, j) => { const a = prof[Math.max(0, j - 1)], b = prof[Math.min(N, j + 1)];
+    let nz = b[1] - a[1], ny = -(b[0] - a[0]); const l = Math.hypot(nz, ny) || 1; nz /= l; ny /= l;
+    if (nz * p[0] + ny * (p[1] + H / 2) < 0) { nz = -nz; ny = -ny; } return [nz, ny]; });
+  const M = 150, ribs = [0.16, 0.3, 0.44, 0.58, 0.72, 0.86];
+  const pos = [], uv = [], idx = [];
+  for (let i = 0; i <= M; i++) {
+    const s = i / M, x = -L / 2 + L * s;
+    const rib = ribs.reduce((a, r) => a + Math.exp(-Math.pow((s - r) * L / 0.0028, 2)), 0);
+    for (let j = 0; j <= N; j++) {
+      const [pz, py] = prof[j], [nz, ny] = nrm[j];
+      const top = THREE.MathUtils.smoothstep(py, -H * 0.82, -archH * 0.6);   // ribs run over the arch and upper walls
+      const d = 0.0015 * rib * top;
+      pos.push(x, py + H / 2 + ny * d, pz + nz * d); uv.push(s, j / N);
+    }
+  }
+  const notch = (i, j) => { const s = (i + 0.5) / M, z = prof[j][0], y = prof[j][1];
+    return s < 0.06 && s > 0.012 && Math.abs(z) < 0.0055 && y > -archH * 0.5; };
+  for (let i = 0; i < M; i++) for (let j = 0; j < N; j++) {
+    if (notch(i, j)) continue;
+    const a = i * (N + 1) + j, b = a + N + 1;
+    idx.push(a, b, a + 1, b, b + 1, a + 1);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  geo.setIndex(idx); geo.computeVertexNormals();
+  const tex = steelTexture();
+  const mat = new THREE.MeshPhysicalMaterial({ map: tex, color: 0x9aa2ad, metalness: 0.8, roughness: 0.42,
+    side: THREE.DoubleSide, clearcoat: 0.25, clearcoatRoughness: 0.4 });
+  const group = new THREE.Group();
+  group.add(new THREE.Mesh(geo, mat));
+  // rear end plate with the guide-button notch, open below like the real cover
+  const sh = new THREE.Shape(); const cut = -H * 0.55;
+  const plate = prof.filter(p => p[1] >= cut);
+  sh.moveTo(plate[0][0], plate[0][1] + H / 2); plate.forEach(p => sh.lineTo(p[0], p[1] + H / 2)); sh.closePath();
+  const hole = new THREE.Path(); const hy = H / 2 - 0.0035;
+  hole.moveTo(-0.0055, hy); hole.lineTo(0.0055, hy); hole.lineTo(0.0055, hy - 0.007); hole.lineTo(-0.0055, hy - 0.007); hole.closePath();
+  sh.holes.push(hole);
+  const plateGeo = new THREE.ShapeGeometry(sh, 6); plateGeo.rotateY(Math.PI / 2); plateGeo.translate(-L / 2 + 0.0006, 0, 0);
+  group.add(new THREE.Mesh(plateGeo, mat));
+  for (const zs of [1, -1]) {                                      // rolled lower edges
+    const lip = new THREE.Mesh(new THREE.CylinderGeometry(0.0011, 0.0011, L, 8), mat);
+    lip.rotation.z = Math.PI / 2; lip.position.set(0, -H / 2 + 0.0008, zs * (hw - 0.0004)); group.add(lip);
+  }
+  group.traverse(o => { if (o.isMesh) o.layers.enable(1); });
+  const pivot = new THREE.Group(); pivot.add(group);
+  const base = new THREE.Vector3(wx((x0 + x1) / 2), wy((y0 + y1) / 2), 0);
+  pivot.position.copy(base); recoil.add(pivot);
+  nodes.cover = { pivot, base, half: new THREE.Vector3(L / 2, H / 2, W / 2) };
 }
 
 /* The carrier sits inside the receiver; on the real rifle only its charging handle shows,
@@ -370,13 +460,13 @@ const setFlash = (v, port) => {
   flashStar.material.opacity = v; flashStar.visible = v > 0.01;
   plumes.forEach(m => { m.material.opacity = v; m.visible = v > 0.01; m.scale.set(0.7 + v * 0.5, 1, 1); });
   brakeJets.forEach(m => { m.material.opacity = v * 0.8; m.visible = v > 0.01; });
-  flashLight.intensity = v * 3.5; portLight.intensity = port * 2.2;
+  flashLight.intensity = v * 1.1; portLight.intensity = port * 0.6;
 };
 setFlash(0, 0);
 
 const smokeTex = radialTex([[0, 'rgba(120,118,115,0.7)'], [0.45, 'rgba(135,133,130,0.3)'], [1, 'rgba(150,150,150,0)']]);
 const smoke = [];
-for (let i = 0; i < 40; i++) {
+for (let i = 0; i < 64; i++) {
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: smokeTex, transparent: true, depthWrite: false, opacity: 0 }));
   s.visible = false; s.userData.noAO = true; scene.add(s); smoke.push({ s, life: 0, max: 1, v: new THREE.Vector3(), g: 0 });
 }
@@ -400,7 +490,7 @@ const caseGeo = (() => {
   const g = new THREE.LatheGeometry(pts, 18); g.translate(0, -0.019, 0); g.rotateZ(Math.PI / 2); return g;   // axis along X
 })();
 const casings = [];
-for (let i = 0; i < 8; i++) {
+for (let i = 0; i < 16; i++) {
   const m = new THREE.Mesh(caseGeo, brass); m.visible = false; m.layers.enable(1); scene.add(m);
   casings.push({ m, life: 0, v: new THREE.Vector3(), w: new THREE.Vector3(), rest: false, bounces: 0 });
 }
@@ -437,40 +527,46 @@ function stepCasing(c, dt) {
   }
 }
 
-/* ---------- Sound: synthesized, muted until the toggle is pressed ---------- */
+/* ---------- Sound: real recordings, muted until the toggle is pressed ----------
+   sfx-shot: AK-47 single shot, Beeld en Geluid via Wikimedia Commons, CC BY-SA 3.0 (trimmed).
+   sfx-bolt: "Equipment Clicks III" by LFA (a real rifle bolt), OpenGameArt, CC0 (trimmed).
+   sfx-brass0-2: Kenney "Impact Sounds" impactMetal_light, CC0.
+   A small synth stands in for any file that fails to load. */
 const audio = (() => {
   let ctx = null, master = null, on = false, noiseBuf = null;
+  const buf = {};
   function init() {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
-    master = ctx.createGain(); master.gain.value = 0.55; master.connect(ctx.destination);
-    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 6; master.disconnect(); master.connect(comp); comp.connect(ctx.destination);
-    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 1.0, ctx.sampleRate);
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -10; comp.knee.value = 8; comp.ratio.value = 4; comp.attack.value = 0.002; comp.release.value = 0.2;
+    master = ctx.createGain(); master.gain.value = 0.8; master.connect(comp); comp.connect(ctx.destination);
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 0.5, ctx.sampleRate);
     const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    for (const n of ['shot', 'bolt', 'brass0', 'brass1', 'brass2'])
+      fetch(ASSET + 'sfx-' + n + '.mp3').then(r => r.ok ? r.arrayBuffer() : Promise.reject(r.status))
+        .then(a => ctx.decodeAudioData(a)).then(b => { buf[n] = b; }).catch(() => {});
   }
-  function noise(t, dur, f0, f1, q, gain, type = 'lowpass') {
-    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
-    const f = ctx.createBiquadFilter(); f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  function play(b, gain, rate) {
+    const s = ctx.createBufferSource(); s.buffer = b; s.playbackRate.value = rate;
+    const g = ctx.createGain(); g.gain.value = gain; s.connect(g); g.connect(master); s.start();
+  }
+  function noise(dur, f0, f1, gain) {
+    const t = ctx.currentTime, s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const f = ctx.createBiquadFilter(); f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
     const g = ctx.createGain(); g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
     s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t + dur + 0.02);
   }
-  function tone(t, freq, dur, gain, type = 'sine', f1) {
-    const o = ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(freq, t); if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
-    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.02);
-  }
   return {
-    get on() { return on; },
     toggle() { if (!ctx) init(); on = !on; if (on) ctx.resume(); return on; },
-    shot() { if (!on) return; const t = ctx.currentTime;
-      noise(t, 0.45, 6000, 180, 0.7, 1.0); noise(t, 0.08, 9000, 2500, 0.5, 0.6, 'highpass');
-      tone(t, 110, 0.22, 0.9, 'sine', 38); tone(t, 55, 0.35, 0.5, 'triangle', 30); },
-    clack(back) { if (!on) return; const t = ctx.currentTime;
-      noise(t, 0.05, back ? 2600 : 3200, back ? 1600 : 2000, 4, 0.35, 'bandpass'); tone(t, back ? 1450 : 1750, 0.06, 0.08, 'square', 900); },
-    ping(v) { if (!on) return; const t = ctx.currentTime, k = 0.25 + 0.75 * v;
-      [[3150, 0.5], [4870, 0.35], [6930, 0.25], [9240, 0.15]].forEach(([f, d], i) => tone(t, f * (1 + (Math.random() - 0.5) * 0.01), d * (0.6 + v), 0.12 * k / (i + 1)));
-      noise(t, 0.012, 8000, 5000, 1, 0.12 * k, 'highpass'); },
+    get loaded() { return Object.keys(buf); },
+    shot() { if (!on) return;                                     // per-round variation so a burst never sounds looped
+      if (buf.shot) play(buf.shot, 0.72 + Math.random() * 0.18, 0.94 + Math.random() * 0.1); else noise(0.35, 5000, 200, 0.9); },
+    bolt() { if (!on) return; if (buf.bolt) play(buf.bolt, 0.28 + Math.random() * 0.08, 1.1 + Math.random() * 0.12); },
+    ping(v) { if (!on) return; const b = buf['brass' + Math.floor(Math.random() * 3)];
+      if (b) play(b, 0.12 + 0.45 * v, 0.95 + Math.random() * 0.3); else noise(0.05, 7000, 4000, 0.1 * v); },
   };
 })();
+window.__audio = audio;
 const sndBtn = document.getElementById('snd');
 sndBtn.addEventListener('click', () => {
   const on = audio.toggle();
@@ -479,24 +575,19 @@ sndBtn.addEventListener('click', () => {
   sndBtn.setAttribute('aria-label', on ? 'Sound off' : 'Sound on');
 });
 
-/* ---------- Firing cycle (sim time, so the shot can drop into slow motion) ---------- */
-const PERIOD = 2.8;          // real seconds between shots (slow motion stretches each one)
+/* ---------- Firing: full auto, short trigger-controlled bursts ----------
+   ~600 rounds/min, so each round's carrier stroke is ~0.1 s: snapped back, slammed home.
+   4-6 rounds, then a pause. (The AK has semi and full auto only; the burst is trigger control.) */
+const RPM_DT = 0.1, PAUSE = 2.0;
 const CARRIER_STROKE = 0.115;
 function fireCurve(t) {
   if (t < 0) return 0;
-  if (t < 0.085) return THREE.MathUtils.smoothstep(t, 0, 0.085);
-  if (t < 0.13) return 1;
-  if (t < 0.36) return 1 - THREE.MathUtils.smootherstep(t, 0.13, 0.36);
+  if (t < 0.035) { const k = t / 0.035; return 1 - (1 - k) * (1 - k); }     // violent rearward stroke
+  if (t < 0.042) return 1;
+  if (t < 0.092) { const k = (t - 0.042) / 0.05; return 1 - k * k; }          // spring drives it home, slamming
   return 0;
 }
-function kickCurve(t) { if (t < 0) return 0; if (t < 0.03) return t / 0.03; return Math.exp(-(t - 0.03) * 9) * Math.cos((t - 0.03) * 14); }
-function slowMo(r) {          // real seconds since the shot -> time scale
-  if (r < 0) return 1;
-  if (r < 0.04) return 1 - 0.78 * r / 0.04;
-  if (r < 0.75) return 0.22;
-  if (r < 1.2) return 0.22 + 0.78 * THREE.MathUtils.smoothstep(r, 0.75, 1.2);
-  return 1;
-}
+function kickCurve(t) { if (t < 0) return 0; if (t < 0.012) return t / 0.012; return Math.exp(-(t - 0.012) * 22) * Math.cos((t - 0.012) * 30); }
 
 /* ---------- Path sampling ---------- */
 const v3 = new THREE.Vector3();
@@ -744,7 +835,8 @@ addEventListener('resize', resize); resize();
 
 const tmpP = new THREE.Vector3(), tmpR = new THREE.Euler(), box = new THREE.Box3(), corner = new THREE.Vector3();
 const camTarget = new THREE.Vector3(), camLook = new THREE.Vector3(0, -0.02, 0), scr = new THREE.Vector3();
-let camDist = 1.6, lastShotReal = -10, shotReal = -10, shotSim = -10, simT = 0, ready = false, clacked = 2, sweepAmt = 0;
+let camDist = 1.6, shotSim = -10, simT = 0, ready = false, sweepAmt = 0;
+let nextShot = 0.8, burstLeft = 0, burstIx = 0, recoilBuild = 0, heatLevel = 0, ejected = true;
 const clock = new THREE.Clock();
 const fixedP = Q.has('p') ? parseFloat(Q.get('p')) : null;     // ?p=0.5 pins scroll (inspection)
 let titleShown = true;
@@ -756,9 +848,7 @@ function frame() {
   const dt = CAPTURE ? 1 / 60 : Math.min(clock.getDelta(), 0.05);
   const t = CAPTURE ? (capT += dt) : clock.elapsedTime;
   if (ready) watchQuality(dt);
-  // slow motion around each shot: effects and the action run on sim time
-  const timeScale = slowMo(t - shotReal);
-  const sdt = dt * timeScale; simT += sdt;
+  const sdt = dt; simT += sdt;
   let flash = 0, port = 0;
   if (ready) {
     if (capP != null) smoothP = capP;
@@ -791,20 +881,27 @@ function frame() {
 
     // firing, only at the top of the page once the intro is done
     const firing = p < S0 * 0.45 && introDone && !Q.has('nofire');
-    if (Q.has('freeze') && firing) { lastShotReal = t; shotReal = t - 1; shotSim = simT - parseFloat(Q.get('freeze')); }
-    else if (firing && t - lastShotReal > PERIOD && !document.hidden) {
-      lastShotReal = t; shotReal = t; shotSim = simT; clacked = 0;
-      puff(MUZZLE.clone().applyMatrix4(recoil.matrixWorld), 8);
-      audio.shot();
-    }
+    if (Q.has('freeze') && firing) { shotSim = simT - parseFloat(Q.get('freeze')); nextShot = simT + 99; ejected = true; }
+    else if (firing && !document.hidden) {
+      if (simT - nextShot > 0.3) nextShot = simT;                  // came back from a hidden tab
+      if (simT >= nextShot) {
+        if (burstLeft <= 0) { burstLeft = 4 + Math.floor(Math.random() * 3); burstIx = 0; }
+        shotSim = simT; ejected = false; burstIx++; burstLeft--;
+        recoilBuild = Math.min(1.6, recoilBuild + 0.32); heatLevel = Math.min(1, heatLevel + 0.22);
+        flashStar.material.rotation = Math.random() * 6.283;
+        puff(MUZZLE.clone().applyMatrix4(recoil.matrixWorld), 4);
+        audio.shot(); setTimeout(() => audio.bolt(), 75);
+        nextShot = burstLeft > 0 ? nextShot + RPM_DT : simT + PAUSE + Math.random() * 0.4;
+      }
+    } else nextShot = Math.max(nextShot, simT + 0.8);
+    recoilBuild *= Math.exp(-dt * 2.2); heatLevel *= Math.exp(-dt * 0.55);
     const ts = simT - shotSim;
-    if (ts > 0.012 && ts < 0.5 && clacked === 0) { clacked = 1; eject(PORT.clone().applyMatrix4(recoil.matrixWorld)); }
-    if (ts > 0.06 && clacked === 1) { clacked = 2; audio.clack(true); setTimeout(() => audio.clack(false), 420); }
-    flash = ts >= 0 && ts < 0.05 ? (1 - ts / 0.05) * (0.85 + Math.random() * 0.15) : 0;
-    port = ts >= 0 && ts < 0.02 ? 1 : 0;
+    if (ts > 0.03 && !ejected) { ejected = true; eject(PORT.clone().applyMatrix4(recoil.matrixWorld)); }
+    flash = ts >= 0 && ts < 0.035 ? (1 - ts / 0.035) * (0.8 + Math.random() * 0.2) : 0;
+    port = ts >= 0 && ts < 0.015 ? 1 : 0;
     const kick = kickCurve(ts);
-    recoil.position.x = -0.012 * kick;
-    recoil.rotation.z = 0.025 * Math.max(0, kick);
+    recoil.position.x = -0.009 * kick - 0.007 * recoilBuild;
+    recoil.rotation.z = 0.016 * Math.max(0, kick) + 0.02 * recoilBuild;
 
     for (const name in PATHS) {
       const n = nodes[name]; if (!n) continue;
@@ -844,7 +941,7 @@ function frame() {
     camera.lookAt(camLook);
     // shot shake, decays in sim time
     if (ts >= 0 && ts < 0.4) {
-      const a = 0.0025 * Math.exp(-ts * 14);
+      const a = (0.0016 + 0.0012 * recoilBuild) * Math.exp(-ts * 20);
       camera.position.add(v3.set(Math.sin(t * 91) * a, Math.sin(t * 77 + 1) * a, 0).applyQuaternion(camera.quaternion));
     }
 
@@ -852,8 +949,7 @@ function frame() {
     scr.copy(MUZZLE).applyMatrix4(recoil.matrixWorld).project(camera);
     finish.uniforms.uHeatPos.value.set(scr.x * 0.5 + 0.5, scr.y * 0.5 + 0.5);
     finish.uniforms.uHeatScale.value = 0.06 / user.zoom;
-    const heat = ts > 0.02 ? Math.exp(-(ts - 0.02) * 1.6) : 0;
-    finish.uniforms.uHeat.value = firing && !Q.has('noheat') ? heat : 0;
+    finish.uniforms.uHeat.value = !Q.has('noheat') ? (Q.has('freeze') ? 0.8 : heatLevel) : 0;
     finish.uniforms.uTime.value = simT;
     let blur = 0;
     if (si >= 1 && si <= 6 && quality.level < 2) {
@@ -892,8 +988,9 @@ function frame() {
 if (CAPTURE) window.__advance = (n, p) => { for (let i = 0; i < n; i++) { if (p) capP = p(capT); frame(); } };
 else renderer.setAnimationLoop(frame);
 
-Promise.all(Object.keys(PARTS).map(n => load(n).then(g => [n, g]))).then(list => {
+Promise.all(Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g]))).then(list => {
   list.forEach(([n, g]) => fit(n, g));
+  buildDustCover();
   addChargingHandle();
   buildCallouts();
   if (Q.has('hide')) Q.get('hide').split(',').forEach(n => nodes[n] && (nodes[n].pivot.visible = false));
