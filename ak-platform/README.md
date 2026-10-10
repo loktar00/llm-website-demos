@@ -37,9 +37,9 @@ assembly goes through TRELLIS.2 image-to-3D and is fitted to real dimensions in 
 The AK-47 keeps `?model=trellis` (all TRELLIS assemblies) and `?model=code` (everything in code) for comparison.
 TRELLIS rebuilt the open receiver tops as extra internal shapes; on the AKM those (a central fork and side blobs
 above the wall tops) are trimmed under the cover. The AKM gas tube TRELLIS output was unusable (a flat slab), so
-the hybrid's code-built gas tube stands in.
+the hybrid's code-built gas tube stands in. The rifle loads in its hero framing and starts firing after two seconds.
 
-**Code-modeled AK-47 (default, `?model=code`).** The AK-47 also exists fully modeled in code
+**Code-modeled AK-47 (`?model=code`).** The AK-47 also exists fully modeled in code
 (`js/akcode.js`), as a side-by-side test against the TRELLIS version (`?model=trellis`, or the
 TRELLIS | Code-modeled toggle): a milled Type 3 receiver as a U-channel with the ejection port, handle
 slot and lightening cuts, trunnions and a rear sight block with real bores for the barrel, bolt and gas
