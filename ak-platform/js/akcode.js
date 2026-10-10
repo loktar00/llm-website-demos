@@ -249,7 +249,7 @@ function gasTubeGroup(M) {
 function magazineGroup(M) {
   // curved 30-round magazine swept along its centre line; ribs pressed into the sides; floor plate; feed lips
   const g = new THREE.Group();
-  const P0 = new THREE.Vector2(-19, -30), P1 = new THREE.Vector2(-12, -120), P2 = new THREE.Vector2(62, -196);
+  const P0 = new THREE.Vector2(-25, -30), P1 = new THREE.Vector2(-18, -120), P2 = new THREE.Vector2(56, -196);   // rear of the top meets the catch
   const at = t => new THREE.Vector2().addScaledVector(P0, (1 - t) * (1 - t)).addScaledVector(P1, 2 * t * (1 - t)).addScaledVector(P2, t * t);
   const tan = t => new THREE.Vector2().addScaledVector(P1.clone().sub(P0), 2 * (1 - t)).addScaledVector(P2.clone().sub(P1), 2 * t).normalize();
   const NS = 60, NR = 32, HZ = 13.5;
@@ -278,15 +278,15 @@ function magazineGroup(M) {
   const tE = tan(1), cE = at(1), fp = new THREE.BoxGeometry(62 * mm, 4 * mm, 30 * mm);
   const fpm = mesh(fp, M.mag); fpm.position.set((cE.x - tE.x * 1.5) * mm, (cE.y - tE.y * 1.5) * mm, 0); fpm.rotation.z = Math.atan2(tE.y, tE.x) + Math.PI / 2; g.add(fpm);
   // feed lips / top cap
-  const top = new THREE.BoxGeometry(54 * mm, 3 * mm, 22 * mm); const tm = mesh(top, M.mag); tm.position.set(-19 * mm, -29 * mm, 0); tm.rotation.z = Math.atan2(tan(0).y, tan(0).x) + Math.PI / 2; g.add(tm);
+  const top = new THREE.BoxGeometry(54 * mm, 3 * mm, 22 * mm); const tm = mesh(top, M.mag); tm.position.set(-25 * mm, -29 * mm, 0); tm.rotation.z = Math.atan2(tan(0).y, tan(0).x) + Math.PI / 2; g.add(tm);
   return g;
 }
 
-function carrierGroup(M) {
+function carrierGroup(M, { rear = -76 } = {}) {
   // bolt carrier (in the white) with the gas piston; it rides under the rails, above the bolt
   const g = new THREE.Group();
   const body = [[-11, 7], [11, 7], [11, 19], [8, 23], [-8, 23], [-11, 19]];
-  g.add(mesh(swapUV(axialExtrude(body, -76, 22, [], 1.2)), M.bright));
+  g.add(mesh(swapUV(axialExtrude(body, rear, 22, [], 1.2)), M.bright));
   const neck = [[-8, 9], [8, 9], [8, 24], [5, 27], [-5, 27], [-8, 24]];
   g.add(mesh(swapUV(axialExtrude(neck, 20, 40, [], 1)), M.bright));
   g.add(mesh(cylX(4.2, 39, 270, 22, 0, 20), M.bright));                        // piston rod
@@ -317,17 +317,42 @@ function springGroup(M) {
 }
 
 /* ---------- assemble into rifle nodes ---------- */
+function addNode(rifle, name, group) {
+  group.updateMatrixWorld(true);
+  const b = new THREE.Box3().setFromObject(group), c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3());
+  const pivot = new THREE.Group(); pivot.position.copy(c); rifle.recoil.add(pivot);
+  const off = new THREE.Group(); off.position.copy(c).negate(); off.add(group); pivot.add(off);   // part placement, relative to its centre
+  rifle.nodes[name] = { pivot, base: c.clone(), half: s.multiplyScalar(0.5) };
+  return rifle.nodes[name];
+}
+// place a code part: x' = x * sx + dx, y' = y + dy (mm)
+function placed(group, dx, dy, sx = 1) { const w = new THREE.Group(); w.add(group); w.scale.x = sx; w.position.set(dx * mm, dy * mm, 0); return w; }
+
+/* Hybrid AK-47: the TRELLIS receiver group and magazine stay; the moving and fitted parts are the code
+   ones, placed in the TRELLIS rifle's layout (bore at y = 0, handle home x +8 mm, gas tube axis y +23.8 mm,
+   rear sight block front x 110 mm, receiver rear x -212 mm). The carrier is 14 mm shorter at the rear so
+   full recoil stays inside the receiver; the gas tube is stretched to reach a code gas block, which the
+   TRELLIS receiver group lacks (it came off with the gas tube in the field-strip source image). */
+export function addHybridAK47(rifle) {
+  const M = materials();
+  rifle.coverMat = Object.assign(M.blued.clone(), { side: THREE.DoubleSide });
+  addNode(rifle, 'carrier', placed(carrierGroup(M, { rear: -62 }), -25, 1.8));
+  addNode(rifle, 'bolt', placed(boltGroup(M), -25, 0));
+  const sp = springGroup(M), sn = addNode(rifle, 'spring', placed(sp, -11, 5.7));
+  sn.coil = sp.userData.coil; sn.coilL = sp.userData.coilL;
+  addNode(rifle, 'gastube', placed(gasTubeGroup(M), 110 - 106 * 1.067, 1.8, 1.067));
+  // gas block on the TRELLIS barrel (centre y -4.6 mm, radius 8.7 mm) up to the tube socket, with the front sling loop
+  const gbg = new THREE.Group();
+  gbg.add(mesh(sideExtrude([[300, -14], [334, -14], [334, 2], [318, 34.5], [300, 35]], -9.5, 9.5, 1.5), M.blued));
+  const sl = new THREE.TorusGeometry(6.5 * mm, 1.2 * mm, 8, 20); sl.rotateY(Math.PI / 2); sl.translate(318 * mm, -19 * mm, -10 * mm); gbg.add(mesh(sl, M.dark));
+  const bn = rifle.nodes.body;
+  if (bn) { const off = new THREE.Group(); off.position.copy(bn.base).negate(); off.add(gbg); bn.pivot.add(off); } else rifle.recoil.add(gbg);
+}
+
 export function buildCodeAK47(rifle) {
   const M = materials();
   rifle.coverMat = Object.assign(M.blued.clone(), { side: THREE.DoubleSide });
-  const add = (name, group) => {
-    group.updateMatrixWorld(true);
-    const b = new THREE.Box3().setFromObject(group), c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3());
-    for (const ch of group.children) ch.position.sub(c);
-    const pivot = new THREE.Group(); pivot.add(group); pivot.position.copy(c); rifle.recoil.add(pivot);
-    rifle.nodes[name] = { pivot, base: c.clone(), half: s.multiplyScalar(0.5) };
-    return rifle.nodes[name];
-  };
+  const add = (name, group) => addNode(rifle, name, group);
   const body = new THREE.Group();
   body.add(receiverGroup(M), stockGroup(M), gripGroup(M), frontGroup(M));
   add('body', body);

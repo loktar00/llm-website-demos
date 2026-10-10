@@ -121,6 +121,18 @@ export class Rifle {
   load(onProgress) {
     if (this._loading) return this._loading;
     const P = this.def.parts, names = Object.keys(P).filter(k => !P[k].code);
+    if (this.def.build === 'hybrid') {
+      const glbs = names.filter(n => P[n].file);
+      const upd2 = () => onProgress && onProgress(glbs.reduce((a, k) => a + (this.progress[k] || 0), 0) / glbs.length);
+      this._loading = Promise.all([import('./akcode.js'), ...glbs.map(n => loadGLB((window.__ASSET || '') + P[n].file, f => { this.progress[n] = f; upd2(); }).then(g => [n, g]))])
+        .then(([m, ...list]) => {
+          list.forEach(([n, g]) => this.fit(n, g));
+          m.addHybridAK47(this);
+          this.trimBaked(); this.addRod(); this.buildCover(); this.addHandle(); this.buildFx();
+          this.ready = true; return this;
+        });
+      return this._loading;
+    }
     if (this.def.build === 'code') {
       this._loading = import('./akcode.js').then(m => {
         m.buildCodeAK47(this); this.buildCover(); this.addHandle(); this.buildFx();

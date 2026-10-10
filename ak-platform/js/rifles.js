@@ -11,7 +11,7 @@ export const RIFLES = {
     img: { px0: 43, px1: 1323, bore: 287 },
     parts: {
       body:     { file: 'models/ak47/body.glb',     rot: [0, 0, 0],     box: [43, 1323, 208, 503], depth: null,  mat: AK_STEEL },
-      magazine: { file: 'models/ak47/magazine.glb', rot: [-90, 0, 180], box: [576, 786, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
+      magazine: { file: 'models/ak47/magazine.glb', rot: [-90, 0, 180], box: [564, 774, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
       cover:    { code: true },
       spring:   { file: 'models/ak47/spring.glb',   rot: [0, 0, 0],     box: [404, 690, 244, 274], depth: 0.02,  mat: { metal: 1.0, rough: 0.55, tint: [1, 1, 1] } },
       gastube:  { file: 'models/ak47/gastube.glb',  rot: [0, 90, 0],    box: [834, 1160, 224, 280], depth: 0.04, mat: AK_STEEL },
@@ -23,7 +23,7 @@ export const RIFLES = {
       ribs: [0.16, 0.3, 0.44, 0.58, 0.72, 0.86], plateY: 17.8 },
     handle: { x: 0.008, py: 258, z: 0.012, stroke: 0.115 },
     trim: [[-0.067, 0.024, 0.012], [-0.025, 1, 1]],          // baked duplicate handle cut out of the body
-    rod: { x0: 0.222, x1: 0.427, y: -0.0179, z: -0.0026 },   // cleaning rod under the barrel
+    rod: { x0: 0.200, x1: 0.427, y: -0.0179, z: -0.0026 },   // cleaning rod: from its seat under the lower handguard to the front sight base
     muzzlePx: 1328, port: [-0.03, 0.017, 0.03],
     fire: { mode: 'auto', rpmDt: 0.1, burst: [4, 6], pause: 2.0 }, tone: { rate: 1, gain: 0.8 },
     strip: [
@@ -53,6 +53,16 @@ export const RIFLES = {
       carrier: { a: [-0.6, -0.3], dir: [-0.4, 1] }, bolt: { a: [0.3, -0.5], dir: [0.6, 1] },
     },
     credit: 'Six TRELLIS.2 assemblies; dust cover and cleaning rod built in code',
+    // hybrid (default): TRELLIS receiver group and magazine, code-built moving and fitted parts
+    hybrid: {
+      build: 'hybrid',
+      parts: {
+        body:     { file: 'models/ak47/body.glb',     rot: [0, 0, 0],     box: [43, 1323, 208, 503], depth: null,  mat: AK_STEEL },
+        magazine: { file: 'models/ak47/magazine.glb', rot: [-90, 0, 180], box: [564, 774, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
+        cover: { code: true }, spring: { code: true }, gastube: { code: true }, carrier: { code: true }, bolt: { code: true },
+      },
+      credit: 'Hybrid: TRELLIS.2 receiver and magazine · moving parts in code',
+    },
     // the same rifle modeled entirely in code (milled Type 3 receiver), textures generated on ComfyUI
     code: {
       build: 'code', img: { px0: -435, px1: 435, bore: 0 },            // authored in mm: 1 "px" = 1 mm

@@ -22,9 +22,9 @@ const cartId = CARTRIDGES[Q.get('cartridge')] ? Q.get('cartridge') : null;
 const MODE = rifleId ? 'rifle' : cartId ? 'cartridge' : 'landing';
 let landingTab = (Q.get('view') === 'cartridges' || location.hash === '#cartridges') ? 'cartridges' : 'rifles';
 // TRELLIS or code-modeled geometry (?model=trellis|code); rifles without a code model always use TRELLIS
-const DEFAULT_MODEL = 'code';
-const MODEL = ['code', 'trellis'].includes(Q.get('model')) ? Q.get('model') : DEFAULT_MODEL;
-const defFor = id => { const d = RIFLES[id]; return MODEL === 'code' && d.code ? Object.assign({}, d, d.code) : d; };
+const DEFAULT_MODEL = 'hybrid';
+const MODEL = ['hybrid', 'code', 'trellis'].includes(Q.get('model')) ? Q.get('model') : DEFAULT_MODEL;
+const defFor = id => { const d = RIFLES[id], v = d[MODEL]; return v && MODEL !== 'trellis' ? Object.assign({}, d, v) : d; };
 const href = (k, v) => '?' + k + '=' + v + (Q.get('model') ? '&model=' + MODEL : '');
 const rifleLink = id => href('rifle', id), cartLink = id => href('cartridge', id);
 window.__mode = MODE;
@@ -213,7 +213,7 @@ function setup() {
   } else if (MODE === 'rifle') {
     const def = defFor(rifleId);
     document.title = def.name + ' · AK Platform';
-    if (RIFLES[rifleId].code) modelToggle();
+    if (RIFLES[rifleId].code || RIFLES[rifleId].hybrid) modelToggle();
     $('t1').textContent = def.name.replace('-', '‑'); $('t2').textContent = def.cal + ' · ' + def.blurb;
     navLink('← All rifles', './'); navLink(CARTRIDGES[def.cartridge].name + ' →', cartLink(def.cartridge));
     scrollEl.style.height = '1600vh';
@@ -259,7 +259,7 @@ function setup() {
 }
 function modelToggle() {
   const segEl = document.createElement('span'); segEl.className = 'seg'; nav.appendChild(segEl);
-  for (const [k, t] of [['trellis', 'TRELLIS'], ['code', 'Code-modeled']]) {
+  for (const [k, t] of [['hybrid', 'Hybrid'], ['trellis', 'TRELLIS'], ['code', 'Code']]) {
     const b = document.createElement('button'); b.textContent = t; b.classList.toggle('on', MODEL === k);
     b.addEventListener('click', () => { if (k === MODEL) return; const q = new URLSearchParams(location.search); q.set('model', k); q.delete('p'); location.search = q.toString(); });
     segEl.appendChild(b);

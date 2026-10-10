@@ -67,7 +67,7 @@
   <button id="snd" aria-label="Sound on" title="Sound"><svg viewBox="0 0 16 16"><path d="M2 6h3l4-3v10L5 10H2z" fill="#4a4a4a"/><path id="sndx" d="M11 5.5l4 5M15 5.5l-4 5" stroke="#4a4a4a" stroke-width="1.3"/><path id="sndw" d="M11 5a4 4 0 0 1 0 6M12.6 3.4a6.2 6.2 0 0 1 0 9.2" stroke="#4a4a4a" stroke-width="1.2" fill="none" style="display:none"/></svg></button>
 </div><div class="tip">Drag to rotate &middot; pinch or +/&minus; to zoom</div></div>
 <div class="hud" id="credit">Krea2 &middot; Qwen Image 2.1 &rarr; TRELLIS.2</div>
-<div id="modelSeg"><button data-m="trellis">TRELLIS</button><button data-m="code">Code-modeled</button></div>
+<div id="modelSeg"><button data-m="hybrid">Hybrid</button><button data-m="trellis">TRELLIS</button><button data-m="code">Code</button></div>
 
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script type="module">
@@ -86,8 +86,9 @@ const Q = new URLSearchParams(location.search);
 // quantdiv serves the models from a shared asset folder; a standalone copy keeps them beside the page
 const ASSET = Q.get('assets') || (location.pathname.includes('/quantdiv/') ? '../assets/ak47-field-strip/' : './');
 // TRELLIS models or the code-modeled rifle (geometry + ComfyUI textures shared with the AK platform site)
-const MODEL = ['trellis', 'code'].includes(Q.get('model')) ? Q.get('model') : 'code';
+const MODEL = ['hybrid', 'trellis', 'code'].includes(Q.get('model')) ? Q.get('model') : 'hybrid';
 const CODE = MODEL === 'code' && !Q.has('hero');
+const HYBRID = MODEL === 'hybrid' && !Q.has('hero');   // TRELLIS receiver group + magazine, moving and fitted parts in code
 const PLATFORM = location.pathname.includes('/quantdiv/') ? '../assets/ak-platform/' : '../ak-platform/';
 for (const b of document.querySelectorAll('#modelSeg button')) {
   b.classList.toggle('on', b.dataset.m === MODEL);
@@ -106,7 +107,7 @@ const wx = px => (px - PX0) * K, wy = py => (PY0 - py) * K;
    depth: target Z thickness in metres. z: Z offset. mat: material tuning. */
 const PARTS = {
   body:     { file: 'body.glb',     rot: [0, 0, 0],      box: [43, 1323, 208, 503], depth: null,  mat: { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] } },
-  magazine: { file: 'magazine.glb', rot: [-90, 0, 180],  box: [576, 786, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
+  magazine: { file: 'magazine.glb', rot: [-90, 0, 180],  box: [564, 774, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
   cover:    { code: true },                                      // built in code below, fitted to the receiver
   spring:   { file: 'spring.glb',   rot: [0, 0, 0],      box: [404, 690, 244, 274], depth: 0.02,  mat: { metal: 1.0, rough: 0.55, tint: [1, 1, 1] } },
   gastube:  { file: 'gastube.glb',  rot: [0, 90, 0],     box: [834, 1160, 224, 280], depth: 0.04, mat: { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] } },
@@ -118,6 +119,7 @@ const LABELS = {
   spring: ['Recoil spring', 'spring and guide rod'], gastube: ['Gas tube', 'with upper handguard'],
   carrier: ['Bolt carrier', 'with gas piston'], bolt: ['Bolt', 'rotating, two lugs'], magazine: ['Magazine', '30 rounds'],
 };
+if (HYBRID) for (const k of ['spring', 'gastube', 'carrier', 'bolt']) PARTS[k] = { code: true };
 if (Q.has('hero')) {            // approach A for comparison: the one-shot complete rifle in place of the parts
   for (const k of Object.keys(PARTS)) delete PARTS[k];
   PARTS.body = { file: 'hero.glb', rot: [0, 0, 0], box: [43, 1323, 208, 640], depth: null, mat: PARTS_BODY_MAT() };
@@ -136,6 +138,7 @@ const STAGES = [
   { part: null,       n: '07', h: 'Field stripped', d: 'Seven assemblies, each modelled from a single generated image.' },
 ];
 if (CODE) STAGES[STAGES.length - 1].d = 'Seven assemblies, every one modeled in code.';
+if (HYBRID) STAGES[STAGES.length - 1].d = 'Receiver group and magazine from TRELLIS.2; cover, carrier, bolt, spring and gas tube modeled in code.';
 const S0 = 0.07, S1 = 0.93;                              // disassembly spans [S0, S1]
 const stageSpan = (S1 - S0) / 6;
 const stageU = (p, i) => THREE.MathUtils.clamp((p - (S0 + (i - 1) * stageSpan)) / (stageSpan * 0.82), 0, 1);
@@ -427,7 +430,7 @@ function buildDustCover() {
 function addCleaningRod() {
   if (!nodes.body || Q.has('hero') || CODE) return;
   const steel = new THREE.MeshPhysicalMaterial({ color: 0x3a3c41, metalness: 0.9, roughness: 0.4 });
-  const x0 = 0.222, x1 = 0.427, y = -0.0179, z = -0.0026;
+  const x0 = 0.200, x1 = 0.427, y = -0.0179, z = -0.0026;   // from its seat under the lower handguard to the front sight base
   const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, x1 - x0, 12), steel);
   rod.rotation.z = Math.PI / 2; rod.position.set((x0 + x1) / 2, y, z);
   const head = new THREE.Mesh(new THREE.CylinderGeometry(0.0042, 0.0042, 0.008, 14), steel);
@@ -1063,6 +1066,12 @@ else renderer.setAnimationLoop(frame);
   window.__ASSET = PLATFORM;                                    // textures live with the AK platform site
   const ctx = { recoil, nodes }; m.buildCodeAK47(ctx); window.__coverMat = ctx.coverMat;
   document.getElementById('credit').textContent = 'Code-modeled in three.js · textures generated on ComfyUI (Krea2)';
+  return [];
+}) : HYBRID ? Promise.all([import(PLATFORM + 'js/akcode.js'), ...Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g]))]).then(([m, ...list]) => {
+  window.__ASSET = PLATFORM;
+  list.forEach(([n, g]) => fit(n, g));
+  const ctx = { recoil, nodes }; m.addHybridAK47(ctx); window.__coverMat = ctx.coverMat;
+  document.getElementById('credit').textContent = 'Hybrid: TRELLIS.2 receiver and magazine · moving parts in code';
   return [];
 }) : Promise.all(Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g])))).then(list => {
   list.forEach(([n, g]) => fit(n, g));
