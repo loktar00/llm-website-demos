@@ -53,6 +53,16 @@ export const RIFLES = {
       carrier: { a: [-0.6, -0.3], dir: [-0.4, 1] }, bolt: { a: [0.3, -0.5], dir: [0.6, 1] },
     },
     credit: 'Six TRELLIS.2 assemblies; dust cover and cleaning rod built in code',
+    // the same rifle modeled entirely in code (milled Type 3 receiver), textures generated on ComfyUI
+    code: {
+      build: 'code', img: { px0: -435, px1: 435, bore: 0 },            // authored in mm: 1 "px" = 1 mm
+      parts: { body: { code: true }, magazine: { code: true }, cover: { code: true }, spring: { code: true }, gastube: { code: true }, carrier: { code: true }, bolt: { code: true } },
+      cover: { zc: 0, hwi: 16.4, t: 0.8, ys: 19.8, ci: 35.8, n: 2, xr: -199.5, xf: 41.5, yb: 12, rearRound: 27, rearMin: 0.42,
+        ribs: [0.16, 0.3, 0.44, 0.58, 0.72, 0.86], plateY: 17.8 },
+      handle: { x: 0.033, py: -8, z: 0, stroke: 0.115 },
+      trim: null, rod: null, muzzlePx: 435, port: [-0.01, 0.004, 0.017],
+      credit: 'Code-modeled in three.js · textures generated on ComfyUI (Krea2)',
+    },
   },
   akm:  { id: 'akm', name: 'AKM', cal: '7.62×39 mm', cartridge: '762x39', length: 0.88, blurb: 'Stamped receiver, slant brake, 1959', ready: false },
   rpk:  { id: 'rpk', name: 'RPK', cal: '7.62×39 mm', cartridge: '762x39', length: 1.04, blurb: 'Light machine gun: long heavy barrel, bipod', ready: false },

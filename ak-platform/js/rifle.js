@@ -121,6 +121,13 @@ export class Rifle {
   load(onProgress) {
     if (this._loading) return this._loading;
     const P = this.def.parts, names = Object.keys(P).filter(k => !P[k].code);
+    if (this.def.build === 'code') {
+      this._loading = import('./akcode.js').then(m => {
+        m.buildCodeAK47(this); this.buildCover(); this.addHandle(); this.buildFx();
+        onProgress && onProgress(1); this.ready = true; return this;
+      });
+      return this._loading;
+    }
     const upd = () => onProgress && onProgress(names.reduce((a, k) => a + (this.progress[k] || 0), 0) / names.length);
     this._loading = Promise.all(names.map(n => loadGLB((window.__ASSET || '') + P[n].file, f => { this.progress[n] = f; upd(); }).then(g => [n, g])))
       .then(list => {
@@ -229,7 +236,7 @@ export class Rifle {
     geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     geo.setIndex(idx); geo.computeVertexNormals();
     steelTex = steelTex || steelTexture();
-    const mat = new THREE.MeshPhysicalMaterial({ map: steelTex, color: 0x8f949c, metalness: 0.85, roughness: 0.5, side: THREE.DoubleSide, clearcoat: 0.15, clearcoatRoughness: 0.45 });
+    const mat = this.coverMat || new THREE.MeshPhysicalMaterial({ map: steelTex, color: 0x8f949c, metalness: 0.85, roughness: 0.5, side: THREE.DoubleSide, clearcoat: 0.15, clearcoatRoughness: 0.45 });
     const group = new THREE.Group(); group.add(new THREE.Mesh(geo, mat));
     const rear = this.coverSection(C.xr, N).filter(p => p[1] >= C.plateY);
     if (rear.length > 2) {
@@ -383,6 +390,10 @@ export class Rifle {
     const cN = this.nodes.carrier, bN = this.nodes.bolt;
     if (cN) cN.pivot.position.x -= fireCurve(ts) * this.def.handle.stroke;
     if (cN && bN) bN.pivot.position.add(v3.copy(cN.pivot.position).sub(cN.base));
+    // code model: the recoil spring compresses as the carrier comes back (only while it is in the rifle)
+    const sN = this.nodes.spring;
+    if (sN && sN.coil && cN) { const iS = S.findIndex(s => s.part === 'spring'), d = this.stripU[iS] > 0 ? 0 : (cN.pivot.position.x - cN.base.x) / 1;
+      sN.coil.scale.x = THREE.MathUtils.clamp((sN.coilL + d) / sN.coilL, 0.3, 1); }
     for (const q of this.smoke) if (q.s.visible) {
       q.life += dt; const k = q.life / q.max;
       if (k >= 1) { q.s.visible = false; continue; }

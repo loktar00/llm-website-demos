@@ -16,6 +16,10 @@ mesh (its width, lip height, length and arch were measured by slicing the receiv
 real cover's right-side cut-out over the ejection port so the charging handle runs free through the
 full stroke. By Claude Opus 5.5.
 
+A TRELLIS | Code-modeled toggle (`?model=trellis` / `?model=code`, default code) swaps in the fully
+code-modeled AK-47 from the [AK platform](../ak-platform/) site: geometry in three.js and tileable
+textures generated on ComfyUI, loaded from that folder.
+
 Single `index.html` (three.js from a CDN) with the six `.glb` models and the sound files beside
 it, no build step.
 

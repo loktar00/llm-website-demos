@@ -26,6 +26,11 @@
   #bar i.on { background: #3a3a3a; transform: scale(1.35); }
   #load { top: 50%; left: 0; right: 0; text-align: center; font-size: 11px; letter-spacing: .35em; color: var(--soft); transition: opacity .6s; }
   #credit { right: 26px; bottom: 18px; font-size: 10px; letter-spacing: .12em; color: #8a8a8a; }
+  #modelSeg { position: fixed; top: 24px; right: 26px; display: inline-flex; border: 1px solid #a3a3a3; border-radius: 16px; overflow: hidden; z-index: 5; }
+  #modelSeg button { font: 11px/1 "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: #3a3a3a;
+    padding: 8px 12px; border: 0; background: rgba(255,255,255,.38); cursor: pointer; }
+  #modelSeg button.on { background: #3a3a3a; color: #eee; }
+  @media (max-width: 640px) { #modelSeg { top: 64px; left: 16px; right: auto; } #modelSeg button { font-size: 10px; padding: 7px 9px; letter-spacing: .12em; } }
   #view { position: fixed; left: 26px; bottom: 18px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
   #view .btns { display: flex; gap: 6px; }
   #view button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #a3a3a3; background: rgba(255,255,255,.35);
@@ -62,6 +67,7 @@
   <button id="snd" aria-label="Sound on" title="Sound"><svg viewBox="0 0 16 16"><path d="M2 6h3l4-3v10L5 10H2z" fill="#4a4a4a"/><path id="sndx" d="M11 5.5l4 5M15 5.5l-4 5" stroke="#4a4a4a" stroke-width="1.3"/><path id="sndw" d="M11 5a4 4 0 0 1 0 6M12.6 3.4a6.2 6.2 0 0 1 0 9.2" stroke="#4a4a4a" stroke-width="1.2" fill="none" style="display:none"/></svg></button>
 </div><div class="tip">Drag to rotate &middot; pinch or +/&minus; to zoom</div></div>
 <div class="hud" id="credit">Krea2 &middot; Qwen Image 2.1 &rarr; TRELLIS.2</div>
+<div id="modelSeg"><button data-m="trellis">TRELLIS</button><button data-m="code">Code-modeled</button></div>
 
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script type="module">
@@ -79,6 +85,14 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 const Q = new URLSearchParams(location.search);
 // quantdiv serves the models from a shared asset folder; a standalone copy keeps them beside the page
 const ASSET = Q.get('assets') || (location.pathname.includes('/quantdiv/') ? '../assets/ak47-field-strip/' : './');
+// TRELLIS models or the code-modeled rifle (geometry + ComfyUI textures shared with the AK platform site)
+const MODEL = ['trellis', 'code'].includes(Q.get('model')) ? Q.get('model') : 'code';
+const CODE = MODEL === 'code' && !Q.has('hero');
+const PLATFORM = location.pathname.includes('/quantdiv/') ? '../assets/ak-platform/' : '../ak-platform/';
+for (const b of document.querySelectorAll('#modelSeg button')) {
+  b.classList.toggle('on', b.dataset.m === MODEL);
+  b.addEventListener('click', () => { if (b.dataset.m === MODEL) return; const q = new URLSearchParams(location.search); q.set('model', b.dataset.m); location.search = q.toString(); });
+}
 
 /* ---------- Layout ----------
    Placement is authored in the pixel space of the field-stripped body image
@@ -121,6 +135,7 @@ const STAGES = [
   { part: 'gastube',  n: '06', h: 'Gas tube',      d: 'Last, turn the lock lever up and lift the gas tube off with the upper handguard.' },
   { part: null,       n: '07', h: 'Field stripped', d: 'Seven assemblies, each modelled from a single generated image.' },
 ];
+if (CODE) STAGES[STAGES.length - 1].d = 'Seven assemblies, every one modeled in code.';
 const S0 = 0.07, S1 = 0.93;                              // disassembly spans [S0, S1]
 const stageSpan = (S1 - S0) / 6;
 const stageU = (p, i) => THREE.MathUtils.clamp((p - (S0 + (i - 1) * stageSpan)) / (stageSpan * 0.82), 0, 1);
@@ -272,7 +287,7 @@ function load(name) {
 }
 function updLoad() {
   const ks = Object.keys(PARTS).filter(k => !PARTS[k].code);
-  const v = ks.reduce((a, k) => a + (progress[k] || 0), 0) / ks.length;
+  const v = ks.length ? ks.reduce((a, k) => a + (progress[k] || 0), 0) / ks.length : 1;
   document.getElementById('lp').textContent = Math.round(v * 100);
 }
 
@@ -315,6 +330,10 @@ const COVER = { zc: -2.45, hwi: 21.2, t: 0.8, ys: 19.0, ci: 38.7, n: 2, xr: -208
 // the crown rounds down over the last 27 mm onto the rear tab.
 // charging handle in battery: front of the ejection port, just behind the rear-sight block
 const HANDLE = { x: 0.008, y: wy(258), z: 0.012, stroke: 0.115, knobR: 0.0075, stemR: 0.0035 };
+if (CODE) {   // the code model's receiver: walls at z +-16 mm, rails at y 12 mm, cover from the receiver's rear to the rear sight block
+  Object.assign(COVER, { zc: 0, hwi: 16.4, t: 0.8, ys: 19.8, ci: 35.8, n: 2, xr: -199.5, xf: 41.5, yb: 12, rearRound: 27, rearMin: 0.42, plateY: 17.8 });
+  Object.assign(HANDLE, { x: 0.033, y: 0.008, z: 0 });
+}
 COVER.cutX0 = (HANDLE.x - HANDLE.stroke - HANDLE.knobR) * 1000 - 4;     // cut-out spans the handle's swept travel + clearance
 COVER.cutY = (HANDLE.y + HANDLE.stemR) * 1000 + 3;
 function steelTexture() {
@@ -379,7 +398,7 @@ function buildDustCover() {
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   geo.setIndex(idx); geo.computeVertexNormals();
-  const mat = new THREE.MeshPhysicalMaterial({ map: steelTexture(), color: 0x8f949c, metalness: 0.85, roughness: 0.5,
+  const mat = window.__coverMat || new THREE.MeshPhysicalMaterial({ map: steelTexture(), color: 0x8f949c, metalness: 0.85, roughness: 0.5,
     side: THREE.DoubleSide, clearcoat: 0.15, clearcoatRoughness: 0.45 });
   const group = new THREE.Group();
   group.add(new THREE.Mesh(geo, mat));
@@ -406,7 +425,7 @@ function buildDustCover() {
 /* Cleaning rod under the barrel: missing from the field-stripped body image, so built in code. It runs from
    under the lower handguard through the rod guide (x 280-300 mm) into the front-sight base (measured on the mesh). */
 function addCleaningRod() {
-  if (!nodes.body || Q.has('hero')) return;
+  if (!nodes.body || Q.has('hero') || CODE) return;
   const steel = new THREE.MeshPhysicalMaterial({ color: 0x3a3c41, metalness: 0.9, roughness: 0.4 });
   const x0 = 0.222, x1 = 0.427, y = -0.0179, z = -0.0026;
   const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, x1 - x0, 12), steel);
@@ -419,7 +438,7 @@ function addCleaningRod() {
 /* TRELLIS baked a second, static charging handle into the receiver mesh (it is in the source
    image). The working one rides on the carrier, so the baked copy is cut out of the body. */
 function trimBakedHandle() {
-  const n = nodes.body; if (!n || Q.has('hero')) return;
+  const n = nodes.body; if (!n || Q.has('hero') || CODE) return;
   recoil.updateMatrixWorld(true);
   const inv = new THREE.Matrix4().copy(recoil.matrixWorld).invert(), M4 = new THREE.Matrix4(), p = new THREE.Vector3();
   n.pivot.traverse(o => {
@@ -456,8 +475,8 @@ function addChargingHandle() {
 }
 
 /* ---------- Effects: muzzle flash, smoke, casing ---------- */
-const MUZZLE = new THREE.Vector3(wx(1328), wy(287), 0);
-const PORT = new THREE.Vector3(-0.03, wy(262), 0.03);           // ejection port, behind the handle's home
+const MUZZLE = CODE ? new THREE.Vector3(0.435, 0, 0) : new THREE.Vector3(wx(1328), wy(287), 0);
+const PORT = CODE ? new THREE.Vector3(-0.01, 0.004, 0.017) : new THREE.Vector3(-0.03, wy(262), 0.03);   // ejection port, behind the handle's home
 
 function radialTex(stops, size = 128) {
   const c = document.createElement('canvas'); c.width = c.height = size; const g = c.getContext('2d');
@@ -1040,7 +1059,12 @@ function frame() {
 if (CAPTURE) window.__advance = (n, p) => { for (let i = 0; i < n; i++) { if (p) capP = p(capT); frame(); } };
 else renderer.setAnimationLoop(frame);
 
-Promise.all(Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g]))).then(list => {
+(CODE ? import(PLATFORM + 'js/akcode.js').then(m => {
+  window.__ASSET = PLATFORM;                                    // textures live with the AK platform site
+  const ctx = { recoil, nodes }; m.buildCodeAK47(ctx); window.__coverMat = ctx.coverMat;
+  document.getElementById('credit').textContent = 'Code-modeled in three.js · textures generated on ComfyUI (Krea2)';
+  return [];
+}) : Promise.all(Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g])))).then(list => {
   list.forEach(([n, g]) => fit(n, g));
   trimBakedHandle();
   addCleaningRod();
