@@ -308,8 +308,11 @@ function fit(name, gltf) {
    arch clearing the internals, stamped ribs, and the real cover's right-side cut-out over the
    ejection port so the charging handle and carrier run free through the whole stroke (checked
    offline: zero vertex intersections at 31 stroke positions). Values in mm, rifle space. */
-const COVER = { zc: -2.45, hwi: 21.2, t: 0.8, ys: 22.0, ci: 33.6, n: 2.6, xr: -212, xf: 17, yb: 16.3,
-  ribs: [0.14, 0.28, 0.42, 0.56, 0.70, 0.84], plateY: 22.5 };
+const COVER = { zc: -2.45, hwi: 21.2, t: 0.8, ys: 19.0, ci: 38.7, n: 2, xr: -208, xf: 17, yb: 16.3,
+  rearRound: 27, rearMin: 0.42, ribs: [0.16, 0.3, 0.44, 0.58, 0.72, 0.86], plateY: 17.8 };
+// Profile measured against the Krea2 hero photo (0.612 mm/px): cover 234 mm long from 4 mm ahead of the
+// receiver's rear to the rear-sight block's rear face; a U arch standing ~23.6 mm above its lower edge;
+// the crown rounds down over the last 27 mm onto the rear tab.
 // charging handle in battery: front of the ejection port, just behind the rear-sight block
 const HANDLE = { x: 0.008, y: wy(258), z: 0.012, stroke: 0.115, knobR: 0.0075, stemR: 0.0035 };
 COVER.cutX0 = (HANDLE.x - HANDLE.stroke - HANDLE.knobR) * 1000 - 4;     // cut-out spans the handle's swept travel + clearance
@@ -332,12 +335,15 @@ function steelTexture() {
 function coverSection(xmm, N) {
   const C = COVER, hm = C.hwi + C.t / 2;
   const archY = u => C.ys + (C.ci + C.t / 2 - C.ys) * Math.pow(1 - Math.pow(Math.min(1, Math.abs(u) / hm), C.n), 1 / C.n);
+  const rt = THREE.MathUtils.clamp((xmm - C.xr) / C.rearRound, 0, 1);
+  const f = C.rearMin + (1 - C.rearMin) * Math.sqrt(1 - (1 - rt) * (1 - rt));       // quarter-ellipse round-down at the rear
   // the right lower edge rises over the cut-out, with a short rounded ramp at its rear end
   const ybR = C.yb + (C.cutY - C.yb) * THREE.MathUtils.smoothstep(xmm, C.cutX0 - 2, C.cutX0 + 2);
   const raw = [];
   for (let i = 0; i <= 8; i++) raw.push([-hm, C.yb + (C.ys - C.yb) * i / 8]);
-  for (let i = 1; i < 60; i++) { const u = -hm + 2 * hm * i / 60; raw.push([u, archY(u)]); }
+  for (let i = 1; i < 60; i++) { const a = Math.PI * (1 - i / 60), u = hm * Math.cos(a); raw.push([u, archY(u)]); }   // angle-spaced: even arc sampling
   for (let i = 0; i <= 8; i++) raw.push([hm, C.ys + (C.yb - C.ys) * i / 8]);
+  for (const p of raw) p[1] = C.yb + (p[1] - C.yb) * f;
   let e = raw.length - 1;                                          // trim the right side below ybR
   while (e > 0 && raw[e][0] > 0 && raw[e][1] < ybR) e--;
   const pts = raw.slice(0, e + 1);
@@ -362,8 +368,8 @@ function buildDustCover() {
     for (let j = 0; j <= N; j++) {
       const [z, y] = prof[j], a = prof[Math.max(0, j - 1)], b = prof[Math.min(N, j + 1)];
       let nz = b[1] - a[1], ny = -(b[0] - a[0]); const l = Math.hypot(nz, ny) || 1; nz /= l; ny /= l;
-      if (nz * (z - C.zc) + ny * (y - 20) < 0) { nz = -nz; ny = -ny; }            // outward
-      const d = 1.4 * rib * THREE.MathUtils.smoothstep(y, C.ys - 3, C.ys + 4);      // ribs embossed over the arch
+      if (nz * (z - C.zc) + ny * (y - C.yb - 2) < 0) { nz = -nz; ny = -ny; }       // outward
+      const d = 1.3 * rib * THREE.MathUtils.smoothstep(y, C.yb + 3, C.ys + 4);      // ribs embossed, following the arch
       pos.push(xmm / 1000, (y + ny * d) / 1000, (z + nz * d) / 1000); uv.push(s, j / N);
     }
   }
@@ -377,13 +383,10 @@ function buildDustCover() {
     side: THREE.DoubleSide, clearcoat: 0.15, clearcoatRoughness: 0.45 });
   const group = new THREE.Group();
   group.add(new THREE.Mesh(geo, mat));
-  // rear end plate over the upper part, with the stamped notch for the recoil-spring guide
+  // rear end plate over the upper part of the rounded-down rear tab
   const rear = coverSection(C.xr, N).filter(p => p[1] >= C.plateY);
   const sh = new THREE.Shape(); sh.moveTo(rear[0][0] / 1000, C.plateY / 1000);
   rear.forEach(p => sh.lineTo(p[0] / 1000, p[1] / 1000)); sh.lineTo(rear[rear.length - 1][0] / 1000, C.plateY / 1000); sh.closePath();
-  const hole = new THREE.Path(), hy = (C.ci - 3) / 1000, hz = C.zc / 1000;
-  hole.moveTo(hz - 0.0055, hy); hole.lineTo(hz + 0.0055, hy); hole.lineTo(hz + 0.0055, hy - 0.007); hole.lineTo(hz - 0.0055, hy - 0.007); hole.closePath();
-  sh.holes.push(hole);
   const plateGeo = new THREE.ShapeGeometry(sh, 6);
   plateGeo.applyMatrix4(new THREE.Matrix4().set(0, 0, 1, C.xr / 1000 + 0.0004, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1));   // shape (z, y) -> plane x = rear end (non-singular, so normals stay valid)
   group.add(new THREE.Mesh(plateGeo, mat));
@@ -398,6 +401,19 @@ function buildDustCover() {
   group.position.copy(ctr).negate();
   const pivot = new THREE.Group(); pivot.add(group); pivot.position.copy(ctr); recoil.add(pivot);
   nodes.cover = { pivot, base: ctr.clone(), half: new THREE.Vector3(L / 2, (C.ci + C.t - C.yb) / 2000, (hm + C.t / 2) / 1000) };
+}
+
+/* Cleaning rod under the barrel: missing from the field-stripped body image, so built in code. It runs from
+   under the lower handguard through the rod guide (x 280-300 mm) into the front-sight base (measured on the mesh). */
+function addCleaningRod() {
+  if (!nodes.body || Q.has('hero')) return;
+  const steel = new THREE.MeshPhysicalMaterial({ color: 0x3a3c41, metalness: 0.9, roughness: 0.4 });
+  const x0 = 0.222, x1 = 0.427, y = -0.0179, z = -0.0026;
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, x1 - x0, 12), steel);
+  rod.rotation.z = Math.PI / 2; rod.position.set((x0 + x1) / 2, y, z);
+  const head = new THREE.Mesh(new THREE.CylinderGeometry(0.0042, 0.0042, 0.008, 14), steel);
+  head.rotation.z = Math.PI / 2; head.position.set(x1 - 0.004, y, z);
+  for (const m of [rod, head]) { m.layers.enable(1); nodes.body.pivot.attach(m); }
 }
 
 /* TRELLIS baked a second, static charging handle into the receiver mesh (it is in the source
@@ -429,10 +445,11 @@ function addChargingHandle() {
   const n = nodes.carrier; if (!n) return;
   const steel = new THREE.MeshPhysicalMaterial({ color: 0x2b2c30, metalness: 0.9, roughness: 0.35 });
   const g = new THREE.Group();
-  const stem = new THREE.Mesh(new THREE.CylinderGeometry(HANDLE.stemR, HANDLE.stemR, 0.03, 12), steel);
-  stem.rotation.x = Math.PI / 2; stem.position.z = 0.015;
-  const knob = new THREE.Mesh(new THREE.CylinderGeometry(HANDLE.knobR, HANDLE.knobR, 0.009, 18), steel);
-  knob.rotation.x = Math.PI / 2; knob.position.z = 0.032;
+  // flat stamped stem with a rounded end, like the real handle (inside the swept volume the cover clears)
+  const stem = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.0068, 0.028), steel);
+  stem.position.z = 0.016;
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.0065, 18, 12), steel);
+  knob.scale.set(1, 0.85, 0.8); knob.position.z = 0.032;
   g.add(stem, knob); g.traverse(o => { if (o.isMesh) o.layers.enable(1); });
   g.position.set(HANDLE.x - n.base.x, HANDLE.y - n.base.y, HANDLE.z);
   n.pivot.add(g);
@@ -1026,6 +1043,7 @@ else renderer.setAnimationLoop(frame);
 Promise.all(Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g]))).then(list => {
   list.forEach(([n, g]) => fit(n, g));
   trimBakedHandle();
+  addCleaningRod();
   buildDustCover();
   addChargingHandle();
   buildCallouts();
