@@ -93,11 +93,11 @@ const wx = px => (px - PX0) * K, wy = py => (PY0 - py) * K;
 const PARTS = {
   body:     { file: 'body.glb',     rot: [0, 0, 0],      box: [43, 1323, 208, 503], depth: null,  mat: { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] } },
   magazine: { file: 'magazine.glb', rot: [-90, 0, 180],  box: [576, 786, 300, 604], depth: 0.032, mat: { metal: 0.7, rough: 0.85, tint: [0.9, 0.92, 1.0] } },
-  cover:    { code: true,                               box: [398, 800, 228, 286], depth: 0.05 },   // built in code below
+  cover:    { code: true },                                      // built in code below, fitted to the receiver
   spring:   { file: 'spring.glb',   rot: [0, 0, 0],      box: [404, 690, 244, 274], depth: 0.02,  mat: { metal: 1.0, rough: 0.55, tint: [1, 1, 1] } },
   gastube:  { file: 'gastube.glb',  rot: [0, 90, 0],     box: [834, 1160, 224, 280], depth: 0.04, mat: { metal: 0.85, rough: 0.8, tint: [0.86, 0.9, 1.0] } },
-  carrier:  { file: 'carrier.glb',  rot: [0, 180, 0],    box: [598, 1140, 244, 284], depth: 0.03,  mat: { metal: 1.0, rough: 0.65, tint: [0.9, 0.92, 1.0] } },
-  bolt:     { file: 'bolt.glb',     rot: [0, -90, 0],    box: [770, 862, 258, 282], depth: 0.024, mat: { metal: 1.0, rough: 0.6, tint: [1, 1, 1] } },
+  carrier:  { file: 'carrier.glb',  rot: [0, 180, 0],    box: [559, 1101, 244, 284], depth: 0.03,  mat: { metal: 1.0, rough: 0.65, tint: [0.9, 0.92, 1.0] } },
+  bolt:     { file: 'bolt.glb',     rot: [0, -90, 0],    box: [731, 823, 258, 282], depth: 0.024, mat: { metal: 1.0, rough: 0.6, tint: [1, 1, 1] } },
 };
 const LABELS = {
   body: ['Receiver group', 'barrel, stock, lower handguard'], cover: ['Dust cover', 'receiver cover'],
@@ -300,18 +300,26 @@ function fit(name, gltf) {
   nodes[name] = { pivot, base, half: new THREE.Vector3(L / 2, H / 2, (P.depth || s.z * sz) / 2) };
 }
 
-/* The dust cover is the one part built in code. Three rounds of image -> TRELLIS.2 (Krea2,
-   Qwen Image 2.1 edits, a three-quarter-from-below U-channel) never produced a convincing
-   stamped cover, so this is a sheet-metal U-channel generated here: straight side walls, a
-   flattened arch with stamped transverse ribs, a rear end plate with the recoil-spring guide
-   notch, and rolled lower edges, sized to the receiver. */
+/* The dust cover is the one part built in code (TRELLIS never produced a usable thin stamped
+   cover). It is fitted to the receiver mesh: the numbers in COVER were measured by slicing the
+   fitted body.glb along the bore (wall faces at z -23.3 / +18.4 mm, side-wall lip at y 15.4-16.0 mm,
+   internals up to y 31.9 mm, rear of the receiver at x -212 mm, rear-sight block from x +18 mm).
+   It is a 0.8 mm shell 0.35 mm outside the walls, lower edges resting on the lip, a flattened
+   arch clearing the internals, stamped ribs, and the real cover's right-side cut-out over the
+   ejection port so the charging handle and carrier run free through the whole stroke (checked
+   offline: zero vertex intersections at 31 stroke positions). Values in mm, rifle space. */
+const COVER = { zc: -2.45, hwi: 21.2, t: 0.8, ys: 22.0, ci: 33.6, n: 2.6, xr: -212, xf: 17, yb: 16.3,
+  ribs: [0.14, 0.28, 0.42, 0.56, 0.70, 0.84], plateY: 22.5 };
+// charging handle in battery: front of the ejection port, just behind the rear-sight block
+const HANDLE = { x: 0.008, y: wy(258), z: 0.012, stroke: 0.115, knobR: 0.0075, stemR: 0.0035 };
+COVER.cutX0 = (HANDLE.x - HANDLE.stroke - HANDLE.knobR) * 1000 - 4;     // cut-out spans the handle's swept travel + clearance
+COVER.cutY = (HANDLE.y + HANDLE.stemR) * 1000 + 3;
 function steelTexture() {
   const W = 512, H = 128, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
-  g.fillStyle = '#6a6f78'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#5d6168'; g.fillRect(0, 0, W, H);
   for (let i = 0; i < 2600; i++) {                                // mottled bluing
     const x = Math.random() * W, y = Math.random() * H, r = 2 + Math.random() * 10;
-    const dark = Math.random() < 0.5;
-    g.fillStyle = 'rgba(' + (dark ? '20,24,32' : '70,74,80') + ',' + (0.05 + Math.random() * 0.06) + ')';
+    g.fillStyle = 'rgba(' + (Math.random() < 0.5 ? '20,24,32' : '70,74,80') + ',' + (0.05 + Math.random() * 0.06) + ')';
     g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
   }
   for (let i = 0; i < 260; i++) {                                 // fine longitudinal handling marks
@@ -320,93 +328,119 @@ function steelTexture() {
   }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
-function buildDustCover() {
-  const P = PARTS.cover; if (!P || !P.code) return;
-  const [x0, x1, y0, y1] = P.box;
-  const L = (x1 - x0) * K, H = (y1 - y0) * K, W = P.depth, hw = W / 2, archH = H * 0.34, wallH = H - archH;
-  // cross-section (z, y) with y = 0 at the crown, sampled then resampled by arc length
+// mid-surface cross-section at one station, [z, y] mm: left lower edge -> arch -> right lower edge
+function coverSection(xmm, N) {
+  const C = COVER, hm = C.hwi + C.t / 2;
+  const archY = u => C.ys + (C.ci + C.t / 2 - C.ys) * Math.pow(1 - Math.pow(Math.min(1, Math.abs(u) / hm), C.n), 1 / C.n);
+  // the right lower edge rises over the cut-out, with a short rounded ramp at its rear end
+  const ybR = C.yb + (C.cutY - C.yb) * THREE.MathUtils.smoothstep(xmm, C.cutX0 - 2, C.cutX0 + 2);
   const raw = [];
-  for (let i = 0; i <= 10; i++) raw.push([hw, -H + wallH * i / 10]);
-  for (let i = 1; i < 30; i++) { const a = i / 30 * Math.PI, c = Math.cos(a);
-    raw.push([hw * Math.sign(c) * Math.pow(Math.abs(c), 0.65), -archH + archH * Math.pow(Math.sin(a), 0.55)]); }
-  for (let i = 0; i <= 10; i++) raw.push([-hw, -archH - wallH * i / 10]);
-  const cum = [0]; for (let i = 1; i < raw.length; i++) cum.push(cum[i - 1] + Math.hypot(raw[i][0] - raw[i - 1][0], raw[i][1] - raw[i - 1][1]));
-  const N = 72, prof = [];
+  for (let i = 0; i <= 8; i++) raw.push([-hm, C.yb + (C.ys - C.yb) * i / 8]);
+  for (let i = 1; i < 60; i++) { const u = -hm + 2 * hm * i / 60; raw.push([u, archY(u)]); }
+  for (let i = 0; i <= 8; i++) raw.push([hm, C.ys + (C.yb - C.ys) * i / 8]);
+  let e = raw.length - 1;                                          // trim the right side below ybR
+  while (e > 0 && raw[e][0] > 0 && raw[e][1] < ybR) e--;
+  const pts = raw.slice(0, e + 1);
+  if (e < raw.length - 1) { const a = raw[e], b = raw[e + 1], f = (a[1] - ybR) / (a[1] - b[1] || 1);
+    pts.push([a[0] + (b[0] - a[0]) * f, ybR]); }
+  const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const out = [];
   for (let j = 0; j <= N; j++) {
     const d = cum[cum.length - 1] * j / N; let i = 1; while (i < cum.length - 1 && cum[i] < d) i++;
     const f = (d - cum[i - 1]) / (cum[i] - cum[i - 1] || 1);
-    prof.push([raw[i - 1][0] + (raw[i][0] - raw[i - 1][0]) * f, raw[i - 1][1] + (raw[i][1] - raw[i - 1][1]) * f]);
+    out.push([C.zc + pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * f, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * f]);
   }
-  const nrm = prof.map((p, j) => { const a = prof[Math.max(0, j - 1)], b = prof[Math.min(N, j + 1)];
-    let nz = b[1] - a[1], ny = -(b[0] - a[0]); const l = Math.hypot(nz, ny) || 1; nz /= l; ny /= l;
-    if (nz * p[0] + ny * (p[1] + H / 2) < 0) { nz = -nz; ny = -ny; } return [nz, ny]; });
-  const M = 150, ribs = [0.16, 0.3, 0.44, 0.58, 0.72, 0.86];
+  return out;
+}
+function buildDustCover() {
+  const P = PARTS.cover; if (!P || !P.code) return;
+  const C = COVER, M = 180, N = 80, L = (C.xf - C.xr) / 1000;
   const pos = [], uv = [], idx = [];
   for (let i = 0; i <= M; i++) {
-    const s = i / M, x = -L / 2 + L * s;
-    const rib = ribs.reduce((a, r) => a + Math.exp(-Math.pow((s - r) * L / 0.0028, 2)), 0);
+    const s = i / M, xmm = C.xr + (C.xf - C.xr) * s, prof = coverSection(xmm, N);
+    const rib = C.ribs.reduce((a, r) => a + Math.exp(-Math.pow((s - r) * L / 0.0028, 2)), 0);
     for (let j = 0; j <= N; j++) {
-      const [pz, py] = prof[j], [nz, ny] = nrm[j];
-      const top = THREE.MathUtils.smoothstep(py, -H * 0.82, -archH * 0.6);   // ribs run over the arch and upper walls
-      const d = 0.0015 * rib * top;
-      pos.push(x, py + H / 2 + ny * d, pz + nz * d); uv.push(s, j / N);
+      const [z, y] = prof[j], a = prof[Math.max(0, j - 1)], b = prof[Math.min(N, j + 1)];
+      let nz = b[1] - a[1], ny = -(b[0] - a[0]); const l = Math.hypot(nz, ny) || 1; nz /= l; ny /= l;
+      if (nz * (z - C.zc) + ny * (y - 20) < 0) { nz = -nz; ny = -ny; }            // outward
+      const d = 1.4 * rib * THREE.MathUtils.smoothstep(y, C.ys - 3, C.ys + 4);      // ribs embossed over the arch
+      pos.push(xmm / 1000, (y + ny * d) / 1000, (z + nz * d) / 1000); uv.push(s, j / N);
     }
   }
-  const notch = (i, j) => { const s = (i + 0.5) / M, z = prof[j][0], y = prof[j][1];
-    return s < 0.06 && s > 0.012 && Math.abs(z) < 0.0055 && y > -archH * 0.5; };
-  for (let i = 0; i < M; i++) for (let j = 0; j < N; j++) {
-    if (notch(i, j)) continue;
-    const a = i * (N + 1) + j, b = a + N + 1;
-    idx.push(a, b, a + 1, b, b + 1, a + 1);
-  }
+  // wound so front faces point outward: GTAO's normal/depth pass renders front faces only
+  for (let i = 0; i < M; i++) for (let j = 0; j < N; j++) { const a = i * (N + 1) + j, b = a + N + 1; idx.push(a, a + 1, b, b, a + 1, b + 1); }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   geo.setIndex(idx); geo.computeVertexNormals();
-  const tex = steelTexture();
-  const mat = new THREE.MeshPhysicalMaterial({ map: tex, color: 0x9aa2ad, metalness: 0.8, roughness: 0.42,
-    side: THREE.DoubleSide, clearcoat: 0.25, clearcoatRoughness: 0.4 });
+  const mat = new THREE.MeshPhysicalMaterial({ map: steelTexture(), color: 0x8f949c, metalness: 0.85, roughness: 0.5,
+    side: THREE.DoubleSide, clearcoat: 0.15, clearcoatRoughness: 0.45 });
   const group = new THREE.Group();
   group.add(new THREE.Mesh(geo, mat));
-  // rear end plate with the guide-button notch, open below like the real cover
-  const sh = new THREE.Shape(); const cut = -H * 0.55;
-  const plate = prof.filter(p => p[1] >= cut);
-  sh.moveTo(plate[0][0], plate[0][1] + H / 2); plate.forEach(p => sh.lineTo(p[0], p[1] + H / 2)); sh.closePath();
-  const hole = new THREE.Path(); const hy = H / 2 - 0.0035;
-  hole.moveTo(-0.0055, hy); hole.lineTo(0.0055, hy); hole.lineTo(0.0055, hy - 0.007); hole.lineTo(-0.0055, hy - 0.007); hole.closePath();
+  // rear end plate over the upper part, with the stamped notch for the recoil-spring guide
+  const rear = coverSection(C.xr, N).filter(p => p[1] >= C.plateY);
+  const sh = new THREE.Shape(); sh.moveTo(rear[0][0] / 1000, C.plateY / 1000);
+  rear.forEach(p => sh.lineTo(p[0] / 1000, p[1] / 1000)); sh.lineTo(rear[rear.length - 1][0] / 1000, C.plateY / 1000); sh.closePath();
+  const hole = new THREE.Path(), hy = (C.ci - 3) / 1000, hz = C.zc / 1000;
+  hole.moveTo(hz - 0.0055, hy); hole.lineTo(hz + 0.0055, hy); hole.lineTo(hz + 0.0055, hy - 0.007); hole.lineTo(hz - 0.0055, hy - 0.007); hole.closePath();
   sh.holes.push(hole);
-  const plateGeo = new THREE.ShapeGeometry(sh, 6); plateGeo.rotateY(Math.PI / 2); plateGeo.translate(-L / 2 + 0.0006, 0, 0);
+  const plateGeo = new THREE.ShapeGeometry(sh, 6);
+  plateGeo.applyMatrix4(new THREE.Matrix4().set(0, 0, 1, C.xr / 1000 + 0.0004, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1));   // shape (z, y) -> plane x = rear end (non-singular, so normals stay valid)
   group.add(new THREE.Mesh(plateGeo, mat));
-  for (const zs of [1, -1]) {                                      // rolled lower edges
-    const lip = new THREE.Mesh(new THREE.CylinderGeometry(0.0011, 0.0011, L, 8), mat);
-    lip.rotation.z = Math.PI / 2; lip.position.set(0, -H / 2 + 0.0008, zs * (hw - 0.0004)); group.add(lip);
-  }
+  // rolled lower edges: full length on the left, behind the cut-out on the right
+  const hm = C.hwi + C.t / 2;
+  const lip = (x0, x1, z) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(0.0007, 0.0007, (x1 - x0) / 1000, 8), mat);
+    m.rotation.z = Math.PI / 2; m.position.set((x0 + x1) / 2000, (C.yb + 0.5) / 1000, z / 1000); group.add(m); };
+  lip(C.xr, C.xf, C.zc - hm); lip(C.xr, C.cutX0 - 2, C.zc + hm);
   group.traverse(o => { if (o.isMesh) o.layers.enable(1); });
-  const pivot = new THREE.Group(); pivot.add(group);
-  const base = new THREE.Vector3(wx((x0 + x1) / 2), wy((y0 + y1) / 2), 0);
-  pivot.position.copy(base); recoil.add(pivot);
-  nodes.cover = { pivot, base, half: new THREE.Vector3(L / 2, H / 2, W / 2) };
+  // pivot at the cover's centre so the strip path and callouts work as for the other parts
+  const ctr = new THREE.Vector3((C.xr + C.xf) / 2000, (C.yb + C.ci) / 2000, C.zc / 1000);
+  group.position.copy(ctr).negate();
+  const pivot = new THREE.Group(); pivot.add(group); pivot.position.copy(ctr); recoil.add(pivot);
+  nodes.cover = { pivot, base: ctr.clone(), half: new THREE.Vector3(L / 2, (C.ci + C.t - C.yb) / 2000, (hm + C.t / 2) / 1000) };
+}
+
+/* TRELLIS baked a second, static charging handle into the receiver mesh (it is in the source
+   image). The working one rides on the carrier, so the baked copy is cut out of the body. */
+function trimBakedHandle() {
+  const n = nodes.body; if (!n || Q.has('hero')) return;
+  recoil.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(recoil.matrixWorld).invert(), M4 = new THREE.Matrix4(), p = new THREE.Vector3();
+  n.pivot.traverse(o => {
+    if (!o.isMesh || !o.geometry.index) return;
+    M4.multiplyMatrices(inv, o.matrixWorld);
+    const g = o.geometry, P = g.attributes.position, src = g.index.array, keep = [];
+    for (let i = 0; i < src.length; i += 3) {
+      let hit = false;
+      for (let k = 0; k < 3 && !hit; k++) {
+        p.fromBufferAttribute(P, src[i + k]).applyMatrix4(M4);
+        hit = p.x > -0.067 && p.x < -0.025 && p.y > 0.024 && p.z > 0.012;
+      }
+      if (!hit) keep.push(src[i], src[i + 1], src[i + 2]);
+    }
+    g.setIndex(keep);
+  });
 }
 
 /* The carrier sits inside the receiver; on the real rifle only its charging handle shows,
-   riding a slot on the right side. The mesh's own knob is buried at receiver width, so a
-   small handle is attached to the carrier and travels with it. */
+   riding the slot on the right side. The mesh's own knob is buried at receiver width, so a
+   small handle is attached to the carrier at HANDLE and travels with it. */
 function addChargingHandle() {
   const n = nodes.carrier; if (!n) return;
   const steel = new THREE.MeshPhysicalMaterial({ color: 0x2b2c30, metalness: 0.9, roughness: 0.35 });
   const g = new THREE.Group();
-  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 0.03, 12), steel);
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(HANDLE.stemR, HANDLE.stemR, 0.03, 12), steel);
   stem.rotation.x = Math.PI / 2; stem.position.z = 0.015;
-  const knob = new THREE.Mesh(new THREE.CylinderGeometry(0.0075, 0.0075, 0.009, 18), steel);
+  const knob = new THREE.Mesh(new THREE.CylinderGeometry(HANDLE.knobR, HANDLE.knobR, 0.009, 18), steel);
   knob.rotation.x = Math.PI / 2; knob.position.z = 0.032;
   g.add(stem, knob); g.traverse(o => { if (o.isMesh) o.layers.enable(1); });
-  g.position.set(wx(800) - n.base.x, wy(258) - n.base.y, 0.012);
+  g.position.set(HANDLE.x - n.base.x, HANDLE.y - n.base.y, HANDLE.z);
   n.pivot.add(g);
 }
 
 /* ---------- Effects: muzzle flash, smoke, casing ---------- */
 const MUZZLE = new THREE.Vector3(wx(1328), wy(287), 0);
-const PORT = new THREE.Vector3(wx(720), wy(262), 0.03);
+const PORT = new THREE.Vector3(-0.03, wy(262), 0.03);           // ejection port, behind the handle's home
 
 function radialTex(stops, size = 128) {
   const c = document.createElement('canvas'); c.width = c.height = size; const g = c.getContext('2d');
@@ -516,7 +550,7 @@ function stepCasing(c, dt) {
     const impact = -c.v.y;
     if (impact > 0) {
       c.v.y = impact * 0.36; c.v.x *= 0.62; c.v.z *= 0.62; c.w.multiplyScalar(0.55); c.bounces++;
-      if (impact > 0.25) audio.ping(Math.min(1, impact / 3));
+      if (c.bounces <= 2 && impact > 0.2) audio.ping(c.bounces === 1 ? 1 : 0.35);   // one tink on contact, a faint one on the bounce
     }
     if (impact < 0.35 && c.bounces > 1) {                         // settle: lie on its side, roll to a stop
       c.rest = true; c.v.set(0, 0, 0);
@@ -530,10 +564,10 @@ function stepCasing(c, dt) {
 /* ---------- Sound: real recordings, muted until the toggle is pressed ----------
    sfx-shot: AK-47 single shot, Beeld en Geluid via Wikimedia Commons, CC BY-SA 3.0 (trimmed).
    sfx-bolt: "Equipment Clicks III" by LFA (a real rifle bolt), OpenGameArt, CC0 (trimmed).
-   sfx-brass0-2: Kenney "Impact Sounds" impactMetal_light, CC0.
+   sfx-brass0-2: synthesized for this page (a click plus a few fast-decaying 6-11 kHz partials, 36-50 ms), CC0.
    A small synth stands in for any file that fails to load. */
 const audio = (() => {
-  let ctx = null, master = null, on = false, noiseBuf = null;
+  let ctx = null, master = null, on = false, noiseBuf = null, pings = 0;
   const buf = {};
   function init() {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -548,7 +582,7 @@ const audio = (() => {
   }
   function play(b, gain, rate) {
     const s = ctx.createBufferSource(); s.buffer = b; s.playbackRate.value = rate;
-    const g = ctx.createGain(); g.gain.value = gain; s.connect(g); g.connect(master); s.start();
+    const g = ctx.createGain(); g.gain.value = gain; s.connect(g); g.connect(master); s.start(); return s;
   }
   function noise(dur, f0, f1, gain) {
     const t = ctx.currentTime, s = ctx.createBufferSource(); s.buffer = noiseBuf;
@@ -562,8 +596,9 @@ const audio = (() => {
     shot() { if (!on) return;                                     // per-round variation so a burst never sounds looped
       if (buf.shot) play(buf.shot, 0.72 + Math.random() * 0.18, 0.94 + Math.random() * 0.1); else noise(0.35, 5000, 200, 0.9); },
     bolt() { if (!on) return; if (buf.bolt) play(buf.bolt, 0.28 + Math.random() * 0.08, 1.1 + Math.random() * 0.12); },
-    ping(v) { if (!on) return; const b = buf['brass' + Math.floor(Math.random() * 3)];
-      if (b) play(b, 0.12 + 0.45 * v, 0.95 + Math.random() * 0.3); else noise(0.05, 7000, 4000, 0.1 * v); },
+    ping(v) { if (!on || pings >= 2) return;                      // tiny dry tink, well under the shot, never more than two at once
+      const b = buf['brass' + Math.floor(Math.random() * 3)]; if (!b) return;
+      pings++; const s = play(b, (0.13 + Math.random() * 0.06) * v, 0.9 + Math.random() * 0.25); s.onended = () => pings--; },
   };
 })();
 window.__audio = audio;
@@ -579,7 +614,7 @@ sndBtn.addEventListener('click', () => {
    ~600 rounds/min, so each round's carrier stroke is ~0.1 s: snapped back, slammed home.
    4-6 rounds, then a pause. (The AK has semi and full auto only; the burst is trigger control.) */
 const RPM_DT = 0.1, PAUSE = 2.0;
-const CARRIER_STROKE = 0.115;
+const CARRIER_STROKE = HANDLE.stroke;
 function fireCurve(t) {
   if (t < 0) return 0;
   if (t < 0.035) { const k = t / 0.035; return 1 - (1 - k) * (1 - k); }     // violent rearward stroke
@@ -937,7 +972,7 @@ function frame() {
     const elev = THREE.MathUtils.clamp(THREE.MathUtils.lerp(0.1, 0.2, strip) + user.pitch, -0.06, 1.3);
     const azim = THREE.MathUtils.lerp(0.32, 0.12, strip) + user.yaw;
     camTarget.set(Math.sin(azim) * Math.cos(elev), Math.sin(elev), Math.cos(azim) * Math.cos(elev)).multiplyScalar(camDist * user.zoom).add(camLook);
-    camera.position.copy(camTarget); if (window.__cam) camera.position.set(...window.__cam); if (window.__still) camLook.set(0, -0.05, 0);
+    camera.position.copy(camTarget); if (window.__cam) camera.position.set(...window.__cam); if (window.__still) camLook.set(0, -0.05, 0); if (window.__look) camLook.set(...window.__look);
     camera.lookAt(camLook);
     // shot shake, decays in sim time
     if (ts >= 0 && ts < 0.4) {
@@ -990,6 +1025,7 @@ else renderer.setAnimationLoop(frame);
 
 Promise.all(Object.keys(PARTS).filter(n => !PARTS[n].code).map(n => load(n).then(g => [n, g]))).then(list => {
   list.forEach(([n, g]) => fit(n, g));
+  trimBakedHandle();
   buildDustCover();
   addChargingHandle();
   buildCallouts();
