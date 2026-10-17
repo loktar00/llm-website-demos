@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>THE FORAGER — a honeybee on a sunflower</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#0a0c08;}
+  canvas{display:block;}
+  #hint{
+    position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+    font:12px/1.4 "Segoe UI",Helvetica,Arial,sans-serif;color:rgba(255,250,235,.85);
+    background:rgba(20,18,10,.38);border:1px solid rgba(255,240,200,.25);
+    padding:6px 14px;border-radius:20px;letter-spacing:.4px;cursor:pointer;
+    user-select:none;z-index:10;backdrop-filter:blur(4px);transition:opacity 1.2s;
+  }
+  #hint.hide{opacity:0;pointer-events:none;}
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+<div id="hint">♪ click for sound</div>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import * as BGU from 'three/addons/utils/BufferGeometryUtils.js';
+
+/* ============================================================
+   THE FORAGER — photoreal macro scene, all geometry in code
+   Units: metres.  Bee ≈ 16 mm long, flower head ≈ 24 cm wide.
+   ============================================================ */
+
+const rng = mulberry32(20240817);
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+const rand = (a,b)=>a+(b-a)*rng();
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const sstep=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);}
+// smooth pseudo-noise from summed sines (deterministic, C-infinite)
+function sn(t,a=1,b=0){return Math.sin(t*1.0+b)*a;}
+function noise1(t){return Math.sin(t*1.7)*0.5+Math.sin(t*3.13+1.7)*0.3+Math.sin(t*7.31+4.2)*0.2;}
+function noise2(t){return Math.sin(t*2.31+0.3)*0.45+Math.sin(t*5.17+2.9)*0.35+Math.sin(t*11.7+0.9)*0.2;}
+
+/* ---------- renderer / scene / camera ---------- */
+const renderer = new THREE.WebGLRenderer({antialias:false, powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.16;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, innerWidth/innerHeight, 0.0035, 900);
+camera.position.set(0.3,0.62,0.55);
+
+/* ---------- sky dome + sun + environment ---------- */
+const SUN_AZ = -2.28, SUN_EL = 0.30;                       // low warm late-summer sun
+const sunDir = new THREE.Vector3(Math.cos(SUN_EL)*Math.cos(SUN_AZ), Math.sin(SUN_EL), Math.cos(SUN_EL)*Math.sin(SUN_AZ)).normalize();
+function makeSky(){
+  const g = new THREE.SphereGeometry(400,32,20);
+  const m = new THREE.ShaderMaterial({
+    side:THREE.BackSide, depthWrite:false, fog:false,
+    uniforms:{ uSun:{value:sunDir} },
+    vertexShader:`varying vec3 vD; void main(){ vD=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`
+      varying vec3 vD; uniform vec3 uSun;
+      void main(){
+        float h = clamp(vD.y,-0.2,1.0);
+        vec3 zen  = vec3(0.190,0.380,0.680);
+        vec3 mid  = vec3(0.470,0.630,0.830);
+        vec3 hor  = vec3(0.870,0.830,0.700);
+        vec3 col = mix(hor, mid, smoothstep(0.0,0.18,h));
+        col = mix(col, zen, smoothstep(0.12,0.75,h));
+        float s = max(dot(normalize(vD), uSun),0.0);
+        vec3 warm = vec3(1.0,0.82,0.55);
+        col += warm*pow(s,6.0)*0.35;                    // broad warm haze around sun
+        col += warm*pow(s,60.0)*1.6;                    // inner glow
+        col += vec3(1.0,0.97,0.88)*pow(s,3000.0)*26.0;  // sun disc (blooms)
+        float g = clamp(-h,0.0,1.0);                    // below horizon fade to warm soil haze
+        col = mix(col, vec3(0.42,0.40,0.30), smoothstep(0.0,0.25,g));
+        gl_FragColor = vec4(col,1.0);
+      }`
+  });
+  return new THREE.Mesh(g,m);
+}
+const sky = makeSky(); scene.add(sky);
+
+// PMREM environment from a mini sky scene for PBR reflections
+{
+  const pm = new THREE.PMREMGenerator(renderer);
+  const envScene = new THREE.Scene();
+  const esky = new THREE.Mesh(new THREE.SphereGeometry(10,24,16), sky.material.clone());
+  esky.material.side = THREE.BackSide;
+  envScene.add(esky);
+  const gnd = new THREE.Mesh(new THREE.CircleGeometry(9,24), new THREE.MeshBasicMaterial({color:0x4c5a2e, side:THREE.DoubleSide}));
+  gnd.rotation.x = -Math.PI/2; gnd.position.y = -0.4; envScene.add(gnd);
+  scene.environment = pm.fromScene(envScene,0.0,0.1,20).texture;
+  pm.dispose();
+}
+scene.fog = new THREE.Fog(0xbfc7ab, 2.2, 46);
+
+/* ---------- lights ---------- */
+const sun = new THREE.DirectionalLight(0xffe2b0, 3.4);
+sun.position.copy(sunDir).multiplyScalar(6);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.near = 3; sun.shadow.camera.far = 9;
+sun.shadow.camera.left=-0.45; sun.shadow.camera.right=0.45; sun.shadow.camera.top=0.5; sun.shadow.camera.bottom=-0.35;
+sun.shadow.bias=-0.00012; sun.shadow.normalBias=0.0006;
+sun.target.position.set(0,0.42,0); scene.add(sun, sun.target);
+const hemi = new THREE.HemisphereLight(0xbdd7f5, 0x59662f, 0.62); scene.add(hemi);
+const bounce = new THREE.DirectionalLight(0x9db8e6, 0.35);
+bounce.position.set(-sunDir.x,0.4,-sunDir.z); scene.add(bounce);
+
+/* ---------- canvas-texture helpers (everything drawn in code) ---------- */
+function ctex(w,h,fn,srgb=true){
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const x=c.getContext('2d');fn(x,w,h);
+  const t=new THREE.CanvasTexture(c);
+  if(srgb)t.colorSpace=THREE.SRGBColorSpace;
+  t.anisotropy=8;return t;
+}
+const TAU=Math.PI*2, GOLD=Math.PI*(3-Math.sqrt(5));
+
+/* ---------- translucency injection (backlit petals/leaves) ---------- */
+function makeTranslucent(mat, strength, tint){
+  mat.onBeforeCompile = sh=>{
+    sh.uniforms.uSunDir={value:sunDir}; sh.uniforms.uTrans={value:strength}; sh.uniforms.uTint={value:new THREE.Color(tint)};
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>','#include <common>\nvarying vec3 vWPos;varying vec3 vWNrm;')
+      .replace('#include <begin_vertex>','#include <begin_vertex>\nvWPos=(modelMatrix*vec4(transformed,1.0)).xyz;\nvWNrm=normalize(mat3(modelMatrix)*objectNormal);');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>','#include <common>\nvarying vec3 vWPos;varying vec3 vWNrm;uniform vec3 uSunDir;uniform float uTrans;uniform vec3 uTint;')
+      .replace('#include <tonemapping_fragment>',`#include <tonemapping_fragment>
+        vec3 tV=normalize(cameraPosition-vWPos);
+        float tB=pow(max(clamp(dot(tV,-uSunDir),0.0,1.0),1e-4),2.2);
+        float tF=pow(max(clamp(dot(-vWNrm,uSunDir),0.0,1.0),1e-4),1.5);
+        gl_FragColor.rgb += diffuseColor.rgb*uTint*uTrans*(tB*0.85+tF*0.45)*(0.55+0.45*tB);
+      `);
+  };
+  mat.customProgramCacheKey=()=> 'trans'+strength;
+  return mat;
+}
+
+/* ================================================================
+   FIELD / GROUND / GRASS
+   ================================================================ */
+{
+  const tex = ctex(512,512,(x,w,h)=>{
+    x.fillStyle='#57662e';x.fillRect(0,0,w,h);
+    for(let i=0;i<2600;i++){
+      x.fillStyle=['#4d5c2b','#61703a','#6d7a44','#48542a','#5a6433','#7c7a4a'][ (Math.random()*6)|0 ];
+      x.globalAlpha=rand(0.12,0.5);
+      x.beginPath();x.arc(rand(0,w),rand(0,h),rand(1,16),0,7);x.fill();
+    }
+    x.globalAlpha=1;
+  });
+  tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.repeat.set(26,26);
+  const g = new THREE.PlaneGeometry(180,180,24,24);
+  const p=g.attributes.position;
+  for(let i=0;i<p.count;i++){ const dd=Math.hypot(p.getX(i),p.getY(i)); const amp=Math.min(1,dd/4)*0.9+0.1;
+    p.setZ(i,( noise1(p.getX(i)*0.35+p.getY(i)*0.2)*0.09+noise1(p.getX(i)*1.7)*0.02)*amp); }
+  g.computeVertexNormals();
+  const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({map:tex,roughness:0.95,color:0x9aa372}));
+  m.rotation.x=-Math.PI/2;m.position.y=-0.06;m.receiveShadow=true;scene.add(m);
+}
+const grassTime = {value:0};
+{
+  // instanced grass blades near the hero flower
+  const bg=new THREE.BufferGeometry();
+  const seg=4, pos=[],uv=[],idx=[];
+  for(let i=0;i<=seg;i++){const t=i/seg,wd=0.004*(1-t)+0.0006,bend=t*t*0.05;
+    pos.push(-wd, t*0.16, bend,  wd, t*0.16, bend);
+    uv.push(0,t,1,t);}
+  for(let i=0;i<seg;i++){const a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2);}
+  bg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  bg.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  bg.setIndex(idx);bg.computeVertexNormals();
+  const gt=ctex(64,64,(x,w,h)=>{const g=x.createLinearGradient(0,h,0,0);g.addColorStop(0,'#3f5a20');g.addColorStop(0.6,'#5c7a2c');g.addColorStop(1,'#93a24a');x.fillStyle=g;x.fillRect(0,0,w,h);});
+  const gm=new THREE.MeshStandardMaterial({map:gt,side:THREE.DoubleSide,roughness:0.8});
+  gm.onBeforeCompile=sh=>{sh.uniforms.uT=grassTime;
+    sh.vertexShader='uniform float uT;\n'+sh.vertexShader.replace('#include <begin_vertex>',
+    `#include <begin_vertex>
+     #ifdef USE_INSTANCING
+     float ph=instanceMatrix[3][0]*3.1+instanceMatrix[3][2]*2.3;
+     float sw=pow(clamp(position.y/0.16,0.0,1.0),2.0);
+     transformed.x+=sin(uT*1.4+ph)*0.02*sw+sin(uT*0.53+ph*0.5)*0.012*sw;
+     #endif`);};
+  const N=1400, gi=new THREE.InstancedMesh(bg,gm,N);
+  const d=new THREE.Object3D();
+  for(let i=0;i<N;i++){
+    const a=rand(0,TAU), r=0.35+Math.pow(rng(),0.6)*7.5;
+    d.position.set(Math.cos(a)*r,-0.13,Math.sin(a)*r);
+    d.rotation.set(rand(-0.12,0.12),rand(0,TAU),rand(-0.14,0.14));
+    const s=rand(0.55,1.7);d.scale.set(s,s*rand(0.7,1.5),s);
+    d.updateMatrix();gi.setMatrixAt(i,d.matrix);
+  }
+  gi.castShadow=false;gi.receiveShadow=true;scene.add(gi);
+}
+
+// distant sunflower field — merged vertex-coloured impostors, one InstancedMesh
+const fieldFlowers=[];
+{
+  const parts=[];
+  const stemG=new THREE.CylinderGeometry(0.008,0.013,0.9,6); stemG.translate(0,0.45,0);
+  parts.push(colGeo(stemG,0x53702f));
+  // head: tilted slightly up, brown disc with golden rim
+  const headG=new THREE.SphereGeometry(0.075,10,6,0,TAU,0,1.1); headG.rotateX(Math.PI/2);headG.scale(1,1,0.4); headG.translate(0,0.95,-0.01);
+  parts.push(colGeo(headG,0x4f3418));
+  const rimG=new THREE.TorusGeometry(0.075,0.012,5,16); rimG.rotateX(Math.PI/2); rimG.translate(0,0.95,-0.005);
+  parts.push(colGeo(rimG,0xcf9a1e));
+  for(let i=0;i<18;i++){
+    const a=i/18*TAU;
+    const pg=new THREE.BoxGeometry(0.085,0.004,0.02);
+    pg.rotateZ(-0.16);
+    pg.translate(0.115,0,0);
+    pg.rotateY(a);
+    pg.rotateX(-0.25);
+    pg.translate(0,0.95,-0.005);
+    parts.push(colGeo(pg,0xdca422));
+  }
+  const lg=new THREE.BoxGeometry(0.16,0.004,0.07); lg.rotateZ(0.5); lg.rotateY(0.7); lg.translate(0.07,0.4,0);
+  parts.push(colGeo(lg,0x4a6a2a));
+  const geo=BGU.mergeGeometries(parts);
+  const mat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:0.8,side:THREE.DoubleSide});
+  const M=42, fi=new THREE.InstancedMesh(geo,mat,M);
+  const d=new THREE.Object3D();
+  for(let i=0;i<M;i++){
+    const a=rand(0,TAU), r=1.6+Math.pow(rng(),0.55)*22;
+    const h=rand(0.75,1.35);
+    const rec={a,r,h,ph:rand(0,TAU),tilt:rand(0.12,0.4),hSpin:rand(0,TAU),lean:rand(-0.2,0.2)};
+    fieldFlowers.push(rec);
+  }
+  fi.userData.mat=mat; fi.userData.d=d; scene.add(fi); fi.frustumCulled=false;
+  fi.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  fi.userData.fi=fi;
+  window._field=fi;
+  function updateField(t){
+    const d=fi.userData.d;
+    for(let i=0;i<M;i++){const f=fieldFlowers[i];
+      const sway=Math.sin(t*0.9+f.ph)*0.045+Math.sin(t*0.31+f.ph*1.7)*0.03;
+      d.position.set(Math.cos(f.a)*f.r,-0.05,Math.sin(f.a)*f.r);
+      d.rotation.set(0,f.a+Math.PI/2+f.hSpin,0);
+      d.rotation.order='YXZ';
+      d.rotateX(-f.tilt+sway); d.rotateZ(f.lean+Math.sin(t*0.7+f.ph)*0.03);
+      d.scale.set(f.h,f.h,f.h);
+      d.updateMatrix();fi.setMatrixAt(i,d.matrix);}
+    fi.instanceMatrix.needsUpdate=true;
+  }
+  scene.userData.updateField=updateField;
+}
+function colGeo(g,hex){const c=new THREE.Color(hex);const n=g.attributes.position.count;const a=new Float32Array(n*3);
+  for(let i=0;i<n;i++){a[i*3]=c.r;a[i*3+1]=c.g;a[i*3+2]=c.b;}
+  g.setAttribute('color',new THREE.BufferAttribute(a,3));return g;}
+
+/* ================================================================
+   THE SUNFLOWER
+   ================================================================ */
+const flower = new THREE.Group(); scene.add(flower);          // stem base at origin
+const stemSeg = [new THREE.Group(),new THREE.Group(),new THREE.Group()];
+flower.add(stemSeg[0]); stemSeg[0].add(stemSeg[1]); stemSeg[1].add(stemSeg[2]);
+const SEG_H=[0.18,0.17,0.17];
+const headBase = new THREE.Group(); stemSeg[2].add(headBase);
+// disc normal points up-and-out toward the warm afternoon light / camera side
+{
+  const el=0.62, az=1.12;
+  const n=new THREE.Vector3(Math.cos(el)*Math.cos(az),Math.sin(el),Math.cos(el)*Math.sin(az)).normalize();
+  headBase.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),n);
+}
+const head = new THREE.Group(); headBase.add(head);         // head local: disc in XZ, up +Y
+const HEAD_Y = 0.52;
+
+// ---- stem (hairy, slightly tapered) + leaves + petioles ----
+const stemMat = makeTranslucent(new THREE.MeshStandardMaterial({color:0x5c8430,roughness:0.62,side:THREE.DoubleSide}),0.22,0x9fc46a);
+function stemCyl(r0,r1,h,grp){
+  const g=new THREE.CylinderGeometry(r0,r1,h,14,4,false);
+  g.translate(0,h/2,0);
+  const m=new THREE.Mesh(g,stemMat);m.castShadow=true;m.receiveShadow=true;grp.add(m);return g;
+}
+stemSeg[0].position.y=0;
+stemCyl(0.0135,0.0115,SEG_H[0],stemSeg[0]); stemSeg[1].position.y=SEG_H[0];
+stemCyl(0.0115,0.0098,SEG_H[1],stemSeg[1]); stemSeg[2].position.y=SEG_H[1];
+stemCyl(0.0098,0.0075,0.016,stemSeg[2]);
+
+// leaf geometry: parametric ovate leaf with midrib + curled margins
+function leafGeo(L,W){
+  const nu=14,nv=8,rows=[];
+  for(let i=0;i<=nu;i++){
+    const u=i/nu, row=[];
+    const wid=W*Math.pow(Math.sin(Math.PI*Math.pow(u,0.78)),0.9)+1e-4;
+    for(let j=0;j<=nv;j++){
+      const v=j/nv*2-1;
+      const x=u*L;
+      const z=v*wid;
+      const cup=-0.16*wid*v*v - Math.sin(Math.PI*u)*0.014;
+      const y=cup + Math.sin(Math.PI*u)*0.02*Math.sin(v*2.2) - 0.35*u*u*0.02;
+      row.push(new THREE.Vector3(x,y,z));
+    }
+    rows.push(row);
+  }
+  const g=new THREE.BufferGeometry();
+  const pos=[],uvs=[],idx=[];
+  for(let i=0;i<=nu;i++)for(let j=0;j<=nv;j++){const p=rows[i][j];pos.push(p.x,p.y,p.z);uvs.push(i/nu,j/nv*0.5+0.5);}
+  for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){const a=i*(nv+1)+j,b=a+1,c=a+nv+1,d=c+1;idx.push(a,c,b,b,c,d);}
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+  g.setIndex(idx);g.computeVertexNormals();
+  return g;
+}
+const leafTex = ctex(512,512,(x,w,h)=>{
+  x.fillStyle='#4a7429';x.fillRect(0,0,w,h);
+  for(let i=0;i<1400;i++){x.fillStyle=Math.random()<0.5?'#3f6624':'#57822f';x.globalAlpha=rand(0.05,0.18);x.beginPath();x.arc(rand(0,w),rand(0,h),rand(2,14),0,7);x.fill();}
+  x.globalAlpha=1;
+  x.strokeStyle='#6f9c42';x.lineWidth=7;x.beginPath();x.moveTo(0,h/2);x.lineTo(w,h/2);x.stroke();
+  x.lineWidth=2.5;
+  for(let i=1;i<=9;i++){const u=i/10;
+    x.beginPath();x.moveTo(u*w,h/2);x.quadraticCurveTo((u+0.14)*w,h/2-0.22*h,(u+0.2)*w,h/2-rand(0.25,0.44)*h);x.stroke();
+    x.beginPath();x.moveTo(u*w,h/2);x.quadraticCurveTo((u+0.14)*w,h/2+0.22*h,(u+0.2)*w,h/2+rand(0.25,0.44)*h);x.stroke();}
+  x.fillStyle='rgba(20,30,10,0.14)';
+  for(let i=0;i<400;i++){x.beginPath();x.arc(rand(0,w),rand(0,h),rand(1,4),0,7);x.fill();}
+});
+const leafTexR = ctex(256,256,(x,w,h)=>{x.fillStyle='#9a9a9a';x.fillRect(0,0,w,h);
+  for(let i=0;i<900;i++){x.fillStyle=`rgb(${(120+Math.random()*90)|0},0,0)`;x.beginPath();x.arc(rand(0,w),rand(0,h),rand(1,7),0,7);x.fill();}
+  x.strokeStyle='rgba(255,180,180,0.5)';x.lineWidth=6;x.beginPath();x.moveTo(0,h/2);x.lineTo(w,h/2);x.stroke();},false);
+const leafMat = makeTranslucent(new THREE.MeshStandardMaterial({map:leafTex,roughnessMap:leafTexR,roughness:0.85,color:0xbcd39a,side:THREE.DoubleSide}),0.55,0x7fae52);
+function addLeaf(parent,px,py,pz,rotY,rotZ,s){
+  const g=new THREE.Group();g.position.set(px,py,pz);g.rotation.y=rotY;
+  const pivot=new THREE.Group();g.add(pivot);
+  const pet=new THREE.Mesh(new THREE.CylinderGeometry(0.004,0.0055,0.14,7),stemMat);
+  pet.rotation.z=Math.PI/2-0.45;pet.position.set(0.06,0.028,0);pet.castShadow=true;pivot.add(pet);
+  const blade=new THREE.Mesh(leafGeo(0.20*s,0.09*s),leafMat);
+  blade.position.set(0.13,0.055,0);blade.rotation.z=rotZ;blade.rotation.y=rand(-0.2,0.2);
+  blade.castShadow=true;blade.receiveShadow=true;pivot.add(blade);
+  parent.add(g);return pivot;
+}
+const leafPivots=[];
+leafPivots.push(addLeaf(stemSeg[0],0,0.08,0.01, 2.7, 0.12, 0.8));
+leafPivots.push(addLeaf(stemSeg[0],0,0.15,0.01,-2.35, 0.2, 0.68));
+leafPivots.push(addLeaf(stemSeg[1],0,0.03,0,    2.15,-0.35, 0.45));
+leafPivots.push(addLeaf(stemSeg[1],0,0.09,0,   -2.6, 0.05, 0.4));
+
+// surface hair sampling for the stem / bee fuzz
+function sampleSurface(geo,count,cb){
+  const g=geo.index?geo:geo;
+  const pos=g.attributes.position, nrm=g.attributes.normal, idx=g.index;
+  for(let k=0;k<count;k++){
+    const t=(rng()*idx.count)|0, a=idx.getX(t),b=idx.getX(t+1),c=idx.getX(t+2);
+    let u=rng(),v=rng(); if(u+v>1){u=1-u;v=1-v;} const w=1-u-v;
+    const px=pos.getX(a)*w+pos.getX(b)*u+pos.getX(c)*v, py=pos.getY(a)*w+pos.getY(b)*u+pos.getY(c)*v, pz=pos.getZ(a)*w+pos.getZ(b)*u+pos.getZ(c)*v;
+    let nx=nrm.getX(a)*w+nrm.getX(b)*u+nrm.getX(c)*v, ny=nrm.getY(a)*w+nrm.getY(b)*u+nrm.getY(c)*v, nz=nrm.getZ(a)*w+nrm.getZ(b)*u+nrm.getZ(c)*v;
+    const l=Math.hypot(nx,ny,nz)||1; cb(px,py,pz,nx/l,ny/l,nz/l);
+  }
+}
+const hairGeo=new THREE.ConeGeometry(1,1,4,1,true);
+hairGeo.translate(0,0.5,0);
+function makeHairMesh(count,parent,matFn,sampler,baseR,lenFn){
+  const d=new THREE.Object3D();
+  const m=new THREE.InstancedMesh(hairGeo,matFn,count);
+  sampler((px,py,pz,nx,ny,nz,i)=>{
+    const up=new THREE.Vector3(0,1,0),n=new THREE.Vector3(nx,ny,nz);
+    const t1=new THREE.Vector3().crossVectors(n,Math.abs(n.y)<0.9?up:new THREE.Vector3(1,0,0)).normalize();
+    const t2=new THREE.Vector3().crossVectors(n,t1);
+    const az=rand(0,TAU),ti=rand(0.12,0.6);
+    const dir=n.clone().multiplyScalar(Math.cos(ti)).addScaledVector(t1,Math.sin(ti)*Math.cos(az)).addScaledVector(t2,Math.sin(ti)*Math.sin(az)).normalize();
+    d.position.set(px,py,pz);
+    d.quaternion.setFromUnitVectors(up,dir);
+    const L=lenFn();d.scale.set(baseR,L,baseR);
+    d.updateMatrix();m.setMatrixAt(i===undefined?0:0,d.matrix);
+  });
+  return m;
+}
+// instanced hairs on the stem (built via a plain loop over sampleSurface)
+function hairsOn(geo,count,parent,mat,baseR,lenFn,offsetY=0){
+  const m=new THREE.InstancedMesh(hairGeo,mat,count);
+  const d=new THREE.Object3D();let i=0;
+  sampleSurface(geo, count,(px,py,pz,nx,ny,nz)=>{
+    if(i>=count)return;
+    const up=new THREE.Vector3(0,1,0),n=new THREE.Vector3(nx,ny,nz);
+    const t1=new THREE.Vector3().crossVectors(n,Math.abs(n.y)<0.9?up:new THREE.Vector3(1,0,0)).normalize();
+    const t2=new THREE.Vector3().crossVectors(n,t1);
+    const az=rand(0,TAU),ti=rand(0.1,0.55);
+    const dir=n.clone().multiplyScalar(Math.cos(ti)).addScaledVector(t1,Math.sin(ti)*Math.cos(az)).addScaledVector(t2,Math.sin(ti)*Math.sin(az)).normalize();
+    d.position.set(px,py+0.0006,pz);d.quaternion.setFromUnitVectors(up,dir);
+    const L=lenFn();d.scale.set(baseR,L,baseR);d.updateMatrix();
+    m.setMatrixAt(i++,d.matrix);
+  });
+  m.count=i;m.castShadow=false;m.receiveShadow=false;parent.add(m);return m;
+}
+const stemHairMat=new THREE.MeshStandardMaterial({color:0xb9cf8a,roughness:0.6,transparent:true,opacity:0.9});
+{ const g=stemCyl(0.0135,0.0115,SEG_H[0],new THREE.Group());hairsOn(g,320,stemSeg[0],stemHairMat,0.00010,()=>rand(0.002,0.0042)); }
+{ const g=stemCyl(0.0115,0.0098,SEG_H[1],new THREE.Group());hairsOn(g,280,stemSeg[1],stemHairMat,0.00010,()=>rand(0.0018,0.004)); }
+
+// ---- head: bracts, ray petals, Fibonacci disc ----
+const R = 0.115;                       // disc radius
+const DOME = 0.024;                    // dome height at centre
+function domeY(r){ return DOME*Math.max(0,1-(r/(R*1.03))**2); }
+function domeN(r){ const dy = -2*DOME*r/(R*1.03)**2/(2*1); const d = Math.sqrt(dy*dy+1); return new THREE.Vector3(r>1e-6? -dy*0 : 0,1,0).set(Math.abs(dy),1,0).normalize(); }
+function domePoint(r,a){ const x=Math.cos(a)*r,z=Math.sin(a)*r,y=domeY(r); return new THREE.Vector3(x,y,z); }
+function domeNormal(r){ const eps=1e-4; const y1=domeY(Math.max(0,r-eps)),y2=domeY(r+eps);
+  const slope=(y2-y1)/(2*eps); const n=new THREE.Vector3(-slope,1,0).normalize(); return n; }
+
+// involucral bracts
+{
+  const bg=new THREE.Group();head.add(bg);
+  const bmat=makeTranslucent(new THREE.MeshStandardMaterial({color:0x4e7527,roughness:0.7,side:THREE.DoubleSide}),0.4,0x7fae52);
+  for(let ring=0;ring<2;ring++){
+    const n=ring?9:11;
+    for(let i=0;i<n;i++){
+      const a=i/n*TAU+ring*0.3;
+      const g=leafGeo(ring?0.036:0.048, ring?0.011:0.015);
+      const m=new THREE.Mesh(g,bmat);
+      const holder=new THREE.Group();
+      holder.rotation.order='YXZ';
+      holder.rotation.y=-a;
+      holder.rotation.z=-(ring?1.15:0.75)+rand(-0.08,0.08);
+      holder.position.set(Math.cos(a)*(R*0.99-ring*0.004), domeY(R)-0.006-ring*0.005, Math.sin(a)*(R*0.99-ring*0.004));
+      m.castShadow=true;m.receiveShadow=true;
+      holder.add(m);bg.add(holder);
+    }
+  }
+}
+
+// ray petals — 3 overlapping rings, curled & veined
+const petalTex = ctex(256,256,(x,w,h)=>{
+  const g=x.createLinearGradient(0,h,0,0);
+  g.addColorStop(0,'#b06a10');g.addColorStop(0.25,'#d98f16');g.addColorStop(0.62,'#ecb52c');g.addColorStop(1,'#f8cf4a');
+  x.fillStyle=g;x.fillRect(0,0,w,h);
+  x.strokeStyle='rgba(190,120,20,0.5)';x.lineWidth=2;
+  for(let i=0;i<9;i++){const xx=rand(0.1,0.9)*w;
+    x.beginPath();x.moveTo(w*0.5,h);x.quadraticCurveTo(xx,h*0.4,lerp(xx,w*0.5,0.3),0);x.stroke();}
+  x.strokeStyle='rgba(120,70,10,0.4)';x.lineWidth=5;x.beginPath();x.moveTo(w*0.5,h);x.lineTo(w*0.5,h*0.75);x.stroke();
+  x.strokeStyle='rgba(160,100,15,0.4)';x.lineWidth=3;
+  for(let i=0;i<26;i++){x.beginPath();const y=rand(0,h);x.moveTo(rand(0,w),y);x.lineTo(rand(0,w),y+rand(-8,8));x.stroke();}
+  for(let i=0;i<900;i++){x.fillStyle=Math.random()<0.5?'rgba(255,220,120,0.10)':'rgba(150,90,10,0.10)';x.beginPath();x.arc(rand(0,w),rand(0,h),rand(1,5),0,7);x.fill();}
+});
+function petalGeo(L,W,curl,twist){
+  const nu=10,nv=5,pos=[],uvs=[],idx=[];
+  for(let i=0;i<=nu;i++){const u=i/nu;
+    const kk=u<0.45? u/0.45 : (u-0.45)/0.55, sk=kk*kk*(3-2*kk);
+    const prof=u<0.45? 0.22+0.78*sk : 1.0-0.85*Math.pow(sk,0.85);   // narrow base → broad mid → blunt rounded tip
+    const wid=W*prof+2e-4;
+    for(let j=0;j<=nv;j++){const v=j/nv*2-1;
+      const x=u*L;
+      const z=v*wid;
+      const cup=-0.5*wid*v*v*Math.pow(u,0.4);
+      const y=cup+Math.sin(u*2.6)*curl*0.01+u*u*curl*0.06-0.1*u*u*0.03;
+      const tw=twist*u;
+      const yy=y*Math.cos(tw)-z*Math.sin(tw)*0.4, zz=z*Math.cos(tw)+y*Math.sin(tw)*0.4;
+      pos.push(x,yy,zz);uvs.push(u*0.25+0.38,0.06+0.88*u);
+    }}
+  for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){const a=i*(nv+1)+j,b=a+1,c=a+nv+1,d=c+1;idx.push(a,c,b,b,c,d);}
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+  g.setIndex(idx);g.computeVertexNormals();
+  return g;
+}
+const petalMat = makeTranslucent(new THREE.MeshStandardMaterial({map:petalTex,roughness:0.42,color:0xffffff,side:THREE.DoubleSide,emissive:0x1a0e02,emissiveIntensity:0.25}),1.55,0xffb44a);
+{
+  const rings=[{n:21,L:0.115,W:0.027,dip:0.34,tilt:-0.05,curl:0.9,tw:0.5},
+               {n:18,L:0.100,W:0.025,dip:0.24,tilt:0.04,curl:-0.7,tw:-0.4},
+               {n:15,L:0.082,W:0.023,dip:0.12,tilt:0.14,curl:0.6,tw:0.55}];
+  rings.forEach((rg,ri)=>{
+    for(let i=0;i<rg.n;i++){
+      const a=i/rg.n*TAU+ri*0.55+rand(-0.03,0.03);
+      const g=petalGeo(rg.L+rand(-0.006,0.008),rg.W*rand(0.9,1.1),rg.curl*rand(0.7,1.3),rg.tw*rand(0.6,1.3));
+      const m=new THREE.Mesh(g,petalMat);
+      m.rotation.z=rg.tilt+rand(-0.045,0.045);
+      m.castShadow=true;m.receiveShadow=true;
+      const holder=new THREE.Group();
+      holder.rotation.order='YXZ';
+      holder.rotation.y=-a;
+      holder.rotation.z=-(rg.dip+rand(0,0.07));
+      holder.position.set(Math.cos(a)*(R*1.005), domeY(R)+0.004-rg.dip*0.018, Math.sin(a)*(R*1.005));
+      holder.add(m);
+      head.add(holder);
+    }
+  });
+}
+
+// ---- Fibonacci disc florets ----
+const N_FLO=6000;
+function floretOpenGeo(scale){
+  const parts=[];
+  const tube=new THREE.CylinderGeometry(0.0012*scale,0.0007*scale,0.0017*scale,7,1,true);tube.translate(0,0.00085*scale,0);
+  parts.push(tube);
+  for(let i=0;i<5;i++){
+    const a=i/5*TAU;
+    const p=new THREE.ConeGeometry(0.0009*scale,0.002*scale,4);
+    p.translate(0,0.0009*scale,0);p.rotateX(1.48);p.rotateY(a);p.translate(Math.cos(a)*0.00115*scale,0.0017*scale,Math.sin(a)*0.00115*scale);
+    parts.push(p);
+  }
+  const g=BGU.mergeGeometries(parts);return g;
+}
+function stamenGeo(){
+  const parts=[];
+  for(let i=0;i<4;i++){
+    const a=i/4*TAU+0.4;
+    const f=new THREE.CylinderGeometry(0.00012,0.00012,0.0017,3);f.rotateZ(0.24);f.rotateY(a);f.translate(Math.cos(a)*0.00042,0.0038,Math.sin(a)*0.00042);
+    parts.push(f);
+    const t=new THREE.SphereGeometry(0.00028,5,4);t.translate(Math.cos(a)*0.00072,0.0045,Math.sin(a)*0.00072);
+    parts.push(t);
+  }
+  return BGU.mergeGeometries(parts);
+}
+function budGeo(s){
+  const pts=[];
+  for(let i=0;i<=8;i++){const t=i/8;pts.push(new THREE.Vector2(Math.sin(t*Math.PI*0.92)*0.00115*s, t*0.0027*s));}
+  const g=new THREE.LatheGeometry(pts,7);return g;
+}
+const cOpenA=new THREE.Color(0xe8a233), cOpenB=new THREE.Color(0xc4761f),
+      cMidA=new THREE.Color(0x93601f),  cBudA=new THREE.Color(0x5d3a1c), cBudB=new THREE.Color(0x2c1a0a), cBudC=new THREE.Color(0x5c3346);
+{
+  const gOpen=floretOpenGeo(1.0), gStam=stamenGeo(), gBud=budGeo(1);
+  const matOpen=new THREE.MeshStandardMaterial({roughness:0.55,side:THREE.DoubleSide});
+  const matStam=new THREE.MeshStandardMaterial({color:0xf3c94e,roughness:0.45,emissive:0x513d08,emissiveIntensity:0.4});
+  const matBud=new THREE.MeshStandardMaterial({roughness:0.5});
+  const openI=new THREE.InstancedMesh(gOpen,matOpen,N_FLO);
+  const stamI=new THREE.InstancedMesh(gStam,matStam,N_FLO);
+  const budI=new THREE.InstancedMesh(gBud,matBud,N_FLO);
+  openI.castShadow=openI.receiveShadow=true;stamI.castShadow=true;budI.castShadow=budI.receiveShadow=true;
+  const d=new THREE.Object3D(),col=new THREE.Color();
+  let nO=0,nS=0,nB=0;
+  for(let i=0;i<N_FLO;i++){
+    const f=(i+0.5)/N_FLO, rr=R*Math.sqrt(f)*0.985, a=i*GOLD;
+    const p=domePoint(rr,a), n=domeNormal(rr);
+    const up=new THREE.Vector3(0,1,0);
+    d.position.copy(p);
+    d.quaternion.setFromUnitVectors(up,n);
+    d.rotateY(a+rand(-0.3,0.3));
+    const open = rr> R*0.66;
+    const mid  = rr> R*0.40 && rr<=R*0.66;
+    if(open){
+      const s=lerp(0.8,1.25,sstep(R*0.66,R,rr))*rand(0.9,1.08);
+      d.scale.set(s,s*rand(0.85,1.2),s);d.updateMatrix();
+      openI.setMatrixAt(nO,d.matrix);
+      const t=sstep(R*0.66,R,rr);
+      col.copy(cOpenB).lerp(cOpenA,t).offsetHSL(0,rand(-0.03,0.03),rand(-0.05,0.05));
+      openI.setColorAt(nO,col);
+      // stamens at the rim only
+      if(rr>R*0.85){
+        const m2=d.matrix.clone();
+        stamI.setMatrixAt(nS,m2);
+        col.setHSL(0.115+rand(-0.01,0.015),0.75,rand(0.42,0.58));
+        stamI.setColorAt(nS,col);nS++;
+      }
+      nO++;
+    } else if(mid){
+      const s=lerp(0.7,1.0,sstep(R*0.40,R*0.66,rr))*rand(0.85,1.1);
+      d.scale.set(s,s*rand(0.9,1.3),s);d.updateMatrix();
+      openI.setMatrixAt(nO,d.matrix);
+      col.copy(cMidA).lerp(cOpenB,sstep(R*0.4,R*0.66,rr)).offsetHSL(0,rand(-0.04,0.02),rand(-0.06,0.04));
+      openI.setColorAt(nO,col);nO++;
+    } else {
+      const s=lerp(0.55,0.95,sstep(0,R*0.4,rr))*rand(0.85,1.15);
+      d.scale.set(s,s*rand(0.8,1.3),s);d.updateMatrix();
+      budI.setMatrixAt(nB,d.matrix);
+      col.copy(cBudA).lerp(cBudB,1-sstep(0,R*0.4,rr));
+      col.lerp(cBudC,rand(0,0.35)*(1-sstep(0,R*0.4,rr)));
+      col.offsetHSL(rand(-0.02,0.02),0,rand(-0.04,0.04));
+      budI.setColorAt(nB,col);nB++;
+    }
+  }
+  openI.count=nO;stamI.count=nS;budI.count=nB;
+  [openI,stamI,budI].forEach(o=>{o.instanceMatrix.needsUpdate=true;if(o.instanceColor)o.instanceColor.needsUpdate=true;head.add(o);});
+  // receptacle plate under the florets (follows dome, sits below floret bases)
+  { const pg=new THREE.CircleGeometry(R*0.985,44);
+    pg.rotateX(-Math.PI/2);
+    const p=pg.attributes.position;
+    for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i);p.setY(i,domeY(Math.hypot(x,z))-0.0048);}
+    pg.computeVertexNormals();
+    const plate2=new THREE.Mesh(pg,new THREE.MeshStandardMaterial({color:0x5d4522,roughness:0.85}));
+    plate2.receiveShadow=true;head.add(plate2);
+    // hypanthium: green-brown underside dome hides the stem tip inside the head
+    const hy=new THREE.SphereGeometry(R*1.03,26,10,0,TAU,Math.PI/2,Math.PI/2);
+    hy.scale(1,0.30,1);
+    const hyMesh=new THREE.Mesh(hy,makeTranslucent(new THREE.MeshStandardMaterial({color:0x4a6526,roughness:0.8}),0.3,0x6f9040));
+    hyMesh.position.y=0.001;hyMesh.receiveShadow=true;head.add(hyMesh);
+  }
+  // tiny dew droplets on bracts and a petal
+  const dropMat=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:0.03,metalness:0,transparent:true,opacity:0.55,clearcoat:1,envMapIntensity:2.2,ior:1.33});
+  [[R*0.9,-0.002,0.9,0.0022],[R*0.86,-0.001,-2.4,0.0017],[0.02,0.004,1.8,0.0013]].forEach(D=>{
+    const a=D[0],s=D[3];
+    const m=new THREE.Mesh(new THREE.SphereGeometry(s,10,8),dropMat);
+    m.scale.set(1,0.8,1);m.position.set(Math.cos(a)*0.108,domeY(0.105)+s*0.5,Math.sin(a)*0.108);head.add(m);});
+}
+
+/* ================================================================
+   THE BEE
+   ================================================================ */
+function buildBee(opts={}){
+  const g=new THREE.Group();            // body frame: +x fwd, +y up, +z left (RH)
+  const detail = opts.detail!==false;
+  const bee={root:g};
+
+  const fuzzMat=c=>new THREE.MeshStandardMaterial({color:c,roughness:0.72,envMapIntensity:0.4,emissive:new THREE.Color(c).multiplyScalar(0.06)});
+  // abdomen: lathed teardrop with banded texture
+  const abdProfile=[];
+  for(let i=0;i<=16;i++){const t=i/16; // t0 = front (petiole), t1 = tip
+    let r=0.00235*Math.pow(Math.sin(Math.PI*clamp(t*1.03+0.03,0,1)),0.7);
+    if(t>0.72)r*=lerp(1,0.25,sstep(0.72,1,t));
+    abdProfile.push(new THREE.Vector2(Math.max(r,3e-4), -t*0.0092));}
+  const abdG=new THREE.LatheGeometry(abdProfile,20);
+  abdG.rotateZ(-Math.PI/2);            // axis along -x, at origin(front)
+  const abdTex=ctex(512,256,(x,w,h)=>{
+    x.fillStyle='#241608';x.fillRect(0,0,w,h);
+    const bands=4;
+    for(let b=0;b<bands;b++){
+      const y0=h*(0.14+b*0.215),hh=h*0.135;
+      const gr=x.createLinearGradient(0,y0,0,y0+hh);
+      gr.addColorStop(0,'#8a5c1e');gr.addColorStop(0.35,'#c99037');gr.addColorStop(0.75,'#a87027');gr.addColorStop(1,'#31200c');
+      x.fillStyle=gr;x.fillRect(0,y0,w,hh);
+      x.fillStyle='rgba(230,190,120,0.5)';
+      for(let i=0;i<300;i++)x.fillRect(rand(0,w),y0+hh-rand(0,hh*0.3),rand(0.5,1.4),rand(1,4));
+    }
+    x.fillStyle='rgba(0,0,0,0.25)';for(let i=0;i<1500;i++)x.fillRect(rand(0,w),rand(0,h),1.1,rand(1,3));
+    x.strokeStyle='rgba(255,225,160,0.20)';x.lineWidth=1;
+    for(let i=0;i<260;i++){x.beginPath();const px=rand(0,w),py=rand(0,h);x.moveTo(px,py);x.lineTo(px+rand(-4,4),py+rand(3,7));x.stroke();}
+  });
+  const abd=new THREE.Mesh(abdG,new THREE.MeshStandardMaterial({map:abdTex,roughness:0.55,envMapIntensity:0.6}));
+  abd.position.set(-0.0012,0.0002,0);g.add(abd);
+
+  // petiole
+  const pet=new THREE.Mesh(new THREE.SphereGeometry(0.0007,8,6),fuzzMat(0x3a2410));
+  pet.position.set(0.0004,0,0);g.add(pet);
+
+  // thorax: rounded, densely furred
+  const thG=new THREE.SphereGeometry(0.0027,18,14);thG.scale(1.06,0.94,1.0);
+  const th=new THREE.Mesh(thG,fuzzMat(0x6b4c1e));th.position.set(0.0030,0.0008,0);g.add(th);
+  // fur shell (soft mass under the individual hairs)
+  const shellTex=ctex(256,256,(x,w,h)=>{
+    x.clearRect(0,0,w,h);
+    for(let i=0;i<1600;i++){const px=rand(0,w),py=rand(0,h),L=rand(3,14),a=Math.PI/2+rand(-0.5,0.5);
+      const gr=x.createLinearGradient(px,py,px+Math.cos(a)*L,py+Math.sin(a)*L);
+      gr.addColorStop(0,'rgba(200,160,90,0.0)');gr.addColorStop(1,`rgba(${200+rand(-30,40)|0},${160+rand(-40,30)|0},85,${rand(0.25,0.7)})`);
+      x.strokeStyle=gr;x.lineWidth=rand(0.6,1.6);x.beginPath();x.moveTo(px,py);x.lineTo(px+Math.cos(a)*L,py+Math.sin(a)*L);x.stroke();}
+  },false);
+  const shellMat=new THREE.MeshStandardMaterial({color:0xd99c3e,transparent:true,opacity:0.88,roughness:0.8,alphaMap:shellTex,side:THREE.DoubleSide,depthWrite:false,envMapIntensity:0.35});
+  const shell=new THREE.Mesh(thG,shellMat);shell.position.copy(th.position);shell.scale.set(1.09,1.06,1.09);g.add(shell);
+  const shell2=shell.clone();shell2.scale.set(1.17,1.12,1.17);g.add(shell2);
+
+  // abdomen fuzz shell (dark gold)
+  const abdShell=new THREE.Mesh(abdG,new THREE.MeshStandardMaterial({color:0x9a7434,transparent:true,opacity:0.4,roughness:0.9,alphaMap:shellTex,side:THREE.DoubleSide,depthWrite:false}));
+  abdShell.position.copy(abd.position);abdShell.scale.setScalar(1.14);g.add(abdShell);
+
+  // individual hairs (instanced) on thorax & abdomen rims
+  const hairMatG=new THREE.MeshStandardMaterial({color:0xd9a552,roughness:0.6,envMapIntensity:0.4,transparent:true,opacity:0.85});
+  const hairMatD=new THREE.MeshStandardMaterial({color:0x6e4a20,roughness:0.6,transparent:true,opacity:0.8});
+  if(detail){
+    const h1=hairsOn(thG,460,g,hairMatG,0.00004,()=>rand(0.00032,0.00072));
+    h1.position.copy(th.position);h1.rotation.copy(th.rotation);
+    const h2=hairsOn(abdG,420,g,hairMatD,0.000034,()=>rand(0.00026,0.00052));
+    h2.position.copy(abd.position);h2.rotation.copy(abd.rotation);
+    const h3=hairsOn(abdG,300,g,hairMatG,0.000034,()=>rand(0.00026,0.00055));
+    h3.position.copy(abd.position);h3.rotation.copy(abd.rotation);
+  }
+
+  // head
+  const headG=new THREE.SphereGeometry(0.0020,16,12);headG.scale(0.82,0.98,1.12);
+  const headBee=new THREE.Group();headBee.position.set(0.0064,-0.0002,0);g.add(headBee);
+  const headMesh=new THREE.Mesh(headG,fuzzMat(0x4d3a20));headBee.add(headMesh);
+  const headShell=new THREE.Mesh(headG,new THREE.MeshStandardMaterial({color:0xa8834a,transparent:true,opacity:0.5,alphaMap:shellTex,roughness:0.85,depthWrite:false,side:THREE.DoubleSide}));
+  headShell.scale.set(1.1,1.1,1.1);headBee.add(headShell);
+  // compound eyes
+  const eyeTex=ctex(256,256,(x,w,h)=>{
+    x.fillStyle='#160e08';x.fillRect(0,0,w,h);
+    const s=9;
+    for(let j=0;j<h/s+1;j++)for(let i=0;i<w/s+1;i++){
+      const ox=(j%2)*s/2,px=i*s+ox,py=j*s*0.9;
+      const g=x.createRadialGradient(px,py,0,px,py,s*0.6);
+      g.addColorStop(0,`rgba(${60+rand(-10,20)|0},${40+rand(-8,14)|0},${22+rand(-6,8)|0},1)`);
+      g.addColorStop(0.7,'rgba(28,17,9,1)');g.addColorStop(1,'rgba(10,6,3,1)');
+      x.fillStyle=g;x.beginPath();x.arc(px,py,s*0.55,0,7);x.fill();
+    }
+  });
+  const eyeMat=new THREE.MeshPhysicalMaterial({map:eyeTex,roughness:0.22,clearcoat:0.9,clearcoatRoughness:0.25,envMapIntensity:0.5,color:0x4a3526});
+  const eyes=[];
+  for(const sgn of [1,-1]){
+    const eg=new THREE.SphereGeometry(0.00112,14,12);eg.scale(0.6,1.42,0.78);
+    const e=new THREE.Mesh(eg,eyeMat);e.position.set(0.0003,0.0004,sgn*0.00156);e.rotation.x=sgn*0.12;e.rotation.z=-0.16;
+    headBee.add(e);eyes.push(e);
+  }
+  // antennae (elbowed: scape + pedicel + curved flagellum)
+  const antMat=fuzzMat(0x33220f);
+  const ants=[];
+  for(const sgn of [1,-1]){
+    const grp=new THREE.Group();grp.position.set(0.0011,0.0010,sgn*0.0008);headBee.add(grp);
+    const scape=new THREE.Mesh(new THREE.CylinderGeometry(0.00013,0.00016,0.0016,5),antMat);
+    scape.position.set(0.00055,0.0006,sgn*0.0004);scape.rotation.z=-0.9;grp.add(scape);
+    const kn=new THREE.Group();kn.position.set(0.00125,0.00108,sgn*0.00085);grp.add(kn);
+    kn.add(new THREE.Mesh(new THREE.SphereGeometry(0.00015,6,5),antMat));
+    const fl=new THREE.Mesh(new THREE.ConeGeometry(0.00018,0.0019,6),antMat);
+    fl.rotation.z=-1.25;fl.position.set(0.0007,0.00038,sgn*0.00012);kn.add(fl);
+    const fl2=new THREE.Mesh(new THREE.ConeGeometry(0.00014,0.0010,5),antMat);
+    fl2.rotation.z=-1.9;fl2.position.set(0.0015,-0.00012,sgn*0.0002);kn.add(fl2);
+    ants.push({grp,kn,sgn,ph:rand(0,TAU)});
+  }
+  // mandibles
+  for(const sgn of [1,-1]){
+    const m=new THREE.Mesh(new THREE.BoxGeometry(0.0006,0.00016,0.00034),fuzzMat(0x2c1c0c));
+    m.position.set(0.0016,-0.0012,sgn*0.00035);m.rotation.y=sgn*0.4;headBee.add(m);
+  }
+  // proboscis (extends when probing)
+  const prob=new THREE.Group();prob.position.set(0.0008,-0.0016,0);headBee.add(prob);
+  const pSegs=[];let pCur=prob;
+  for(let i=0;i<3;i++){
+    const j=new THREE.Group();j.position.set(i?0.0011:0,0,0);
+    const s=new THREE.Mesh(new THREE.CylinderGeometry(0.00009*(1-i*0.22),0.00007*(1-i*0.22),0.0011,5),fuzzMat(0x5a4020));
+    s.rotation.z=-Math.PI/2;s.position.x=0.00055;j.add(s);pCur.add(j);pCur=j;pSegs.push(j);
+  }
+  const pTip=new THREE.Object3D();pTip.position.x=0.0011;pCur.add(pTip);
+
+  // legs — computed IK; meshes placed each frame
+  const legDefs=[
+    {name:'FL',hip:[ 0.0018,-0.0010, 0.0016],L:[0.0030,0.0031,0.0022],rest:[ 0.0052,0, 0.0048],pair:0,trip:0},
+    {name:'FR',hip:[ 0.0018,-0.0010,-0.0016],L:[0.0030,0.0031,0.0022],rest:[ 0.0052,0,-0.0048],pair:1,trip:1},
+    {name:'ML',hip:[-0.0002,-0.0012, 0.0019],L:[0.0033,0.0035,0.0024],rest:[-0.0002,0, 0.0056],pair:1,trip:1},
+    {name:'MR',hip:[-0.0002,-0.0012,-0.0019],L:[0.0033,0.0035,0.0024],rest:[-0.0002,0,-0.0056],pair:0,trip:0},
+    {name:'HL',hip:[-0.0018,-0.0008, 0.0015],L:[0.0038,0.0040,0.0028],rest:[-0.0054,0, 0.0052],pair:0,trip:0},
+    {name:'HR',hip:[-0.0018,-0.0008,-0.0015],L:[0.0038,0.0040,0.0028],rest:[-0.0054,0,-0.0052],pair:1,trip:1},
+  ];
+  const legMat=new THREE.MeshStandardMaterial({color:0x4a3117,roughness:0.5,envMapIntensity:0.7});
+  const legMatD=new THREE.MeshStandardMaterial({color:0x33210f,roughness:0.55});
+  const unitCyl=new THREE.CylinderGeometry(1,0.72,1,6);
+  const unitSph=new THREE.SphereGeometry(1,7,5);
+  const legs=legDefs.map((d,i)=>{
+    const parts={};
+    parts.coxa=new THREE.Mesh(unitCyl,legMatD);
+    parts.femur=new THREE.Mesh(unitCyl,legMat);
+    parts.knee=new THREE.Mesh(unitSph,legMat);
+    parts.tibia=(d.name[0]==='H')
+      ? new THREE.Mesh(new THREE.BoxGeometry(1,1,1),legMat)      // flattened hind tibia = pollen basket frame
+      : new THREE.Mesh(unitCyl,legMat);
+    parts.ankle=new THREE.Mesh(unitSph,legMat);
+    parts.tarsus=new THREE.Mesh(unitCyl,new THREE.MeshStandardMaterial({color:0x3f2812,roughness:0.45}));
+    parts.claw=new THREE.Mesh(unitSph,new THREE.MeshStandardMaterial({color:0x181008,roughness:0.4}));
+    Object.values(parts).forEach(m=>{m.castShadow=true;g.add(m);});
+    // pollen basket pellets on hind legs
+    let pellets=null;
+    if(d.name[0]==='H'){
+      pellets=new THREE.Group();g.add(pellets);
+      const pm=new THREE.MeshStandardMaterial({color:0xe8b83a,roughness:0.85,emissive:0x6b4a06,emissiveIntensity:0.25});
+      for(let k=0;k<3;k++){const b=new THREE.Mesh(new THREE.SphereGeometry(1,8,7),pm);b.userData.k=k;pellets.add(b);}
+    }
+    return {...d,parts,pellets,anchor:null,stepT:1,from:null,to:null,phase:(i%2)*0.5+ (i<2?0:(i<4?0.25:0.5))};
+  });
+  bee.legs=legs;
+
+  // wings: fore + hind per side, translucent veined
+  const wingTex=ctex(512,256,(x,w,h)=>{
+    x.clearRect(0,0,w,h);
+    const gr=x.createLinearGradient(0,0,w,0);
+    gr.addColorStop(0,'rgba(255,255,255,0.05)');gr.addColorStop(0.15,'rgba(255,250,235,0.16)');
+    gr.addColorStop(0.5,'rgba(240,245,255,0.14)');gr.addColorStop(0.85,'rgba(255,240,250,0.18)');gr.addColorStop(1,'rgba(200,200,210,0.30)');
+    x.fillStyle=gr;x.beginPath();x.ellipse(w*0.52,h*0.5,w*0.48,h*0.32,0,0,7);x.fill();
+    x.strokeStyle='rgba(120,110,90,0.4)';x.lineWidth=1.6;
+    for(let i=0;i<7;i++){x.beginPath();x.moveTo(w*0.03,h*0.5);
+      x.quadraticCurveTo(w*0.4,h*0.5+(i-3)*h*0.09,w*0.97,h*0.5+(i-3)*h*0.075);x.stroke();}
+    x.strokeStyle='rgba(90,80,60,0.55)';x.lineWidth=3;x.beginPath();x.moveTo(w*0.02,h*0.42);x.lineTo(w*0.99,h*0.28);x.stroke();
+    x.strokeStyle='rgba(255,255,255,0.15)';x.lineWidth=6;x.beginPath();x.ellipse(w*0.52,h*0.5,w*0.47,h*0.31,0,0,7);x.stroke();
+  });
+  wingTex.center.set(0.5,0.5);wingTex.rotation=Math.PI/2;   // veins were painted along U; span is now the V axis
+  const wingMat=new THREE.MeshPhysicalMaterial({map:wingTex,transparent:true,side:THREE.DoubleSide,roughness:0.22,metalness:0,
+    iridescence:1.0,iridescenceIOR:1.32,iridescenceThicknessRange:[220,560],clearcoat:0.6,depthWrite:false,envMapIntensity:1.8,specularIntensity:1.2});
+  const wingGeoF=new THREE.PlaneGeometry(0.0034,0.0092);wingGeoF.rotateX(Math.PI/2);wingGeoF.translate(0,0,0.0046);
+  const wingGeoH=new THREE.PlaneGeometry(0.0026,0.0062);wingGeoH.rotateX(Math.PI/2);wingGeoH.translate(0,0,0.0031);
+  bee.wings=[];
+  for(const sgn of [1,-1]){
+    const root=new THREE.Group();root.rotation.order='YXZ';
+    root.position.set(0.0016,0.0022,sgn*0.0011);g.add(root);
+    const fg=wingGeoF.clone(),hg=wingGeoH.clone(); if(sgn<0){fg.scale(1,1,-1);hg.scale(1,1,-1);}
+    const f=new THREE.Mesh(fg,wingMat);root.add(f);
+    const h=new THREE.Mesh(hg,wingMat.clone());h.position.y=-0.00035;h.rotation.z=0.18;root.add(h);
+    // motion-blur fan spanning the stroke arc
+    const fanGeo=new THREE.CircleGeometry(0.0098,20,Math.PI/2-1.1,2.2);
+    const fanTex=ctex(128,128,(x,w,hh)=>{
+      x.clearRect(0,0,w,hh);
+      for(let i=0;i<60;i++){x.strokeStyle=`rgba(255,250,235,${rand(0.04,0.12)})`;x.lineWidth=rand(1,4);
+        x.beginPath();x.moveTo(w/2,hh/2);x.lineTo(w/2+Math.cos(rand(0.55,2.6))*w*0.5,hh/2-Math.sin(rand(0.55,2.6))*hh*0.5);x.stroke();}
+    },false);
+    const fan=new THREE.Mesh(fanGeo,new THREE.MeshBasicMaterial({map:fanTex,transparent:true,opacity:0,color:0xfff2d8,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
+    fan.rotation.y=sgn*Math.PI/2;fan.position.set(0.0002,0.0011,sgn*0.0003);
+    root.add(fan);
+    bee.wings.push({root,f,h,fan,sgn});
+  }
+
+  bee.head=headBee; bee.thorax=th; bee.abd=abd; bee.pSegs=pSegs; bee.pTip=pTip; bee.ants=ants;
+  bee.shellMat=shellMat; bee.abdShellMat=abdShell.material;
+  [g].forEach(()=>{});
+  g.traverse(o=>{if(o.isMesh&&o.castShadow===undefined)o.castShadow=true;});
+  g.traverse(o=>{if(o.isMesh){o.castShadow=true;}});
+  return bee;
+}
+
+/* ---- bee behaviour rig: walks on the head disc (head-local space) ---- */
+const bee = buildBee({detail:true});
+head.add(bee.root);
+const bee2 = buildBee({detail:false}); head.add(bee2.root); bee2.root.visible=true;
+window.__bee=bee; window.__bee2=bee2;
+
+const FLORET_TOP=0.0042, STAND=0.0068;
+function groundY(x,z){ const r=Math.hypot(x,z); if(r>R*1.06)return null; return domeY(Math.min(r,R*1.05))+FLORET_TOP; }
+function surfNormalAt(x,z){ const r=Math.hypot(x,z)||1e-6; const n=domeNormal(clamp(r,0.001,R));
+  return n.set(n.x*Math.cos(Math.atan2(z,x)),n.y,n.x*Math.sin(Math.atan2(z,x)) ); }
+
+// closed walking circuit on the disc
+const ROUTE=[];
+{
+  const M=180;
+  for(let i=0;i<M;i++){const u=i/M;
+    const th=u*TAU*1.0;
+    const r=R*(0.62+0.14*Math.sin(u*TAU*3+0.6)+0.06*Math.sin(u*TAU*5+2.1));
+    ROUTE.push(new THREE.Vector2(Math.cos(th)*r,Math.sin(th)*r));}
+}
+const ROUTE_LEN=(()=>{let L=0;for(let i=0;i<ROUTE.length;i++){L+=ROUTE[i].distanceTo(ROUTE[(i+1)%ROUTE.length]);}return L;})();
+function routePos(s){
+  s=((s%ROUTE_LEN)+ROUTE_LEN)%ROUTE_LEN;
+  let acc=0;for(let i=0;i<ROUTE.length;i++){const a=ROUTE[i],b=ROUTE[(i+1)%ROUTE.length];const d=a.distanceTo(b);
+    if(acc+d>=s){const t=(s-acc)/d;const x=lerp(a.x,b.x,t),z=lerp(a.y,b.y,t);
+      return {x,z,tx:b.x-a.x,tz:b.y-a.y};}
+    acc+=d;}
+  return {x:ROUTE[0].x,z:ROUTE[0].y,tx:1,tz:0};
+}
+
+// ground schedule: walk → probe-walk (speed plateaus) → groom → fly → land at same point
+const T_GROOM0=31, T_GROOM1=40.5, T_TAKEOFF=41.4, T_FLY0=42.0, T_LAND0=63.5, T_LAND1=65.8, LOOP=74;
+// numeric integral of walk speed with probe plateaus
+const SPD_TABLE=(()=>{
+  const dt=0.05, n=Math.ceil(LOOP/dt)+2, acc=new Float32Array(n);
+  let s=0;
+  for(let i=0;i<n;i++){const t=i*dt;
+    let v=0;
+    if(t<T_GROOM0){const u=t/T_GROOM0; v=Math.max(0.06,Math.sin(u*Math.PI*7.5-0.15));}
+    else if(t>=T_LAND1){const u=(t-T_LAND1)/(LOOP-T_LAND1); v=Math.max(0.10,Math.sin(u*Math.PI*2.6));}
+    acc[i]=s; s+=v*dt;}
+  return {acc,dt};
+})();
+function integralSpeed(t){ // returns distance walked along route at ground-time t (seconds, pre-normalised)
+  const {acc,dt}=SPD_TABLE; t=clamp(t,0,LOOP-dt);
+  const i=Math.floor(t/dt), f=t/dt-i;
+  return lerp(acc[i],acc[Math.min(i+1,acc.length-1)],f);
+}
+const SPD_NORM = 1/ integralSpeed(T_GROOM0);     // normalise segment 1 length
+const S_TAKEOFF = integralSpeed(T_GROOM0);
+const S_LAND = ROUTE_LEN - (integralSpeed(LOOP)-integralSpeed(T_LAND1))*SPD_NORM*0; // computed below properly
+let walkDistAt = t=>{
+  if(t<T_GROOM0) return integralSpeed(t)*SPD_NORM;
+  if(t<T_LAND1)  return S_TAKEOFF*SPD_NORM;     // includes groom+flight (bee is airborne)
+  return (S_TAKEOFF + (integralSpeed(t)-integralSpeed(T_LAND1)))*SPD_NORM;
+};
+// choose walk speed so that landing point + walked remainder == loop start exactly:
+// we place the landing at route distance L - walk(remaining), so continuity holds:
+{
+  const rem=integralSpeed(LOOP)-integralSpeed(T_LAND1);
+  // route position at loop end must equal route(0):
+  // walkDistAt(LOOP) = (S_TAKEOFF + rem)*NORM  ≡ 0 mod ROUTE_LEN → NORM = ROUTE_LEN/(S_TAKEOFF+rem)
+  const NORM=ROUTE_LEN/(S_TAKEOFF+rem);
+  walkDistAt = t=>{
+    if(t<T_GROOM0) return integralSpeed(t)*NORM*0.9995;
+    if(t<T_LAND1)  return S_TAKEOFF*NORM*0.9995;
+    return (S_TAKEOFF + (integralSpeed(t)-integralSpeed(T_LAND1)))*NORM*0.9995;
+  };
+}
+function beeSpeedAt(t){ const e=0.08; return (walkDistAt(Math.min(t+e,LOOP))-walkDistAt(Math.max(t-e,0)))/(2*e); }
+
+// probe targets: florets around the route
+function pickProbe(x,z,fwdX,fwdZ){
+  // nearest open floret ahead of the bee
+  const wantR=Math.hypot(x,z)-0.0075, wantA=Math.atan2(z,x);
+  const s=clamp(wantR,0,R), a=wantA;
+  const fx=Math.cos(a)*s, fz=Math.sin(a)*s;
+  return {x:fx,y:domeY(s)+0.0075,z:fz};
+}
+
+bee.pollen=0.04; bee.fuzzPollen=0;
+bee2.pollen=0.16; bee2.fuzzPollen=0.12;   // returning forager (must be finite: drives material colors)
+function updateBee(b,t,dt,sim){
+  const state=sim.state, bs=sim;
+  const root=b.root;
+  root.position.copy(bs.body);
+  root.quaternion.copy(bs.quat);
+  // subtle breathing-scale body curvature while walking (tiny)
+  b.head.rotation.x = bs.headPitch;
+  b.head.rotation.y = bs.headYaw;
+  // proboscis
+  const ext=bs.prob;
+  b.pSegs.forEach((s,i)=>{ s.rotation.z = lerp(0.0, -(0.5-i*0.08), ext) + Math.sin(t*9+i)*0.05*ext; });
+  // antennae twitch
+  b.ants.forEach((a,i)=>{
+    const tw=Math.sin(t*2.1+a.ph)*0.5+0.5;
+    const flick=Math.pow(Math.max(0,Math.sin(t*(2.7+i*0.9)+a.ph*3)),14)*0.6;
+    const clean = bs.antClean>0? Math.sin(t*14+i*2)*0.25*bs.antClean :0;
+    a.grp.rotation.z = 0.22+tw*0.14+flick+clean;
+    a.grp.rotation.y = a.sgn*(0.35+Math.sin(t*1.4+a.ph)*0.25+flick*0.5);
+    a.kn.rotation.z = 0.5+Math.sin(t*3.3+a.ph*2)*0.22+flick;
+    a.kn.rotation.y = a.sgn*Math.sin(t*2.4+a.ph)*0.3;
+  });
+  // wings
+  const fl=bs.flight;
+  b.wings.forEach(w=>{
+    if(fl<0.03){
+      // folded flat along abdomen, micro flutter
+      w.root.rotation.y = w.sgn>0? -Math.PI/2+0.12 : Math.PI/2-0.12;
+      w.root.rotation.x = -0.06;
+      w.root.rotation.z = -w.sgn*0.16+Math.sin(t*7+w.sgn)*0.02;
+      w.f.material.opacity=0.5; w.h.material.opacity=0.42;
+      w.f.visible=true; w.h.visible=true;
+    } else {
+      const om=t*TAU*(34+6*Math.sin(t*13.1));
+      w.root.rotation.y = lerp(w.sgn>0?-Math.PI/2+0.12:Math.PI/2-0.12, w.sgn>0?0:Math.PI, Math.min(1,fl*3));
+      w.root.rotation.x = (0.32+Math.sin(om)*0.92)*(w.sgn>0?1:-1);
+      w.root.rotation.z = Math.cos(om)*0.30;
+      w.f.material.opacity=0.42; w.h.material.opacity=0.38;
+    }
+    w.fan.material.opacity = fl*0.30;
+  });
+  // legs + pollen baskets
+  updateLegs(b,t,dt,sim);
+  // fuzz pollen tint
+  const g=b.fuzzPollen||0;
+  b.shellMat.color.setRGB(0.847+g*0.12, 0.643+g*0.08, 0.306);
+  b.abdShellMat.color.setRGB(0.60+g*0.24, 0.455+g*0.17, 0.204+g*0.06);
+}
+const _v1=new THREE.Vector3(),_v2=new THREE.Vector3(),_v3=new THREE.Vector3(),_v4=new THREE.Vector3(),_v5=new THREE.Vector3(),_v6=new THREE.Vector3();
+function setSeg(mesh,a,b,r1,len){
+  _v1.subVectors(b,a); const L=_v1.length()||1e-6;
+  mesh.position.copy(a).addScaledVector(_v1,0.5);
+  mesh.quaternion.setFromUnitVectors(_v2.set(0,1,0),_v3.copy(_v1).multiplyScalar(1/L));
+  mesh.scale.set(r1,L/r1* (r1) ,r1); // scale.y = L
+  mesh.scale.y=L;
+}
+function updateLegs(b,t,dt,sim){
+  const walk=sim.walking, fly=sim.flight;
+  b.legs.forEach((L,i)=>{
+    // desired rest anchor in bee frame
+    const hip=new THREE.Vector3(...L.hip);
+    hip.applyQuaternion(sim.quat).add(sim.body);
+    let target=new THREE.Vector3();
+    if(fly>0.4){
+      // in flight: legs dangle & tuck
+      const hang=new THREE.Vector3(L.rest[0]*(L.name[0]==='H'?1.0:0.45),-0.0030-Math.sin(t*9+i)*0.0004,L.rest[2]*0.28);
+      target.copy(sim.body).addScaledVector(_v4.set(1,0,0).applyQuaternion(sim.quat),hang.x)
+        .addScaledVector(_v5.set(0,1,0).applyQuaternion(sim.quat),hang.y)
+        .addScaledVector(_v6.set(0,1,0).applyQuaternion(sim.quat),0).addScaledVector(_v6.set(0,0,1).applyQuaternion(sim.quat),hang.z);
+      // small sway
+      target.addScaledVector(_v5.set(0,1,0).applyQuaternion(sim.quat), Math.sin(t*7+i*2)*0.0004);
+      L.anchor=L.anchor||target.clone(); L.anchor.lerp(target,1-Math.exp(-dt*6));
+    } else if(sim.groom){
+      groomTarget(L,t,sim,target);
+      L.anchor=L.anchor||target.clone();
+      L.anchor.lerp(target,1-Math.exp(-dt*(L.name[0]==='H'?7:9)));
+    } else if(walk>0.05){
+      const desired=new THREE.Vector3(L.rest[0],0,L.rest[2]).add(sim.body);
+      desired.y=groundY(desired.x,desired.z)+0.0004||desired.y;
+      if(!L.anchor)L.anchor=desired.clone();
+      if(L.stepT>=1){
+        const dx=L.anchor.x-desired.x,dz=L.anchor.z-desired.z, dyaw=angDiff(Math.atan2(L.rest[2],L.rest[0]),sim.yaw+0.15);
+        const dist=Math.hypot(dx*Math.cos(sim.yaw)+dz*Math.sin(sim.yaw), ( -dx*Math.sin(sim.yaw)+dz*Math.cos(sim.yaw)) *0.8 + Math.abs(dyaw)*0.004);
+        const tripA = (L.trip===0);
+        const phase=sim.stepPhase;
+        const myPhase=phase+(tripA?0:0.5);
+        const near=(myPhase%1)<0.42 && dist>0.0026;
+        if(near){
+          L.stepT=0;L.from=L.anchor.clone();
+          L.to=desired.clone();
+          L.to.x+=Math.cos(sim.yaw)*0.0016; L.to.z+=Math.sin(sim.yaw)*0.0016;
+          L.stepDur=0.20+rand(0,0.05);
+        }
+      } else {
+        L.stepT=Math.min(1,L.stepT+dt/L.stepDur);
+        const s=L.stepT, es=s*s*(3-2*s);
+        L.anchor.lerpVectors(L.from,L.to,es);
+        L.anchor.y=groundY(L.anchor.x,L.anchor.z)+0.0006+Math.sin(Math.PI*s)*0.0028;
+      }
+      if(L.stepT>=1) L.anchor.y=groundY(L.anchor.x,L.anchor.z)+0.0005;
+      target.copy(L.anchor);
+    } else {
+      // idle stand
+      const desired=new THREE.Vector3(L.rest[0],0,L.rest[2]).add(sim.body);
+      desired.y=groundY(desired.x,desired.z)+0.0005;
+      if(!L.anchor)L.anchor=desired.clone();
+      L.anchor.lerp(desired,1-Math.exp(-dt*8)); target.copy(L.anchor);
+    }
+    const foot=L.anchor;
+    // IK: hip→ankle (L1,L2a) then tarsus along surface normal
+    const n=surfNormalAt(foot.x,foot.z);
+    const ankle=_v1.copy(foot).addScaledVector(n,-L.L[2]);
+    const hipToAnkle=_v2.subVectors(ankle,hip);
+    let d=hipToAnkle.length();
+    const L1=L.L[0],L2=L.L[1];
+    const maxR=(L1+L2)*0.995, minR=Math.abs(L1-L2)+0.0002;
+    const dir=_v3.copy(hipToAnkle).multiplyScalar(1/(d||1e-6));
+    const dc=clamp(d,minR,maxR);
+    const ankle2=_v4.copy(hip).addScaledVector(dir,dc);
+    // pole: bee up
+    const up=_v5.set(0,1,0).applyQuaternion(sim.quat);
+    const a1=Math.acos(clamp((dc*dc+L1*L1-L2*L2)/(2*dc*L1),-1,1));
+    const w=_v6.copy(up).addScaledVector(dir,-up.dot(dir)).normalize();
+    const kneeDir=new THREE.Vector3().copy(dir).multiplyScalar(Math.cos(a1)).addScaledVector(w,Math.sin(a1));
+    const knee=new THREE.Vector3().copy(hip).addScaledVector(kneeDir,L1);
+    // place meshes — IK ran in head-local space; meshes are parented to the bee root, convert
+    const qi=sim.quat.clone().invert();
+    const rr=p=>p.clone().sub(sim.body).applyQuaternion(qi);
+    // never draw the tarsus longer than its bone (anchor may lag during fast transitions)
+    const footDraw=new THREE.Vector3().subVectors(foot,ankle2);
+    const fdLen=footDraw.length();
+    if(fdLen>L.L[2]*1.02)footDraw.multiplyScalar(L.L[2]/fdLen).add(ankle2); else footDraw.copy(foot);
+    const hipL=rr(hip),kneeL=rr(knee),ankL=rr(ankle2),footL=rr(footDraw);
+    const coxaEnd=new THREE.Vector3().copy(hip).addScaledVector(new THREE.Vector3().subVectors(knee,hip).normalize(),0.0008);
+    setSeg(L.parts.coxa,hipL,rr(coxaEnd),0.00021,0.0008);
+    setSeg(L.parts.femur,rr(coxaEnd),kneeL,0.00026);
+    L.parts.knee.position.copy(kneeL);L.parts.knee.scale.setScalar(0.00028);
+    setSeg(L.parts.tibia,kneeL,ankL, L.name[0]==='H'?0.00030:0.00022);
+    if(L.name[0]==='H'){ L.parts.tibia.scale.set(0.00022,ankle2.distanceTo(knee),0.00052); }
+    L.parts.ankle.position.copy(ankL);L.parts.ankle.scale.setScalar(0.00024);
+    setSeg(L.parts.tarsus,ankL,footL,0.00016);
+    L.parts.claw.position.copy(footL);L.parts.claw.scale.setScalar(0.00013);
+    L.parts.coxa.visible=L.parts.femur.visible=true;
+    // pollen pellet grow on hind tibia
+    if(L.pellets){
+      const pm=clamp(b.pollen,0,1);
+      L.pellets.children.forEach((pl,k)=>{
+        const sz=(0.00012+pm*0.00082)*(k===1?0.8:1)*(0.8+0.2*Math.sin(t+k));
+        pl.scale.set(sz,sz*1.25,sz*0.95);
+        const tt=(k===0?0.32:k===1?0.62:0.5), side=(L.name==='HL'?1:-1);
+        const p=new THREE.Vector3().lerpVectors(knee,ankle2,tt);
+        p.addScaledVector(n, sz*0.8+0.00028);
+        p.addScaledVector(_v1.crossVectors(n,dir).normalize(), side*0.00034);
+        pl.position.copy(rr(p));
+      });
+    }
+  });
+}
+function angDiff(a,b){let d=a-b;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;return d;}
+function groomTarget(L,t,sim,target){
+  const q=sim.quat,b=sim.body;
+  const F=new THREE.Vector3(1,0,0).applyQuaternion(q),U=new THREE.Vector3(0,1,0).applyQuaternion(q),Rt=new THREE.Vector3(0,0,1).applyQuaternion(q);
+  const cyc=(t*0.8)%2;
+  const side=Math.sign(L.rest[2]);
+  if(L.name[0]==='F'){
+    if(cyc<1.1){ // clean antennae: front paws together in front of face
+      const s=Math.sin(cyc/1.1*Math.PI*3);
+      target.copy(b).addScaledVector(F,0.009).addScaledVector(U,-0.0015+Math.abs(s)*0.001).addScaledVector(Rt,-side*0.0005*Math.sign(side));
+      target.x+=Math.sin(t*20)*0.0003;
+    } else { // rake thorax/face
+      const s=Math.sin((cyc-1.1)/0.9*Math.PI);
+      target.copy(b).addScaledVector(F,lerp(0.006,-0.002,s)).addScaledVector(U,-0.0035).addScaledVector(Rt,side*0.0018);
+      target.y=groundY(target.x,target.z)+0.0012||target.y;
+    }
+  } else {
+    // mid & hind rake abdomen: feet stay mostly planted, hind leg reaches over
+    if(L.name[0]==='H'){
+      const s=Math.sin(t*4+side);
+      target.copy(b).addScaledVector(F,-0.006-s*0.0035).addScaledVector(U,-0.0018+s*0.001).addScaledVector(Rt,side*0.0026);
+    } else {
+      target.copy(b).addScaledVector(F,-0.001).addScaledVector(U,-0.0052).addScaledVector(Rt,side*0.0052);
+      target.y=groundY(target.x,target.z)+0.0005||target.y;
+    }
+  }
+}
+
+/* ================================================================
+   PARTICLES — pollen puffs + drifting motes
+   ================================================================ */
+const dotTex=ctex(64,64,(x,w,h)=>{const g=x.createRadialGradient(32,32,0,32,32,32);
+  g.addColorStop(0,'rgba(255,240,200,1)');g.addColorStop(0.4,'rgba(255,210,110,0.55)');g.addColorStop(1,'rgba(255,200,90,0)');
+  x.fillStyle=g;x.fillRect(0,0,w,h);});
+const PMAX=500;
+const pPos=new Float32Array(PMAX*3), pCol=new Float32Array(PMAX*3);
+const pVel=new Float32Array(PMAX*3), pLife=new Float32Array(PMAX);
+let pHead=0;
+const pGeo=new THREE.BufferGeometry();
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
+const pMat=new THREE.PointsMaterial({size:0.0012,map:dotTex,transparent:true,vertexColors:true,depthWrite:false,blending:THREE.AdditiveBlending,sizeAttenuation:true});
+const puff=new THREE.Points(pGeo,pMat);puff.frustumCulled=false;scene.add(puff);
+function spawnPollen(worldPos,n,spd){
+  for(let i=0;i<n;i++){
+    const j=pHead;pHead=(pHead+1)%PMAX;
+    pPos[j*3]=worldPos.x+rand(-0.002,0.002);pPos[j*3+1]=worldPos.y+rand(0,0.002);pPos[j*3+2]=worldPos.z+rand(-0.002,0.002);
+    pVel[j*3]=rand(-spd,spd);pVel[j*3+1]=rand(spd*0.4,spd*1.6);pVel[j*3+2]=rand(-spd,spd);
+    pLife[j]=rand(0.8,2.2);
+    const c=new THREE.Color().setHSL(0.115+rand(-0.02,0.03),rand(0.6,0.95),rand(0.55,0.8));
+    pCol[j*3]=c.r;pCol[j*3+1]=c.g;pCol[j*3+2]=c.b;
+  }
+}
+function updatePuff(dt){
+  for(let j=0;j<PMAX;j++){
+    if(pLife[j]<=0){pPos[j*3+1]=-10;continue;}
+    pLife[j]-=dt;
+    pPos[j*3]+=pVel[j*3]*dt;pPos[j*3+1]+=pVel[j*3+1]*dt;pPos[j*3+2]+=pVel[j*3+2]*dt;
+    pVel[j*3]*=0.985;pVel[j*3+1]=pVel[j*3+1]*0.985-0.002*dt;pVel[j*3+2]*=0.985;
+  }
+  pGeo.attributes.position.needsUpdate=true;pGeo.attributes.color.needsUpdate=true;
+}
+// slow sparkly motes in the sun
+const MOTES=90;
+const mGeo=new THREE.BufferGeometry();
+const mArr=new Float32Array(MOTES*3);
+for(let i=0;i<MOTES;i++){mArr[i*3]=rand(-0.5,0.5);mArr[i*3+1]=rand(0.25,0.95);mArr[i*3+2]=rand(-0.5,0.5);}
+mGeo.setAttribute('position',new THREE.BufferAttribute(mArr,3));
+const motes=new THREE.Points(mGeo,new THREE.PointsMaterial({size:0.0016,map:dotTex,transparent:true,opacity:0.5,color:0xffe8b0,depthWrite:false,blending:THREE.AdditiveBlending}));
+scene.add(motes);
+
+/* ================================================================
+   CAMERA DIRECTOR — continuous 74 s cinematic loop
+   ================================================================ */
+const camPos=new THREE.Vector3(0.35,0.62,0.5), camLook=new THREE.Vector3(0,0.55,0);
+camPos.copy(camera.position);
+let camT=0;
+function poseFor(t,beeW,beeQl,headW){
+  // beeQ arrives in head-local space — convert to world axes
+  const _qh=new THREE.Quaternion(); head.getWorldQuaternion(_qh);
+  const beeQ=_qh.multiply(beeQl);
+  // returns {pos,look} world positions for absolute loop time t (continuous)
+  const F=new THREE.Vector3(1,0,0).applyQuaternion(beeQ),
+        U=new THREE.Vector3(0,1,0).applyQuaternion(beeQ),
+        Rt=new THREE.Vector3(0,0,1).applyQuaternion(beeQ);
+  const headUp=new THREE.Vector3(0,1,0);
+  const camAz=t=>new THREE.Vector3(Math.cos(t),0,Math.sin(t));
+  // shot poses relative to bee or flower
+  const pBee=(f,u,r)=>beeW.clone().addScaledVector(F,f).addScaledVector(U,u).addScaledVector(Rt,r);
+  const S={};
+  const a0=t*0.035;
+  const beeAz=Math.atan2(beeW.y*0+beeW.z-headW.z, beeW.x-headW.x);
+  S.s0 = {p:headW.clone().add(new THREE.Vector3(Math.cos(beeAz)*0.21,0.075+0.008*Math.sin(t*0.3),Math.sin(beeAz)*0.21)),
+          l:beeW.clone().addScaledVector(U,0.0005).add(new THREE.Vector3(0,-0.003,0))};   // low side: legs & walk (outside the petals)
+  const outB=beeW.clone().sub(headW); outB.y=0; if(outB.lengthSq()<1e-8)outB.set(1,0,0); outB.normalize();
+  S.s1 = {p:beeW.clone().add(new THREE.Vector3(0,0.030,0)).addScaledVector(F,0.030).addScaledVector(outB,0.022),
+          l:beeW.clone().addScaledVector(F,0.0045).add(new THREE.Vector3(0,-0.0025,0))};   // face / proboscis
+  const _qH=new THREE.Quaternion(); head.getWorldQuaternion(_qH);
+  const nd=new THREE.Vector3(0,1,0).applyQuaternion(_qH);   // disc front normal — always clear of plant bulk
+  S.s2 = {p:beeW.clone().addScaledVector(nd,0.050).addScaledVector(Rt,0.045).add(new THREE.Vector3(0,0.008,0)),
+          l:beeW.clone().addScaledVector(F,-0.004).addScaledVector(U,-0.001)};                       // baskets / grooming 3-4
+  const hoverBase=headW.clone().add(new THREE.Vector3(0,0.02,0));
+  S.s3 = {p:hoverBase.clone().add(camAz(0.9+Math.sin(t*0.15)*0.5).multiplyScalar(0.40)).add(new THREE.Vector3(0,0.13,0)), l:beeW.clone()};
+  const outW=beeW.clone().sub(headW); outW.y=0; if(outW.lengthSq()<1e-8)outW.set(0,0,1); outW.normalize();
+  S.s4 = {p:beeW.clone().add(outW.multiplyScalar(0.075)).add(new THREE.Vector3(0,0.05,0)),
+          l:beeW.clone().lerp(headW.clone().add(new THREE.Vector3(0,0.01,0)),0.18)};   // bee against the disc, clean sightline
+  const wideA=1.05+Math.sin(t*0.05)*0.08;
+  const land=sstep(64.5,68,Math.max(t,0));
+  S.s5 = {p:headW.clone().add(camAz(wideA).multiplyScalar(0.46)).add(new THREE.Vector3(0,0.155,0)), l:beeW.clone().lerp(headW.clone().add(new THREE.Vector3(0,0.02,0)),land)};
+  S.s6 = {p:beeW.clone().addScaledVector(F,0.06).addScaledVector(U,0.05).add(camAz(1.1+Math.sin(t*0.2)*0.15).multiplyScalar(0.55)).add(new THREE.Vector3(0,0.2,0)),
+          l:beeW.clone().lerp(headW,0.4)};
+  const shots=[
+    {a:0, b:10, k:'s0'},
+    {a:10,b:20, k:'s1'},
+    {a:20,b:37, k:'s2'},
+    {a:37,b:49, k:'s3'},
+    {a:49,b:63, k:'s4'},
+    {a:63,b:70, k:'s5'},
+    {a:70,b:74,k:'s6'},
+  ];
+  const BL=4.0;
+  let idx=shots.findIndex(s=>t>=s.a&&t<s.b); if(idx<0)idx=shots.length-1;
+  const cur=shots[idx], nxt=shots[(idx+1)%shots.length];
+  let m=0;
+  if(t> cur.b-BL) m=sstep(cur.b-BL, cur.b, Math.min(t,cur.b));
+  // smooth blend to next (across wrap: cur.b is LOOP → next is s0)
+  const P1=S[cur.k],P2=S[nxt.k];
+  // never let the lens sit inside the flower head
+  const guard=p=>{const d=p.clone().sub(headW);const L0=d.length();
+    if(L0<0.095){if(L0<1e-7)d.set(0.6,0.5,0.6);d.setLength(0.095);p.copy(headW).add(d);}
+    if(p.y<headW.y-0.03)p.y=headW.y-0.03;return p;};
+  if(m>0){
+    return {pos:guard(P1.p.clone().lerp(P2.p,m)), look:P1.l.clone().lerp(P2.l,m)};
+  }
+  return {pos:guard(P1.p.clone()), look:P1.l.clone()};
+}
+
+/* ================================================================
+   POST PROCESSING
+   ================================================================ */
+const rt=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType});
+const composer=new EffectComposer(renderer,rt);
+composer.addPass(new RenderPass(scene,camera));
+const bokeh=new BokehPass(scene,camera,{focus:0.3,aperture:0.035,maxblur:0.011});
+composer.addPass(bokeh);
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.42,0.55,0.85);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+const grainPass=new ShaderPass({
+  uniforms:{tDiffuse:{value:null},uT:{value:0},uA:{value:innerHeight}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`
+    uniform sampler2D tDiffuse;uniform float uT;uniform float uA;varying vec2 vUv;
+    float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    void main(){
+      vec3 c=texture2D(tDiffuse,vUv).rgb;
+      float g=hash(vUv*uA+fract(uT)*137.0)-0.5;
+      c+=g*0.030*cmaxSafe(c);
+      vec2 q=vUv-0.5;float v=1.0-dot(q,q)*0.62;
+      c*=v;
+      c=pow(max(c,0.0),vec3(0.985));   // whisper of warmth in the mids
+      gl_FragColor=vec4(c,1.0);
+    }`.replace('cmaxSafe(c)','(0.75+0.25*max(max(c.r,c.g),c.b))'),
+});
+composer.addPass(grainPass);
+composer.setPixelRatio(renderer.getPixelRatio());
+composer.setSize(innerWidth,innerHeight);
+window.__pass={bokeh,bloom,grainPass,composer,rt};
+
+/* ================================================================
+   AUDIO (synthesized; opt-in)
+   ================================================================ */
+let AC=null,buzzGain,buzzOsc=null;
+const hint=document.getElementById('hint');
+hint.addEventListener('click',()=>{ initAudio(); hint.classList.add('hide'); });
+function initAudio(){
+  try{
+    AC=new (window.AudioContext||window.webkitAudioContext)();
+    const master=AC.createGain();master.gain.value=0.6;master.connect(AC.destination);
+    // buzz
+    buzzGain=AC.createGain();buzzGain.gain.value=0;
+    const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=850;bp.Q.value=1.6;
+    buzzGain.connect(bp);bp.connect(master);
+    const o1=AC.createOscillator();o1.type='sawtooth';o1.frequency.value=215;
+    const o2=AC.createOscillator();o2.type='sawtooth';o2.frequency.value=223.5;
+    const o3=AC.createOscillator();o3.type='triangle';o3.frequency.value=431;
+    const g3=AC.createGain();g3.gain.value=0.35;
+    o1.connect(buzzGain);o2.connect(buzzGain);o3.connect(g3);g3.connect(buzzGain);
+    o1.start();o2.start();o3.start();
+    const trem=AC.createOscillator();trem.frequency.value=6;
+    const tg=AC.createGain();tg.gain.value=0.35;trem.connect(tg);tg.connect(buzzGain.gain);trem.start();
+    // breeze: filtered noise
+    const len=AC.sampleRate*3,buf=AC.createBuffer(1,len,AC.sampleRate),ch=buf.getChannelData(0);
+    let lp=0;for(let i=0;i<len;i++){lp=lp*0.98+(Math.random()*2-1)*0.02;ch[i]=lp*3;}
+    const src=AC.createBufferSource();src.buffer=buf;src.loop=true;
+    const lp1=AC.createBiquadFilter();lp1.type='lowpass';lp1.frequency.value=420;
+    const bg=AC.createGain();bg.gain.value=0.05;
+    src.connect(lp1);lp1.connect(bg);bg.connect(master);src.start();
+    const lfo=AC.createOscillator();lfo.frequency.value=0.11;const lg=AC.createGain();lg.gain.value=180;
+    lfo.connect(lg);lg.connect(lp1.frequency);lfo.start();
+    // distant birds
+    function chirp(){
+      const n=2+((Math.random()*3)|0);
+      for(let i=0;i<n;i++){
+        const o=AC.createOscillator(),g=AC.createGain(),pn=AC.createStereoPanner();
+        o.type='sine';const f0=2400+Math.random()*1600,t0=AC.currentTime+i*(0.07+Math.random()*0.05);
+        o.frequency.setValueAtTime(f0,t0);o.frequency.exponentialRampToValueAtTime(f0*(1.3+Math.random()*0.5),t0+0.05);
+        g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(0.028,t0+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t0+0.09);
+        pn.pan.value=rand(-0.8,0.8);
+        o.connect(g);g.connect(pn);pn.connect(master);o.start(t0);o.stop(t0+0.12);
+      }
+      setTimeout(chirp, 3500+Math.random()*8000);
+    }
+    setTimeout(chirp,2000);
+    buzzOsc=o1;
+  }catch(e){console.warn('audio unavailable',e);}
+}
+
+/* ================================================================
+   MAIN LOOP
+   ================================================================ */
+const clock=new THREE.Clock();
+let simT=rand(0,LOOP*0.33);
+const beeSim=makeSim(), bee2Sim=makeSim();
+function makeSim(){return{body:new THREE.Vector3(),quat:new THREE.Quaternion(),yaw:0,flight:0,walking:0,groom:false,prob:0,stepPhase:0,headPitch:0,headYaw:0,antClean:0};}
+const _q=new THREE.Quaternion(), _m=new THREE.Matrix4();
+
+function updateFlower(t){
+  const gust=0.5+0.5*Math.sin(t*0.23)+0.25*Math.sin(t*0.07+2);
+  stemSeg[0].rotation.set(Math.sin(t*0.31)*0.012+0.01, 0, Math.cos(t*0.24)*0.014);
+  stemSeg[1].rotation.set(Math.sin(t*0.47+1.3)*0.016, 0, Math.cos(t*0.37+0.7)*0.018);
+  stemSeg[2].rotation.set(Math.sin(t*0.61+2.1)*0.022*Math.max(0.4,gust), 0.1*Math.sin(t*0.2), Math.cos(t*0.53+1.9)*0.02*Math.max(0.4,gust));
+  head.rotation.set( Math.sin(t*0.77+0.5)*0.018, 0.1*Math.sin(t*0.11)*0.35, Math.cos(t*0.67+2.4)*0.016 );
+  leafPivots.forEach((p,i)=>{p.rotation.z=Math.sin(t*0.8+i*2.1)*0.05;p.rotation.y=Math.sin(t*0.5+i)*0.06;});
+}
+function headWorld(out){ head.getWorldPosition(out); return out; }
+
+const _headW=new THREE.Vector3(),_beeW=new THREE.Vector3(),_pose={pos:new THREE.Vector3(),look:new THREE.Vector3()};
+const _x=new THREE.Vector3(),_y=new THREE.Vector3(),_z=new THREE.Vector3();
+
+function driveBee(sim, t, dt, b){
+  const _fb1=new THREE.Vector3(),_fb2=new THREE.Vector3(),_fb3=new THREE.Vector3(),_fb4=new THREE.Vector3();
+  const _fc1=new THREE.Vector3(),_fc2=new THREE.Vector3(),_fc3=new THREE.Vector3();
+  const _q1=new THREE.Quaternion(),_q2=new THREE.Quaternion(),_UP=new THREE.Vector3();
+  const tl=simT%LOOP;
+  const walking = (tl<T_GROOM0)|| (tl>=T_LAND1);
+  const grooming = tl>=T_GROOM0&&tl<T_GROOM1;
+  let s=walkDistAt(tl);
+  let rp=routePos(s);
+  let x=rp.x,z=rp.z;
+  const flyS=sstep(T_FLY0,T_FLY0+1.2,tl)-sstep(T_LAND0-0.6,T_LAND1,tl);
+  sim.flight=flyS;
+  sim.groom=grooming;
+  const spd=beeSpeedAt(tl)*(walking?1:0);
+  sim.walking=walking?clamp(spd/0.028,0,1):0;
+  // heading
+  let yaw=Math.atan2(rp.tz,rp.tx);
+  if(!walking&&!grooming&&flyS<0.5){ /* landed waiting */ }
+  // heading easing + probe aim
+  const probeAct = walking && spd<0.012;
+  if(probeAct){ const pa=Math.atan2(z,x); yaw=lerpAngle(sim.yaw,pa,1-Math.exp(-dt*2)); }
+  else yaw=lerpAngle(sim.yaw,yaw,1-Math.exp(-dt*3.2));
+  sim.yaw=yaw;
+  const up=surfNormalAt(x,z);
+  const fwd=_x.set(Math.cos(yaw),0,Math.sin(yaw));
+  const ry=up.clone().addScaledVector(fwd,-up.dot(fwd)).normalize();
+  const rz=new THREE.Vector3().crossVectors(ry,up).normalize(); // z = ? keep RH: z = x×y? build basis columns
+  // model frame: x=fwd', y=up, z=x×y
+  const xx=fwd.clone().addScaledVector(up,-fwd.dot(up)).normalize();
+  const yy=up.clone();
+  const zz=new THREE.Vector3().crossVectors(xx,yy);
+  _m.makeBasis(xx,yy,zz);
+  sim.quat.setFromRotationMatrix(_m);
+  // body position on dome (or in air)
+  let by=domeY(Math.hypot(x,z))+STAND + Math.sin(sim.stepPhase*TAU*2)*0.00018*(1-flyS);
+  let bx=x,bz=z;
+  if(flyS>0.001){
+    head.updateWorldMatrix(true,false);
+    head.getWorldPosition(_fb1);                                   // flower head center, world
+    const ang=0.6+Math.sin(tl*0.23)*0.9;
+    const rad=0.16+0.07*Math.sin(tl*0.17+1);
+    _fb2.set(_fb1.x+Math.cos(ang)*rad, _fb1.y+0.05+0.035*Math.sin(tl*0.31)+0.02*Math.sin(tl*0.71), _fb1.z+Math.sin(ang)*rad+0.05);
+    const landing=routePos(S_TAKEOFF*NORM_CACHED);
+    _fb3.set(landing.x, domeY(Math.hypot(landing.x,landing.z))+STAND, landing.z).applyMatrix4(head.matrixWorld); // landing point, world
+    const descend=sstep(T_LAND0,T_LAND1,tl);
+    _fb4.set(Math.sin(tl*3.1)*0.006+Math.sin(tl*1.3)*0.008, Math.sin(tl*2.3+1)*0.006, Math.cos(tl*2.7)*0.006);
+    _fb2.add(_fb4).lerp(_fb3,descend);                              // world-space air position
+    _fb3.copy(_fb2);                                                // remember world pos
+    head.worldToLocal(_fb2);                                        // → head-local body pos
+    bx=_fb2.x;by=_fb2.y;bz=_fb2.z;
+    // face the flower centre while hovering (local atan2 still valid: head centre is local origin)
+    const toC=Math.atan2(-bz,-bx);
+    sim.yaw=lerpAngle(sim.yaw, toC+Math.sin(tl*0.7)*0.4, 1-Math.exp(-dt*2));
+    // flight attitude: world-horizontal plane, gentle wobble → convert to local quat
+    _fb4.copy(_fb1).sub(_fb3); _fb4.y+=0.03; _fb4.normalize();
+    _fb4.applyAxisAngle(_UP.set(0,1,0), Math.sin(tl*0.9)*0.12);
+    const f2=_fb4;
+    const x2=_fc1.copy(f2);const y2=_fc2.set(0,1,0).addScaledVector(f2,-f2.y).normalize();
+    const z2=_fc3.crossVectors(x2,y2);
+    _m.makeBasis(x2,y2,z2);
+    _q1.setFromRotationMatrix(_m);
+    head.getWorldQuaternion(_q2).invert();
+    sim.quat.copy(_q2).multiply(_q1);
+  } else if(grooming){
+    by+=0.0004*Math.sin(t*1.7);
+  }
+  sim.body.set(bx,by,bz);
+  // step phase from ground speed
+  sim.stepPhase=(sim.stepPhase+dt*(2.6*sim.walking+0.0001))%1;
+  // proboscis: probing florets
+  let probT=0;
+  if(probeAct&&flyS<0.3){ probT=1; }
+  if(grooming) probT=0.15+0.1*Math.sin(t*3);
+  sim.prob=lerp(sim.prob,probT,1-Math.exp(-dt*4));
+  sim.antClean=grooming?clamp((tl-(T_GROOM0+1))/1.5,0,1)*clamp((T_GROOM1-tl)/1.5,0,1):0;
+  sim.headPitch = sim.prob*0.5 + flyS*(-0.25) + Math.sin(t*2.2)*0.03*(1-flyS);
+  sim.headYaw = Math.sin(t*1.3)*0.12*(1-flyS);
+  // pollen accumulation
+  if(sim===beeSim){
+    if(probeAct) bee.pollen=Math.min(1,bee.pollen+dt*0.020);
+    if(grooming){ bee.pollen=Math.min(1,bee.pollen+dt*0.045); }
+    bee.fuzzPollen = clamp( (bee.pollen-0.1)*1.2,0,1) * (grooming?0.75:1);
+    b.fuzzPollen=bee.fuzzPollen;
+    // pollen puffs while probing / walking / takeoff / landing
+    b.root.getWorldPosition(_beeW);
+    if(probeAct&&rng()<dt*3.5) spawnPollen(_beeW.addScaledVector(new THREE.Vector3(0,-0.004,0),1),4,0.006);
+    if(sim.walking>0.5&&rng()<dt*2.5) spawnPollen(_beeW.addScaledVector(new THREE.Vector3(0,-0.005,0),1),2,0.005);
+    if(Math.abs(flyS - (b._lastFly||0))>0.02&&flyS>0.3) spawnPollen(_beeW,10,0.02);
+    b._lastFly=flyS;
+  }
+}
+let NORM_CACHED=1;
+{ // share the normalisation used by walkDistAt for landing hover target
+  // recompute identical value
+  const rem=integralSpeed(LOOP)-integralSpeed(T_LAND1);
+  NORM_CACHED=ROUTE_LEN/(S_TAKEOFF+rem);
+}
+function lerpAngle(a,b,t){return a+angDiff(b,a)*t;}
+
+// second bee: arrives, hovers near rim, briefly lands, leaves
+function driveBee2(t,dt){
+  const b=bee2,s=bee2Sim;
+  const tl=simT%LOOP;
+  b.fuzzPollen=0.12+0.10*sstep(65,70,tl);
+  const inS=sstep(62.3,62.9,tl)*(1-sstep(72,73,tl));   // visit lands during the wide s5/s6 shots
+  b.root.visible=inS>0.01;
+  if(!b.root.visible)return;
+  const a=-0.5+Math.sin(tl*0.55)*1.0;
+  const r=lerp(0.30,R*0.86,sstep(62.9,65,tl)*(1-sstep(69.5,71,tl)));
+  const hgt= r>R*1.0? 0.16+0.05*Math.sin(tl*1.9): domeY(r)+STAND;
+  const descend=sstep(65,66.5,tl)*(1-sstep(69,70,tl));
+  const x=Math.cos(a)*r, z=Math.sin(a)*r;
+  s.body.set(x, lerp(hgt+0.05, domeY(Math.hypot(x,Math.min(r,R*1.02)))+STAND, descend), z);
+  s.yaw=Math.atan2(-z,-x)+0.4;
+  s.flight=1-descend;
+  s.walking=descend*0.4;
+  s.groom=false;
+  s.prob=descend*0.8*sstep(66,67,tl);
+  s.headPitch=0.3*descend; s.headYaw=0; s.antClean=0;
+  const up=surfNormalAt(clamp(Math.hypot(x,z),0.001,R*1.02),0).clone();
+  const up2=surfNormalAt(x,z);
+  const f2=new THREE.Vector3(Math.cos(s.yaw),0.08*descend,Math.sin(s.yaw)).normalize();
+  const x2=f2.clone();const y2=new THREE.Vector3(0,1,0).addScaledVector(f2,-f2.y).normalize();
+  const z2=new THREE.Vector3().crossVectors(x2,y2);
+  _m.makeBasis(x2,y2,z2);s.quat.setFromRotationMatrix(_m);
+  s.stepPhase=(s.stepPhase+dt*1.5*s.walking)%1;
+  updateBee(b,t,dt,s);
+}
+
+let last=0;
+let animT=0, freeze=false;
+window.__freeze=v=>{freeze=v;};
+window.__unfreeze=()=>{window.__frozen=false;freeze=false;};
+window.__cam=(p,l)=>{camPos.set(...p);camLook.set(...l);camera.position.set(...p);camera.lookAt(new THREE.Vector3(...l));
+  bokeh.uniforms['focus'].value=camera.position.distanceTo(_beeW);};
+window.__beeW=()=>_beeW.toArray();
+window.__beeQ=()=>beeSim.quat.toArray();
+let _markMesh=null;
+window.__mark=on=>{ if(_markMesh){scene.remove(_markMesh);_markMesh=null;}
+  if(on){_markMesh=new THREE.Mesh(new THREE.SphereGeometry(0.004,8,6),new THREE.MeshBasicMaterial({color:0xff0000}));
+    _markMesh.position.copy(_beeW);scene.add(_markMesh);} };
+window.__ray=()=>{ const rc=new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(0,0),camera);
+  const hits=rc.intersectObjects(scene.children,true).slice(0,6);
+  return hits.map(h=>({o:h.object.name||h.object.type,d:+h.distance.toFixed(3),p:h.point.toArray().map(v=>+v.toFixed(3))})); };
+window.__rayAt=(x,y)=>{ const rc=new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(x,y),camera);
+  const hits=rc.intersectObjects(scene.children,true).slice(0,8);
+  return hits.map(h=>{let o=h.object,name='?';
+    if(o.isMesh||o.isInstancedMesh){name=(o.geometry&&o.geometry.type)||o.type;}else name=o.type;
+    return {n:name,d:+h.distance.toFixed(3),p:h.point.toArray().map(v=>+v.toFixed(3))};}); };
+window.__scene=scene; window.__camera=camera;
+function animate(){
+  requestAnimationFrame(animate);
+  let rawDt=clock.getDelta();
+  if(window.__lock){const extra=rawDt-0.0166;if(extra>0)rawDt=0.0166;else if(extra<-0.02)rawDt=0.0166;}
+  const dt=Math.min(rawDt,0.05)*((freeze||window.__frozen)?0.0001:1);
+  animT+=dt;
+  const t=animT;
+  simT+=dt;
+  const tl=simT%LOOP;
+
+  updateFlower(t);
+  grassTime.value=t;
+  scene.userData.updateField(t);
+  sky.position.copy(camera.position);
+
+  driveBee(beeSim,t,dt,bee);
+  updateBee(bee,t,dt,beeSim);
+  driveBee2(t,dt);
+
+  bee.root.getWorldPosition(_beeW);
+  headWorld(_headW);
+
+  // audio
+  if(AC){ buzzGain.gain.setTargetAtTime(0.028*beeSim.flight+0.0016,AC.currentTime,0.12);
+    if(buzzOsc){const f=205+38*beeSim.flight+8*Math.sin(t*7);buzzOsc.frequency.setTargetAtTime(f,AC.currentTime,0.15);} }
+
+  // camera
+  const pose=poseFor(tl,_beeW,beeSim.quat,_headW);
+  const k=1-Math.exp(-dt*2.6);
+  camPos.lerp(pose.pos,k);
+  camLook.lerp(pose.look,1-Math.exp(-dt*3.4));
+  // keep camera above disc plane a touch & off the petals
+  if(camPos.y<_headW.y-0.16) camPos.y=lerp(camPos.y,_headW.y-0.16,0.2);
+  camera.position.copy(camPos);
+  camera.lookAt(camLook);
+  // DoF focus: distance to the bee (in world units), smoothed
+  const fd=camera.position.distanceTo(_beeW);
+  bokeh.uniforms['focus'].value=lerp(bokeh.uniforms['focus'].value,fd,1-Math.exp(-dt*4));
+  bokeh.uniforms['aperture'].value=lerp(0.02,0.048,sstep(0.45,0.12,fd)); // closer = creamier
+  grainPass.uniforms.uT.value=t;
+
+  updatePuff(dt);
+  motes.material.opacity=0.35+0.15*Math.sin(t*0.7);
+
+  composer.render();
+}
+window.__dbg=()=>({cam:camera.position.toArray().map(v=>+v.toFixed(3)),
+  look:camLook.toArray().map(v=>+v.toFixed(3)), bee:_beeW.toArray().map(v=>+v.toFixed(3)),
+  head:_headW.toArray().map(v=>+v.toFixed(3)), tl:+(simT%LOOP).toFixed(2),
+  fd:+bokeh.uniforms['focus'].value.toFixed(3), fly:+beeSim.flight.toFixed(2),
+  walk:+beeSim.walking.toFixed(2), groom:beeSim.groom});
+window.__setT=v=>{simT=v;};
+window.__poseFor=tt=>{const q=new THREE.Quaternion();head.getWorldQuaternion(q);
+  const F=new THREE.Vector3(1,0,0).applyQuaternion(q.clone().multiply(beeSim.quat));
+  const Rt=new THREE.Vector3(0,0,1).applyQuaternion(q.clone().multiply(beeSim.quat));
+  const nd=new THREE.Vector3(0,1,0).applyQuaternion(q);
+  return {s2p:beeW0().clone().addScaledVector(nd,0.050).addScaledVector(Rt,0.045).add(new THREE.Vector3(0,0.008,0)).toArray().map(v=>+v.toFixed(3)),
+    F:F.toArray().map(v=>+v.toFixed(3)),Rt:Rt.toArray().map(v=>+v.toFixed(3)),nd:nd.toArray().map(v=>+v.toFixed(3)),
+    pose:poseFor(simT%LOOP,_beeW,beeSim.quat,_headW).pos.toArray().map(v=>+v.toFixed(3))};
+  function beeW0(){return _beeW.clone();}};
+window.__goto=v=>{window.__lock=true;freeze=false;window.__frozen=false;simT=v;animT=v;return 'goto '+v;};
+window.__snapTo=v=>{
+  window.__frozen=true;
+  simT=v; animT=v;
+  const saveDt=()=>{};
+  for(let i=0;i<60;i++){const tt=v+i*0.016;driveBee(beeSim,tt,0.016,bee); updateBee(bee,tt,0.016,beeSim); driveBee2(tt,0.016);}
+  bee.root.getWorldPosition(_beeW); headWorld(_headW);
+  const p=poseFor(simT%LOOP,_beeW,beeSim.quat,_headW);
+  camPos.copy(p.pos); camLook.copy(p.look);
+  camera.position.copy(camPos); camera.lookAt(camLook);
+  bokeh.uniforms['focus'].value=camera.position.distanceTo(_beeW);
+};
+window.__raw=on=>{ window._raw=on; };
+{ const _r=composer.render.bind(composer);
+  composer.render=function(){ if(window._raw){renderer.render(scene,camera);return;} _r(); }; }
+animate();
+
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  composer.setSize(innerWidth,innerHeight);
+  grainPass.uniforms.uA.value=innerHeight;
+});
+</script>
+</body>
+</html>
