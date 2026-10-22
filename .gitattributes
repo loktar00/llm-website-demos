@@ -8,3 +8,5 @@ ordinary-torn-site/index.html -text
 # Stored byte-exact so GitHub Pages serves exactly the canonical build.
 ak47-field-strip/index.html -text
 *.mp3 binary
+# Stored byte-exact (source has mixed CRLF/LF) so GitHub Pages serves the canonical build.
+sled-free-deepseek/index.html -text
