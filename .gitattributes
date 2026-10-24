@@ -10,3 +10,6 @@ ak47-field-strip/index.html -text
 *.mp3 binary
 # Stored byte-exact (source has mixed CRLF/LF) so GitHub Pages serves the canonical build.
 sled-free-deepseek/index.html -text
+# Stored byte-exact so GitHub Pages serves the canonical build (and its two mp3s untouched).
+diablo-idle-deepseek/index.html -text
+diablo-idle-deepseek/*.mp3 binary
