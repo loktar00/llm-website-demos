@@ -17,3 +17,6 @@ diablo-idle-deepseek/*.mp3 binary
 mini-bomber-deepseek/index.html -text
 # Stored byte-exact so GitHub Pages serves the canonical build.
 growing-library/index.html -text
+growing-library-hd2d/index.html -text
+inaturalist-landscape/index.html -text
+inaturalist-landscape/vendor/three.module.js -text
