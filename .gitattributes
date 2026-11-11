@@ -20,3 +20,6 @@ growing-library/index.html -text
 growing-library-hd2d/index.html -text
 inaturalist-landscape/index.html -text
 inaturalist-landscape/vendor/three.module.js -text
+# Stored byte-exact so GitHub Pages serves the canonical build.
+website-synth-nocta-deepseek/index.html -text
+website-synth-nocta-deepseek/tracks/*.opus binary
