@@ -23,3 +23,6 @@ inaturalist-landscape/vendor/three.module.js -text
 # Stored byte-exact so GitHub Pages serves the canonical build.
 website-synth-nocta-deepseek/index.html -text
 website-synth-nocta-deepseek/tracks/*.opus binary
+# Stored byte-exact so GitHub Pages serves the canonical build.
+website-synth-nocta-qwen4/index.html -text
+website-synth-nocta-qwen4/tracks/*.opus binary
