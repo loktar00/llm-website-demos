@@ -2357,7 +2357,7 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
         lfo.start();
 
         const trackGain = ctx.createGain();
-        trackGain.gain.value = state.trackVolume / 100;
+        trackGain.gain.value = state.trackVolume;
         trackGain.connect(masterIn);
 
         engine.bus = { masterIn, masterGain, analyser, dry, delayIn, delayWet, reverbIn, reverbWet, trackGain, lfo, lfoPitch, lfoFilter };
@@ -2574,7 +2574,7 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
       engine.bus.lfoPitch.gain.setTargetAtTime(7 + p.mod * 22, t, .05);
       engine.bus.lfoFilter.gain.setTargetAtTime(40 + p.mod * 560, t, .05);
       engine.bus.lfo.frequency.setTargetAtTime(.21 + p.mod * .33, t, .1);
-      engine.bus.trackGain.gain.setTargetAtTime(state.trackVolume / 100, t, .04);
+      engine.bus.trackGain.gain.setTargetAtTime(state.trackVolume, t, .04);
     }
 
     function updateActive() {
@@ -2835,7 +2835,7 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
       state.trackVolume = clamp(v);
       if (D.trackVolume) D.trackVolume.value = String(Math.round(state.trackVolume * 100));
       if (D.volumeToggle) D.volumeToggle.setAttribute('aria-valuenow', String(Math.round(state.trackVolume * 100)));
-      if (engine.ready) engine.bus.trackGain.gain.setTargetAtTime(state.trackVolume / 100, engine.ctx.currentTime, .04);
+      if (engine.ready) engine.bus.trackGain.gain.setTargetAtTime(state.trackVolume, engine.ctx.currentTime, .04);
       safeStorage('nocta-volume', String(Math.round(state.trackVolume * 100)));
     }
 
